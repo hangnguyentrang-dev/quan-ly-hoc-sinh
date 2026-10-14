@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Điểm Thi Đua Theo Lớp</title>
+    <title>Quản Lý Lớp Học</title>
     <!-- Tailwind CSS CDN -->
     <div id="studentProgressModal" class="fixed inset-0 z-[95] hidden items-center justify-center bg-slate-900/60 p-3" onclick="if(event.target===this)closeStudentProgress()"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-5"><div class="flex items-center justify-between gap-3 mb-4"><div><h2 id="studentProgressTitle" class="font-black text-lg">Hồ sơ tiến độ học sinh</h2><p class="text-xs text-slate-500 mt-1">So sánh điểm tích lũy giữa khóa hiện tại và các khóa đã lưu</p></div><button onclick="closeStudentProgress()" class="text-xl px-2" aria-label="Đóng">×</button></div><div id="studentProgressContent"></div></div></div>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -55,10 +55,103 @@
         .teaching-grid-input { min-height:26px; }
         .teaching-grid-input { width:100%; min-width:0; font-size:12px; line-height:1.25; font-weight:700; border:1px solid #cbd5e1; border-radius:5px; padding:5px 6px; }
         .teaching-grid-input:focus { outline:2px solid #c7d2fe; border-color:#818cf8; }
+        .teacher-gate-background { background: radial-gradient(ellipse at 8% 8%, rgba(129,140,248,.20), transparent 34%), radial-gradient(ellipse at 92% 18%, rgba(167,139,250,.16), transparent 30%), radial-gradient(ellipse at 75% 92%, rgba(56,189,248,.12), transparent 34%), linear-gradient(135deg,#f8fafc 0%,#eef2ff 52%,#f8fafc 100%); isolation:isolate; }
+        .teacher-gate-background::before, .teacher-gate-background::after { content:""; position:fixed; z-index:-1; pointer-events:none; border-radius:9999px; filter:blur(2px); }
+        .teacher-gate-background::before { width:280px; height:280px; right:-80px; top:38%; background:rgba(99,102,241,.07); border:1px solid rgba(99,102,241,.10); }
+        .teacher-gate-background::after { width:220px; height:220px; left:-70px; bottom:-65px; background:rgba(14,165,233,.06); border:1px solid rgba(14,165,233,.10); }
         @media(max-width:900px) { .teaching-day-grid { grid-template-columns:minmax(110px,.65fr) minmax(240px,1.6fr) minmax(240px,1.25fr); min-width:650px; } .teaching-day-table-scroll { overflow-x:auto; } }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
+
+    <div id="teacherGate" class="teacher-gate-background fixed inset-0 z-[10000] overflow-y-auto p-4 md:p-8">
+      <div class="relative z-10 max-w-5xl mx-auto">
+        <div class="flex flex-wrap justify-between items-center gap-3 mb-7">
+          <div><h1 id="teacherGateTitle" class="text-3xl md:text-4xl font-black tracking-tight text-slate-900">Quản Lý Lớp Học</h1></div>
+          <button onclick="teacherToggleLanguage()" class="rounded-xl bg-indigo-700 text-white px-4 py-2 font-bold"><i class="fa-solid fa-globe mr-2"></i><span id="teacherLangLabel">EN</span></button>
+        </div>
+        <div id="teacherCards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        <div class="mt-6 flex flex-wrap gap-3"><button onclick="addTeacher()" class="rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 font-bold shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5"><i class="fa-solid fa-plus mr-2"></i><span id="teacherAddLabel">Thêm giáo viên</span></button></div>
+      </div>
+    </div>
+
+
+    <!-- Modal thêm giáo viên: giao diện đồng bộ với ứng dụng -->
+    <div id="teacherFormModal" class="fixed inset-0 z-[11000] hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4" onclick="if(event.target===this)closeTeacherFormModal()">
+      <div class="w-full max-w-xl overflow-hidden rounded-3xl border border-white/60 bg-white shadow-2xl">
+        <div class="relative bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 px-6 py-5 text-white">
+          <button type="button" onclick="closeTeacherFormModal()" class="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-xl hover:bg-white/25" aria-label="Close">×</button>
+          <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-2xl shadow-inner"><i class="fa-solid fa-user-plus"></i></div>
+          <h2 id="teacherFormTitle" class="text-2xl font-black">Thêm giáo viên mới</h2>
+          <p id="teacherFormSubtitle" class="mt-1 text-sm text-indigo-100">Tạo không gian quản lý riêng cho giáo viên.</p>
+        </div>
+        <form id="teacherForm" class="space-y-4 p-6">
+          <div>
+            <label id="teacherNameLabel" for="teacherNameInput" class="mb-1.5 block text-sm font-bold text-slate-700">Tên giáo viên *</label>
+            <input id="teacherNameInput" required maxlength="100" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100" placeholder="Nhập tên giáo viên">
+          </div>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-[110px_1fr]">
+            <div>
+              <label id="teacherIconLabel" for="teacherIconInput" class="mb-1.5 block text-sm font-bold text-slate-700">Biểu tượng</label>
+              <input id="teacherIconInput" value="👩‍🏫" maxlength="12" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-center text-2xl outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100">
+            </div>
+            <div>
+              <label id="teacherDescLabel" for="teacherDescInput" class="mb-1.5 block text-sm font-bold text-slate-700">Mô tả (không bắt buộc)</label>
+              <input id="teacherDescInput" maxlength="180" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100" placeholder="Ví dụ: Tiếng Anh — Khối 8">
+            </div>
+          </div>
+          <div class="rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
+            <div class="mb-3 flex items-center gap-2 text-sm font-bold text-amber-900"><i class="fa-solid fa-shield-halved"></i><span id="teacherPasswordHeading">Mật khẩu (không bắt buộc)</span></div>
+            <p id="teacherPasswordHelp" class="mb-3 text-xs leading-5 text-amber-800">Để trống nếu không cần mật khẩu khi mở không gian này.</p>
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <input id="teacherPasswordInput" type="password" autocomplete="new-password" class="min-w-0 rounded-xl border border-amber-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100" placeholder="Mật khẩu">
+              <input id="teacherPasswordConfirmInput" type="password" autocomplete="new-password" class="min-w-0 rounded-xl border border-amber-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100" placeholder="Nhập lại mật khẩu">
+            </div>
+          </div>
+          <p id="teacherFormError" class="hidden rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700"></p>
+          <div class="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end">
+            <button id="teacherCancelBtn" type="button" onclick="closeTeacherFormModal()" class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50">Hủy</button>
+            <button id="teacherCreateBtn" type="submit" class="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5 hover:bg-indigo-700"><i class="fa-solid fa-plus mr-2"></i>Tạo giáo viên</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Hộp thoại chỉnh sửa giáo viên đồng bộ giao diện -->
+    <div id="teacherEditModal" class="fixed inset-0 z-[12000] hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4" onclick="if(event.target===this)closeTeacherEditModal()">
+      <div class="w-full max-w-xl overflow-hidden rounded-3xl border border-white/60 bg-white shadow-2xl">
+        <div class="bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 px-6 py-5 text-white">
+          <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-2xl"><i class="fa-solid fa-user-pen"></i></div>
+          <h2 id="teacherEditTitle" class="text-xl font-black">Chỉnh sửa thông tin giáo viên</h2>
+          <p id="teacherEditSubtitle" class="mt-1 text-sm text-indigo-100">Cập nhật thông tin không gian làm việc.</p>
+        </div>
+        <form id="teacherEditForm" class="space-y-4 p-6">
+          <label class="block"><span id="teacherEditNameLabel" class="mb-1.5 block text-sm font-bold text-slate-700">Tên giáo viên</span><input id="teacherEditName" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"></label>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2"><label class="block"><span id="teacherEditIconLabel" class="mb-1.5 block text-sm font-bold text-slate-700">Biểu tượng</span><input id="teacherEditIcon" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"></label><label class="block"><span id="teacherEditDescLabel" class="mb-1.5 block text-sm font-bold text-slate-700">Mô tả</span><input id="teacherEditDesc" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"></label></div>
+          <div class="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-4"><p id="teacherEditPasswordHelp" class="mb-3 text-sm text-slate-600">Để trống mật khẩu mới nếu muốn giữ nguyên.</p><div class="grid grid-cols-1 gap-3 sm:grid-cols-2"><input id="teacherEditPassword" type="password" autocomplete="new-password" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100" placeholder="Mật khẩu mới"><input id="teacherEditPasswordConfirm" type="password" autocomplete="new-password" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100" placeholder="Xác nhận mật khẩu"></div><label class="mt-3 flex items-center gap-2 text-sm font-semibold text-rose-700"><input id="teacherEditRemovePassword" type="checkbox" class="rounded border-slate-300 text-rose-600 focus:ring-rose-500"><span id="teacherEditRemovePasswordLabel">Bỏ mật khẩu bảo vệ</span></label></div>
+          <p id="teacherEditError" class="hidden rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700"></p>
+          <div class="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end"><button type="button" onclick="closeTeacherEditModal()" id="teacherEditCancel" class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50">Hủy</button><button type="submit" id="teacherEditSave" class="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-indigo-700"><i class="fa-solid fa-check mr-2"></i>Lưu thay đổi</button></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Hộp thoại nhập mật khẩu đồng bộ giao diện -->
+    <div id="teacherPasswordModal" class="fixed inset-0 z-[12000] hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4" onclick="if(event.target===this)resolveTeacherPassword(null)">
+      <div class="w-full max-w-md overflow-hidden rounded-3xl border border-white/60 bg-white shadow-2xl">
+        <div class="bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 px-6 py-5 text-white">
+          <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-2xl"><i class="fa-solid fa-lock"></i></div>
+          <h2 id="teacherPasswordModalTitle" class="text-xl font-black">Nhập mật khẩu</h2>
+          <p id="teacherPasswordModalSubtitle" class="mt-1 text-sm text-indigo-100">Nhập mật khẩu để tiếp tục.</p>
+        </div>
+        <form id="teacherPasswordModalForm" class="space-y-4 p-6">
+          <input id="teacherPasswordModalInput" type="password" autocomplete="current-password" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100" placeholder="Mật khẩu">
+          <div class="flex justify-end gap-2 border-t border-slate-100 pt-4">
+            <button type="button" onclick="resolveTeacherPassword(null)" class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50" id="teacherPasswordModalCancel">Hủy</button>
+            <button type="submit" class="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-indigo-700" id="teacherPasswordModalSubmit">Xác nhận</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <!-- Header Navigation -->
     <header class="bg-indigo-700 text-white shadow-lg border-b border-indigo-800">
@@ -68,7 +161,7 @@
                     <i class="fa-solid fa-trophy text-2xl text-yellow-300"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-black tracking-wide" data-i18n="appTitle">QUẢN LÝ & BẢNG THI ĐUA HỌC SINH</h1>
+                    <h1 class="text-xl font-black tracking-wide" data-i18n="appTitle">QUẢN LÝ LỚP HỌC</h1>
                     <p class="text-xs text-indigo-200" data-i18n="appSubtitle">Tự động cập nhật xếp loại, bảng điểm tổng kết realtime</p>
                 </div>
             </div>
@@ -76,6 +169,7 @@
                 <button onclick="toggleLanguage()" class="bg-indigo-900 hover:bg-indigo-950 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5 border border-indigo-500">
                     <i class="fa-solid fa-globe text-amber-300"></i> <span id="langLabel">EN</span>
                 </button>
+                <button onclick="showTeacherSelector()" class="bg-indigo-950 hover:bg-indigo-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5 border border-indigo-400"><i class="fa-solid fa-users-gear"></i><span data-i18n="teacherSwitch">Đổi giáo viên</span></button>
                 <button onclick="openTimerModal()" class="bg-violet-600 hover:bg-violet-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5">
                     <i class="fa-solid fa-stopwatch"></i> <span data-i18n="btnTimer">Đếm Ngược</span>
                 </button>
@@ -91,20 +185,20 @@
                 <button onclick="openClassModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5">
                     <i class="fa-solid fa-folder-plus"></i> <span data-i18n="btnAddClass">Thêm Lớp Mới</span>
                 </button>
-                <button onclick="undoLastAction()" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5" title="Hoàn tác thao tác gần nhất trong phiên hiện tại">
-                    <i class="fa-solid fa-rotate-left"></i> <span>Hoàn tác</span>
+                <button onclick="undoLastAction()" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5" title="Hoàn tác thao tác gần nhất trong phiên hiện tại" data-i18n-title="undoTitle">
+                    <i class="fa-solid fa-rotate-left"></i> <span data-i18n="btnUndo">Hoàn tác</span>
                 </button>
-                <button onclick="openDeletedStudents()" class="bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5" title="Khôi phục học sinh đã xóa">
-                    <i class="fa-solid fa-trash-arrow-up"></i> <span>Khôi phục HS</span>
+                <button onclick="openDeletedStudents()" class="bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5" title="Khôi phục học sinh đã xóa" data-i18n-title="restoreStudentsTitle">
+                    <i class="fa-solid fa-trash-arrow-up"></i> <span data-i18n="btnRestoreStudents">Khôi Phục</span>
                 </button>
-                <button onclick="exportData()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5" title="Tải bản sao lưu dữ liệu ra file JSON">
-                    <i class="fa-solid fa-download"></i> <span>Sao lưu dữ liệu</span>
+                <button onclick="exportData()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5" title="Tải bản sao lưu dữ liệu ra file JSON" data-i18n-title="backupTitle">
+                    <i class="fa-solid fa-download"></i> <span data-i18n="btnBackup">Sao lưu dữ liệu</span>
                 </button>
                 <button onclick="resetCurrentClassScores()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5" title="Xóa điểm của lớp đang chọn">
                     <i class="fa-solid fa-rotate-left"></i> <span data-i18n="btnResetScores">Xóa Điểm Lớp Này</span>
                 </button>
                 <label class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow cursor-pointer flex items-center gap-1.5">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> <span>Phục hồi dữ liệu</span>
+                    <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="btnRestoreData">Phục hồi dữ liệu</span>
                     <input type="file" id="importFileInput" class="hidden" accept=".json" onchange="importData(event)">
                 </label>
             </div>
@@ -854,6 +948,7 @@
                 finalExamRanking: "Bảng xếp hạng cuối kỳ",
                 finalExamRank: "Hạng", finalExamStudent: "Học sinh", finalExamListening: "Nghe", finalExamSpeaking: "Nói", finalExamReading: "Đọc", finalExamWriting: "Viết", finalExamGrammar: "Ngữ pháp", finalExamVocabulary: "Từ vựng", finalExamGrammarVocabulary: "TB Ngữ pháp + Từ vựng", finalExamTotal: "TB tổng",
                 appTitle: "QUẢN LÝ & BẢNG THI ĐUA HỌC SINH",
+                teacherSwitch: "Đổi giáo viên",
                 appSubtitle: "Tự động cập nhật xếp loại, bảng điểm tổng kết realtime",
                 btnTimer: "Đếm Ngược",
                 btnSeating: "Đổi Chỗ Ngồi", tabFinalExam: "Kiểm Tra Cuối Kỳ",
@@ -863,6 +958,8 @@
                 btnExport: "Tải Dữ Liệu",
                 btnResetScores: "Xóa Điểm Lớp Này",
                 btnImport: "Nhập Dữ Liệu",
+                btnUndo: "Hoàn tác", btnRestoreStudents: "Khôi Phục", btnBackup: "Sao lưu dữ liệu", btnRestoreData: "Phục hồi dữ liệu",
+                undoTitle: "Hoàn tác thao tác gần nhất trong phiên hiện tại", restoreStudentsTitle: "Khôi phục học sinh đã xóa", backupTitle: "Tải bản sao lưu dữ liệu ra file JSON",
                 lblCourse: "Khóa Học:",
                 lblStartMonth: "Tháng Bắt Đầu:",
                 lblSpeakingLimit: "Hệ số phát biểu (Mốc M):",
@@ -993,6 +1090,7 @@
                 finalExamRanking: "Final Exam Leaderboard",
                 finalExamRank: "Rank", finalExamStudent: "Student", finalExamListening: "Listening", finalExamSpeaking: "Speaking", finalExamReading: "Reading", finalExamWriting: "Writing", finalExamGrammar: "Grammar", finalExamVocabulary: "Vocabulary", finalExamGrammarVocabulary: "Grammar + Vocabulary Avg.", finalExamTotal: "Overall Avg.",
                 appTitle: "STUDENT COMPETITION MANAGEMENT",
+                teacherSwitch: "Switch teacher",
                 appSubtitle: "Real-time automatic leaderboard and grade evaluation",
                 btnTimer: "Timer",
                 btnSeating: "Seating Plan", tabFinalExam: "Final Exam",
@@ -1002,6 +1100,8 @@
                 btnExport: "Export Data",
                 btnResetScores: "Reset Class Scores",
                 btnImport: "Import Data",
+                btnUndo: "Undo", btnRestoreStudents: "Restore", btnBackup: "Back Up Data", btnRestoreData: "Restore Data",
+                undoTitle: "Undo the most recent action in this session", restoreStudentsTitle: "Restore deleted students", backupTitle: "Download a JSON data backup",
                 lblCourse: "Course Length:",
                 lblStartMonth: "Start Month:",
                 lblSpeakingLimit: "Speaking Ratio (Limit M):",
@@ -1242,8 +1342,9 @@
         }
 
         function initApp() {
-            const dataRef = ref(db, 'appDataMultiTeacher/teacherData/t_1791637392764'); // Phục hồi: đọc dữ liệu giáo viên chính, không đụng tới appData cũ
-            onValue(dataRef, (snapshot) => {
+            if (unsubscribeTeacherData) { unsubscribeTeacherData(); unsubscribeTeacherData = null; }
+            const dataRef = ref(db, `appDataMultiTeacher/teacherData/${currentTeacherId || LEGACY_TEACHER_ID}`);
+            unsubscribeTeacherData = onValue(dataRef, (snapshot) => {
                 const val = snapshot.val();
                 if (val) {
                     appData = val;
@@ -1301,6 +1402,7 @@
                 document.getElementById('maxSpeakingLimitSelect').value = appData.maxSpeakingLimit || 15;
 
                 if (!Array.isArray(appData.deletedStudents)) appData.deletedStudents = [];
+                if (!Array.isArray(appData.deletedItems)) appData.deletedItems = [];
                 ensureNewModules();
                 applyLanguageUI();
                 renderClassTabs();
@@ -1320,7 +1422,7 @@
                 if (undoHistory.length > MAX_UNDO_HISTORY) undoHistory.shift();
             }
             const saveSnapshot = deepCopy(appData);
-            return set(ref(db, 'appDataMultiTeacher/teacherData/t_1791637392764'), appData).then(() => { // Lưu đúng nhánh dữ liệu giáo viên chính
+            return set(ref(db, `appDataMultiTeacher/teacherData/${currentTeacherId || LEGACY_TEACHER_ID}`), appData).then(() => { // Lưu đúng nhánh dữ liệu giáo viên chính
                 lastPersistedSnapshot = deepCopy(saveSnapshot);
                 suppressUndoCapture = false;
                 return true;
@@ -1332,7 +1434,7 @@
             });
         }
 
-        window.undoLastAction = function() {
+        window.undoLastAction = async function() {
             if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) {
                 alert('Khóa đã lưu trữ chỉ được xem.'); return;
             }
@@ -1341,7 +1443,7 @@
                 return;
             }
             const msg = appData.language === 'en' ? 'Undo the most recent saved change?' : 'Hoàn tác thay đổi đã lưu gần nhất?';
-            if (!confirm(msg)) return;
+            if (!await showAppConfirm(msg)) return;
             const previous = undoHistory.pop();
             suppressUndoCapture = true;
             appData = deepCopy(previous);
@@ -1363,11 +1465,142 @@
             applyLanguageUI();
             renderClassTabs();
             renderCurrentView();
-            if(document.getElementById('teachingSearch')) document.getElementById('teachingSearch').placeholder=(appData.language==='en'?'Search content...':'Tìm nội dung...'); if(!document.getElementById('courseManagerModal').classList.contains('hidden'))renderCourseList(); if(!document.getElementById('classScheduleModal').classList.contains('hidden')){const draft={};document.querySelectorAll('[data-sched-class]').forEach(ch=>{const cid=ch.dataset.schedClass,day=ch.dataset.schedDay,ti=document.querySelector(`[data-sched-time-class="${cid}"][data-sched-time-day="${day}"]`);if(ch.checked){if(!draft[cid])draft[cid]={};draft[cid][day]=ti?.value||'09:00';}});openClassSchedule(draft);}
+            if(document.getElementById('teachingSearch')) document.getElementById('teachingSearch').placeholder=(appData.language==='en'?'Search content...':'Tìm nội dung...'); if(!document.getElementById('courseManagerModal').classList.contains('hidden'))renderCourseList(); if(!document.getElementById('classScheduleModal').classList.contains('hidden')){const draft={};document.querySelectorAll('[data-sched-class]').forEach(ch=>{const cid=ch.dataset.schedClass,day=ch.dataset.schedDay,ti=document.querySelector(`[data-sched-time-class="${cid}"][data-sched-time-day="${day}"]`);if(ch.checked){if(!draft[cid])draft[cid]={};draft[cid][day]=ti?.value||'09:00';}});openClassSchedule(draft);} applyExtraLanguageUI();
         };
+
+        const EXTRA_I18N = {
+          'Thiết lập ngày và giờ học thường lệ cho từng lớp.':'Set the regular teaching days and times for each class.',
+          'Khóa đã lưu trữ được giữ dưới dạng bản chụp lịch sử và không tự ghi đè dữ liệu đang hoạt động.':'Archived courses are kept as historical snapshots and do not overwrite active data.',
+          'Lấy danh sách lớp từ khóa học trước có ngày kết thúc trước ngày bắt đầu khóa mới':'Copy the class list from the previous course that ended before the new course starts',
+          'Khi chỉnh số hàng/cột, sơ đồ bàn được xem trước bằng số bàn. Sau khi xếp ngẫu nhiên, sơ đồ chỉ hiện tên học sinh. Nếu chọn học sinh và bàn cố định, học sinh đó sẽ luôn ở đúng bàn đã chọn.':'When you change the number of rows or columns, the seating plan preview shows seat numbers. After random assignment, the plan displays only student names. If you select a student and a fixed seat, that student will always remain in the selected seat.',
+          'Số hàng':'Rows','Số cột':'Columns','Cố định học sinh (không bắt buộc)':'Pin a student (optional)','Bàn cố định':'Fixed seat','Không cố định':'Not fixed',
+          'Bàn':'Seat','hàng':'row','cột':'column',
+          'Xanh Lá (Emerald)':'Green (Emerald)','Xanh Chàm (Indigo)':'Indigo','Tím (Purple)':'Purple','Vàng Cam (Amber)':'Amber','Đỏ Hồng (Rose)':'Rose','Xanh Ngọc (Cyan)':'Cyan',
+          'Để trống nếu không cần mật khẩu khi mở không gian này.':'Leave blank if this workspace does not need a password.',
+          'Cập nhật thông tin không gian làm việc.':'Update workspace information.',
+          'Ví dụ: Tiếng Anh — Khối 8':'Example: English — Grade 8',
+          'QUẢN LÝ LỚP HỌC':'CLASS MANAGEMENT','Đã hiểu':'Got it','Xác nhận':'Confirm','Hủy':'Cancel',
+          'Tài liệu & học tập':'Documents & Learning','Công nghệ & thiết bị':'Technology & Devices','Công cụ & vật dụng':'Tools & Supplies',
+          'Động vật':'Animals','Thiên nhiên & thời tiết':'Nature & Weather','Đồ ăn & thức uống':'Food & Drinks',
+          'Thể thao & trò chơi':'Sports & Games','Phương tiện giao thông':'Transportation','Dấu hiệu & biểu trưng':'Symbols & Signs',
+          'Kiến trúc & Công trình':'Buildings & Architecture','Cây cối & Thiên nhiên':'Plants & Nature','Âm nhạc & Nghệ thuật':'Music & Arts',
+          'Thời trang & Phụ kiện':'Fashion & Accessories','Động vật biển & Sông nước':'Aquatic Animals','Thú cưng & Động vật rừng':'Pets & Wild Animals',
+          'Các loài chim & Côn trùng':'Birds & Insects',
+          'Lịch học theo lớp':'Class Schedule by Class',
+          'Thông tin khóa hiện tại':'Current Course Information',
+          'Tên khóa học':'Course Name',
+          'Ngày bắt đầu':'Start Date',
+          'Ngày kết thúc':'End Date',
+          'Lưu thông tin khóa hiện tại':'Save Current Course Information',
+          'Tạo khóa học mới':'Create a New Course',
+          'Tạo khóa mới và tách dữ liệu':'Create New Course and Separate Data',
+          'Lưu trữ khóa hiện tại và bắt đầu khóa mới':'Archive Current Course and Start a New Course',
+          'Danh sách khóa học':'Course List',
+          'Chuyển lớp học sinh':'Move Student to Another Class',
+          'Xác nhận chuyển':'Confirm Move',
+          'Hồ sơ tiến độ học sinh':'Student Progress Profile',
+          'So sánh điểm tích lũy giữa khóa hiện tại và các khóa đã lưu':'Compare accumulated scores between the current and archived courses',
+          'Đổi chỗ ngồi ngẫu nhiên':'Randomize Seating',
+          'Xếp chỗ ngẫu nhiên':'Randomize Seating',
+          'Không cố định':'Not pinned',
+          'Bàn 1 (hàng 1, cột 1)':'Seat 1 (row 1, column 1)',
+          'Trống':'Empty',
+          'BÀN CỐ ĐỊNH':'FIXED SEAT',
+          'Học sinh đã xóa — có thể khôi phục':'Deleted Students — Restorable',
+          'Khôi phục sẽ đưa học sinh về lớp cũ và phục hồi điểm, điểm cuối kỳ cùng ghi chú đã lưu.':'Restoring a student returns them to their previous class and restores saved scores, final exam scores, and notes.',
+          'Khôi phục':'Restore',
+          'Thùng rác đang trống.':'The trash is empty.',
+          'Đã khôi phục học sinh và dữ liệu liên quan.':'Student and related data restored successfully.',
+          'ĐANG CHỌN':'ACTIVE',
+          'so với khóa trước':'compared with the previous course',
+          'lượt điểm':'score entries',
+          'Xem điểm thành phần':'View score breakdown',
+          'Điểm thi cuối kỳ được tính trung bình từ các kỹ năng có điểm; Ngữ pháp + Từ vựng được gộp thành một mục khi tính điểm tổng.':'The final exam score is averaged from skills with scores; Grammar + Vocabulary are combined into one item when calculating the overall score.',
+          'Top được tính riêng trong từng khóa dựa trên dữ liệu học sinh có trong khóa đó. Dữ liệu khóa đã lưu chỉ dùng để xem.':'Rankings are calculated separately for each course based on that course’s student data. Archived course data is view-only.',
+          'Khóa đã lưu trữ chỉ được xem. Hãy quay lại khóa hiện tại để chỉnh sửa.':'Archived courses are read-only. Return to the current course to make changes.',
+          'Chưa có thao tác nào có thể hoàn tác trong phiên này.':'There is no action to undo in this session.',
+          'Hoàn tác thay đổi đã lưu gần nhất?':'Undo the most recently saved change?',
+          'Đã hoàn tác thao tác gần nhất.':'The most recent action has been undone.',
+          'Lưu dữ liệu thất bại. Vui lòng kiểm tra kết nối mạng và thử lại.':'Failed to save data. Please check your network connection and try again.',
+          'Dữ liệu khóa đã lưu, chỉ xem; không thay đổi dữ liệu khóa hiện tại.':'Archived course data is view-only and does not change the current course data.',
+          'Đang hiển thị dữ liệu của khóa học đang chọn.':'Showing data for the selected course.',
+          'Chưa có dữ liệu khóa học để lập hồ sơ tiến độ cho học sinh này.':'There is no course data available to create a progress profile for this student.',
+          'Xem điểm học sinh theo khóa học':'View student scores by course',
+          'Đang chọn':'Active',
+          'Đã lưu':'Archived',
+          'Hồ sơ tiến độ qua các khóa học':'Progress Profile Across Courses',
+          'Xác nhận thao tác':'Confirm Action',
+          'Thông báo':'Notice',
+          'Tài liệu & học tập':'Documents & Learning',
+          'Công nghệ & thiết bị':'Technology & Devices',
+          'Công cụ & vật dụng':'Tools & Supplies',
+          'Không tìm thấy icon phù hợp.':'No matching icon found.',
+          'Chọn giáo viên':'Select a Teacher',
+          'Mỗi giáo viên có không gian dữ liệu riêng.':'Each teacher has a separate data workspace.',
+          'Thêm giáo viên':'Add Teacher',
+          'Vào làm việc':'Enter Workspace',
+          'Quay lại chọn giáo viên':'Back to Teacher Selection',
+          'Bỏ mật khẩu bảo vệ':'Remove Password Protection',
+          'Tên giáo viên *':'Teacher Name *',
+          'Biểu tượng':'Icon',
+          'Mô tả (không bắt buộc)':'Description (optional)',
+          'Mật khẩu (không bắt buộc)':'Password (optional)',
+          'Xác nhận mật khẩu':'Confirm Password',
+          'Mật khẩu không đúng.':'Incorrect password.',
+          'Tên giáo viên đã tồn tại.':'A teacher with this name already exists.',
+          'Mật khẩu xác nhận không khớp.':'Password confirmation does not match.',
+          'Chưa có giáo viên nào. Hãy tạo giáo viên đầu tiên.':'No teachers yet. Create the first teacher.',
+          'Kế hoạch theo tuần, nhiều lớp, lưu theo khóa học.':'Weekly plans for multiple classes, saved by course.',
+          'Tìm nội dung...':'Search content...',
+          'Chưa có tuần học. Bấm “Thêm tuần” để bắt đầu.':'No teaching weeks yet. Click “Add Week” to get started.',
+          'Không có lớp được xếp lịch vào ngày này.':'No classes are scheduled for this day.',
+          'Thứ 2':'Monday',
+          'Thứ 3':'Tuesday',
+          'Thứ 4':'Wednesday',
+          'Thứ 5':'Thursday',
+          'Thứ 6':'Friday',
+          'Thứ 7':'Saturday',
+          'Chủ nhật':'Sunday',
+          'Thứ Hai':'Monday',
+          'Thứ Ba':'Tuesday',
+          'Thứ Tư':'Wednesday',
+          'Thứ Năm':'Thursday',
+          'Thứ Sáu':'Friday',
+          'Thứ Bảy':'Saturday',
+          'Chủ Nhật':'Sunday'
+};
+        const EXTRA_I18N_VI = Object.fromEntries(Object.entries(EXTRA_I18N).map(([vi,en])=>[en,vi]));
+        function applyExtraLanguageUI() {
+          const en = (appData && appData.language === 'en');
+          const map = en ? EXTRA_I18N : EXTRA_I18N_VI;
+          const root = document.body;
+          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+          const nodes = [];
+          while (walker.nextNode()) nodes.push(walker.currentNode);
+          nodes.forEach(node => {
+            const parent = node.parentElement;
+            if (!parent || parent.closest('script,style,textarea,[contenteditable="true"]')) return;
+            const trimmed = node.nodeValue.trim();
+            if (!trimmed || !Object.prototype.hasOwnProperty.call(map, trimmed)) return;
+            const start = node.nodeValue.search(/\S/);
+            const end = node.nodeValue.length - node.nodeValue.split('').reverse().join('').search(/\S/);
+            node.nodeValue = node.nodeValue.slice(0,start) + map[trimmed] + node.nodeValue.slice(end);
+          });
+          document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el => {
+            const v=el.getAttribute('placeholder'); if(v && map[v]) el.setAttribute('placeholder',map[v]);
+          });
+          document.querySelectorAll('[title]').forEach(el => {
+            const v=el.getAttribute('title'); if(v && map[v]) el.setAttribute('title',map[v]);
+          });
+          const eyebrow=document.getElementById('appNoticeEyebrow');
+          if(eyebrow && eyebrow.textContent !== (en?'CLASS MANAGEMENT':'QUẢN LÝ LỚP HỌC')) eyebrow.textContent=en?'CLASS MANAGEMENT':'QUẢN LÝ LỚP HỌC';
+          const confirmEyebrow=document.getElementById('appConfirmEyebrow');
+          if(confirmEyebrow && confirmEyebrow.textContent !== (en?'CLASS MANAGEMENT':'QUẢN LÝ LỚP HỌC')) confirmEyebrow.textContent=en?'CLASS MANAGEMENT':'QUẢN LÝ LỚP HỌC';
+        }
 
         function applyLanguageUI() {
             const lang = appData.language || 'vi';
+            document.documentElement.lang = lang;
             document.getElementById('langLabel').innerText = (lang === 'vi') ? 'EN' : 'VI';
 
             document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -1376,7 +1609,24 @@
                     el.innerText = translations[lang][key];
                 }
             });
+            document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                const key = el.getAttribute('data-i18n-title');
+                if (translations[lang] && translations[lang][key]) el.title = translations[lang][key];
+            });
+            applyExtraLanguageUI();
         }
+
+        // Keep hard-coded text in dynamically created dialogs and cards synchronized with the selected language.
+        let extraLanguageObserverQueued = false;
+        const extraLanguageObserver = new MutationObserver(() => {
+            if (extraLanguageObserverQueued) return;
+            extraLanguageObserverQueued = true;
+            queueMicrotask(() => {
+                extraLanguageObserverQueued = false;
+                if (document.body && typeof appData !== 'undefined') applyExtraLanguageUI();
+            });
+        });
+        extraLanguageObserver.observe(document.body, {subtree:true, childList:true, characterData:true});
 
         /* --- TÍNH NĂNG ĐỒNG HỒ ĐẾM NGƯỢC TIMER --- */
         window.openTimerModal = function() {
@@ -1553,10 +1803,10 @@
             saveData();
             renderFinalExamView();
         };
-        window.resetFinalExamStudent = function(studentId) {
+        window.resetFinalExamStudent = async function(studentId) {
             const student = appData.students.find(s => String(s.id) === String(studentId));
             if (!student) return;
-            if (!confirm(appData.language === 'en' ? `Are you sure you want to reset all final exam scores for ${student.name}? This only affects this student.` : `Bạn có chắc muốn reset toàn bộ điểm kiểm tra cuối kỳ của ${student.name}? Thao tác này chỉ ảnh hưởng đến học sinh này.`)) return;
+            if (!await showAppConfirm(appData.language === 'en' ? `Are you sure you want to reset all final exam scores for ${student.name}? This only affects this student.` : `Bạn có chắc muốn reset toàn bộ điểm kiểm tra cuối kỳ của ${student.name}? Thao tác này chỉ ảnh hưởng đến học sinh này.`)) return;
             appData.finalExams[String(studentId)] = {
                 listening: '', speaking: '', reading: '', writing: '',
                 grammar: '', vocabulary: '', bonusTo: {}
@@ -1604,11 +1854,12 @@
             const activeClass = appData.classes.find(c => c.id === appData.activeClassId);
             const select = document.getElementById('fixedSeatStudent');
             const students = appData.students.filter(s => activeClass && s.classId === activeClass.id);
-            select.innerHTML = '<option value="">Không cố định</option>' + students.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+            select.innerHTML = `<option value="">${appData.language==='en'?'Not fixed':'Không cố định'}</option>` + students.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
             document.getElementById('seatingPlan').dataset.assigned = 'false';
             renderSeatPreview();
             document.getElementById('seatingModal').classList.remove('hidden');
             document.getElementById('seatingModal').classList.add('flex');
+            applyExtraLanguageUI();
         };
         window.closeSeatingModal = function() {
             document.getElementById('seatingModal').classList.add('hidden');
@@ -1780,7 +2031,7 @@
         };
 
         /* --- NÚT RESET TOÀN BỘ ĐIỂM DƯ TÍCH LŨY --- */
-        window.resetAllStudentsUnusedPoints = function() {
+        window.resetAllStudentsUnusedPoints = async function() {
             const activeClass = appData.classes.find(c => c.id === appData.activeClassId);
             if (!activeClass) return;
 
@@ -1788,7 +2039,7 @@
                 ? `Are you sure you want to RESET ALL unused speaking points (rewardPoints) for class ${activeClass.name} to 0? (Items in inventory will remain intact).` 
                 : `Bạn có chắc chắn muốn RESET TOÀN BỘ điểm dư phát biểu (rewardPoints) của tất cả học sinh trong lớp ${activeClass.name} về 0 không? (Quà trong túi đồ sẽ được giữ nguyên).`;
 
-            if (confirm(msg)) {
+            if (await showAppConfirm(msg)) {
                 appData.students.forEach(student => {
                     if (student.classId === activeClass.id) {
                         student.rewardPoints = 0;
@@ -1934,9 +2185,9 @@
             document.getElementById('studentViolationDetailsModal').classList.add('flex');
         };
 
-        window.deleteAggregatedStudentViolations = function(studentId, encodedViolationName) {
+        window.deleteAggregatedStudentViolations = async function(studentId, encodedViolationName) {
             const violationName = decodeURIComponent(encodedViolationName);
-            if (!confirm(appData.language === 'en' ? `Delete all records of violation "${violationName}"?` : `Xác nhận xóa toàn bộ bản ghi vi phạm "${violationName}" của học sinh?`)) return;
+            if (!await showAppConfirm(appData.language === 'en' ? `Delete all records of violation "${violationName}"?` : `Xác nhận xóa toàn bộ bản ghi vi phạm "${violationName}" của học sinh?`)) return;
 
             const student = appData.students.find(s => s.id === studentId);
             if (student && student.violations) {
@@ -2079,9 +2330,9 @@
             }
         };
 
-        window.deleteViolationType = function(vtId) {
+        window.deleteViolationType = async function(vtId) {
             const msg = appData.language === 'en' ? "Delete this violation from system presets?" : "Xóa vi phạm này khỏi danh mục đồng bộ hệ thống?";
-            if (confirm(msg)) {
+            if (await showAppConfirm(msg)) {
                 appData.globalViolationTypes = (appData.globalViolationTypes || []).filter(i => i.id !== vtId);
                 saveData();
                 openManageViolationTypesModal();
@@ -2268,7 +2519,7 @@
             closeEditItemModal();
         };
 
-        window.deleteShopItem = function(itemId) {
+        window.deleteShopItem = async function(itemId) {
             const item = (appData.globalShopItems || []).find(i => i.id === itemId);
             if (!item) return;
 
@@ -2278,7 +2529,7 @@
             }
 
             const msg = appData.language === 'en' ? `Are you sure you want to delete gift "${item.name}" from shop?` : `Bạn có chắc chắn muốn xóa món quà "${item.name}" khỏi cửa hàng không?`;
-            if (confirm(msg)) {
+            if (await showAppConfirm(msg)) {
                 appData.globalShopItems = appData.globalShopItems.filter(i => i.id !== itemId);
                 saveData();
             }
@@ -2321,9 +2572,9 @@
             selectedItemIdForPurchase = null;
         };
 
-        window.deleteStudentGift = function(studentId, invId) {
+        window.deleteStudentGift = async function(studentId, invId) {
             const msg = appData.language === 'en' ? "Confirm student used / deleted this gift item?" : "Xác nhận học sinh đã sử dụng / xóa món quà này?";
-            if (!confirm(msg)) return;
+            if (!await showAppConfirm(msg)) return;
 
             const student = appData.students.find(s => s.id === studentId);
             if (student && student.inventory) {
@@ -3066,19 +3317,40 @@
             closeClassModal();
         };
 
-        window.deleteCurrentClass = function() {
+        window.deleteCurrentClass = async function() {
             if (appData.classes.length <= 1) {
                 alert(appData.language === 'en' ? "You cannot delete the only remaining class!" : "Bạn không thể xóa lớp duy nhất còn lại!");
                 return;
             }
-            const msg = appData.language === 'en' ? "Are you sure you want to delete this class and all student data inside?" : "Bạn có chắc chắn muốn xóa lớp này và toàn bộ dữ liệu học sinh trong lớp?";
-            if (confirm(msg)) {
+            const msg = appData.language === 'en' ? "Move this class and its student data to Trash? You can restore it later." : "Chuyển lớp này cùng dữ liệu học sinh vào Thùng rác? Bạn có thể khôi phục sau.";
+            if (await showAppConfirm(msg)) {
                 const targetId = appData.activeClassId;
-                appData.classes = appData.classes.filter(c => c.id !== targetId);
-                appData.students = appData.students.filter(s => s.classId !== targetId);
+                const cls = appData.classes.find(c => String(c.id) === String(targetId));
+                const students = appData.students.filter(st => String(st.classId) === String(targetId));
+                const studentIds = new Set(students.map(st => String(st.id)));
+                // Snapshot every score belonging to this class, then remove it from active data.
+                // Score keys are normally `${studentId}_${date}`; prefer an explicit studentId
+                // when present so IDs containing underscores are handled safely as well.
+                const scores = {};
+                Object.keys(appData.scores || {}).forEach(k => {
+                    const score = appData.scores[k] || {};
+                    const belongsToClassStudent = score.studentId !== undefined && score.studentId !== null
+                        ? studentIds.has(String(score.studentId))
+                        : Array.from(studentIds).some(id => k.startsWith(String(id) + '_'));
+                    if (belongsToClassStudent) scores[k] = deepCopy(score);
+                });
+                const finalExams = {}; studentIds.forEach(id => { if (appData.finalExams && appData.finalExams[id] !== undefined) finalExams[id] = deepCopy(appData.finalExams[id]); });
+                const studentNotes = {}; studentIds.forEach(id => { if (appData.studentNotes && appData.studentNotes[id] !== undefined) studentNotes[id] = deepCopy(appData.studentNotes[id]); });
+                appData.deletedItems = Array.isArray(appData.deletedItems) ? appData.deletedItems : [];
+                appData.deletedItems.unshift({ type:'class', id:'trash_class_'+Date.now(), deletedAt:new Date().toISOString(), name:cls?.name || 'Class', payload:{ class:deepCopy(cls), students:deepCopy(students), scores, finalExams, studentNotes, classSchedules:deepCopy((appData.classSchedules||{})[targetId] ?? null) } });
+                appData.classes = appData.classes.filter(c => String(c.id) !== String(targetId));
+                appData.students = appData.students.filter(st => String(st.classId) !== String(targetId));
+                // Prevent deleted-class scores from remaining in active reports/calculations.
+                Object.keys(scores).forEach(k => { delete appData.scores[k]; });
+                studentIds.forEach(id => { if (appData.finalExams) delete appData.finalExams[id]; if (appData.studentNotes) delete appData.studentNotes[id]; });
+                if (appData.classSchedules) delete appData.classSchedules[targetId];
                 appData.activeClassId = appData.classes[0].id;
-
-                saveData();
+                saveData().then(ok => { if(ok){ renderClassTabs(); renderCurrentView(); if(typeof renderStudentRoster==='function')renderStudentRoster(); } });
             }
         };
 
@@ -3196,7 +3468,7 @@
             if (!picker) return;
             const query = (document.getElementById('studentIconSearch')?.value || '').trim().toLocaleLowerCase();
             const current = document.getElementById('newStudentIcon')?.value.trim() || '🎓';
-            const groups = STUDENT_ICON_GROUPS.map(group => ({...group, icons: group.icons.filter((icon, i, arr) => arr.indexOf(icon) === i && (!query || icon.toLocaleLowerCase().includes(query) || group.name.toLocaleLowerCase().includes(query)))})).filter(group => group.icons.length);
+            const groups = STUDENT_ICON_GROUPS.map(group => ({...group, name: (appData.language==='en' && EXTRA_I18N[group.name]) ? EXTRA_I18N[group.name] : group.name, icons: group.icons.filter((icon, i, arr) => arr.indexOf(icon) === i && (!query || icon.toLocaleLowerCase().includes(query) || group.name.toLocaleLowerCase().includes(query)))})).filter(group => group.icons.length);
             picker.innerHTML = groups.map(group => `<section><div class="sticky top-0 bg-slate-50 px-1 py-1 mb-1 text-[10px] font-black uppercase tracking-wide text-slate-500">${group.name}</div><div class="grid grid-cols-7 sm:grid-cols-9 gap-1">${group.icons.map(icon => `<button type="button" data-student-icon="${icon}" onclick="chooseStudentIcon('${icon}')" title="${icon}" aria-label="Chọn icon ${icon}" class="h-9 rounded-lg border ${icon===current?'border-indigo-500 bg-indigo-100 ring-2 ring-indigo-500':'border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-300'} text-xl transition">${icon}</button>`).join('')}</div></section>`).join('') || '<p class="p-3 text-xs text-slate-500">Không tìm thấy icon phù hợp.</p>';
         };
 
@@ -3270,11 +3542,11 @@
             closeStudentModal();
         };
 
-        window.deleteStudent = function(studentId) {
+        window.deleteStudent = async function(studentId) {
             const student = appData.students.find(s => String(s.id) === String(studentId));
             if (!student) return;
             const msg = appData.language === 'en' ? `Move ${student.name} to the recoverable student trash?` : `Chuyển học sinh “${student.name}” vào thùng rác? Bạn có thể khôi phục sau.`;
-            if (!confirm(msg)) return;
+            if (!await showAppConfirm(msg)) return;
             if (!Array.isArray(appData.deletedStudents)) appData.deletedStudents = [];
             const relatedScores = {};
             Object.keys(appData.scores || {}).forEach(key => {
@@ -3299,25 +3571,65 @@
             if (!modal) {
                 modal = document.createElement('div'); modal.id = 'deletedStudentsModal';
                 modal.className = 'fixed inset-0 z-[110] hidden items-center justify-center bg-slate-900/60 p-3';
-                modal.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[85vh] overflow-y-auto p-5"><div class="flex items-center justify-between gap-3 mb-4"><h2 class="font-black text-lg">Học sinh đã xóa — có thể khôi phục</h2><button onclick="closeDeletedStudents()" class="text-xl px-2" aria-label="Đóng">×</button></div><p class="text-xs text-slate-500 mb-3">Khôi phục sẽ đưa học sinh về lớp cũ và phục hồi điểm, điểm cuối kỳ cùng ghi chú đã lưu.</p><div id="deletedStudentsList" class="space-y-2"></div><div class="flex justify-end mt-4"><button onclick="closeDeletedStudents()" class="rounded-lg bg-slate-100 px-3 py-2 text-sm font-bold">Đóng</button></div></div>`;
+                modal.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[85vh] overflow-y-auto p-5"><div class="flex items-center justify-between gap-3 mb-4"><h2 class="font-black text-lg" data-trash-title>Khôi Phục</h2><button onclick="closeDeletedStudents()" class="text-xl px-2" aria-label="Đóng">×</button></div><p class="text-xs text-slate-500 mb-3" data-trash-help>Khôi phục học sinh, lớp hoặc khóa học đã xóa.</p><div class="flex justify-end mb-3"><button onclick="emptyTrash()" class="rounded-lg bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 text-xs font-bold"><i class="fa-solid fa-trash-can mr-1"></i><span data-trash-empty> Dọn dẹp toàn bộ thùng rác</span></button></div><div id="deletedStudentsList" class="space-y-2"></div><div class="flex justify-end mt-4"><button onclick="closeDeletedStudents()" class="rounded-lg bg-slate-100 px-3 py-2 text-sm font-bold" data-trash-close>Đóng</button></div></div>`;
                 document.body.appendChild(modal);
             }
+            if (!Array.isArray(appData.deletedItems)) appData.deletedItems = [];
+            const en = appData.language === 'en';
+            modal.querySelector('[data-trash-title]').textContent = en ? 'Restore' : 'Khôi Phục';
+            modal.querySelector('[data-trash-help]').textContent = en ? 'Restore deleted students, classes, or courses.' : 'Khôi phục học sinh, lớp hoặc khóa học đã xóa.';
+            modal.querySelector('[data-trash-empty]').textContent = en ? 'Empty entire trash' : 'Dọn dẹp toàn bộ thùng rác';
+            modal.querySelector('[data-trash-close]').textContent = en ? 'Close' : 'Đóng';
             const list = document.getElementById('deletedStudentsList');
-            const items = appData.deletedStudents || [];
-            list.innerHTML = items.map((entry, index) => `<div class="flex items-center gap-3 border rounded-xl p-3"><div class="text-2xl">${escapeHtml(entry.student?.icon || '🎓')}</div><div class="flex-1 min-w-0"><div class="font-bold break-words">${escapeHtml(entry.student?.name || 'Học sinh')}</div><div class="text-xs text-slate-500">${escapeHtml((appData.classes.find(c => String(c.id) === String(entry.student?.classId)) || {}).name || 'Lớp đã lưu')} · ${entry.deletedAt ? new Date(entry.deletedAt).toLocaleString() : ''}</div></div><button onclick="restoreDeletedStudent(${index})" class="rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 text-xs font-bold"><i class="fa-solid fa-rotate-left mr-1"></i>Khôi phục</button></div>`).join('') || '<p class="text-sm text-slate-500 border rounded-lg p-4">Thùng rác đang trống.</p>';
+            const items = (appData.deletedStudents || []).map((entry,index)=>({type:'student',entry,index,stamp:entry.deletedAt,name:entry.student?.name|| (en?'Student':'Học sinh'),id:index}));
+            (appData.deletedItems||[]).forEach((entry,index)=>items.push({type:entry.type,entry,index,stamp:entry.deletedAt,name:entry.name|| (en?'Deleted item':'Mục đã xóa'),id:entry.id}));
+            items.sort((a,b)=>new Date(b.stamp||0)-new Date(a.stamp||0));
+            list.innerHTML = items.map(item => { const label=item.type==='student'?(en?'Student':'Học sinh'):item.type==='class'?(en?'Class':'Lớp'):(en?'Course':'Khóa học'); const icon=item.type==='student'?(item.entry.student?.icon||'🎓'):item.type==='class'?'🏫':'📚'; const time=item.stamp?new Date(item.stamp).toLocaleString():''; const action=item.type==='student'?`restoreDeletedStudent(${item.id})`:`restoreTrashItem('${item.id}')`; const trashAction=item.type==='student'?`permanentlyDeleteStudent(${item.id})`:`permanentlyDeleteTrashItem('${item.id}')`; return `<div class="flex items-center gap-3 border rounded-xl p-3"><div class="text-2xl">${escapeHtml(icon)}</div><div class="flex-1 min-w-0"><div class="font-bold break-words">${escapeHtml(item.name)}</div><div class="text-xs text-slate-500">${label}${time?' · '+escapeHtml(time):''}</div></div><button onclick="${action}" title="${en?'Restore':'Khôi phục'}" aria-label="${en?'Restore':'Khôi phục'}" class="rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 text-xs font-bold"><i class="fa-solid fa-rotate-left"></i></button><button onclick="${trashAction}" title="${en?'Delete permanently':'Xóa vĩnh viễn'}" aria-label="${en?'Delete permanently':'Xóa vĩnh viễn'}" class="rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 px-3 py-2 text-xs font-bold"><i class="fa-solid fa-trash-can"></i></button></div>`; }).join('') || `<p class="text-sm text-slate-500 border rounded-lg p-4">${en?'The trash is empty.':'Thùng rác đang trống.'}</p>`;
             modal.classList.remove('hidden'); modal.classList.add('flex');
         };
+        window.permanentlyDeleteStudent = async function(index){const entry=(appData.deletedStudents||[])[index];if(!entry)return;const en=appData.language==='en';if(!await showAppConfirm(en?`Permanently delete “${entry.student?.name||'Student'}”? This cannot be undone.`:`Xóa vĩnh viễn “${entry.student?.name||'Học sinh'}”? Thao tác này không thể hoàn tác.`))return;appData.deletedStudents.splice(index,1);saveData().then(ok=>{if(ok)openDeletedStudents();});};
+        window.restoreTrashItem = async function(id){const idx=(appData.deletedItems||[]).findIndex(x=>String(x.id)===String(id));if(idx<0)return;const item=appData.deletedItems[idx],p=item.payload||{},en=appData.language==='en';if(!await showAppConfirm(en?`Restore ${item.type} “${item.name}”?`:`Khôi phục ${item.type==='class'?'lớp':'khóa học'} “${item.name}”?`))return;
+            if(item.type==='class'){
+                if(appData.classes.some(c=>String(c.id)===String(p.class?.id))){alert(en?'A class with this ID already exists.':'Lớp này đã tồn tại.');return;}
+                const restoredStudentIds = new Set();
+                appData.classes.push(deepCopy(p.class));
+                (p.students||[]).forEach(st=>{
+                    if(!appData.students.some(x=>String(x.id)===String(st.id))){appData.students.push(deepCopy(st));restoredStudentIds.add(String(st.id));}
+                });
+                appData.scores=appData.scores||{};
+                Object.entries(p.scores||{}).forEach(([key,score])=>{
+                    const scoreStudentId = score && score.studentId !== undefined && score.studentId !== null
+                        ? String(score.studentId)
+                        : Array.from(restoredStudentIds).find(studentId=>key.startsWith(studentId+'_'));
+                    // Restore only records for students actually restored, and never overwrite
+                    // a currently active score with the same key.
+                    if(scoreStudentId && restoredStudentIds.has(scoreStudentId) && !Object.prototype.hasOwnProperty.call(appData.scores,key)){
+                        appData.scores[key]=deepCopy(score);
+                    }
+                });
+                appData.finalExams=appData.finalExams||{};
+                appData.studentNotes=appData.studentNotes||{};
+                restoredStudentIds.forEach(studentId=>{
+                    if(p.finalExams && Object.prototype.hasOwnProperty.call(p.finalExams,studentId) && !Object.prototype.hasOwnProperty.call(appData.finalExams,studentId)) appData.finalExams[studentId]=deepCopy(p.finalExams[studentId]);
+                    if(p.studentNotes && Object.prototype.hasOwnProperty.call(p.studentNotes,studentId) && !Object.prototype.hasOwnProperty.call(appData.studentNotes,studentId)) appData.studentNotes[studentId]=deepCopy(p.studentNotes[studentId]);
+                });
+                if(p.classSchedules!==null&&p.classSchedules!==undefined){appData.classSchedules=appData.classSchedules||{};appData.classSchedules[p.class.id]=deepCopy(p.classSchedules);}
+            }
+            else if(item.type==='course'){appData.courseManager=appData.courseManager||{courses:[],activeCourseId:null};appData.courseManager.courses=appData.courseManager.courses||[];if(appData.courseManager.courses.some(c=>String(c.id)===String(p.course?.id))){alert(en?'This course already exists.':'Khóa học này đã tồn tại.');return;}appData.courseManager.courses.push(deepCopy(p.course));if(p.teachingPlan!==null&&p.teachingPlan!==undefined){appData.teachingPlans=appData.teachingPlans||{};appData.teachingPlans[p.course.id]=deepCopy(p.teachingPlan);}}
+            appData.deletedItems.splice(idx,1);saveData().then(ok=>{if(ok){openDeletedStudents();renderClassTabs();renderCurrentView();if(typeof renderStudentRoster==='function')renderStudentRoster();if(typeof renderCourseList==='function')renderCourseList();}});};
+        window.permanentlyDeleteTrashItem = async function(id){const item=(appData.deletedItems||[]).find(x=>String(x.id)===String(id));if(!item)return;const en=appData.language==='en';if(!await showAppConfirm(en?`Permanently delete “${item.name}”? This cannot be undone.`:`Xóa vĩnh viễn “${item.name}”? Thao tác này không thể hoàn tác.`))return;appData.deletedItems=appData.deletedItems.filter(x=>String(x.id)!==String(id));saveData().then(ok=>{if(ok)openDeletedStudents();});};
+        window.emptyTrash = async function(){const has=(appData.deletedStudents||[]).length||(appData.deletedItems||[]).length;if(!has){alert(appData.language==='en'?'The trash is already empty.':'Thùng rác hiện đang trống.');return;}const en=appData.language==='en';if(!await showAppConfirm(en?'Permanently delete ALL items in Trash? This cannot be undone.':'Xóa vĩnh viễn TOÀN BỘ mục trong Thùng rác? Thao tác này không thể hoàn tác.'))return;appData.deletedStudents=[];appData.deletedItems=[];saveData().then(ok=>{if(ok)openDeletedStudents();});};
         window.closeDeletedStudents = function() { const m = document.getElementById('deletedStudentsModal'); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); } };
-        window.restoreDeletedStudent = function(index) {
+        window.restoreDeletedStudent = async function(index) {
             const entry = (appData.deletedStudents || [])[index]; if (!entry?.student) return;
             if (appData.students.some(s => String(s.id) === String(entry.student.id))) { alert('Học sinh này đã tồn tại trong danh sách.'); return; }
-            if (!confirm(`Khôi phục học sinh “${entry.student.name}” và dữ liệu điểm đã lưu?`)) return;
+            if (!await showAppConfirm(appData.language==='en'?`Restore student “${entry.student.name}” and the saved score data?`:`Khôi phục học sinh “${entry.student.name}” và dữ liệu điểm đã lưu?`)) return;
             appData.students.push(deepCopy(entry.student));
             appData.scores = appData.scores || {}; Object.assign(appData.scores, deepCopy(entry.scores || {}));
             if (entry.finalExam !== null && entry.finalExam !== undefined) { appData.finalExams = appData.finalExams || {}; appData.finalExams[entry.student.id] = deepCopy(entry.finalExam); }
             if (entry.studentNotes !== null && entry.studentNotes !== undefined) { appData.studentNotes = appData.studentNotes || {}; appData.studentNotes[entry.student.id] = deepCopy(entry.studentNotes); }
             appData.deletedStudents.splice(index, 1);
-            saveData().then(ok => { if (ok) { openDeletedStudents(); renderClassTabs(); renderCurrentView(); if (typeof renderStudentRoster === 'function') renderStudentRoster(); alert('Đã khôi phục học sinh và dữ liệu liên quan.'); } });
+            saveData().then(ok => { if (ok) { openDeletedStudents(); renderClassTabs(); renderCurrentView(); if (typeof renderStudentRoster === 'function') renderStudentRoster(); alert(appData.language === 'en' ? 'Student and related data restored successfully.' : 'Đã khôi phục học sinh và dữ liệu liên quan.'); } });
         };
 
         window.exportData = function() {
@@ -3335,13 +3647,13 @@
             const file = event.target.files && event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     const imported = JSON.parse(e.target.result);
                     delete imported._backupInfo;
                     if (imported && Array.isArray(imported.classes) && Array.isArray(imported.students) && imported.scores && typeof imported.scores === 'object') {
                         const msg = appData.language === 'en' ? 'Restore this backup? Current data will be replaced by the selected backup.' : 'Phục hồi từ file này? Toàn bộ dữ liệu hiện tại sẽ được thay bằng dữ liệu trong bản sao lưu.';
-                        if (!confirm(msg)) { event.target.value = ''; return; }
+                        if (!await showAppConfirm(msg)) { event.target.value = ''; return; }
                         const previous = deepCopy(appData);
                         if (!imported.deletedStudents) imported.deletedStudents = [];
                         appData = imported;
@@ -3359,12 +3671,12 @@
             reader.readAsText(file);
         };
 
-        window.resetCurrentClassScores = function() {
+        window.resetCurrentClassScores = async function() {
             const activeClass = appData.classes.find(c => c.id === appData.activeClassId);
             if (!activeClass) return;
 
             const isEn = appData.language === 'en';
-            const confirmAction = confirm(isEn 
+            const confirmAction = await showAppConfirm(isEn 
                 ? `WARNING: Are you sure you want to DELETE ALL SCORES of class ${activeClass.name}?\n\n(Students and scores of other classes will remain intact!)`
                 : `CẢNH BÁO: Bạn có chắc chắn muốn XÓA TOÀN BỘ ĐIỂM của riêng LỚP ${activeClass.name} không?\n\n(Học sinh và điểm của các lớp khác vẫn sẽ giữ nguyên!)`);
             
@@ -3432,7 +3744,7 @@
         function courseForm() { const d=readCourseFields('newCourse');if(!d)return null;return {id:'course_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),...d,status:'active',createdAt:new Date().toISOString()}; }
         function createCourseOnlyRecord(c) { c.status='active'; appData.courseManager.courses.forEach(x=>{if(x.id===appData.courseManager.activeCourseId)x.status='archived';}); appData.courseManager.courses.push(c); appData.courseManager.activeCourseId=c.id; if(!appData.teachingPlans[c.id])appData.teachingPlans[c.id]=[]; }
         window.createCourseOnly = function(){ archiveAndStartCourse(); };
-        window.archiveAndStartCourse = function(){ ensureNewModules(); const c=courseForm(); if(!c)return; const old=activeCourse(); const name=old?.name|| (appData.language==='en'?'the current course':'khóa hiện tại'); const ok=confirm(appData.language==='en'?`Archive “${name}” as a complete read-only snapshot and start “${c.name}” with clean scores? Classes and student identities will be retained.`:`Lưu trữ “${name}” thành bản chụp chỉ đọc và bắt đầu “${c.name}” với điểm số mới? Danh sách lớp và mã học sinh sẽ được giữ lại.`); if(!ok)return;
+        window.archiveAndStartCourse = async function(){ ensureNewModules(); const c=courseForm(); if(!c)return; const old=activeCourse(); const name=old?.name|| (appData.language==='en'?'the current course':'khóa hiện tại'); const ok=await showAppConfirm(appData.language==='en'?`Archive “${name}” as a complete read-only snapshot and start “${c.name}” with clean scores? Classes and student identities will be retained.`:`Lưu trữ “${name}” thành bản chụp chỉ đọc và bắt đầu “${c.name}” với điểm số mới? Danh sách lớp và mã học sinh sẽ được giữ lại.`); if(!ok)return;
           const backup=deepCopy(appData); const previousId=appData.courseManager.activeCourseId;
           try {
             if(old){const snapshot=deepCopy(appData);delete snapshot.courseManager;delete snapshot.teachingPlans;delete snapshot.studentNotes;old.snapshot=snapshot;old.teachingPlanSnapshot=deepCopy((appData.teachingPlans||{})[old.id]||[]);old.studentNotesSnapshot=deepCopy(appData.studentNotes||{});old.status='archived';old.archivedAt=new Date().toISOString();}
@@ -3444,8 +3756,8 @@
           } catch(err){appData=backup;console.error(err);alert(appData.language==='en'?'Could not prepare the new course. No changes were saved.':'Không thể chuẩn bị khóa mới. Chưa có thay đổi nào được lưu.');return;}
           saveData().then(ok=>{if(!ok){appData=backup;renderClassTabs();renderCurrentView();renderCourseList();return;}renderClassTabs();renderCurrentView();renderCourseList();document.getElementById('currentCourseName').value=c.name;document.getElementById('currentCourseStart').value=c.startDate||'';document.getElementById('currentCourseEnd').value=c.endDate||'';document.getElementById('newCourseName').value='';document.getElementById('newCourseStart').value=c.endDate?datePlus(c.endDate,1):'';document.getElementById('newCourseEnd').value='';alert(appData.language==='en'?'The previous course was archived and the new course is now active.':'Đã lưu trữ khóa cũ và kích hoạt khóa mới.');});
         };
-        window.activateArchivedCourse=function(courseId){ensureNewModules();const target=appData.courseManager.courses.find(c=>c.id===courseId);if(!target||!target.snapshot)return;const msg=appData.language==='en'?`Switch to archived course “${target.name}”? The current course will be snapshotted first, and the selected course will become active.`:`Chuyển sang khóa đã lưu “${target.name}”? Khóa hiện tại sẽ được chụp lưu trước, sau đó khóa đã chọn trở thành khóa đang dùng.`;if(!confirm(msg))return;const backup=deepCopy(appData);const current=activeCourse();if(current){const snap=deepCopy(appData);delete snap.courseManager;delete snap.teachingPlans;delete snap.studentNotes;current.snapshot=snap;current.teachingPlanSnapshot=deepCopy((appData.teachingPlans||{})[current.id]||[]);current.studentNotesSnapshot=deepCopy(appData.studentNotes||{});current.status='archived';current.archivedAt=current.archivedAt||new Date().toISOString();}const manager=deepCopy(appData.courseManager);const restored=deepCopy(target.snapshot);const savedPlans=deepCopy(target.teachingPlanSnapshot||[]);const savedNotes=deepCopy(target.studentNotesSnapshot||{});const keepLanguage=appData.language;Object.keys(appData).forEach(k=>delete appData[k]);Object.assign(appData,restored);appData.language=keepLanguage;appData.courseManager=manager;appData.courseManager.activeCourseId=courseId;appData.courseManager.courses.forEach(c=>c.status=c.id===courseId?'active':'archived');const activated=appData.courseManager.courses.find(c=>c.id===courseId);if(activated){activated.snapshot=null;activated.teachingPlanSnapshot=null;activated.studentNotesSnapshot=null;}appData.teachingPlans=appData.teachingPlans||{};appData.teachingPlans[courseId]=savedPlans;appData.studentNotes=savedNotes;saveData().then(ok=>{if(!ok){appData=backup;renderClassTabs();renderCurrentView();renderCourseList();return;}renderClassTabs();renderCurrentView();renderCourseList();alert(appData.language==='en'?'Course switched successfully.':'Đã chuyển sang khóa học đã chọn.');});};
-        window.deleteCourseRecord=function(courseId){ensureNewModules();const course=appData.courseManager.courses.find(c=>c.id===courseId);if(!course)return;if(courseId===appData.courseManager.activeCourseId){alert(moduleText('activeCourseDeleteBlocked'));return;}if(!confirm(moduleText('deleteCourseConfirm')+'\n'+course.name))return;const backup=deepCopy(appData);appData.courseManager.courses=appData.courseManager.courses.filter(c=>c.id!==courseId);if(appData.teachingPlans)delete appData.teachingPlans[courseId];saveData().then(ok=>{if(!ok){appData=backup;renderCourseList();return;}renderCourseList();});};
+        window.activateArchivedCourse=async function(courseId){ensureNewModules();const target=appData.courseManager.courses.find(c=>c.id===courseId);if(!target||!target.snapshot)return;const msg=appData.language==='en'?`Switch to archived course “${target.name}”? The current course will be snapshotted first, and the selected course will become active.`:`Chuyển sang khóa đã lưu “${target.name}”? Khóa hiện tại sẽ được chụp lưu trước, sau đó khóa đã chọn trở thành khóa đang dùng.`;if(!await showAppConfirm(msg))return;const backup=deepCopy(appData);const current=activeCourse();if(current){const snap=deepCopy(appData);delete snap.courseManager;delete snap.teachingPlans;delete snap.studentNotes;current.snapshot=snap;current.teachingPlanSnapshot=deepCopy((appData.teachingPlans||{})[current.id]||[]);current.studentNotesSnapshot=deepCopy(appData.studentNotes||{});current.status='archived';current.archivedAt=current.archivedAt||new Date().toISOString();}const manager=deepCopy(appData.courseManager);const restored=deepCopy(target.snapshot);const savedPlans=deepCopy(target.teachingPlanSnapshot||[]);const savedNotes=deepCopy(target.studentNotesSnapshot||{});const keepLanguage=appData.language;Object.keys(appData).forEach(k=>delete appData[k]);Object.assign(appData,restored);appData.language=keepLanguage;appData.courseManager=manager;appData.courseManager.activeCourseId=courseId;appData.courseManager.courses.forEach(c=>c.status=c.id===courseId?'active':'archived');const activated=appData.courseManager.courses.find(c=>c.id===courseId);if(activated){activated.snapshot=null;activated.teachingPlanSnapshot=null;activated.studentNotesSnapshot=null;}appData.teachingPlans=appData.teachingPlans||{};appData.teachingPlans[courseId]=savedPlans;appData.studentNotes=savedNotes;saveData().then(ok=>{if(!ok){appData=backup;renderClassTabs();renderCurrentView();renderCourseList();return;}renderClassTabs();renderCurrentView();renderCourseList();alert(appData.language==='en'?'Course switched successfully.':'Đã chuyển sang khóa học đã chọn.');});};
+        window.deleteCourseRecord=async function(courseId){ensureNewModules();const course=appData.courseManager.courses.find(c=>c.id===courseId);if(!course)return;if(courseId===appData.courseManager.activeCourseId){alert(moduleText('activeCourseDeleteBlocked'));return;}const msg=appData.language==='en'?'Move this course and its saved history to Trash? You can restore it later.':'Chuyển khóa học và lịch sử đã lưu vào Thùng rác? Bạn có thể khôi phục sau.';if(!await showAppConfirm(msg+'\n'+course.name))return;const backup=deepCopy(appData);appData.deletedItems=Array.isArray(appData.deletedItems)?appData.deletedItems:[];appData.deletedItems.unshift({type:'course',id:'trash_course_'+Date.now(),deletedAt:new Date().toISOString(),name:course.name,payload:{course:deepCopy(course),teachingPlan:deepCopy((appData.teachingPlans||{})[courseId]??null)}});appData.courseManager.courses=appData.courseManager.courses.filter(c=>c.id!==courseId);if(appData.teachingPlans)delete appData.teachingPlans[courseId];saveData().then(ok=>{if(!ok){appData=backup;renderCourseList();return;}renderCourseList();});};
         function renderCourseList(){ ensureNewModules(); const list=document.getElementById('courseList'); if(!list)return; list.innerHTML=appData.courseManager.courses.slice().reverse().map(c=>`<div class="border rounded-xl p-3 flex flex-wrap items-center justify-between gap-3"><div><div class="font-bold text-sm">${escapeHtml(c.name)}</div><div class="text-xs text-slate-500">${c.startDate||'—'} → ${c.endDate||'—'} · ${c.status==='active'?moduleText('courseActive'):moduleText('courseArchived')}</div></div><div class="flex gap-2">${c.snapshot?`<button onclick="viewArchivedCourse('${c.id}')" class="px-3 py-1.5 rounded-lg bg-slate-100 text-xs font-bold">${moduleText('viewHistory')}</button><button onclick="activateArchivedCourse('${c.id}')" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-bold">${moduleText('activateCourseBtn')}</button>`:''}${c.id===appData.courseManager.activeCourseId?'<span class="text-xs font-bold text-emerald-700 px-2 py-1">●</span>':''}<button onclick="deleteCourseRecord('${c.id}')" class="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold"><i class="fa-solid fa-trash-can mr-1"></i>${moduleText('deleteCourseBtn')}</button></div></div>`).join('')||'<p class="text-sm text-slate-500">—</p>'; }
         function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
         window.viewArchivedCourse=function(courseId){const c=appData.courseManager.courses.find(x=>x.id===courseId);if(!c||!c.snapshot)return; const snap=c.snapshot; const students=snap.students||[]; const classes=snap.classes||[]; const html=`<div class="rounded-xl bg-amber-50 border border-amber-200 p-3 mb-3 text-sm font-bold">${escapeHtml(c.name)} — ${moduleText('courseArchived')} · ${c.archivedAt?new Date(c.archivedAt).toLocaleString():''}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-3">${students.map(st=>{const cls=classes.find(x=>x.id===st.classId);const scores=Object.entries(snap.scores||{}).filter(([k])=>k.startsWith(st.id+'_')).map(([k,v])=>`${k.split('_').slice(1).join('_')}: ${v.score??'—'}`).join('<br>');const ex=(snap.finalExams||{})[st.id]||{};return `<article class="border rounded-xl p-3"><div class="font-bold">${escapeHtml(st.icon||'🎓')} ${escapeHtml(st.name)}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div><div class="text-xs mt-2"><b>${moduleText('totalAccumulated')}:</b> ${calculateSnapshotTotal(snap,st.id).total.toFixed(2)} · <b>${moduleText('averageAccumulated')}:</b> ${calculateSnapshotTotal(snap,st.id).avg.toFixed(2)}</div><details class="mt-2 text-xs"><summary class="cursor-pointer font-bold">${moduleText('profileDetails')}</summary><div class="mt-2"><b>${moduleText('finalScore')}:</b> ${archivedFinalTotal(snap,st.id)}<br><b>Listening:</b> ${ex.listening??'—'} · <b>Speaking:</b> ${ex.speaking??'—'} · <b>Reading:</b> ${ex.reading??'—'} · <b>Writing:</b> ${ex.writing??'—'} · <b>Grammar:</b> ${ex.grammar??'—'} · <b>Vocabulary:</b> ${ex.vocabulary??'—'}<hr class="my-2"><b>${moduleText('violationsLabel')}:</b> ${escapeHtml((st.violations||[]).map(v=>v.name||v.type||'').join(', ')||'—')}</div></details></article>`}).join('')}</div>${(c.teachingPlanSnapshot||[]).length?`<h3 class="font-bold mt-5 mb-2">${appData.language==='en'?'Archived teaching plan':'Nội dung giảng dạy đã lưu'}</h3><div class="space-y-2">${c.teachingPlanSnapshot.map(w=>`<section class="border rounded-lg p-3"><b>${moduleText('weekLabel')} ${w.week||''} · ${w.year||''}</b><div class="mt-2 space-y-2">${(w.lessons||[]).map(l=>`<div class="bg-slate-50 rounded p-2 text-xs"><b>${escapeHtml((classes.find(cl=>String(cl.id)===String(l.classId))||{}).name||'')}</b> · ${escapeHtml(l.date||'—')} ${l.makeupDate?`(${escapeHtml(l.makeupDate)})`:''}<br>${escapeHtml(l.content||'')}<br>${escapeHtml(l.detail||'')}<br>${escapeHtml(l.unit||'')}<br>${escapeHtml(l.homework||'')}</div>`).join('')}</div></section>`).join('')}</div>`:''}`;document.getElementById('studentProfileTitle').innerText=c.name+' — '+moduleText('viewHistory');document.getElementById('studentProfileContent').innerHTML=html;showModuleModal('studentProfileModal');};
@@ -3525,7 +3837,7 @@ window.openStudentProfile=function(studentId){
         window.saveStudentNotes=function(id){if(!appData.studentNotes)appData.studentNotes={};appData.studentNotes[id]=document.getElementById('studentProfileNotes').value;saveData().then(ok=>{if(ok)alert(appData.language==='en'?'Notes saved.':'Đã lưu ghi chú.');});};
         window.openMoveStudent=function(id){if(viewingArchivedCourseId){alert(appData.language==='en'?'Archived course is read-only.':'Khóa đã lưu trữ chỉ được xem.');return;}const st=appData.students.find(x=>String(x.id)===String(id));if(!st)return;pendingMoveStudentId=String(id);const from=appData.classes.find(c=>c.id===st.classId);const sel=document.getElementById('moveStudentTarget');sel.innerHTML=appData.classes.filter(c=>String(c.id)!==String(st.classId)).map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');document.getElementById('moveStudentInfo').innerText=`${st.name} · ${moduleText('classLabel')}: ${from?.name||'—'} →`;document.getElementById('confirmMoveStudentBtn').disabled=!sel.options.length;showModuleModal('moveStudentModal');};
         window.closeMoveStudent=function(){hideModuleModal('moveStudentModal');pendingMoveStudentId=null;};
-        window.confirmMoveStudent=function(){if(!pendingMoveStudentId)return;const st=appData.students.find(x=>String(x.id)===pendingMoveStudentId);const targetId=document.getElementById('moveStudentTarget').value;if(!st||!targetId||String(st.classId)===String(targetId)||!appData.classes.some(c=>String(c.id)===String(targetId))){alert(appData.language==='en'?'Please choose a different valid class.':'Vui lòng chọn lớp đích hợp lệ khác lớp hiện tại.');return;}const target=appData.classes.find(c=>String(c.id)===String(targetId));const msg=appData.language==='en'?`Move ${st.name} from the current class to ${target.name}? All student IDs and score records will be preserved.`:`Chuyển ${st.name} sang lớp ${target.name}? Mã học sinh và toàn bộ bản ghi điểm sẽ được giữ nguyên.`;if(!confirm(msg))return;const old=st.classId;st.classId=targetId;if(!appData.classTransferHistory)appData.classTransferHistory=[];const transfer={studentId:st.id,fromClassId:old,toClassId:targetId,at:new Date().toISOString()};appData.classTransferHistory.push(transfer);saveData().then(ok=>{if(!ok){st.classId=old;appData.classTransferHistory=appData.classTransferHistory.filter(x=>x!==transfer);renderClassTabs();renderCurrentView();return;}closeMoveStudent();renderClassTabs();renderCurrentView();renderStudentRoster();alert(appData.language==='en'?'Student moved.':'Đã chuyển lớp học sinh.');});};
+        window.confirmMoveStudent=async function(){if(!pendingMoveStudentId)return;const st=appData.students.find(x=>String(x.id)===pendingMoveStudentId);const targetId=document.getElementById('moveStudentTarget').value;if(!st||!targetId||String(st.classId)===String(targetId)||!appData.classes.some(c=>String(c.id)===String(targetId))){alert(appData.language==='en'?'Please choose a different valid class.':'Vui lòng chọn lớp đích hợp lệ khác lớp hiện tại.');return;}const target=appData.classes.find(c=>String(c.id)===String(targetId));const msg=appData.language==='en'?`Move ${st.name} from the current class to ${target.name}? All student IDs and score records will be preserved.`:`Chuyển ${st.name} sang lớp ${target.name}? Mã học sinh và toàn bộ bản ghi điểm sẽ được giữ nguyên.`;if(!await showAppConfirm(msg))return;const old=st.classId;st.classId=targetId;if(!appData.classTransferHistory)appData.classTransferHistory=[];const transfer={studentId:st.id,fromClassId:old,toClassId:targetId,at:new Date().toISOString()};appData.classTransferHistory.push(transfer);saveData().then(ok=>{if(!ok){st.classId=old;appData.classTransferHistory=appData.classTransferHistory.filter(x=>x!==transfer);renderClassTabs();renderCurrentView();return;}closeMoveStudent();renderClassTabs();renderCurrentView();renderStudentRoster();alert(appData.language==='en'?'Student moved.':'Đã chuyển lớp học sinh.');});};
         const scheduleWeekdays = [{key:1},{key:2},{key:3},{key:4},{key:5},{key:6},{key:0}];
         window.openClassSchedule=function(draftSchedules=null){ensureNewModules();const box=document.getElementById('classScheduleEditor');const days=(translations[appData.language||'vi']||translations.vi).weekdays||['Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7','Chủ nhật'];box.innerHTML=appData.classes.map(c=>{const cfg=draftSchedules?(draftSchedules[c.id]||{}):(appData.classSchedules[c.id]||{});return `<section class="border rounded-xl p-3" style="border-left:5px solid ${classColorHex(c.color)}"><h3 class="font-bold mb-2">${escapeHtml(c.name)}</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${scheduleWeekdays.map((d,i)=>`<div class="flex items-center gap-2 text-xs border rounded-lg p-2"><input type="checkbox" id="sched-${c.id}-${d.key}" data-sched-class="${c.id}" data-sched-day="${d.key}" ${cfg[d.key]?'checked':''}><label class="flex-1 cursor-pointer" for="sched-${c.id}-${d.key}">${days[i]}</label><input type="time" class="border rounded p-1 w-24" data-sched-time-class="${c.id}" data-sched-time-day="${d.key}" value="${escapeHtml(cfg[d.key]||'')}" aria-label="${escapeHtml(c.name)} ${days[i]}" onchange="document.getElementById('sched-${c.id}-${d.key}').checked=!!this.value"></div>`).join('')}</div></section>`}).join('')||`<p class="text-sm text-slate-500">${appData.language==='en'?'Create a class first.':'Hãy tạo lớp học trước.'}</p>`;showModuleModal('classScheduleModal');};
         window.closeClassSchedule=function(){hideModuleModal('classScheduleModal');};
@@ -3622,15 +3934,437 @@ window.openStudentProfile=function(studentId){
         window.addTeachingLesson=function(weekId){const plans=appData.teachingPlans[appData.courseManager.activeCourseId]||[];const w=plans.find(x=>x.id===weekId);if(!w)return;const classId=appData.activeClassId;w.lessons=w.lessons||[];w.lessons.push({id:'lesson_'+Date.now(),classId,date:'',makeupDate:'',content:'',detail:'',unit:'',homework:''});teachingExpandedWeeks.add(w.id);renderTeachingView();saveData();};
         function teachingLessonHtml(w,l){const cls=appData.classes.find(c=>String(c.id)===String(l.classId));return `<article class="rounded-lg border bg-white p-3" style="border-left:5px solid ${classColorHex(cls?.color)}"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><b class="text-sm">${escapeHtml(cls?.name||'—')}</b><button type="button" onclick="deleteTeachingLesson('${w.id}','${l.id}')" class="text-xs text-rose-700">${moduleText('deleteBtn')}</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-2"><label class="text-xs font-semibold">${moduleText('dayContentLabel')}<input class="mt-1 border rounded-lg p-2 w-full" value="${escapeHtml(l.content||'')}" onblur="updateTeachingLesson('${w.id}','${l.id}','content',this.value)"></label><label class="text-xs font-semibold">${moduleText('dayDetailLabel')}<textarea class="mt-1 border rounded-lg p-2 w-full" rows="2" onblur="updateTeachingLesson('${w.id}','${l.id}','detail',this.value)">${escapeHtml(l.detail||'')}</textarea></label></div></article>`;}
         window.updateTeachingLesson=function(wid,lid,key,value){const w=(appData.teachingPlans[appData.courseManager.activeCourseId]||[]).find(x=>x.id===wid);const l=w?.lessons.find(x=>x.id===lid);if(!l)return;l[key]=value;saveData();};
-        window.editTeachingLesson=function(wid,lid){const w=(appData.teachingPlans[appData.courseManager.activeCourseId]||[]).find(x=>x.id===wid);const l=w?.lessons.find(x=>x.id===lid);if(!l)return;const opts=appData.classes.map(c=>`${c.id}=${c.name}`).join('\n');const current=appData.classes.find(c=>String(c.id)===String(l.classId));const val=prompt((appData.language==='en'?'Enter class ID from list:\n':'Nhập mã lớp theo danh sách:\n')+opts,current?.id||appData.activeClassId);if(val===null)return;if(!appData.classes.some(c=>String(c.id)===val)){alert(appData.language==='en'?'Invalid class ID.':'Mã lớp không hợp lệ.');return;}l.classId=val;saveData();renderTeachingView();};
-        window.deleteTeachingLesson=function(wid,lid){if(!confirm(appData.language==='en'?'Delete this lesson?':'Xóa buổi học này?'))return;const w=(appData.teachingPlans[appData.courseManager.activeCourseId]||[]).find(x=>x.id===wid);if(w)w.lessons=w.lessons.filter(x=>x.id!==lid);saveData();renderTeachingView();};
-        window.deleteTeachingWeek=function(wid){if(!confirm(appData.language==='en'?'Delete this week and its lessons?':'Xóa tuần này và các buổi học bên trong?'))return;const plans=appData.teachingPlans[appData.courseManager.activeCourseId]||[];appData.teachingPlans[appData.courseManager.activeCourseId]=plans.filter(x=>x.id!==wid);saveData();renderTeachingView();};
+        window.editTeachingLesson=async function(wid,lid){const w=(appData.teachingPlans[appData.courseManager.activeCourseId]||[]).find(x=>x.id===wid);const l=w?.lessons.find(x=>x.id===lid);if(!l)return;const opts=appData.classes.map(c=>`${c.id}=${c.name}`).join('\n');const current=appData.classes.find(c=>String(c.id)===String(l.classId));const val=await showAppPrompt((appData.language==='en'?'Enter class ID from list:\n':'Nhập mã lớp theo danh sách:\n')+opts,current?.id||appData.activeClassId);if(val===null)return;if(!appData.classes.some(c=>String(c.id)===val)){alert(appData.language==='en'?'Invalid class ID.':'Mã lớp không hợp lệ.');return;}l.classId=val;saveData();renderTeachingView();};
+        window.deleteTeachingLesson=async function(wid,lid){if(!await showAppConfirm(appData.language==='en'?'Delete this lesson?':'Xóa buổi học này?'))return;const w=(appData.teachingPlans[appData.courseManager.activeCourseId]||[]).find(x=>x.id===wid);if(w)w.lessons=w.lessons.filter(x=>x.id!==lid);saveData();renderTeachingView();};
+        window.deleteTeachingWeek=async function(wid){if(!await showAppConfirm(appData.language==='en'?'Delete this week and its lessons?':'Xóa tuần này và các buổi học bên trong?'))return;const plans=appData.teachingPlans[appData.courseManager.activeCourseId]||[];appData.teachingPlans[appData.courseManager.activeCourseId]=plans.filter(x=>x.id!==wid);saveData();renderTeachingView();};
         window.copyTeachingWeek=function(wid){const plans=appData.teachingPlans[appData.courseManager.activeCourseId]||[];const src=plans.find(x=>x.id===wid);if(!src)return;const cp=deepCopy(src);cp.id='week_'+Date.now();const peers=plans.filter(w=>Number(w.year||src.year)===Number(src.year));cp.week=peers.reduce((m,w)=>Math.max(m,Number(w.week)||0),0)+1;const latest=peers.slice().sort((a,b)=>String(b.startDate||'').localeCompare(String(a.startDate||'')))[0];cp.startDate=latest?.startDate?datePlus(mondayOfDate(latest.startDate),7):datePlus(mondayOfDate(src.startDate||`${src.year}-01-01`),(cp.week-1)*7);cp.endDate=datePlus(cp.startDate,6);cp.year=Number(cp.startDate.slice(0,4));cp.lessons.forEach(l=>{l.id='lesson_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);l.date='';l.makeupDate='';l.content='';l.detail='';});plans.push(cp);document.getElementById('teachingYear').value=String(cp.year);teachingExpandedWeeks.add(cp.id);saveData().then(ok=>{if(ok)renderTeachingView();});};
         // Archive state is only used to prevent accidental writes while browsing snapshots.
         let viewingArchivedCourseId = null;
 
-        // Initialize App
-        initApp();
+
+        // Multi-teacher routing on the existing Firebase Realtime Database.
+        const LEGACY_TEACHER_ID = 't_1791637392764';
+        const TEACHERS_PATH = 'appDataMultiTeacher/teachers';
+        let currentTeacherId = null;
+        let teacherRecords = [];
+        let unsubscribeTeacherData = null;
+        let teacherGateLanguage = 'vi';
+        const teacherText = {
+          vi:{title:'Chọn giáo viên',sub:'Mỗi giáo viên có không gian dữ liệu riêng.',add:'Thêm giáo viên',note:'Mật khẩu chỉ phân luồng giao diện, không thay thế bảo mật Firebase.',switch:'Đổi giáo viên',no:'Chưa có giáo viên nào. Hãy tạo giáo viên đầu tiên.',password:'Giáo viên này yêu cầu mật khẩu:',wrong:'Mật khẩu không đúng.',name:'Tên giáo viên:',icon:'Biểu tượng (emoji):',desc:'Mô tả (không bắt buộc):',pass:'Mật khẩu (để trống nếu không cần):',confirm:'Xác nhận mật khẩu:',exists:'Tên giáo viên đã tồn tại.',course:'Tên khóa học đầu tiên:',start:'Ngày bắt đầu (YYYY-MM-DD, có thể để trống):',end:'Ngày kết thúc (YYYY-MM-DD, có thể để trống):',badDate:'Ngày kết thúc không được trước ngày bắt đầu.',delete:'Xóa giáo viên này và toàn bộ dữ liệu của họ? Hãy sao lưu trước khi tiếp tục.',edit:'Để sửa, nhập tên mới; bỏ trống để giữ nguyên:',cancel:'Đã hủy.',hasPass:'Có mật khẩu',noPass:'Không có mật khẩu',remove:'Xóa',editBtn:'Sửa',enter:'Vào làm việc',return:'Quay lại chọn giáo viên',formTitle:'Thêm giáo viên mới',formSub:'Tạo không gian quản lý riêng cho giáo viên.',nameLabel:'Tên giáo viên *',iconLabel:'Biểu tượng',descLabel:'Mô tả (không bắt buộc)',passwordHeading:'Mật khẩu (không bắt buộc)',passwordHelp:'Để trống cả hai ô nếu không cần mật khẩu.',passwordPlaceholder:'Mật khẩu',confirmPlaceholder:'Nhập lại mật khẩu',cancelBtn:'Hủy',createBtn:'Tạo giáo viên',required:'Vui lòng nhập tên giáo viên.',passwordMismatch:'Hai mật khẩu không khớp.',formExists:'Tên giáo viên này đã tồn tại.',passwordModalTitle:'Nhập mật khẩu',passwordModalSub:'Nhập mật khẩu để tiếp tục.',passwordModalCancel:'Hủy',passwordModalSubmit:'Xác nhận'},
+          en:{title:'Choose a teacher',sub:'Each teacher has a separate workspace and dataset.',add:'Add teacher',note:'Passwords only separate the interface; they do not replace Firebase security.',switch:'Switch teacher',no:'No teachers yet. Create the first teacher.',password:'Enter this teacher’s password:',wrong:'Incorrect password.',name:'Teacher name:',icon:'Avatar emoji:',desc:'Description (optional):',pass:'Password (leave blank for none):',confirm:'Confirm password:',exists:'A teacher with this name already exists.',course:'First course name:',start:'Start date (YYYY-MM-DD, optional):',end:'End date (YYYY-MM-DD, optional):',badDate:'End date cannot be earlier than start date.',delete:'Delete this teacher and all of their data? Back up first.',edit:'Enter a new name, or leave blank to keep current name:',cancel:'Cancelled.',hasPass:'Password protected',noPass:'No password',remove:'Delete',editBtn:'Edit',enter:'Open workspace',return:'Back to teacher selection',formTitle:'Add a teacher',formSub:'Create a separate workspace for this teacher.',nameLabel:'Teacher name *',iconLabel:'Icon',descLabel:'Description (optional)',passwordHeading:'Password (optional)',passwordHelp:'Leave both fields empty if no password is needed.',passwordPlaceholder:'Password',confirmPlaceholder:'Confirm password',cancelBtn:'Cancel',createBtn:'Create teacher',required:'Please enter a teacher name.',passwordMismatch:'Passwords do not match.',formExists:'A teacher with this name already exists.',passwordModalTitle:'Enter password',passwordModalSub:'Enter the password to continue.',passwordModalCancel:'Cancel',passwordModalSubmit:'Confirm'}
+        };
+        function tt(k){return teacherText[teacherGateLanguage][k]||k;}
+        async function teacherHash(s){const bytes=new TextEncoder().encode(s);const digest=await crypto.subtle.digest('SHA-256',bytes);return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');}
+        function teacherNameKey(s){return String(s||'').trim().replace(/\s+/g,' ').toLocaleLowerCase();}
+        function bootstrapTeacherSystem(){
+          const gate= document.getElementById('teacherGate');
+          const teachersRef=ref(db,TEACHERS_PATH);
+          onValue(teachersRef, snap=>{
+            const val=snap.val();
+            // Always recover the Firebase child key as the stable teacher ID.
+            // Older records may not contain teacherId, which previously made their buttons inert.
+            if(Array.isArray(val)) {
+              teacherRecords=val.map((t,i)=>t?({...t,teacherId:t.teacherId||String(i)}):null).filter(Boolean);
+            } else {
+              teacherRecords=val?Object.entries(val).filter(([,t])=>!!t).map(([key,t])=>({...t,teacherId:t.teacherId||key})):[];
+            }
+            // Deduplicate by stable ID and prefer the record stored under that Firebase key.
+            teacherRecords=Array.from(new Map(teacherRecords.map(t=>[String(t.teacherId),t])).values());
+            if(!teacherRecords.length){
+              // Preserve the existing Firebase data under its current stable ID.
+              const seed={teacherId:LEGACY_TEACHER_ID,name:'Giáo viên mặc định',icon:'👩‍🏫',description:'Dữ liệu hiện có',passwordHash:'',legacy:true,createdAt:new Date().toISOString()};
+              set(ref(db,TEACHERS_PATH+'/'+LEGACY_TEACHER_ID),seed).then(()=>{});
+              teacherRecords=[seed];
+            }
+            renderTeacherGate();
+          },err=>{console.error('Teacher list load failed',err);renderTeacherGate('Firebase connection failed. Please check your connection.');});
+        }
+        function renderTeacherGate(error=''){
+          const gate=document.getElementById('teacherGate'); if(!gate)return;
+          document.getElementById('teacherGateTitle').textContent=tt('title');
+          const formLabels={teacherFormTitle:'formTitle',teacherFormSubtitle:'formSub',teacherNameLabel:'nameLabel',teacherIconLabel:'iconLabel',teacherDescLabel:'descLabel',teacherPasswordHeading:'passwordHeading',teacherPasswordHelp:'passwordHelp',teacherCancelBtn:'cancelBtn',teacherCreateBtn:'createBtn'};
+          Object.entries(formLabels).forEach(([id,key])=>{const el=document.getElementById(id);if(el)el.textContent=tt(key);});
+          document.getElementById('teacherPasswordInput').placeholder=tt('passwordPlaceholder');
+          document.getElementById('teacherPasswordConfirmInput').placeholder=tt('confirmPlaceholder');
+          document.getElementById('teacherAddLabel').textContent=tt('add');
+          document.getElementById('teacherLangLabel').textContent=teacherGateLanguage==='vi'?'EN':'VI';
+          const cards=document.getElementById('teacherCards');
+          if(!teacherRecords.length){cards.innerHTML=`<div class="col-span-full rounded-2xl border-2 border-dashed border-slate-300 bg-white p-8 text-center text-slate-500">${tt('no')}</div>`;return;}
+          cards.innerHTML=teacherRecords.map(t=>`<article class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col gap-3"><div class="flex items-start gap-3"><div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-3xl">${escapeTeacherHtml(t.icon||'👩‍🏫')}</div><div class="min-w-0 flex-1"><h2 class="font-black text-lg break-words">${escapeTeacherHtml(t.name||'Teacher')}</h2><p class="text-sm text-slate-500 break-words">${escapeTeacherHtml(t.description||'')}</p><p class="text-xs mt-2 ${t.passwordHash?'text-amber-700':'text-emerald-700'}"><i class="fa-solid ${t.passwordHash?'fa-lock':'fa-lock-open'} mr-1"></i>${t.passwordHash?tt('hasPass'):tt('noPass')}</p></div></div><button onclick="enterTeacher('${t.teacherId}')" class="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white py-2 font-bold">${tt('enter')}</button><div class="flex gap-2"><button onclick="editTeacher('${t.teacherId}')" class="flex-1 rounded-lg border border-slate-200 py-2 text-sm font-bold"><i class="fa-solid fa-pen mr-1"></i>${tt('editBtn')}</button><button onclick="deleteTeacher('${t.teacherId}')" class="flex-1 rounded-lg border border-rose-200 text-rose-600 py-2 text-sm font-bold"><i class="fa-solid fa-trash mr-1"></i>${tt('remove')}</button></div></article>`).join('');
+          if(error)alert(error);
+        }
+        function escapeTeacherHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+        window.teacherToggleLanguage=function(){teacherGateLanguage=teacherGateLanguage==='vi'?'en':'vi';renderTeacherGate();if(appData&&currentTeacherId){appData.language=teacherGateLanguage;applyLanguageUI();renderCurrentView();saveData();}};
+        window.showTeacherSelector=function(){
+          if(currentTeacherId&&appData.language)teacherGateLanguage=appData.language;
+          // End the current teacher session before allowing another workspace to be selected.
+          if(unsubscribeTeacherData){unsubscribeTeacherData();unsubscribeTeacherData=null;}
+          undoHistory=[];lastPersistedSnapshot=null;suppressUndoCapture=false;
+          currentTeacherId=null;
+          document.getElementById('teacherGate').classList.remove('hidden');
+        };
+        let teacherPasswordResolver=null;
+        window.resolveTeacherPassword=function(value){
+          const modal=document.getElementById('teacherPasswordModal');
+          modal.classList.add('hidden');modal.classList.remove('flex');
+          const resolver=teacherPasswordResolver;teacherPasswordResolver=null;
+          document.getElementById('teacherPasswordModalInput').value='';
+          if(resolver)resolver(value);
+        };
+        function askTeacherPassword(){
+          const modal=document.getElementById('teacherPasswordModal');
+          document.getElementById('teacherPasswordModalTitle').textContent=tt('passwordModalTitle');
+          document.getElementById('teacherPasswordModalSubtitle').textContent=tt('passwordModalSub');
+          document.getElementById('teacherPasswordModalInput').placeholder=teacherGateLanguage==='vi'?'Mật khẩu':'Password';
+          document.getElementById('teacherPasswordModalCancel').textContent=tt('passwordModalCancel');
+          document.getElementById('teacherPasswordModalSubmit').textContent=tt('passwordModalSubmit');
+          document.getElementById('teacherPasswordModalInput').value='';
+          modal.classList.remove('hidden');modal.classList.add('flex');
+          setTimeout(()=>document.getElementById('teacherPasswordModalInput').focus(),50);
+          return new Promise(resolve=>{teacherPasswordResolver=resolve;});
+        }
+        document.getElementById('teacherPasswordModalForm').addEventListener('submit',function(e){e.preventDefault();window.resolveTeacherPassword(document.getElementById('teacherPasswordModalInput').value);});
+
+        window.enterTeacher=async function(id){
+          const t=teacherRecords.find(x=>x.teacherId===id);if(!t)return;
+          if(t.passwordHash){const p=await askTeacherPassword();if(p===null)return;if(await teacherHash(p)!==t.passwordHash){alert(tt('wrong'));return;}}
+          try{
+            // Load/check the selected teacher's Firebase node BEFORE starting the live listener.
+            // Otherwise initApp() sees an empty node and saveData() can copy the previous teacher's data into it.
+            const path=`appDataMultiTeacher/teacherData/${id}`;
+            const snap=await new Promise((resolve,reject)=>{
+              let unsub=null;unsub=onValue(ref(db,path),s=>{if(unsub)unsub();resolve(s);},err=>{if(unsub)unsub();reject(err);});
+            });
+            if(!snap.exists() && id!==LEGACY_TEACHER_ID){
+              // Start from a clean structure, never from another teacher's current appData.
+              const blank=deepCopy(appData);
+              // Explicitly reset every known class/course/student-related data collection.
+              blank.activeClassId=''; blank.classes=[]; blank.students=[]; blank.scores={};
+              blank.finalExams={}; blank.deletedStudents=[]; blank.studentNotes={};
+              blank.teachingPlans={}; blank.classSchedules={}; blank.courseManager={activeCourseId:'',courses:[]};
+              blank.undoHistory=[]; blank.redoHistory=[]; blank.archives=[]; blank.deletedClasses=[];
+              // A new teacher starts with only the built-in fixed rewards. Never copy custom rewards
+              // or the previous teacher's violation catalogue into a fresh workspace.
+              blank.globalShopItems=deepCopy(DEFAULT_FIXED_ITEMS);
+              blank.globalViolationTypes=[];
+              blank.deletedItems=[];
+              blank.monthCount=3; blank.startMonth=9; blank.language=teacherGateLanguage;
+              // Clear any additional maps keyed by class/student/course IDs inherited from current app state.
+              for(const key of Object.keys(blank)) {
+                if(/(class|student|score|exam|course|teaching|schedule|archive|attendance|behavior|note|ranking)/i.test(key) &&
+                   !['classes','students','scores','finalExams','deletedStudents','studentNotes','teachingPlans','classSchedules','courseManager','activeClassId','monthCount','startMonth'].includes(key)) {
+                  if(Array.isArray(blank[key])) blank[key]=[];
+                  else if(blank[key] && typeof blank[key]==='object') blank[key]={};
+                }
+              }
+              await set(ref(db,path),blank);
+            }
+            // Undo snapshots belong to the currently open teacher only. Clear them before
+            // switching workspaces so Undo can never write teacher A's snapshot into teacher B.
+            undoHistory = [];
+            lastPersistedSnapshot = null;
+            suppressUndoCapture = false;
+            // Never carry undo snapshots or persistence state across teacher workspaces.
+            if(unsubscribeTeacherData){unsubscribeTeacherData();unsubscribeTeacherData=null;}
+            undoHistory=[];lastPersistedSnapshot=null;suppressUndoCapture=false;
+            currentTeacherId=id;
+            document.getElementById('teacherGate').classList.add('hidden');
+            initApp();
+            // Let the Firebase listener render the clean workspace, then open the existing course manager.
+            if(!snap.exists() && id!==LEGACY_TEACHER_ID){
+              setTimeout(()=>{if(currentTeacherId===id){applyLanguageUI();window.openCourseManager();}},450);
+            }
+          }catch(err){
+            console.error('Unable to open teacher workspace',err);
+            alert(teacherGateLanguage==='vi'?'Không mở được không gian giáo viên. Hãy kiểm tra kết nối Firebase.':'Could not open this teacher workspace. Check the Firebase connection.');
+            document.getElementById('teacherGate').classList.remove('hidden');
+          }
+        };
+        window.addTeacher=function(){
+          const modal=document.getElementById('teacherFormModal');
+          const form=document.getElementById('teacherForm');
+          form.reset();
+          document.getElementById('teacherIconInput').value='👩‍🏫';
+          document.getElementById('teacherFormError').classList.add('hidden');
+          renderTeacherGate();
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          setTimeout(()=>document.getElementById('teacherNameInput').focus(),50);
+        };
+        window.closeTeacherFormModal=function(){
+          const modal=document.getElementById('teacherFormModal');
+          modal.classList.add('hidden');modal.classList.remove('flex');
+        };
+        document.getElementById('teacherForm').addEventListener('submit',async function(event){
+          event.preventDefault();
+          const error=document.getElementById('teacherFormError');
+          const name=document.getElementById('teacherNameInput').value.trim().replace(/\s+/g,' ');
+          const icon=document.getElementById('teacherIconInput').value.trim()||'👩‍🏫';
+          const description=document.getElementById('teacherDescInput').value.trim();
+          const password=document.getElementById('teacherPasswordInput').value;
+          const confirmPassword=document.getElementById('teacherPasswordConfirmInput').value;
+          error.classList.add('hidden');
+          if(!name){error.textContent=tt('required');error.classList.remove('hidden');return;}
+          if(teacherRecords.some(t=>teacherNameKey(t.name)===teacherNameKey(name))){error.textContent=tt('formExists');error.classList.remove('hidden');return;}
+          if(password!==confirmPassword){error.textContent=tt('passwordMismatch');error.classList.remove('hidden');return;}
+          const submit=document.getElementById('teacherCreateBtn');
+          submit.disabled=true;submit.classList.add('opacity-60','cursor-wait');
+          try{
+            const passwordHash=password?await teacherHash(password):'';
+            const teacherId='t_'+(crypto.randomUUID?crypto.randomUUID().replace(/-/g,''):Date.now().toString(36)+Math.random().toString(36).slice(2));
+            const record={teacherId,name,icon,description,passwordHash,createdAt:new Date().toISOString()};
+            await set(ref(db,TEACHERS_PATH+'/'+teacherId),record);
+            teacherRecords=teacherRecords.filter(t=>String(t.teacherId)!==teacherId);
+            teacherRecords.push(record);
+            window.closeTeacherFormModal();
+            renderTeacherGate();
+            // Stay on teacher selection; the user explicitly opens the workspace via its button.
+          }catch(err){
+            console.error('Unable to create teacher',err);
+            error.textContent=teacherGateLanguage==='vi'?'Không thể tạo giáo viên. Hãy kiểm tra kết nối Firebase rồi thử lại.':'Could not create teacher. Check the Firebase connection and try again.';
+            error.classList.remove('hidden');
+          }finally{submit.disabled=false;submit.classList.remove('opacity-60','cursor-wait');}
+        });
+        let editingTeacherId=null;
+        window.closeTeacherEditModal=function(){const m=document.getElementById('teacherEditModal');m.classList.add('hidden');m.classList.remove('flex');editingTeacherId=null;};
+        window.editTeacher=async function(id){
+          const t=teacherRecords.find(x=>x.teacherId===id);if(!t)return;
+          if(t.passwordHash){const p=await askTeacherPassword();if(p===null)return;if(await teacherHash(p)!==t.passwordHash){alert(tt('wrong'));return;}}
+          editingTeacherId=id;
+          document.getElementById('teacherEditTitle').textContent=teacherGateLanguage==='vi'?'Chỉnh sửa thông tin giáo viên':'Edit teacher information';
+          document.getElementById('teacherEditSubtitle').textContent=teacherGateLanguage==='vi'?'Cập nhật thông tin không gian làm việc.':'Update this teacher workspace information.';
+          document.getElementById('teacherEditNameLabel').textContent=teacherGateLanguage==='vi'?'Tên giáo viên':'Teacher name';
+          document.getElementById('teacherEditIconLabel').textContent=teacherGateLanguage==='vi'?'Biểu tượng':'Avatar emoji';
+          document.getElementById('teacherEditDescLabel').textContent=teacherGateLanguage==='vi'?'Mô tả':'Description';
+          document.getElementById('teacherEditPasswordHelp').textContent=teacherGateLanguage==='vi'?'Để trống mật khẩu mới nếu muốn giữ nguyên mật khẩu hiện tại.':'Leave the new password blank to keep the current password.';
+          document.getElementById('teacherEditPassword').placeholder=teacherGateLanguage==='vi'?'Mật khẩu mới':'New password';
+          document.getElementById('teacherEditPasswordConfirm').placeholder=teacherGateLanguage==='vi'?'Xác nhận mật khẩu':'Confirm password';
+          document.getElementById('teacherEditRemovePasswordLabel').textContent=teacherGateLanguage==='vi'?'Bỏ mật khẩu bảo vệ':'Remove password protection';
+          document.getElementById('teacherEditCancel').textContent=teacherGateLanguage==='vi'?'Hủy':'Cancel';
+          document.getElementById('teacherEditSave').innerHTML='<i class="fa-solid fa-check mr-2"></i>'+(teacherGateLanguage==='vi'?'Lưu thay đổi':'Save changes');
+          document.getElementById('teacherEditName').value=t.name||'';document.getElementById('teacherEditIcon').value=t.icon||'👩‍🏫';document.getElementById('teacherEditDesc').value=t.description||'';document.getElementById('teacherEditPassword').value='';document.getElementById('teacherEditPasswordConfirm').value='';document.getElementById('teacherEditRemovePassword').checked=false;document.getElementById('teacherEditError').classList.add('hidden');
+          const m=document.getElementById('teacherEditModal');m.classList.remove('hidden');m.classList.add('flex');setTimeout(()=>document.getElementById('teacherEditName').focus(),50);
+        };
+        document.getElementById('teacherEditForm').addEventListener('submit',async function(e){
+          e.preventDefault();const id=editingTeacherId;if(!id)return;const t=teacherRecords.find(x=>x.teacherId===id);if(!t)return;
+          const name=document.getElementById('teacherEditName').value.trim().replace(/\s+/g,' '),icon=document.getElementById('teacherEditIcon').value.trim()||'👩‍🏫',description=document.getElementById('teacherEditDesc').value.trim();
+          const password=document.getElementById('teacherEditPassword').value,confirmPass=document.getElementById('teacherEditPasswordConfirm').value,remove=document.getElementById('teacherEditRemovePassword').checked,err=document.getElementById('teacherEditError');
+          const fail=msg=>{err.textContent=msg;err.classList.remove('hidden');};err.classList.add('hidden');
+          if(!name){fail(teacherGateLanguage==='vi'?'Vui lòng nhập tên giáo viên.':'Please enter a teacher name.');return;}
+          if(teacherRecords.some(x=>x.teacherId!==id&&teacherNameKey(x.name)===teacherNameKey(name))){fail(tt('exists'));return;}
+          if(password&&password!==confirmPass){fail(teacherGateLanguage==='vi'?'Mật khẩu xác nhận không khớp.':'Password confirmation does not match.');return;}
+          if(remove&&password){fail(teacherGateLanguage==='vi'?'Hãy bỏ chọn xóa mật khẩu hoặc xóa nội dung mật khẩu mới.':'Uncheck password removal or clear the new password fields.');return;}
+          let passwordHash=t.passwordHash||'';if(remove)passwordHash='';else if(password)passwordHash=await teacherHash(password);
+          const updated={...t,name,icon,description,passwordHash};await set(ref(db,TEACHERS_PATH+'/'+id),updated);teacherRecords=teacherRecords.map(x=>x.teacherId===id?updated:x);closeTeacherEditModal();renderTeacherGate();
+        });
+        window.deleteTeacher=async function(id){
+          const t=teacherRecords.find(x=>x.teacherId===id);if(!t)return;
+          if(teacherRecords.length<=1){alert(teacherGateLanguage==='vi'?'Không thể xóa giáo viên cuối cùng.':'Cannot delete the last teacher.');return;}
+          if(t.passwordHash){const p=await askTeacherPassword();if(p===null)return;if(await teacherHash(p)!==t.passwordHash){alert(tt('wrong'));return;}}
+          if(!await showAppConfirm(tt('delete')+'\n'+t.name))return;
+          if(!await showAppConfirm(teacherGateLanguage==='vi'?'Xác nhận lần cuối: xóa toàn bộ dữ liệu giáo viên?':'Final confirmation: delete all teacher data?'))return;
+          await set(ref(db,`appDataMultiTeacher/teacherData/${id}`),null);await set(ref(db,TEACHERS_PATH+'/'+id),null);
+          teacherRecords=teacherRecords.filter(x=>x.teacherId!==id);renderTeacherGate();
+          if(currentTeacherId===id){currentTeacherId=null;undoHistory=[];lastPersistedSnapshot=null;suppressUndoCapture=false;document.getElementById('teacherGate').classList.remove('hidden');}
+        };
+
+        // Initialize teacher selector
+        bootstrapTeacherSystem();
+        // Inline HTML onclick handlers need explicit window bindings because this is a module script.
+        Object.assign(window, {
+          removeAccents: removeAccents,
+          getRewardName: getRewardName,
+          getViolationTypeName: getViolationTypeName,
+          getStudentDisplayName: getStudentDisplayName,
+          initApp: initApp,
+          saveData: saveData,
+          applyLanguageUI: applyLanguageUI,
+          updateTimerDisplay: updateTimerDisplay,
+          renderCurrentView: renderCurrentView,
+          finalExamRecord: finalExamRecord,
+          finalExamScores: finalExamScores,
+          renderFinalExamView: renderFinalExamView,
+          renderShopView: renderShopView,
+          renderViolationView: renderViolationView,
+          addViolationToStudent: addViolationToStudent,
+          renderClassTabs: renderClassTabs,
+          calculateStudentStats: calculateStudentStats,
+          getGradeRankBadge: getGradeRankBadge,
+          renderRankingView: renderRankingView,
+          renderMatrix: renderMatrix,
+          updateRealtimeCalculationDisplay: updateRealtimeCalculationDisplay,
+          renderInventoryGiftsForModal: renderInventoryGiftsForModal,
+          applyGiftToCell: applyGiftToCell,
+          datePlus: datePlus,
+          mondayOfDate: mondayOfDate,
+          deepCopy: deepCopy,
+          ensureNewModules: ensureNewModules,
+          activeCourse: activeCourse,
+          moduleText: moduleText,
+          showModuleModal: showModuleModal,
+          hideModuleModal: hideModuleModal,
+          readCourseFields: readCourseFields,
+          courseForm: courseForm,
+          createCourseOnlyRecord: createCourseOnlyRecord,
+          renderCourseList: renderCourseList,
+          escapeHtml: escapeHtml,
+          archivedFinalTotal: archivedFinalTotal,
+          calculateSnapshotTotal: calculateSnapshotTotal,
+          renderStudentRoster: renderStudentRoster,
+          classColorHex: classColorHex,
+          renderTeachingView: renderTeachingView,
+          weekScheduleHtml: weekScheduleHtml,
+          filterScheduleClass: filterScheduleClass,
+          teachingLessonHtml: teachingLessonHtml,
+          tt: tt,
+          teacherHash: teacherHash,
+          teacherNameKey: teacherNameKey,
+          bootstrapTeacherSystem: bootstrapTeacherSystem,
+          renderTeacherGate: renderTeacherGate,
+          escapeTeacherHtml: escapeTeacherHtml
+        });
+
     </script>
+
+
+<div id="appConfirmModal" class="fixed inset-0 z-[13000] hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4" role="dialog" aria-modal="true" aria-labelledby="appConfirmTitle">
+  <div class="w-full max-w-md overflow-hidden rounded-3xl border border-white/70 bg-white shadow-2xl">
+    <div class="bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 px-6 py-5 text-white">
+      <div class="flex items-center gap-3"><div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20 text-xl"><i class="fa-solid fa-shield-halved"></i></div><div><div id="appConfirmEyebrow" class="text-xs font-bold uppercase tracking-[.18em] text-white/75">QUẢN LÝ LỚP HỌC</div><h2 id="appConfirmTitle" class="text-xl font-black">Xác nhận thao tác</h2></div></div>
+    </div>
+    <div class="px-6 py-5"><p id="appConfirmMessage" class="whitespace-pre-line text-sm leading-7 text-slate-700"></p>
+      <div id="appPromptWrap" class="hidden mt-4"><input id="appPromptInput" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100" /></div>
+      <div class="mt-6 flex justify-end gap-2"><button id="appConfirmCancel" type="button" class="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50">Hủy</button><button id="appConfirmOk" type="button" class="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-bold text-white shadow-md hover:shadow-lg">Xác nhận</button></div>
+    </div>
+  </div>
+</div>
+<div id="appNoticeModal" class="fixed inset-0 z-[12000] hidden items-center justify-center bg-slate-950/55 backdrop-blur-sm p-4" role="dialog" aria-modal="true" aria-labelledby="appNoticeTitle">
+  <div class="w-full max-w-md overflow-hidden rounded-3xl border border-white/70 bg-white shadow-2xl">
+    <div class="bg-gradient-to-r from-indigo-600 via-violet-600 to-sky-500 px-6 py-5 text-white">
+      <div class="flex items-center gap-3"><div id="appNoticeIcon" class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20 text-xl"><i class="fa-solid fa-circle-info"></i></div><div><div id="appNoticeEyebrow" class="text-xs font-bold uppercase tracking-[.18em] text-white/75">Quản Lý Lớp Học</div><h2 id="appNoticeTitle" class="text-xl font-black">Thông báo</h2></div></div>
+    </div>
+    <div class="px-6 py-5"><p id="appNoticeMessage" class="whitespace-pre-line text-sm leading-7 text-slate-700"></p><div class="mt-6 flex justify-end"><button id="appNoticeOk" type="button" class="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-200">Đã hiểu</button></div></div>
+  </div>
+</div>
+<script>
+(function(){
+  const nativeAlert = window.alert.bind(window);
+  let noticeResolver = null;
+  function appIsEnglish(){ try { return (window.appData && window.appData.language === 'en') || document.documentElement.lang === 'en'; } catch(e){ return document.documentElement.lang === 'en'; } }
+  function appTitle(en,vi){ return appIsEnglish() ? en : vi; }
+  function localizeDialogTitle(title, kind){
+    if(!title) return appTitle(kind==='confirm'?'Please confirm':kind==='prompt'?'Enter information':'Notice',kind==='confirm'?'Xác nhận thao tác':kind==='prompt'?'Nhập thông tin':'Thông báo');
+    const raw=String(title).trim();
+    const map={
+      'Thông báo':'Notice','Xác nhận thao tác':'Please confirm','Xác nhận':'Confirmation','Xác nhận lần cuối':'Final confirmation',
+      'Cảnh báo':'Warning','Lỗi':'Error','Thành công':'Success','Nhập thông tin':'Enter information',
+      'Xóa giáo viên':'Delete teacher','Xóa học sinh':'Delete student','Xóa lớp':'Delete class','Xóa khóa học':'Delete course',
+      'Lưu trữ khóa học':'Archive course','Tạo khóa học mới':'Create new course','Khôi phục dữ liệu':'Restore data',
+      'Sao lưu dữ liệu':'Back up data','Tải dữ liệu':'Export data','Nhập dữ liệu':'Import data',
+      'Đã lưu':'Saved','Đã cập nhật':'Updated','Không thể thực hiện':'Action unavailable',
+      'Xác nhận xóa':'Confirm deletion','Xóa buổi học':'Delete lesson','Xóa tuần':'Delete week',
+      'Lưu thay đổi':'Save changes','Thêm giáo viên mới':'Add a new teacher',
+      'Chỉnh sửa thông tin giáo viên':'Edit teacher information','Nhập mật khẩu':'Enter password'
+    };
+    return appIsEnglish() ? (map[raw] || raw) : raw;
+  }
+  function localizeDialogMessage(message){
+    const raw=String(message ?? ''); if(!appIsEnglish()) return raw;
+    const map={
+      'Chưa có thao tác nào có thể hoàn tác trong phiên này.':'There is no action to undo in this session.',
+      'Hoàn tác thay đổi đã lưu gần nhất?':'Undo the most recently saved change?',
+      'Đã hoàn tác thao tác gần nhất.':'The most recent action has been undone.',
+      'Lưu dữ liệu thất bại. Vui lòng kiểm tra kết nối mạng và thử lại.':'Failed to save data. Please check your network connection and try again.',
+      'Dữ liệu khóa đã lưu, chỉ xem; không thay đổi dữ liệu khóa hiện tại.':'Archived course data is view-only and does not change the current course data.',
+      'Đang hiển thị dữ liệu của khóa học đang chọn.':'Showing data for the selected course.',
+      'Chưa có dữ liệu khóa học để lập hồ sơ tiến độ cho học sinh này.':'There is no course data available to create a progress profile for this student.',
+      'Đã hiểu':'Got it','Đã lưu ghi chú.':'Notes saved.','Đã chuyển lớp học sinh.':'Student moved.',
+      'Đã chuyển sang khóa học đã chọn.':'Switched to the selected course.','Khóa đã lưu trữ chỉ được xem.':'Archived courses are read-only.',
+      'Mã lớp không hợp lệ.':'Invalid class ID.','Vui lòng chọn lớp đích hợp lệ khác lớp hiện tại.':'Please choose a different valid class.',
+      'Hãy tạo lớp học trước.':'Please create a class first.','Số tuần này đã được dùng trong năm đó.':'That week number is already in use for this year.',
+      'Không thể xóa khóa học đang hoạt động.':'The active course cannot be deleted.',
+      'Vui lòng nhập tên khóa học.':'Please enter a course name.',
+      'Đã hiểu':'Got it','Xác nhận':'Confirm','Hủy':'Cancel',
+      'Để trống nếu không cần mật khẩu khi mở không gian này.':'Leave blank if this workspace does not need a password.',
+      'Cập nhật thông tin không gian làm việc.':'Update workspace information.',
+      'Khóa đã lưu trữ được giữ dưới dạng bản chụp lịch sử và không tự ghi đè dữ liệu đang hoạt động.':'Archived courses are kept as historical snapshots and do not overwrite active data.'
+    };
+    if(map[raw]) return map[raw];
+    let m=raw.match(/^Có (\d+) học sinh nhưng chỉ có (\d+) chỗ\. Hãy tăng số hàng hoặc số cột\.$/);
+    if(m) return `There are ${m[1]} students but only ${m[2]} seats. Increase the number of rows or columns.`;
+    m=raw.match(/^Bạn có chắc muốn reset toàn bộ điểm kiểm tra cuối kỳ của (.+)\? Thao tác này chỉ ảnh hưởng đến học sinh này\.$/);
+    if(m) return `Are you sure you want to reset all final exam scores for ${m[1]}? This only affects this student.`;
+    return raw;
+  }
+  function showAppNotice(message, title){
+    const modal=document.getElementById('appNoticeModal');
+    if(!modal){ nativeAlert(message); return Promise.resolve(); }
+    if(noticeResolver){ noticeResolver(); noticeResolver=null; }
+    const en=appIsEnglish();
+    document.getElementById('appNoticeEyebrow').textContent=appTitle('CLASS MANAGEMENT','QUẢN LÝ LỚP HỌC');
+    document.getElementById('appNoticeTitle').textContent=localizeDialogTitle(title,'notice');
+    document.getElementById('appNoticeMessage').textContent=localizeDialogMessage(message);
+    document.getElementById('appNoticeOk').textContent=en?'Got it':'Đã hiểu';
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+    return new Promise(resolve=>{ noticeResolver=resolve; document.getElementById('appNoticeOk').focus(); });
+  }
+  function closeNotice(){const modal=document.getElementById('appNoticeModal');if(modal){modal.classList.add('hidden');modal.classList.remove('flex');}if(noticeResolver){const r=noticeResolver;noticeResolver=null;r();}}
+  document.getElementById('appNoticeOk')?.addEventListener('click',closeNotice);
+  document.getElementById('appNoticeModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeNotice();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape' && !document.getElementById('appNoticeModal')?.classList.contains('hidden'))closeNotice();});
+  window.showAppNotice=showAppNotice;
+  // Route all browser alert() notifications through the app's branded modal.
+
+  let confirmResolver = null;
+  function showAppConfirm(message, title){
+    const modal=document.getElementById('appConfirmModal');
+    if(!modal) return Promise.resolve(window.confirm(String(message ?? '')));
+    if(confirmResolver){ confirmResolver(false); confirmResolver=null; }
+    const en=appIsEnglish();
+    document.getElementById('appConfirmEyebrow').textContent=appTitle('CLASS MANAGEMENT','QUẢN LÝ LỚP HỌC');
+    document.getElementById('appConfirmTitle').textContent=localizeDialogTitle(title,'confirm');
+    document.getElementById('appConfirmMessage').textContent=localizeDialogMessage(message);
+    document.getElementById('appConfirmCancel').textContent=en?'Cancel':'Hủy';
+    document.getElementById('appConfirmOk').textContent=en?'Confirm':'Xác nhận';
+    document.getElementById('appConfirmOk').className='rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-bold text-white shadow-md hover:shadow-lg';
+    document.getElementById('appPromptWrap').classList.add('hidden');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+    return new Promise(resolve=>{ confirmResolver=resolve; document.getElementById('appConfirmOk').focus(); });
+  }
+  function closeAppConfirm(result){
+    const modal=document.getElementById('appConfirmModal');
+    modal?.classList.add('hidden'); modal?.classList.remove('flex');
+    if(confirmResolver){const r=confirmResolver;confirmResolver=null;r(result);}
+  }
+  function showAppPrompt(message, defaultValue=''){
+    const modal=document.getElementById('appConfirmModal');
+    if(!modal) return Promise.resolve(window.prompt(String(message ?? ''),defaultValue));
+    if(confirmResolver){confirmResolver(null);confirmResolver=null;}
+    const en=appIsEnglish();
+    document.getElementById('appConfirmEyebrow').textContent=appTitle('CLASS MANAGEMENT','QUẢN LÝ LỚP HỌC');
+    document.getElementById('appConfirmTitle').textContent=localizeDialogTitle(null,'prompt');
+    document.getElementById('appConfirmMessage').textContent=localizeDialogMessage(message);
+    document.getElementById('appConfirmCancel').textContent=en?'Cancel':'Hủy';
+    document.getElementById('appConfirmOk').textContent=en?'Save':'Xác nhận';
+    document.getElementById('appPromptWrap').classList.remove('hidden');
+    const input=document.getElementById('appPromptInput'); input.value=defaultValue ?? '';
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+    return new Promise(resolve=>{
+      confirmResolver=(ok)=>resolve(ok ? input.value : null);
+      input.focus();
+    });
+  }
+  document.getElementById('appConfirmOk')?.addEventListener('click',()=>closeAppConfirm(true));
+  document.getElementById('appConfirmCancel')?.addEventListener('click',()=>closeAppConfirm(false));
+  document.getElementById('appConfirmModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeAppConfirm(false);});
+  document.getElementById('appConfirmInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')closeAppConfirm(true);});
+  document.getElementById('appPromptInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')closeAppConfirm(true);});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape' && !document.getElementById('appConfirmModal')?.classList.contains('hidden'))closeAppConfirm(false);});
+  window.showAppConfirm=showAppConfirm;
+  window.showAppPrompt=showAppPrompt;
+  window.alert=function(message){ showAppNotice(message); };
+})();
+</script>
+
 </body>
 </html>
