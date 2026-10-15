@@ -152,7 +152,7 @@
         .exam-stage { position:relative; overflow:hidden; isolation:isolate; border-radius:1.5rem; padding:1.75rem 1rem 0; background:radial-gradient(ellipse at 50% -10%,#5b21b6 0%,#1e1b4b 48%,#0f172a 100%); box-shadow:inset 0 0 0 1px rgba(255,255,255,.08), 0 16px 36px rgba(15,23,42,.35); }
         .stage-spot { position:absolute; top:-10%; left:50%; width:52%; height:115%; transform:translateX(-50%); background:linear-gradient(to bottom,rgba(253,224,71,.38),rgba(253,224,71,0) 78%); clip-path:polygon(36% 0,64% 0,100% 100%,0 100%); filter:blur(7px); animation:stSpot 5s ease-in-out infinite; z-index:0; pointer-events:none; }
         .st-conf { position:absolute; top:-14px; left:var(--l); width:7px; height:12px; border-radius:1px; background:var(--cc); opacity:.9; z-index:1; animation:stFall var(--t) linear infinite; animation-delay:var(--dl); pointer-events:none; }
-        .stage-row { position:relative; z-index:2; display:grid; grid-template-columns:1fr 1.2fr 1fr; align-items:end; gap:.7rem; max-width:46rem; margin:0 auto; }
+        .stage-row { position:relative; z-index:2; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); align-items:end; gap:.7rem; max-width:64rem; margin:0 auto; } .stage-slot { min-width:0; } .stage-person { min-width:0; } .stage-person .stage-score { font-size:1.25rem; } .stage-person .stage-name { overflow-wrap:anywhere; }
         .stage-slot { display:flex; flex-direction:column; align-items:center; min-width:0; }
         .stage-slot.s1 { order:2; --c:#fbbf24; --glow:rgba(251,191,36,.65); } .stage-slot.s2 { order:1; --c:#cbd5e1; --glow:rgba(203,213,225,.5); } .stage-slot.s3 { order:3; --c:#fb923c; --glow:rgba(251,146,60,.55); }
         .stage-person { display:flex; flex-direction:column; align-items:center; text-align:center; width:100%; padding-bottom:.75rem; }
@@ -161,10 +161,22 @@
         .stage-avatar { width:4rem; height:4rem; display:grid; place-items:center; font-size:2rem; border-radius:9999px; background:#fff; border:3px solid var(--c); box-shadow:0 0 26px var(--glow); animation:stBob 3s ease-in-out infinite; transition:transform .3s cubic-bezier(.2,.9,.3,1.4); }
         .stage-slot.s1 .stage-avatar { width:5rem; height:5rem; font-size:2.5rem; }
         .stage-slot:hover .stage-avatar { transform:scale(1.1) rotate(-6deg); }
+        .stage-tie-avatars { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:.35rem; max-width:100%; margin:0 auto; }
+        .stage-tie-avatar { display:grid; place-items:center; width:3.35rem; height:3.35rem; flex:0 1 auto; border-radius:9999px; background:#fff; border:2px solid var(--c); box-shadow:0 0 14px var(--glow); font-size:1.65rem; animation:stBob 2.5s ease-in-out infinite; animation-delay:var(--avatar-delay,0s); }
+        .stage-slot.s1 .stage-tie-avatar { width:3.8rem; height:3.8rem; font-size:1.9rem; }
+        .stage-tie-avatars.many .stage-tie-avatar { width:2.35rem; height:2.35rem; font-size:1.15rem; }
+        .stage-slot.s1 .stage-tie-avatars.many .stage-tie-avatar { width:2.6rem; height:2.6rem; font-size:1.25rem; }
+        .stage-tie-avatars.very-many .stage-tie-avatar { width:1.85rem; height:1.85rem; font-size:.9rem; border-width:1px; }
+        .stage-slot.s1 .stage-tie-avatars.very-many .stage-tie-avatar { width:2rem; height:2rem; font-size:1rem; }
         .stage-medal { position:absolute; right:-.45rem; bottom:-.3rem; font-size:1.35rem; filter:drop-shadow(0 2px 3px rgba(0,0,0,.4)); }
         .stage-name { margin-top:.55rem; max-width:100%; color:#fff; font-weight:900; font-size:.95rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .stage-score { font-weight:900; font-size:1.6rem; line-height:1.15; color:var(--c); text-shadow:0 0 14px var(--glow); font-variant-numeric:tabular-nums; }
         .stage-slot.s1 .stage-score { font-size:2.15rem; }
+        /* Compact tied-student score cards so the podium stays balanced without removing motion effects. */
+        .exam-stage .stage-person > div.w-full.mt-2 > div { padding: .35rem .45rem !important; margin-bottom: .3rem !important; border-radius: .65rem !important; }
+        .exam-stage .stage-person > div.w-full.mt-2 > div > div:first-child { font-size: 1.1rem; line-height: 1.2; }
+        .exam-stage .stage-person .stage-name { font-size: .76rem; line-height: 1.15; margin-top: .2rem; white-space: normal; }
+        .exam-stage .stage-person .stage-score, .exam-stage .stage-slot.s1 .stage-person .stage-score { font-size: 1rem; line-height: 1.1; margin-top: .15rem; }
         .stage-label { font-size:9px; font-weight:800; letter-spacing:.14em; color:rgba(255,255,255,.6); text-transform:uppercase; }
         .stage-step { width:100%; display:flex; flex-direction:column; align-items:center; padding-top:.55rem; border-radius:.9rem .9rem 0 0; color:#0f172a; background:linear-gradient(180deg,var(--c),rgba(255,255,255,.07)); box-shadow:inset 0 2px 0 rgba(255,255,255,.55); transform-origin:bottom; }
         .stage-slot.s1 .stage-step { height:8.5rem; } .stage-slot.s2 .stage-step { height:6rem; } .stage-slot.s3 .stage-step { height:4.6rem; }
@@ -173,7 +185,7 @@
         .st-empty { opacity:.45; } .st-empty .stage-avatar { animation:none; box-shadow:none; }
         .st-enter .stage-step { animation:stGrow .75s cubic-bezier(.2,.9,.3,1.1) backwards; animation-delay:var(--d); }
         .st-enter .stage-person { animation:stDrop .8s cubic-bezier(.25,1.3,.4,1) backwards; animation-delay:calc(var(--d) + .5s); }
-        @media (max-width:640px) { .stage-avatar { width:3.2rem; height:3.2rem; font-size:1.6rem; } .stage-slot.s1 .stage-avatar { width:4rem; height:4rem; font-size:2rem; } .stage-name { font-size:.8rem; } .stage-score { font-size:1.2rem; } .stage-slot.s1 .stage-score { font-size:1.6rem; } .stage-step em { display:none; } }
+        @media (max-width:640px) { .stage-row { gap:.25rem; } .exam-stage .stage-person .stage-score, .exam-stage .stage-slot.s1 .stage-person .stage-score { font-size:.88rem; } .stage-person .stage-score { font-size:1rem; } .stage-avatar { width:3.2rem; height:3.2rem; font-size:1.6rem; } .stage-slot.s1 .stage-avatar { width:4rem; height:4rem; font-size:2rem; } .stage-name { font-size:.8rem; } .stage-score { font-size:1.2rem; } .stage-slot.s1 .stage-score { font-size:1.6rem; } .stage-step em { display:none; } }
         @keyframes stSpot { 0%, 100% { opacity:.65; } 50% { opacity:1; } }
         @keyframes stFall { 0% { transform:translateY(0) rotate(0); } 100% { transform:translateY(24rem) rotate(560deg); opacity:.25; } }
         @keyframes stBob { 0%, 100% { translate:0 0; } 50% { translate:0 -6px; } }
@@ -1782,8 +1794,22 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             if (arch) return;
             const cls = appData.classes.find(c => c.id === appData.activeClassId); if (!cls) return;
             const students = appData.students.filter(s => s.classId === cls.id);
-            qsTrack('rk', cls.id, students.map(s => ({ id: s.id, v: calculateStudentStats(s.id).avg })).sort((a, b) => b.v - a.v).map(x => x.id));
-            try { qsTrack('fe', cls.id, students.map(s => ({ id: s.id, v: finalExamScores(s).total })).sort((a, b) => (b.v ?? -1) - (a.v ?? -1)).map(x => x.id)); } catch (e) {}
+            // Track the accumulated leaderboard in the same deterministic order used by its podium/table.
+            // This lets the existing up/down 1, 2, 3-place indicators refresh even when a score edit
+            // re-renders the current view directly rather than navigating away and back.
+            const accumulatedOrder = rankAccumulatedStudents(students.map(student => ({ student, stats: calculateStudentStats(student.id) })));
+            qsTrack('rk', cls.id, accumulatedOrder.map(item => item.student.id));
+            try {
+                const finalOrder = students.map(student => ({ student, total: finalExamScores(student).total }))
+                    .sort((a, b) => {
+                        const av = a.total, bv = b.total;
+                        if (av === null && bv !== null) return 1;
+                        if (bv === null && av !== null) return -1;
+                        if (av !== null && bv !== null && Math.abs(Number(av) - Number(bv)) > 1e-9) return Number(bv) - Number(av);
+                        return String(a.student.id).localeCompare(String(b.student.id), undefined, { numeric: true });
+                    });
+                qsTrack('fe', cls.id, finalOrder.map(item => item.student.id));
+            } catch (e) {}
         }
         function qsDeltaInfo(kind, classId, id, hasData) {
             if (hasData === false) return null;
@@ -2699,17 +2725,32 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     <div class="mt-3 rounded-xl bg-indigo-600 text-white p-3 flex items-center justify-between"><span class="text-xs font-bold">${tr('ĐIỂM TRUNG BÌNH TỔNG','OVERALL AVERAGE')}</span><strong class="text-2xl">${fmt(result.total)}</strong></div>
                 </article>`;
             }).join('');
-            const sorted = students.map(student => ({student, result: finalExamScores(student)})).sort((a,b)=>(b.result.total ?? -1)-(a.result.total ?? -1));
+            const sorted = students.map(student => ({student, result: finalExamScores(student)}))
+                .sort((a,b) => {
+                    const av = a.result.total, bv = b.result.total;
+                    if (av === null && bv !== null) return 1;
+                    if (bv === null && av !== null) return -1;
+                    if (av !== null && bv !== null && Math.abs(av - bv) > 1e-9) return bv - av;
+                    return String(a.student.id).localeCompare(String(b.student.id), undefined, {numeric:true});
+                });
+            // Dense ranking for final exams: 1, 1, 2, 2, 3...
+            let previousValidScore = null, hasPreviousValidScore = false, denseExamRank = 0;
+            sorted.forEach(item => {
+                if (item.result.total === null || !Number.isFinite(Number(item.result.total))) { item.rank = null; return; }
+                if (!hasPreviousValidScore || Math.abs(Number(item.result.total) - previousValidScore) > 1e-9) denseExamRank++;
+                item.rank = denseExamRank;
+                previousValidScore = Number(item.result.total);
+                hasPreviousValidScore = true;
+            });
             {
-                const top = sorted.slice(0, 3);
+                const podiumRanks = [1, 2, 3];
+                const top = podiumRanks.map(rank => ({ rank, students: sorted.filter(x => x.rank === rank) })).filter(group => group.students.length);
                 const box = document.getElementById('finalExamPodium');
-                const sig = appData.activeClassId + '|' + top.map(x => x.student.id + ':' + x.result.total).join(',');
+                const sig = appData.activeClassId + '|' + top.map(g => g.rank + ':' + g.students.map(x => x.student.id + ':' + x.result.total).join(',')).join('|');
                 const anim = window.__examSig !== sig;
                 window.__examSig = sig;
-                if (!top.length) {
-                    box.className = 'mb-5';
-                    box.innerHTML = `<p class="text-sm text-slate-400">${tr('Chưa có học sinh.','No students yet.')}</p>`;
-                } else {
+                // Always keep the three podium positions visible, even before any final scores are entered.
+                {
                     const labels = isEn ? ['CHAMPION','RUNNER-UP','THIRD PLACE'] : ['NHÀ VÔ ĐỊCH','Á QUÂN','HẠNG BA'];
                     const medals = ['🥇','🥈','🥉'];
                     const confColors = ['#fbbf24','#f472b6','#60a5fa','#34d399','#a78bfa','#fb923c'];
@@ -2751,19 +2792,27 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                             ${spark(126, 140, 6, .2)}${spark(206, 58, 6, .9)}${spark(18, 120, 5, 1.6)}
                         </svg>`;
                     };
-                    const slots = [0, 1, 2].map(i => {
-                        const x = top[i];
-                        const delay = [0.5, 0, 0.25][i];
-                        const total = x && x.result.total !== null ? x.result.total : null;
-                        return `<div class="stage-slot s${i + 1} ${x ? '' : 'st-empty'}" style="--d:${delay}s">
+                    const slots = [1, 2, 3].map((rank, idx) => {
+                        const group = top.find(g => g.rank === rank);
+                        const people = group ? group.students : [];
+                        const x = people[0] || null;
+                        const delay = [0.5, 0, 0.25][idx];
+                        const medalsForRank = ['🥇','🥈','🥉'];
+                        const label = labels[idx];
+                        const peopleHtml = people.map(person => `<div class="w-full min-w-0 rounded-xl border border-white/20 bg-slate-950/35 px-2 py-2 mb-2">
+                            <div class="text-2xl">${escapeHtml(person.student.icon || '🎓')}</div>
+                            <div class="stage-name whitespace-normal break-words" title="${escapeHtml(person.student.name)}">${escapeHtml(person.student.name)}</div>
+                            <div class="stage-score">${person.result.total.toFixed(2)}</div>
+                            <div class="text-[10px] font-black text-white/80">${tr('HẠNG','RANK')} ${rank}</div>
+                        </div>`).join('');
+                        return `<div class="stage-slot s${idx + 1} ${people.length ? '' : 'st-empty'}" style="--d:${delay}s">
                             <div class="stage-person">
-                                ${i === 0 && x ? '<span class="stage-crown">👑</span>' : ''}
-                                <div class="stage-av">${x ? figure(i) : ''}<div class="stage-avatar">${x ? escapeHtml(x.student.icon || '🎓') : '?'}</div><span class="stage-medal">${medals[i]}</span></div>
-                                <div class="qs-namewrap" style="--qs-mt:.55rem"><div class="stage-name" title="${x ? escapeHtml(x.student.name) : ''}">${x ? escapeHtml(x.student.name) : '—'}</div>${x ? qsDeltaHtml('fe', activeClass.id, x.student.id, x.result.total !== null) : ''}</div>
-                                <div class="stage-score" ${total === null ? '' : `data-cu="fep:${x.student.id}" data-to="${total}" data-dec="2"`}>${total === null ? '—' : total.toFixed(2)}</div>
-                                <div class="stage-label">${tr('ĐIỂM TB CUỐI KỲ','FINAL AVERAGE')}</div>
+                                ${idx === 0 && people.length ? '<span class="stage-crown">👑</span>' : ''}
+                                ${people.length ? `<div class="stage-av">${figure(idx)}<div class="stage-tie-avatars ${people.length > 6 ? 'very-many' : people.length > 3 ? 'many' : ''}" aria-label="${people.length} ${tr('học sinh đồng hạng','tied students')}">${people.map((person, personIndex) => `<span class="stage-tie-avatar" style="--avatar-delay:${(personIndex * .12).toFixed(2)}s" title="${escapeHtml(person.student.name)}">${escapeHtml(person.student.icon || '🎓')}</span>`).join('')}</div><span class="stage-medal">${medalsForRank[idx]}</span></div>` : `<div class="stage-av"><div class="stage-avatar">?</div></div>`}
+                                <div class="stage-label mt-2">${label} · ${tr('HẠNG','RANK')} ${rank}</div>
+                                <div class="w-full mt-2">${peopleHtml || `<div class="stage-name">—</div><div class="stage-score">—</div>`}</div>
                             </div>
-                            <div class="stage-step"><span>${i + 1}</span><em>${labels[i]}</em></div>
+                            <div class="stage-step"><span>${rank}</span><em>${label}</em></div>
                         </div>`;
                     }).join('');
                     box.className = 'exam-stage mb-5 ' + (anim ? 'st-enter' : '');
@@ -2771,7 +2820,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     qsCountUp(box, { fromZero: true, delay: 700, dur: 1200 });
                 }
             }
-            document.getElementById('finalExamRankingBody').innerHTML = sorted.map((x,i)=>`<tr class="${i===0?'bg-amber-50':i===1?'bg-slate-50':i===2?'bg-orange-50':''} ${qsRowFlash('fe', activeClass.id, x.student.id, x.result.total!==null)}"><td class="p-3 font-black">${['🥇','🥈','🥉'][i]||i+1}</td><td class="p-3 font-semibold">${x.student.icon||'🎓'} ${x.student.name} <span class="ml-1.5">${qsDeltaHtml('fe', activeClass.id, x.student.id, x.result.total!==null)}</span></td><td class="p-3 text-center">${x.result.categories.listening===null?'—':x.result.categories.listening.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.speaking===null?'—':x.result.categories.speaking.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.reading===null?'—':x.result.categories.reading.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.writing===null?'—':x.result.categories.writing.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.grammar===null?'—':x.result.categories.grammar.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.vocabulary===null?'—':x.result.categories.vocabulary.toFixed(2)}</td><td class="p-3 text-center font-bold">${x.result.categories.grammarVocabulary===null?'—':x.result.categories.grammarVocabulary.toFixed(2)}</td><td class="p-3 text-center font-black text-indigo-700">${x.result.total===null?'—':`<span data-cu="fet:${x.student.id}" data-to="${x.result.total}" data-dec="2">${x.result.total.toFixed(2)}</span>`}</td></tr>`).join('');
+            document.getElementById('finalExamRankingBody').innerHTML = sorted.map((x,i)=>`<tr class="${x.rank===1?'bg-amber-50':x.rank===2?'bg-slate-50':x.rank===3?'bg-orange-50':''} ${qsRowFlash('fe', activeClass.id, x.student.id, x.result.total!==null)}"><td class="p-3 font-black">${x.rank===null?'—':x.rank===1?'🥇':x.rank===2?'🥈':x.rank===3?'🥉':x.rank}</td><td class="p-3 font-semibold">${x.student.icon||'🎓'} ${x.student.name} <span class="ml-1.5">${qsDeltaHtml('fe', activeClass.id, x.student.id, x.result.total!==null)}</span></td><td class="p-3 text-center">${x.result.categories.listening===null?'—':x.result.categories.listening.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.speaking===null?'—':x.result.categories.speaking.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.reading===null?'—':x.result.categories.reading.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.writing===null?'—':x.result.categories.writing.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.grammar===null?'—':x.result.categories.grammar.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.vocabulary===null?'—':x.result.categories.vocabulary.toFixed(2)}</td><td class="p-3 text-center font-bold">${x.result.categories.grammarVocabulary===null?'—':x.result.categories.grammarVocabulary.toFixed(2)}</td><td class="p-3 text-center font-black text-indigo-700">${x.result.total===null?'—':`<span data-cu="fet:${x.student.id}" data-to="${x.result.total}" data-dec="2">${x.result.total.toFixed(2)}</span>`}</td></tr>`).join('');
             qsCountUp(document.getElementById('finalExamRankingBody'), { fromZero: true, dur: 900 });
             function rValue(student, key) { const v = finalExamRecord(student.id)[key]; return v === '' || v === null || v === undefined ? '—' : Number(v).toFixed(2); }
         }
@@ -3615,18 +3664,71 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             return { label: (appData.language === 'en' ? 'Needs Effort' : 'Cần Cố Gắng'), color: 'bg-rose-100 text-rose-800' };
         }
 
+        // Shared, deterministic ranking logic for accumulated scores (Ranking + Score Matrix).
+        function accumulatedScoreEntries(studentId) {
+            const entries = [];
+            for (const [key, item] of Object.entries(appData.scores || {})) {
+                if (!key.startsWith(String(studentId) + '_') || !item) continue;
+                const raw = item.score;
+                const hasScore = raw !== '' && raw !== null && raw !== undefined && Number.isFinite(Number(raw));
+                // Preserve the existing average rule: an explicitly recorded absence contributes 0.
+                if (item.absent) entries.push({ value: 0, countForLevel: false, absent: true });
+                else if (hasScore) entries.push({ value: Number(raw), countForLevel: true, absent: false });
+            }
+            return entries;
+        }
+        function compareAccumulatedStudents(a, b) {
+            const sa = a.stats || calculateStudentStats(a.student.id);
+            const sb = b.stats || calculateStudentStats(b.student.id);
+            const avgDiff = Number(sb.avg || 0) - Number(sa.avg || 0);
+            if (avgDiff) return avgDiff;
+            const ea = accumulatedScoreEntries(a.student.id), eb = accumulatedScoreEntries(b.student.id);
+            const totalA = ea.reduce((sum, x) => sum + x.value, 0);
+            const totalB = eb.reduce((sum, x) => sum + x.value, 0);
+            if (totalA !== totalB) return totalB - totalA;
+            // Exact stored values are classified without rounding or mutating the source data.
+            for (let level = 10; level >= 1; level--) {
+                const ca = ea.filter(x => x.countForLevel && x.value === level).length;
+                const cb = eb.filter(x => x.countForLevel && x.value === level).length;
+                if (ca !== cb) return cb - ca;
+            }
+            const zeroA = ea.filter(x => x.countForLevel && x.value === 0).length;
+            const zeroB = eb.filter(x => x.countForLevel && x.value === 0).length;
+            if (zeroA !== zeroB) return zeroA - zeroB; // fewer genuine zeros ranks higher
+            const idA = String(a.student.id), idB = String(b.student.id);
+            return idA.localeCompare(idB, undefined, { numeric: true }) || idA.localeCompare(idB);
+        }
+        function rankAccumulatedStudents(items) {
+            // Dense ranking: tied averages share a rank and the next distinct average
+            // receives the next rank (1, 1, 2, 2, 3), not the array position (1, 1, 3).
+            const sorted = items.slice().sort(compareAccumulatedStudents);
+            let previousAverage = null;
+            let denseRank = 0;
+            let hasPrevious = false;
+            return sorted.map(item => {
+                const stats = item.stats || calculateStudentStats(item.student.id);
+                const average = Number(stats.avg || 0);
+                if (!hasPrevious || Math.abs(average - previousAverage) > 1e-9) denseRank++;
+                previousAverage = average;
+                hasPrevious = true;
+                return { ...item, rank: denseRank };
+            });
+        }
+
         function renderRankingView() {
             const activeClass = appData.classes.find(c => c.id === appData.activeClassId);
             if (!activeClass) return;
 
+            // Also track here for direct leaderboard refreshes; qsTrack preserves recent deltas
+            // when the order has not changed, so this is safe after renderCurrentView tracking.
+            try { qsTrackAll(); } catch (e) { console.warn('Accumulated rank tracking skipped:', e); }
             const students = appData.students.filter(s => s.classId === activeClass.id);
             const lang = appData.language || 'vi';
             const t = translations[lang];
 
-            const studentStatsList = students.map(s => {
-                const stats = calculateStudentStats(s.id);
-                return { student: s, stats: stats };
-            }).sort((a, b) => b.stats.avg - a.stats.avg);
+            const studentStatsList = rankAccumulatedStudents(students.map(s => ({
+                student: s, stats: calculateStudentStats(s.id)
+            })));
 
             const top3Container = document.getElementById('top3PodiumContainer');
             let top3Html = '';
@@ -3675,7 +3777,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 tableHtml = `<tr><td colspan="7" class="py-8 text-center text-slate-400 font-medium">${t.lblNoStudentInClass}</td></tr>`;
             } else {
                 studentStatsList.forEach((item, index) => {
-                    const rank = index + 1;
+                    const rank = item.rank;
                     const s = item.student;
                     const st = item.stats;
                     const badge = getGradeRankBadge(st.avg, st.hasData);
@@ -3723,11 +3825,14 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 return { student: s, avg: stats.avg, count: stats.count, hasData: stats.hasData };
             });
 
-            const sortedList = [...studentStatsList].sort((a, b) => b.avg - a.avg);
+            const rankedMatrixList = rankAccumulatedStudents(students.map(student => {
+                const stats = calculateStudentStats(student.id);
+                return { student, avg: stats.avg, count: stats.count, hasData: stats.hasData, stats };
+            }));
 
             const rankMap = {};
-            sortedList.forEach((item, idx) => {
-                rankMap[item.student.id] = item.hasData ? (idx + 1) : '--';
+            rankedMatrixList.forEach(item => {
+                rankMap[item.student.id] = item.hasData ? item.rank : '--';
             });
 
             const startMonth = appData.startMonth || 9;
@@ -4729,7 +4834,7 @@ window.renderStudentProgress=function(){
    return vals;
  };
  const datasets=courses.map(c=>{const active=String(c.id)===String(appData.courseManager.activeCourseId),snap=c.snapshot;if(!active&&!snap)return null;const students=active?appData.students:(snap.students||[]);const clsList=active?appData.classes:(snap.classes||[]);const records=students.map(student=>{const id=String(student.id);const stats=active?calculateStudentStats(id):calculateSnapshotTotal(snap,id);const exam=examBreakdown(snap,id,active);return{id,student,stats,exam};});return {course:c,active,snap,records,clsList};}).filter(Boolean);
- const rankFor=(ds,id,key)=>{const target=ds.records.find(x=>x.id===id);if(!target)return null;const vals=ds.records.filter(x=>String(x.student?.classId)===String(target.student?.classId)).map(x=>({id:x.id,v:key==='avg'?Number(x.stats.avg):key==='exam'?x.exam.total:Number(x.stats.total)||0})).filter(x=>x.v!==null&&Number.isFinite(Number(x.v))).sort((a,b)=>b.v-a.v);const pos=vals.findIndex(x=>x.id===id);return pos<0?null:{rank:1+vals.filter(x=>x.v>vals[pos].v).length,count:vals.length};};
+ const rankFor=(ds,id,key)=>{const target=ds.records.find(x=>String(x.id)===String(id));if(!target)return null;const classmates=ds.records.filter(x=>String(x.student?.classId)===String(target.student?.classId));if(key==='avg'){const scoreSource=ds.active?appData.scores:(ds.snap?.scores||{});const entriesFor=studentId=>Object.entries(scoreSource).filter(([k])=>k.startsWith(String(studentId)+'_')).map(([k,v])=>({v,absent:!!v?.absent,has:v?.score!==''&&v?.score!==null&&v?.score!==undefined&&Number.isFinite(Number(v?.score))})).filter(x=>x.absent||x.has).map(x=>({value:x.absent?0:Number(x.v.score),count:x.has&&!x.absent}));const cmp=(a,b)=>{const av=Number(a.stats.avg)||0,bv=Number(b.stats.avg)||0;if(av!==bv)return bv-av;const ea=entriesFor(a.id),eb=entriesFor(b.id),ta=ea.reduce((z,x)=>z+x.value,0),tb=eb.reduce((z,x)=>z+x.value,0);if(ta!==tb)return tb-ta;for(let level=10;level>=1;level--){const ca=ea.filter(x=>x.count&&x.value===level).length,cb=eb.filter(x=>x.count&&x.value===level).length;if(ca!==cb)return cb-ca;}const za=ea.filter(x=>x.count&&x.value===0).length,zb=eb.filter(x=>x.count&&x.value===0).length;if(za!==zb)return za-zb;return String(a.id).localeCompare(String(b.id),undefined,{numeric:true})||String(a.id).localeCompare(String(b.id));};const vals=classmates.slice().sort(cmp);const pos=vals.findIndex(x=>String(x.id)===String(id));return pos<0?null:{rank:pos+1,count:vals.length};}const vals=classmates.map(x=>({id:x.id,v:key==='exam'?x.exam.total:Number(x.stats.total)||0})).filter(x=>x.v!==null&&Number.isFinite(Number(x.v))).sort((a,b)=>b.v-a.v);const pos=vals.findIndex(x=>String(x.id)===String(id));return pos<0?null:{rank:1+vals.filter(x=>x.v>vals[pos].v).length,count:vals.length};};
  const fmt=v=>v===null||v===undefined||!Number.isFinite(Number(v))?'—':Number(v).toFixed(2);
  const rows=datasets.map(ds=>{const rec=ds.records.find(x=>x.id===sid);if(!rec)return null;const cls=ds.clsList.find(x=>String(x.id)===String(rec.student?.classId));const count=ds.active?(rec.stats.count||0):Object.keys(ds.snap.scores||{}).filter(k=>k.startsWith(sid+'_')).length;return {id:ds.course.id,name:ds.course.name||'Khóa học',active:ds.active,stats:rec.stats,exam:rec.exam,cls:cls?.name||'—',count,avgRank:rankFor(ds,sid,'avg'),examRank:rankFor(ds,sid,'exam'),dataset:ds};}).filter(Boolean);
  const cards=rows.map((r,i)=>{const prev=i>0?rows[i-1]:null,delta=prev?Number(r.stats.total||0)-Number(prev.stats.total||0):null;const deltaHtml=delta===null?'':`<span class="text-xs font-bold ${delta>0?'text-emerald-700':delta<0?'text-rose-700':'text-slate-500'}">${delta>0?'+':''}${fmt(delta)} ${appData.language==='en'?'vs previous course':'so với khóa trước'}</span>`;const exam=r.exam;const examDetails=[['Nghe','Listening',exam.listening],['Nói','Speaking',exam.speaking],['Đọc','Reading',exam.reading],['Viết','Writing',exam.writing],['Ngữ pháp','Grammar',exam.grammar],['Từ vựng','Vocabulary',exam.vocabulary],['Trung bình Ngữ pháp + Từ vựng','Grammar + Vocabulary average',exam.grammarVocabulary]].map(([vi,en,v])=>`<div class="rounded-lg bg-slate-50 p-2"><div class="text-[11px] text-slate-500">${appData.language==='en'?en:vi}</div><b>${fmt(v)}</b></div>`).join('');return `<article class="border rounded-xl p-3 ${r.active?'border-indigo-300 bg-indigo-50/60':'border-slate-200 bg-white'}"><div class="flex flex-wrap items-start justify-between gap-2"><div><h3 class="font-black text-sm">${escapeHtml(r.name)} ${r.active?'<span class="text-[10px] rounded-full bg-indigo-600 text-white px-2 py-1 ml-1">'+(appData.language==='en'?'CURRENT':'ĐANG CHỌN')+'</span>':''}</h3><p class="text-xs text-slate-500 mt-1">${appData.language==='en'?'Class':'Lớp'}: ${escapeHtml(r.cls)} · ${r.count} ${appData.language==='en'?'score entries':'lượt điểm'}</p></div>${deltaHtml}</div><div class="grid grid-cols-2 gap-2 mt-3"><div class="rounded-lg bg-white border border-slate-100 p-2"><div class="text-[11px] text-slate-500">${appData.language==='en'?'Accumulated points':'Tổng điểm tích lũy'}</div><b class="text-lg">${fmt(r.stats.total)}</b></div><div class="rounded-lg bg-white border border-slate-100 p-2"><div class="text-[11px] text-slate-500">${appData.language==='en'?'Average score':'Điểm trung bình'}</div><b class="text-lg">${fmt(r.stats.avg)}</b><div class="text-xs font-bold text-indigo-700 mt-1">${r.avgRank?`🏆 ${appData.language==='en'?'Rank':'Top'} ${r.avgRank.rank}/${r.avgRank.count}`:'—'}</div></div><details class="col-span-2 rounded-lg bg-white border border-slate-100 p-2"><summary class="cursor-pointer list-none flex items-center justify-between gap-2"><span><span class="block text-[11px] text-slate-500">${appData.language==='en'?'Final exam':'Điểm thi cuối kỳ'}</span><b class="text-lg">${fmt(r.exam.total)}</b></span><span class="text-xs font-bold text-emerald-700">${r.examRank?`🏆 ${appData.language==='en'?'Rank':'Top'} ${r.examRank.rank}/${r.examRank.count}`:'—'} · ${appData.language==='en'?'View breakdown':'Xem điểm thành phần'}⌄</span></summary><div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-3">${examDetails}</div><p class="text-[11px] text-slate-500 mt-2">${appData.language==='en'?'Final score is averaged from available skills; Grammar + Vocabulary are combined as one category.':'Điểm thi cuối kỳ được tính trung bình từ các kỹ năng có điểm; Ngữ pháp + Từ vựng được gộp thành một mục khi tính điểm tổng.'}</p></details></div></article>`;}).join('');
