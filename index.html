@@ -3699,20 +3699,14 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             return idA.localeCompare(idB, undefined, { numeric: true }) || idA.localeCompare(idB);
         }
         function rankAccumulatedStudents(items) {
-            // Dense ranking: tied averages share a rank and the next distinct average
-            // receives the next rank (1, 1, 2, 2, 3), not the array position (1, 1, 3).
-            const sorted = items.slice().sort(compareAccumulatedStudents);
-            let previousAverage = null;
-            let denseRank = 0;
-            let hasPrevious = false;
-            return sorted.map(item => {
-                const stats = item.stats || calculateStudentStats(item.student.id);
-                const average = Number(stats.avg || 0);
-                if (!hasPrevious || Math.abs(average - previousAverage) > 1e-9) denseRank++;
-                previousAverage = average;
-                hasPrevious = true;
-                return { ...item, rank: denseRank };
-            });
+            // Unique accumulated ranking: every student receives a distinct position.
+            // compareAccumulatedStudents resolves ties by average, raw total, score-level
+            // counts (10 down to 1, then fewer genuine zeros), and finally stable student ID.
+            // The same function is used by the Ranking tab, Score Matrix, and rank tracking.
+            return items.slice().sort(compareAccumulatedStudents).map((item, index) => ({
+                ...item,
+                rank: index + 1
+            }));
         }
 
         function renderRankingView() {
