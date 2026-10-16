@@ -4305,7 +4305,6 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 </div>`;
             }).join('');
             top3Container.innerHTML = top3Html;
-            qsCountUp(top3Container, { fromZero: true, delay: 350, dur: 1200 });
 
             const tbody = document.getElementById('rankingTableBody');
             let tableHtml = '';
@@ -4343,7 +4342,6 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             }
 
             tbody.innerHTML = tableHtml;
-            qsCountUp(tbody, { fromZero: true, dur: 900 });
         }
 
         function renderMatrix() {
