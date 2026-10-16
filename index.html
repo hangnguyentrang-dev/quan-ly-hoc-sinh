@@ -187,7 +187,6 @@
         .stage-av { position:relative; }
         .stage-avatar { width:4rem; height:4rem; display:grid; place-items:center; font-size:2rem; border-radius:9999px; background:#fff; border:3px solid var(--c); box-shadow:0 0 26px var(--glow); animation:stBob 3s ease-in-out infinite; transition:transform .3s cubic-bezier(.2,.9,.3,1.4); }
         .stage-slot.s1 .stage-avatar { width:5rem; height:5rem; font-size:2.5rem; }
-        .stage-slot:hover .stage-avatar { transform:scale(1.1) rotate(-6deg); }
         .stage-tie-avatars { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:.35rem; max-width:100%; margin:0 auto; }
         .stage-tie-avatar { display:grid; place-items:center; width:3.35rem; height:3.35rem; flex:0 1 auto; border-radius:9999px; background:#fff; border:2px solid var(--c); box-shadow:0 0 14px var(--glow); font-size:1.65rem; animation:stBob 2.5s ease-in-out infinite; animation-delay:var(--avatar-delay,0s); }
         .stage-slot.s1 .stage-tie-avatar { width:3.8rem; height:3.8rem; font-size:1.9rem; }
@@ -199,11 +198,6 @@
         .stage-name { margin-top:.55rem; max-width:100%; color:#fff; font-weight:900; font-size:.95rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .stage-score { font-weight:900; font-size:1.6rem; line-height:1.15; color:var(--c); text-shadow:0 0 14px var(--glow); font-variant-numeric:tabular-nums; }
         .stage-slot.s1 .stage-score { font-size:2.15rem; }
-        /* Compact tied-student score cards so the podium stays balanced without removing motion effects. */
-        .exam-stage .stage-person > div.w-full.mt-2 > div { padding: .35rem .45rem !important; margin-bottom: .3rem !important; border-radius: .65rem !important; }
-        .exam-stage .stage-person > div.w-full.mt-2 > div > div:first-child { font-size: 1.1rem; line-height: 1.2; }
-        .exam-stage .stage-person .stage-name { font-size: .76rem; line-height: 1.15; margin-top: .2rem; white-space: normal; }
-        .exam-stage .stage-person .stage-score, .exam-stage .stage-slot.s1 .stage-person .stage-score { font-size: 1rem; line-height: 1.1; margin-top: .15rem; }
         .stage-label { font-size:9px; font-weight:800; letter-spacing:.14em; color:rgba(255,255,255,.6); text-transform:uppercase; }
         .stage-step { width:100%; display:flex; flex-direction:column; align-items:center; padding-top:.55rem; border-radius:.9rem .9rem 0 0; color:#0f172a; background:linear-gradient(180deg,var(--c),rgba(255,255,255,.07)); box-shadow:inset 0 2px 0 rgba(255,255,255,.55); transform-origin:bottom; }
         .stage-slot.s1 .stage-step { height:8.5rem; } .stage-slot.s2 .stage-step { height:6rem; } .stage-slot.s3 .stage-step { height:4.6rem; }
@@ -249,6 +243,78 @@
         @keyframes fgWave { 0%, 100% { transform:rotate(-14deg); } 50% { transform:rotate(16deg); } }
         @keyframes fgSwing { 0%, 100% { transform:rotate(-6deg); } 50% { transform:rotate(6deg); } }
         @media (max-width:640px) { .stage-slot { --av:3.2rem; } .stage-slot.s1 { --av:4rem; } }
+
+        /* ===== Final exam podium v2: bright stage + one waving character per student ===== */
+        .exam-stage { background:radial-gradient(ellipse at 50% -10%,#fff7d6 0%,#eef2ff 46%,#f5f3ff 74%,#fdf2f8 100%); box-shadow:inset 0 0 0 1px rgba(99,102,241,.14), 0 14px 32px rgba(99,102,241,.14); }
+        .exam-stage .stage-spot { background:linear-gradient(to bottom,rgba(251,191,36,.30),rgba(251,191,36,0) 78%); }
+        .exam-stage .stage-slot.s1 { --c:#f59e0b; --c2:#fde68a; --cd:#b45309; --glow:rgba(245,158,11,.55); }
+        .exam-stage .stage-slot.s2 { --c:#94a3b8; --c2:#e2e8f0; --cd:#475569; --glow:rgba(100,116,139,.45); }
+        .exam-stage .stage-slot.s3 { --c:#f97316; --c2:#fed7aa; --cd:#c2410c; --glow:rgba(249,115,22,.45); }
+        .exam-stage .stage-label { color:#64748b; }
+        .exam-stage .stage-name { color:#1e293b; text-shadow:none; }
+        .exam-stage .stage-score { color:var(--cd); text-shadow:none; -webkit-text-stroke:0; }
+        .exam-stage .stage-step { color:#1e293b; background:linear-gradient(180deg,var(--c),var(--c2)); box-shadow:inset 0 2px 0 rgba(255,255,255,.7), 0 -4px 14px var(--glow); }
+        .exam-stage .fg-body { fill:var(--c2); fill-opacity:.95; stroke:var(--c); stroke-opacity:.9; }
+        .exam-stage .fg-arm-o { stroke:var(--c); stroke-opacity:.9; }
+        .exam-stage .fg-arm-i { stroke:var(--c2); }
+        .exam-stage .fg-spark { fill:var(--c); }
+        .stage-slot { --base:4rem; } .stage-slot.s1 { --base:5rem; }
+        .stage-people { display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-end; gap:.5rem .1rem; width:100%; }
+        .stage-char { --av:calc(var(--base) * var(--sc,1)); position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; width:calc(var(--av) * 1.9); min-width:3.4rem; padding-bottom:.35rem; cursor:pointer; transition:transform .3s cubic-bezier(.2,.9,.3,1.5), filter .3s; }
+        .stage-char:hover { transform:translateY(-12px) scale(1.14); filter:drop-shadow(0 10px 12px var(--glow)); z-index:6; }
+        .exam-stage .stage-char .stage-avatar { width:var(--av); height:var(--av); font-size:calc(var(--av) * .52); transition:box-shadow .3s, transform .3s; }
+        .stage-char:hover .stage-avatar { box-shadow:0 0 0 4px var(--c2), 0 0 32px var(--glow); transform:rotate(-8deg) scale(1.08); animation-duration:.6s; }
+        .exam-stage .stage-char .stage-crown { font-size:calc(var(--av) * .42); margin-bottom:calc(var(--av) * -.04); }
+        .exam-stage .stage-char .stage-medal { font-size:calc(var(--av) * .36); right:calc(var(--av) * -.12); bottom:calc(var(--av) * -.06); }
+        .exam-stage .stage-char .stage-name { margin-top:calc(var(--av) * .22); font-size:clamp(.62rem,calc(var(--av) * .27),.95rem); line-height:1.15; white-space:normal; overflow-wrap:anywhere; transition:color .25s; }
+        .exam-stage .stage-char .stage-score { font-size:clamp(.8rem,calc(var(--av) * .4),1.6rem); line-height:1.1; margin-top:.1rem; }
+        .stage-char:hover .stage-name { color:var(--cd); }
+        .stage-char .fg-wave, .stage-char .fg-cheer-l, .stage-char .fg-cheer-r, .stage-char .fg-medal, .stage-char .fg-trophy { animation-delay:var(--ph,0s); }
+        .stage-char:hover .fg-wave { animation-duration:.38s; }
+        .stage-char:hover .fg-cheer-l, .stage-char:hover .fg-cheer-r { animation-duration:.45s; }
+        .stage-char:hover .fg-trophy { animation-duration:.55s; }
+        .stage-char:hover .fg-medal { animation-duration:.7s; }
+        .stage-char:hover .fg-spark { animation-duration:.8s; }
+        .stage-char:hover .stage-fig { animation-duration:.7s; }
+        .stage-burst { position:absolute; left:50%; top:30%; opacity:0; font-style:normal; font-size:calc(var(--av) * .34); pointer-events:none; z-index:7; }
+        .stage-char:hover .stage-burst { animation:stBurst .95s ease-out infinite; animation-delay:calc(var(--k) * .15s); }
+        @keyframes stBurst { 0% { opacity:0; transform:translate(-50%,0) scale(.3); } 25% { opacity:1; } 100% { opacity:0; transform:translate(calc(-50% + var(--bx)),var(--by)) scale(1.2) rotate(25deg); } }
+        @media (max-width:640px) { .stage-slot { --base:3.2rem; } .stage-slot.s1 { --base:4rem; } }
+        @media (prefers-reduced-motion: reduce) { .stage-char, .stage-char * { transition:none !important; } .stage-burst { display:none; } }
+/* ===== Final exam: readable names, colored by rank (no outline, no tag) ===== */
+.exam-stage .stage-slot.s1{--cn:#92400e}.exam-stage .stage-slot.s2{--cn:#334155}.exam-stage .stage-slot.s3{--cn:#9a3412}
+.exam-stage .stage-char .stage-name{color:var(--cn);font-weight:900;text-shadow:0 0 6px rgba(255,255,255,.9),0 0 2px rgba(255,255,255,.9);font-size:clamp(.72rem,calc(var(--av) * .3),1.05rem)}
+.exam-stage .stage-char:hover .stage-name{color:var(--cn)}
+#finalExamRankingBody .fe-n1{color:#92400e}#finalExamRankingBody .fe-n2{color:#334155}#finalExamRankingBody .fe-n3{color:#9a3412}
+/* ===== Top-3 rank color bar: kept on hover (final exam + leaderboard) ===== */
+.hl-row.hl-r1{--rc:#f59e0b;--rb:#fffbeb;--rh:#fef3c7;--rn:#92400e}
+.hl-row.hl-r2{--rc:#94a3b8;--rb:#f8fafc;--rh:#e2e8f0;--rn:#334155}
+.hl-row.hl-r3{--rc:#f97316;--rb:#fff7ed;--rh:#ffedd5;--rn:#9a3412}
+.hl-row.hl-r1>td,.hl-row.hl-r2>td,.hl-row.hl-r3>td{background-color:var(--rb)}
+.hl-row.hl-r1>td:first-child,.hl-row.hl-r2>td:first-child,.hl-row.hl-r3>td:first-child{box-shadow:inset 5px 0 0 var(--rc)}
+.hl-row.hl-r1:hover>td,.hl-row.hl-r2:hover>td,.hl-row.hl-r3:hover>td{background-color:var(--rh) !important}
+.hl-row.hl-r1:hover>td:first-child,.hl-row.hl-r2:hover>td:first-child,.hl-row.hl-r3:hover>td:first-child{box-shadow:inset 6px 0 0 var(--rc)}
+.hl-row.hl-r1:hover>td:nth-child(2),.hl-row.hl-r2:hover>td:nth-child(2),.hl-row.hl-r3:hover>td:nth-child(2){color:var(--rn)}
+
+
+        /* ===== Row / card highlight on hover (final exam table + leaderboard tab) ===== */
+        .hl-row { position:relative; transition:transform .22s cubic-bezier(.2,.9,.3,1.3), box-shadow .22s, filter .22s; cursor:default; }
+        .hl-row > td { transition:background-color .2s, color .2s; }
+        .hl-row:hover { transform:scale(1.015); z-index:4; filter:drop-shadow(0 8px 12px rgba(79,70,229,.25)); }
+        .hl-row:hover > td { background-color:#eef2ff !important; }
+        .hl-row:hover > td:first-child { box-shadow:inset 5px 0 0 #6366f1; border-radius:.75rem 0 0 .75rem; }
+        .hl-row:hover > td:last-child { border-radius:0 .75rem .75rem 0; }
+        .hl-row:hover > td:nth-child(2) { color:#4338ca; }
+        .hl-row .hl-ico { display:inline-block; transition:transform .3s cubic-bezier(.2,.9,.3,1.6); }
+        .hl-row:hover .hl-ico { transform:scale(1.4) rotate(-10deg); }
+        .hl-row:hover > td:first-child > span { transform:scale(1.18); }
+        .hl-row > td:first-child > span { transition:transform .25s cubic-bezier(.2,.9,.3,1.6); }
+        .rank-card:hover { filter:brightness(1.07) saturate(1.1); }
+        .rank-card:hover .rk-avatar { transform:scale(1.12) rotate(-6deg); }
+        .rank-card .rk-avatar { transition:transform .3s cubic-bezier(.2,.9,.3,1.6); }
+        .rank-card:hover .rk-ring { animation-duration:1.2s; }
+        .rank-card:hover .rk-spark { animation-duration:1s; }
+        @media (prefers-reduced-motion: reduce) { .hl-row, .hl-row * { transition:none !important; transform:none !important; filter:none !important; } }
         thead th.col-hl { background-color:#4338ca !important; color:#fff !important; }
         .avg-cell { background:#eef2ff; }
         .score-row:hover > td.avg-cell { background-color:#c7d2fe !important; }
@@ -3153,8 +3219,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 
                     const spark = (x, y, sz, dl) => `<path class="fg-spark" style="animation-delay:${dl}s" d="M${x} ${y - sz}L${x + sz * .28} ${y - sz * .28}L${x + sz} ${y}L${x + sz * .28} ${y + sz * .28}L${x} ${y + sz}L${x - sz * .28} ${y + sz * .28}L${x - sz} ${y}L${x - sz * .28} ${y - sz * .28}Z"/>`;
                     const bodyPath = 'M50 160 Q50 100 110 100 Q170 100 170 160 L170 262 L50 262 Z';
-                    const figure = (i) => {
-                        const id = 'fg' + i;
+                    const figure = (i, uid = 0) => {
+                        const id = 'fg' + i + '_' + uid;
                         const defs = `<defs><linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0.5" stop-color="#fff"/><stop offset="0.77" stop-color="#000"/></linearGradient><mask id="${id}m" maskUnits="userSpaceOnUse" x="-60" y="-80" width="340" height="360"><rect x="-60" y="-80" width="340" height="360" fill="url(#${id}f)"/></mask><linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff7c2"/><stop offset=".5" stop-color="${['#fbbf24', '#e2e8f0', '#fb923c'][i]}"/><stop offset="1" stop-color="${['#b45309', '#64748b', '#9a3412'][i]}"/></linearGradient><clipPath id="${id}c"><path d="M169 -16 H203 C203 8 195 18 186 18 C177 18 169 8 169 -16 Z"/></clipPath></defs>`;
                         if (i === 0) {
                             return `<svg class="stage-fig" viewBox="0 0 220 260" aria-hidden="true">${defs}
@@ -3190,22 +3256,25 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     const slots = [1, 2, 3].map((rank, idx) => {
                         const group = top.find(g => g.rank === rank);
                         const people = group ? group.students : [];
-                        const x = people[0] || null;
+                        const n = people.length;
                         const delay = [0.5, 0, 0.25][idx];
                         const medalsForRank = ['🥇','🥈','🥉'];
                         const label = labels[idx];
-                        const peopleHtml = people.map(person => `<div class="w-full min-w-0 rounded-xl border border-white/20 bg-slate-950/35 px-2 py-2 mb-2">
-                            <div class="text-2xl">${escapeHtml(person.student.icon || '🎓')}</div>
-                            <div class="stage-name whitespace-normal break-words" title="${escapeHtml(person.student.name)}">${escapeHtml(person.student.name)}</div>
-                            <div class="stage-score">${person.result.total.toFixed(2)}</div>
-                            <div class="text-[10px] font-black text-white/80">${tr('HẠNG','RANK')} ${rank}</div>
+                        // Tied students share the podium: shrink each character as the group grows.
+                        const sc = n <= 1 ? 1 : n === 2 ? .8 : n === 3 ? .64 : n === 4 ? .52 : .44;
+                        const bursts = [['✨','-1.6rem','-2.2rem'],['🎉','1.7rem','-2.4rem'],['⭐','-2rem','-.6rem'],['✨','2.1rem','-.9rem'],['🎊','0rem','-3rem']]
+                            .map((b, k) => `<i class="stage-burst" style="--k:${k};--bx:${b[1]};--by:${b[2]}" aria-hidden="true">${b[0]}</i>`).join('');
+                        const chars = people.map((person, k) => `<div class="stage-char" style="--sc:${sc};--ph:${(k * .18).toFixed(2)}s" title="${escapeHtml(person.student.name)}">
+                            ${idx === 0 ? '<span class="stage-crown">👑</span>' : ''}
+                            <div class="stage-av">${figure(idx, k)}<div class="stage-avatar">${escapeHtml(person.student.icon || '🎓')}</div><span class="stage-medal">${medalsForRank[idx]}</span>${bursts}</div>
+                            <div class="stage-name" title="${escapeHtml(person.student.name)}">${escapeHtml(person.student.name)}</div>
+                            <div class="stage-score" data-cu="fep:${person.student.id}" data-to="${person.result.total}" data-dec="2">${person.result.total.toFixed(2)}</div>
                         </div>`).join('');
-                        return `<div class="stage-slot s${idx + 1} ${people.length ? '' : 'st-empty'}" style="--d:${delay}s">
+                        return `<div class="stage-slot s${idx + 1} ${n ? '' : 'st-empty'}" style="--d:${delay}s">
                             <div class="stage-person">
-                                ${idx === 0 && people.length ? '<span class="stage-crown">👑</span>' : ''}
-                                ${people.length ? `<div class="stage-av">${figure(idx)}<div class="stage-tie-avatars ${people.length > 6 ? 'very-many' : people.length > 3 ? 'many' : ''}" aria-label="${people.length} ${tr('học sinh đồng hạng','tied students')}">${people.map((person, personIndex) => `<span class="stage-tie-avatar" style="--avatar-delay:${(personIndex * .12).toFixed(2)}s" title="${escapeHtml(person.student.name)}">${escapeHtml(person.student.icon || '🎓')}</span>`).join('')}</div><span class="stage-medal">${medalsForRank[idx]}</span></div>` : `<div class="stage-av"><div class="stage-avatar">?</div></div>`}
-                                <div class="stage-label mt-2">${label} · ${tr('HẠNG','RANK')} ${rank}</div>
-                                <div class="w-full mt-2">${peopleHtml || `<div class="stage-name">—</div><div class="stage-score">—</div>`}</div>
+                                ${n ? `<div class="stage-people" aria-label="${n} ${tr('học sinh','students')}">${chars}</div>` : `<div class="stage-av"><div class="stage-avatar">?</div></div>`}
+                                <div class="stage-label mt-2">${label} · ${tr('HẠNG','RANK')} ${rank}${n > 1 ? ` · ${n} ${tr('đồng hạng','tied')}` : ''}</div>
+                                ${n ? '' : '<div class="stage-name">—</div><div class="stage-score">—</div>'}
                             </div>
                             <div class="stage-step"><span>${rank}</span><em>${label}</em></div>
                         </div>`;
@@ -3215,7 +3284,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     qsCountUp(box, { fromZero: true, delay: 700, dur: 1200 });
                 }
             }
-            document.getElementById('finalExamRankingBody').innerHTML = sorted.map((x,i)=>`<tr class="${x.rank===1?'bg-amber-50':x.rank===2?'bg-slate-50':x.rank===3?'bg-orange-50':''} ${qsRowFlash('fe', activeClass.id, x.student.id, x.result.total!==null)}"><td class="p-3 font-black">${x.rank===null?'—':x.rank===1?'🥇':x.rank===2?'🥈':x.rank===3?'🥉':x.rank}</td><td class="p-3 font-semibold">${x.student.icon||'🎓'} ${x.student.name} <span class="ml-1.5">${qsDeltaHtml('fe', activeClass.id, x.student.id, x.result.total!==null)}</span></td><td class="p-3 text-center">${x.result.categories.listening===null?'—':x.result.categories.listening.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.speaking===null?'—':x.result.categories.speaking.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.reading===null?'—':x.result.categories.reading.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.writing===null?'—':x.result.categories.writing.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.grammar===null?'—':x.result.categories.grammar.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.vocabulary===null?'—':x.result.categories.vocabulary.toFixed(2)}</td><td class="p-3 text-center font-bold">${x.result.categories.grammarVocabulary===null?'—':x.result.categories.grammarVocabulary.toFixed(2)}</td><td class="p-3 text-center font-black text-indigo-700">${x.result.total===null?'—':`<span data-cu="fet:${x.student.id}" data-to="${x.result.total}" data-dec="2">${x.result.total.toFixed(2)}</span>`}</td></tr>`).join('');
+            document.getElementById('finalExamRankingBody').innerHTML = sorted.map((x,i)=>`<tr class="hl-row ${x.rank===1?'hl-r1':x.rank===2?'hl-r2':x.rank===3?'hl-r3':''}"><td class="p-3 font-black">${x.rank===null?'—':x.rank===1?'🥇':x.rank===2?'🥈':x.rank===3?'🥉':x.rank}</td><td class="p-3 font-extrabold ${x.rank===1?'fe-n1':x.rank===2?'fe-n2':x.rank===3?'fe-n3':'text-slate-800'}"><span class="hl-ico">${x.student.icon||'🎓'}</span> ${x.student.name}</td><td class="p-3 text-center">${x.result.categories.listening===null?'—':x.result.categories.listening.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.speaking===null?'—':x.result.categories.speaking.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.reading===null?'—':x.result.categories.reading.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.writing===null?'—':x.result.categories.writing.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.grammar===null?'—':x.result.categories.grammar.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.vocabulary===null?'—':x.result.categories.vocabulary.toFixed(2)}</td><td class="p-3 text-center font-bold">${x.result.categories.grammarVocabulary===null?'—':x.result.categories.grammarVocabulary.toFixed(2)}</td><td class="p-3 text-center font-black text-indigo-700">${x.result.total===null?'—':`<span data-cu="fet:${x.student.id}" data-to="${x.result.total}" data-dec="2">${x.result.total.toFixed(2)}</span>`}</td></tr>`).join('');
             qsCountUp(document.getElementById('finalExamRankingBody'), { fromZero: true, dur: 900 });
             function rValue(student, key) { const v = finalExamRecord(student.id)[key]; return v === '' || v === null || v === undefined ? '—' : Number(v).toFixed(2); }
         }
@@ -4256,10 +4325,10 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     else if (rank === 3) rankBadge = `<span class="w-8 h-8 inline-flex items-center justify-center rounded-full bg-amber-700 text-white text-xs font-bold shadow">${rank}</span>`;
 
                     tableHtml += `
-                        <tr class="hover:bg-slate-50 transition ${qsRowFlash('rk', activeClass.id, s.id, st.hasData)}">
+                        <tr class="hl-row ${rank===1?'hl-r1':rank===2?'hl-r2':rank===3?'hl-r3':''} ${qsRowFlash('rk', activeClass.id, s.id, st.hasData)}">
                             <td class="py-3.5 px-4 text-center">${rankBadge}</td>
                             <td class="py-3.5 px-4 font-bold text-slate-800">
-                                <span class="mr-2">${s.icon || '🎓'}</span> ${getStudentDisplayName(s)} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span>
+                                <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> ${getStudentDisplayName(s)} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span>
                             </td>
                             <td class="py-3.5 px-4 text-center font-black text-amber-600"><span data-cu="rkt:${s.id}:p" data-to="${s.rewardPoints || 0}" data-dec="0">${s.rewardPoints || 0}</span> Pts</td>
                             <td class="py-3.5 px-4 text-center font-semibold text-slate-600"><span data-cu="rkt:${s.id}:n" data-to="${st.attendedCount}" data-dec="0">${st.attendedCount}</span></td>
