@@ -284,7 +284,8 @@
 td.grid-cell.qs-sel{outline:3px solid #4f46e5 !important;outline-offset:-3px;background-color:#e0e7ff !important;color:#1e1b4b;position:relative;z-index:3;font-weight:900}
 td.grid-cell.qs-sel.cell-absent{background-color:#b91c1c !important;color:#fff}
 td.grid-cell.ds-target{outline:3px solid #e11d48 !important;outline-offset:-3px;position:relative;z-index:4}
-        td.grid-cell.cell-exam{color:#3b0764 !important;font-weight:900 !important;border-left:3px solid #7e22ce !important}
+        td.grid-cell.cell-exam, .score-row > td.grid-cell.cell-exam, .score-row:hover > td.grid-cell.cell-exam{background-color:#fcd34d !important;color:#3b0764 !important;font-weight:900 !important;border-left:3px solid #7e22ce !important}
+        .score-row > td.grid-cell.cell-exam:hover{background-color:#f59e0b !important;color:#2e1065 !important;outline:2px solid #6b21a8;outline-offset:-2px}
 td.grid-cell.qs-typing{background-color:#c7d2fe !important;color:#312e81;font-weight:900}
 td.grid-cell.qs-typing::after{content:"";display:inline-block;width:1px;height:1em;margin-left:1px;background:#4f46e5;vertical-align:-2px;animation:qsBlink 1s steps(1) infinite}
 td.grid-cell.qs-flash{animation:qsFlash .7s ease-out}
@@ -1631,6 +1632,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             qg_type_plus_exam: "Cộng điểm Bài Kiểm Tra",
             no_exam_cell_for_gift: "Không tìm thấy Bài Kiểm Tra phù hợp để áp dụng quà này!",
             exam_tag: "[Bài Kiểm Tra]",
+            gift_skip_exam: "Ô này là điểm Bài Kiểm Tra, quà này không áp dụng được. Hãy dùng quà Cộng điểm Bài Kiểm Tra!",
             qg_detail_exam: "Học sinh: {student} · Bài Kiểm Tra ngày {date}: {before}đ ➔ {after}đ",
             qg_exam_done: "Đã cộng +{delta}đ vào Bài Kiểm Tra ngày {date}: {before}đ ➔ {after}đ."
         });
@@ -1640,6 +1642,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             qg_type_plus_exam: "Exam Score Bonus",
             no_exam_cell_for_gift: "No eligible Exam Score found to apply this gift!",
             exam_tag: "[Exam Score]",
+            gift_skip_exam: "This cell is an Exam Score, so this gift cannot be applied. Use an Exam Score Bonus gift instead!",
             qg_detail_exam: "Student: {student} · Exam Score {date}: {before} pts ➔ {after} pts",
             qg_exam_done: "Added +{delta} to the Exam Score on {date}: {before} ➔ {after}."
         });
@@ -2291,7 +2294,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 let best = null;
                 dates.forEach((d, idx) => {
                     const c = sc[`${studentId}_${d}`];
-                    if (!qgHasValue(c) || (c.absent && !includeAbsent)) return;
+                    if (!qgHasValue(c) || c.isExam || (c.absent && !includeAbsent)) return;
                     const v = qgVal(c);
                     if (!best || v < best.v - 1e-9 || (Math.abs(v - best.v) < 1e-9 && idx > best.idx)) best = { key: d, idx, v, absent: !!c.absent };
                 });
@@ -2326,7 +2329,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 let best = null;
                 dates.forEach((d, idx) => {
                     const c = sc[`${studentId}_${d}`];
-                    if (!qgHasValue(c) || c.absent) return;
+                    if (!qgHasValue(c) || c.absent || c.isExam) return;
                     const v = qgVal(c);
                     if (!matchGiftCond(gift, v)) return;
                     const dist = Math.abs(v - m);
@@ -4419,6 +4422,9 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     isApplicable = true;
                 }
 
+                const openCell = appData.scores[`${student.id}_${document.getElementById('modalDateStr').value}`];
+                if (openCell && openCell.isExam && ['plus', 'change', 'delete_score', 'plus_match'].includes(invItem.type)) isApplicable = false;
+
                 if (isApplicable) {
                     validGiftsCount++;
                     const btn = document.createElement('button');
@@ -4459,6 +4465,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             if (!findGift()) { uiToast('dsToastNoGift', 'warning'); return; }
             const cell = appData.scores[key];
             if (!hasValue(cell)) { uiToast('dsToastEmpty', 'warning'); return; }
+            if (cell.isExam) { uiToast('gift_skip_exam', 'warning'); return; }
 
             const lang = appData.language || 'vi';
             const t = translations[lang];
@@ -4531,6 +4538,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             const student = appData.students.find(s => s.id === studentId);
             const owned = student && Array.isArray(student.inventory) && student.inventory.find(i => i.invId === invItem.invId);
             if (!owned) { uiToast('qg_gift_missing', 'warning'); return; }
+            if (cell && cell.isExam) { uiToast('gift_skip_exam', 'warning'); return; }
             const cur = (cell && !cell.absent && cell.score !== undefined && cell.score !== null) ? parseFloat(cell.score) : NaN;
             const delta = parseFloat(invItem.deltaScore);
             const after = Math.min(10, Math.max(0, Math.round((cur + delta) * 10) / 10));
@@ -4592,6 +4600,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             const dateStr = document.getElementById('modalDateStr').value;
             const key = `${studentId}_${dateStr}`;
             const existing = appData.scores[key];
+            if (existing && existing.isExam) { uiToast('gift_skip_exam', 'warning'); return; }
 
             if (invItem.type === 'plus' && invItem.deltaScore !== undefined) {
                 let currentScore = (existing && existing.score !== undefined && existing.score !== null) ? parseFloat(existing.score) : 0;
