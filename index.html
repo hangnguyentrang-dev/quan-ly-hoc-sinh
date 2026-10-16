@@ -276,12 +276,15 @@
 #qsQuickHint{color:#64748b}
 .qs-toggle{display:inline-flex;align-items:center;gap:.4rem;border-radius:9999px;padding:.3rem .75rem;font-weight:800;border:1px solid #cbd5e1;background:#fff;color:#475569;transition:.15s}
 .qs-toggle.on{background:#4f46e5;border-color:#4f46e5;color:#fff;box-shadow:0 2px 8px rgba(79,70,229,.35)}
+.qs-toggle.qs-toggle-test.on{background:#7e22ce;border-color:#7e22ce;box-shadow:0 2px 8px rgba(126,34,206,.4)}
 #qsQuickHint{color:#64748b}
 #qsQuickHint kbd,.qs-kbd{display:inline-block;border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:4px;background:#fff;padding:0 .35rem;font-size:10px;font-weight:800;color:#334155;font-family:inherit}
 #qsStatus{margin-left:auto;font-weight:800;color:#059669;opacity:0;transition:opacity .25s}
 #qsStatus.show{opacity:1}
 td.grid-cell.qs-sel{outline:3px solid #4f46e5 !important;outline-offset:-3px;background-color:#e0e7ff !important;color:#1e1b4b;position:relative;z-index:3;font-weight:900}
 td.grid-cell.qs-sel.cell-absent{background-color:#b91c1c !important;color:#fff}
+td.grid-cell.ds-target{outline:3px solid #e11d48 !important;outline-offset:-3px;position:relative;z-index:4}
+        td.grid-cell.cell-exam{color:#3b0764 !important;font-weight:900 !important;border-left:3px solid #7e22ce !important}
 td.grid-cell.qs-typing{background-color:#c7d2fe !important;color:#312e81;font-weight:900}
 td.grid-cell.qs-typing::after{content:"";display:inline-block;width:1px;height:1em;margin-left:1px;background:#4f46e5;vertical-align:-2px;animation:qsBlink 1s steps(1) infinite}
 td.grid-cell.qs-flash{animation:qsFlash .7s ease-out}
@@ -296,6 +299,24 @@ td.grid-cell.qs-bad{animation:qsShake .35s}
 #qsFab .qs-badge{min-width:1.4rem;height:1.4rem;border-radius:9999px;background:#fbbf24;color:#78350f;font-size:11px;display:none;align-items:center;justify-content:center;padding:0 .35rem}
 #qsFab.has-sel .qs-badge{display:inline-flex}
 body.qs-presenting #qsFab{display:none !important}
+#qgFab{position:fixed;right:1.25rem;bottom:4.9rem;z-index:40;display:none;align-items:center;gap:.5rem;border-radius:9999px;background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;font-weight:900;font-size:14px;padding:.8rem 1.25rem;box-shadow:0 10px 28px rgba(234,88,12,.45);transition:transform .15s,box-shadow .15s}
+#qgFab:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(234,88,12,.55)}
+#qgFab .qg-badge{min-width:1.4rem;height:1.4rem;border-radius:9999px;background:#fff;color:#c2410c;font-size:11px;display:none;align-items:center;justify-content:center;padding:0 .35rem}
+#qgFab.has-gifts .qg-badge{display:inline-flex}
+body.qs-presenting #qgFab{display:none !important}
+#qgDrawer{position:fixed;inset:0;z-index:97;display:none;justify-content:flex-end;background:rgba(15,23,42,.5);backdrop-filter:blur(2px)}
+#qgDrawer.open{display:flex}
+#qgDrawer .qg-panel{background:#fff;width:100%;max-width:30rem;height:100%;display:flex;flex-direction:column;box-shadow:-20px 0 50px rgba(15,23,42,.3)}
+.qg-stu{border:1px solid #e2e8f0;border-radius:.9rem;padding:.6rem .7rem;background:#fff}
+.qg-stu-h{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:13px;font-weight:800;color:#1e293b;margin-bottom:.4rem}
+.qg-pts{font-size:11px;font-weight:900;color:#d97706}
+.qg-gift{display:flex;align-items:center;gap:.6rem;border:1px solid #fde68a;background:#fffbeb;border-radius:.7rem;padding:.4rem .55rem;margin-top:.35rem}
+.qg-gift>i{color:#d97706;width:1.1rem;text-align:center}
+.qg-gn{font-size:12px;font-weight:800;color:#78350f;overflow:hidden;text-overflow:ellipsis}
+.qg-gt{font-size:10px;font-weight:700;color:#b45309}
+.qg-use{margin-left:auto;flex:none;border-radius:.6rem;background:#ea580c;color:#fff;font-size:11px;font-weight:900;padding:.35rem .8rem}
+.qg-use:hover{background:#c2410c}
+.qg-note{margin-left:auto;font-size:10px;font-weight:700;color:#92400e;text-align:right}
 #qsBulkModal{position:fixed;inset:0;z-index:96;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.55);backdrop-filter:blur(3px);padding:.75rem}
 #qsBulkModal.open{display:flex}
 #qsBulkModal .qs-card{background:#fff;border-radius:1.25rem;box-shadow:0 25px 60px rgba(15,23,42,.35);width:100%;max-width:34rem;max-height:92vh;display:flex;flex-direction:column;overflow:hidden}
@@ -874,6 +895,11 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                         <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblCustomScore">Hoặc nhập điểm lẻ (0 - 10):</label>
                         <input type="number" step="0.1" min="0" max="10" id="modalScoreInput" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm font-bold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
                     </div>
+
+                    <label class="flex items-center p-2.5 border rounded-lg cursor-pointer bg-purple-50 hover:bg-purple-100 border-purple-200 transition">
+                        <input type="checkbox" id="modalIsExamCheckbox" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500">
+                        <span class="ml-2 font-bold text-purple-800 text-xs" data-i18n="chkIsExam">☑️ Đánh dấu đây là điểm Bài Kiểm Tra</span>
+                    </label>
                 </div>
 
                 <div class="mt-6 flex justify-end space-x-2">
@@ -1021,12 +1047,27 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                         <option value="plus" data-i18n="optTypePlus">Cộng dồn điểm vào ô (+0.5đ, +1đ...)</option>
                         <option value="add" data-i18n="optTypeAdd">Tạo điểm mới cho ô trống (Điểm 10, Điểm 9...)</option>
                         <option value="change" data-i18n="optTypeChange">Sửa điểm đã có trong ô (Sửa thành 10...)</option>
+                        <option value="delete_score" data-i18n="optTypeDeleteScore">Xóa điểm đã có trong ô (Xóa điểm, kể cả ô 0 đỏ do vắng)</option>
+                        <option value="plus_match" data-i18n="optTypePlusMatch">Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)</option>
+                        <option value="plus_exam" data-i18n="optTypePlusExam">Cộng dồn điểm vào Bài Kiểm Tra (+0.5đ, +1đ...)</option>
                     </select>
                 </div>
 
                 <div id="giftValueInputContainer" class="mb-4 hidden">
                     <label class="block text-xs font-semibold text-indigo-700 mb-1" id="giftValueLabel">Số điểm cộng thêm:</label>
                     <input type="number" step="0.1" id="inputItemValue" class="w-full border border-indigo-200 bg-indigo-50/50 rounded-lg px-3 py-2 text-sm font-bold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
+                </div>
+
+                <div id="giftMatchContainer" class="mb-4 hidden">
+                    <label class="block text-xs font-semibold text-indigo-700 mb-1" data-i18n="lblMatchCond">Ô điểm quy định được cộng (điều kiện & mức điểm):</label>
+                    <div class="flex gap-2">
+                        <select id="inputItemMatchOp" class="w-3/5 border border-indigo-200 bg-indigo-50/50 rounded-lg px-2 py-2 text-sm font-bold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="lte" data-i18n="optMatchLte">Từ mức này trở xuống (≤)</option>
+                            <option value="eq" data-i18n="optMatchEq">Bằng đúng mức này (=)</option>
+                            <option value="gte" data-i18n="optMatchGte">Từ mức này trở lên (≥)</option>
+                        </select>
+                        <input type="number" step="0.1" min="0" max="10" id="inputItemMatchScore" class="w-2/5 border border-indigo-200 bg-indigo-50/50 rounded-lg px-3 py-2 text-sm font-bold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
+                    </div>
                 </div>
 
                 <div class="flex justify-end space-x-2">
@@ -1062,12 +1103,27 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                         <option value="plus" data-i18n="optTypePlus">Cộng dồn điểm vào ô (+0.5đ, +1đ...)</option>
                         <option value="add" data-i18n="optTypeAdd">Tạo điểm mới cho ô trống (Điểm 10, Điểm 9...)</option>
                         <option value="change" data-i18n="optTypeChange">Sửa điểm đã có trong ô (Sửa thành 10...)</option>
+                        <option value="delete_score" data-i18n="optTypeDeleteScore">Xóa điểm đã có trong ô (Xóa điểm, kể cả ô 0 đỏ do vắng)</option>
+                        <option value="plus_match" data-i18n="optTypePlusMatch">Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)</option>
+                        <option value="plus_exam" data-i18n="optTypePlusExam">Cộng dồn điểm vào Bài Kiểm Tra (+0.5đ, +1đ...)</option>
                     </select>
                 </div>
 
                 <div id="editGiftValueInputContainer" class="mb-4 hidden">
                     <label class="block text-xs font-semibold text-indigo-700 mb-1" id="editGiftValueLabel">Số điểm cộng thêm:</label>
                     <input type="number" step="0.1" id="editItemValue" class="w-full border border-indigo-200 bg-indigo-50/50 rounded-lg px-3 py-2 text-sm font-bold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
+                </div>
+
+                <div id="editGiftMatchContainer" class="mb-4 hidden">
+                    <label class="block text-xs font-semibold text-indigo-700 mb-1" data-i18n="lblMatchCond">Ô điểm quy định được cộng (điều kiện & mức điểm):</label>
+                    <div class="flex gap-2">
+                        <select id="editItemMatchOp" class="w-3/5 border border-indigo-200 bg-indigo-50/50 rounded-lg px-2 py-2 text-sm font-bold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="lte" data-i18n="optMatchLte">Từ mức này trở xuống (≤)</option>
+                            <option value="eq" data-i18n="optMatchEq">Bằng đúng mức này (=)</option>
+                            <option value="gte" data-i18n="optMatchGte">Từ mức này trở lên (≥)</option>
+                        </select>
+                        <input type="number" step="0.1" min="0" max="10" id="editItemMatchScore" class="w-2/5 border border-indigo-200 bg-indigo-50/50 rounded-lg px-3 py-2 text-sm font-bold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
+                    </div>
                 </div>
 
                 <div class="flex justify-end space-x-2">
@@ -1560,6 +1616,34 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
           btnSeating:'Seating Plan', tabFinalExam:'Final Exam', editActiveCourseTitle:'Current course details', saveCourseDetailsBtn:'Save current course details', newCourseDetailsTitle:'Create a new course', weekNumberLabel:'Week number', dayContentLabel:'Teaching content', dayDetailLabel:'Details', noScheduledClasses:'No classes are scheduled for this day.', courseManagerBtn:'Manage Courses', tabStudents:'Class List', tabTeaching:'Teaching Plan', studentsTitle:'Class List & Student Profiles', studentsSubtitle:'Student data is synced with the active course.', teachingSubtitle:'Weekly plans across classes, saved per course.', addWeekBtn:'+ Add Week', courseManagerTitle:'Manage Courses', courseNameLabel:'Course name', courseStartLabel:'Start date', courseEndLabel:'End date', createCourseBtn:'Create course and separate its data', archiveNewCourseBtn:'Archive current course and start a new one', courseListTitle:'Courses', copyPreviousCourseClasses:'Copy the class list from the previous course that ended before the new course starts', deleteCourseBtn:'Delete course', deleteCourseConfirm:'Are you sure you want to delete this course and its history? This cannot be undone.', activeCourseDeleteBlocked:'The active course cannot be deleted. Switch to another course first.', courseSafetyNote:'Archived courses are kept as historical snapshots and will not overwrite active data.', moveStudentTitle:'Move student to another class', cancelBtn:'Cancel', confirmMoveBtn:'Confirm move', courseActive:'Active', courseArchived:'Archived', viewHistory:'View history', activateCourseBtn:'Use this course', activeCourseLabel:'Active course', noStudents:'No students in this class.', profileDetails:'Details', moveClassBtn:'Move class', totalAccumulated:'Total accumulated points', averageAccumulated:'Average accumulated points', finalScore:'Final exam score', violationsLabel:'Violations', notesLabel:'Notes', classLabel:'Class', addLessonBtn:'+ Lesson', editBtn:'Edit', deleteBtn:'Delete', dateLabel:'Lesson date', makeupDateLabel:'Make-up date', lessonStatusLabel:'Lesson status', lessonContentLabel:'Teaching content', lessonDetailLabel:'Lesson details', unitLabel:'Unit / Lesson / Topic', homeworkLabel:'Homework / notes', saveBtn:'Save', noWeeks:'No teaching weeks yet. Click “Add Week” to begin.', weekLabel:'Teaching week', weekStartLabel:'From', weekEndLabel:'To', allClasses:'All classes', searchPlaceholder:'Search content...', classScheduleBtn:'Class Schedule', classScheduleTitle:'Class Schedule', classScheduleHelp:'Set the regular teaching days and times for each class.', weekdays:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], weeklyScheduleTitle:'Weekly schedule by day'
         });
 
+        Object.assign(translations.vi, { optTypeDeleteScore: "Xóa điểm đã có trong ô (Xóa điểm, kể cả ô 0 đỏ do vắng)", dsGiftHint: "Xóa ô điểm đang mở (kể cả ô 0 đỏ do vắng)", dsConfirmTitle: "Xác nhận xóa", dsConfirmMsg: "Xóa điểm này? Học sinh: {student} · Ngày: {date} · Ô điểm: {value}. Quà \"{gift}\" sẽ được sử dụng.", dsValueAbsent: "0.0 (vắng)", dsToastSuccess: "Điểm đã được xóa thành công", dsToastEmpty: "Không thể xóa ô trống", dsToastNoValid: "Không có ô điểm hợp lệ để xóa", dsToastNoGift: "Bạn không có quà xóa điểm", dsToastCancel: "Hủy thao tác xóa điểm", dsToastError: "Đã xảy ra lỗi khi lưu dữ liệu" });
+        Object.assign(translations.en, { optTypeDeleteScore: "Delete existing score in cell (Delete Score, incl. red 0 for absence)", dsGiftHint: "Deletes the open score cell (including a red 0 for absence)", dsConfirmTitle: "Confirm Deletion", dsConfirmMsg: "Delete this score? Student: {student} · Date: {date} · Cell: {value}. The \"{gift}\" gift will be used.", dsValueAbsent: "0.0 (absent)", dsToastSuccess: "Score deleted successfully", dsToastEmpty: "Cannot delete an empty cell", dsToastNoValid: "No valid score to delete", dsToastNoGift: "You don’t have a Delete Score gift", dsToastCancel: "Cancel score deletion", dsToastError: "An error occurred while saving the data" });
+
+        Object.assign(translations.vi, {"quick_gift_title": "Sử dụng quà nhanh", "quick_gift_button": "Quà", "no_gifts_available": "Học sinh này chưa có quà", "select_student_gift": "Chọn quà để sử dụng cho học sinh", "apply_gift_success": "Đã sử dụng quà {giftName} thành công cho {studentName}!", "no_valid_cell_for_gift": "Không tìm thấy ô điểm phù hợp để áp dụng quà này!", "confirm_use_quick_gift": "Bạn có chắc muốn dùng quà này ngay lập tức?", "lowest_score_improved": "Đã cải thiện ô điểm thấp nhất ({score}đ)!", "empty_cell_filled": "Đã điền điểm mới vào ô trống hợp lệ!", "score_deleted_quick": "Đã xóa ô điểm thấp nhất thành công!", "qg_use_btn": "Dùng", "qg_consume_btn": "Tiêu thụ", "qg_close": "Đóng", "qg_type_plus": "Cộng điểm", "qg_type_add": "Tạo điểm mới", "qg_type_change": "Đổi điểm", "qg_type_delete": "Xóa điểm", "qg_type_none": "Quà thông thường", "qg_type_wheel": "Vòng quay may mắn", "qg_wheel_note": "Dùng trong Vòng quay may mắn", "qg_gift_count": "{n} quà", "qg_only_gifts": "Chỉ hiện học sinh có quà", "qg_no_gift_in_class": "Chưa có học sinh nào trong lớp có quà", "qg_no_students": "Lớp chưa có học sinh nào.", "qg_detail_change": "{student} · ô {date}: {before} → {after}", "qg_detail_add": "{student} · điền ô trống {date} = {after}", "qg_detail_delete": "{student} · xóa ô {date} ({before})", "qg_detail_plain": "{student} · {giftName}", "qg_gift_missing": "Không tìm thấy quà này trong túi đồ"});
+        Object.assign(translations.en, {"quick_gift_title": "Quick Gift Use", "quick_gift_button": "Gifts", "no_gifts_available": "No gifts available for this student", "select_student_gift": "Select a gift to use for student", "apply_gift_success": "Successfully applied {giftName} for {studentName}!", "no_valid_cell_for_gift": "No eligible score cell found to apply this gift!", "confirm_use_quick_gift": "Are you sure you want to use this gift immediately?", "lowest_score_improved": "Improved lowest score cell ({score} pts)!", "empty_cell_filled": "New score filled into valid empty cell!", "score_deleted_quick": "Lowest score cell deleted successfully!", "qg_use_btn": "Use", "qg_consume_btn": "Consume", "qg_close": "Close", "qg_type_plus": "Add Points", "qg_type_add": "New Score", "qg_type_change": "Change Score", "qg_type_delete": "Delete Score", "qg_type_none": "Regular Gift", "qg_type_wheel": "Lucky Wheel", "qg_wheel_note": "Use it in the Lucky Wheel", "qg_gift_count": "{n} gifts", "qg_only_gifts": "Only students with gifts", "qg_no_gift_in_class": "No student in this class has any gifts", "qg_no_students": "No students in this class.", "qg_detail_change": "{student} · cell {date}: {before} → {after}", "qg_detail_add": "{student} · fill empty cell {date} = {after}", "qg_detail_delete": "{student} · delete cell {date} ({before})", "qg_detail_plain": "{student} · {giftName}", "qg_gift_missing": "This gift was not found in the inventory"});
+
+        Object.assign(translations.vi, {"optTypePlusMatch": "Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)", "lblMatchCond": "Ô điểm quy định được cộng (điều kiện & mức điểm):", "optMatchLte": "Từ mức này trở xuống (≤)", "optMatchEq": "Bằng đúng mức này (=)", "optMatchGte": "Từ mức này trở lên (≥)", "phMatchScore": "VD: 7", "qg_type_plus_match": "Cộng điểm theo ô quy định", "pm_desc": "Ô có điểm {op} {score} → +{delta}", "qg_plus_match_done": "Đã cộng {delta} điểm vào ô {date} ({before}đ → {after}đ)!"});
+        Object.assign(translations.en, {"optTypePlusMatch": "Add points to a cell with a specified score (e.g. +1 to a cell of 7 or lower)", "lblMatchCond": "Specified cell score to receive points (condition & score):", "optMatchLte": "This score or lower (≤)", "optMatchEq": "Exactly this score (=)", "optMatchGte": "This score or higher (≥)", "phMatchScore": "e.g. 7", "qg_type_plus_match": "Add Points to Specified Cell", "pm_desc": "Cell score {op} {score} → +{delta}", "qg_plus_match_done": "Added {delta} pts to cell {date} ({before} → {after} pts)!"});
+
+        Object.assign(translations.vi, {
+            chkIsExam: "☑️ Đánh dấu đây là điểm Bài Kiểm Tra",
+            optTypePlusExam: "Cộng dồn điểm vào Bài Kiểm Tra (+0.5đ, +1đ...)",
+            qg_type_plus_exam: "Cộng điểm Bài Kiểm Tra",
+            no_exam_cell_for_gift: "Không tìm thấy Bài Kiểm Tra phù hợp để áp dụng quà này!",
+            exam_tag: "[Bài Kiểm Tra]",
+            qg_detail_exam: "Học sinh: {student} · Bài Kiểm Tra ngày {date}: {before}đ ➔ {after}đ",
+            qg_exam_done: "Đã cộng +{delta}đ vào Bài Kiểm Tra ngày {date}: {before}đ ➔ {after}đ."
+        });
+        Object.assign(translations.en, {
+            chkIsExam: "☑️ Mark as Exam / Test Score",
+            optTypePlusExam: "Add bonus points to Exam Score (+0.5, +1...)",
+            qg_type_plus_exam: "Exam Score Bonus",
+            no_exam_cell_for_gift: "No eligible Exam Score found to apply this gift!",
+            exam_tag: "[Exam Score]",
+            qg_detail_exam: "Student: {student} · Exam Score {date}: {before} pts ➔ {after} pts",
+            qg_exam_done: "Added +{delta} to the Exam Score on {date}: {before} ➔ {after}."
+        });
+
         const FIXED_ITEM_NAMES = {
             fix_add_10: { vi: 'Một điểm 10', en: 'One score of 10' },
             fix_add_9:  { vi: 'Một điểm 9',  en: 'One score of 9' },
@@ -1674,6 +1758,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 quickLbl: 'Nhập nhanh',
                 quickHint: 'Chọn ô → gõ <kbd>10</kbd> <kbd>5</kbd> <kbd>0</kbd> → <kbd>Enter</kbd> xuống học sinh kế · <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> di chuyển · <kbd>A</kbd> vắng · <kbd>Del</kbd> xóa · nhấp đúp để mở chi tiết',
                 quickHintOff: 'Bật để nhập điểm bằng bàn phím (nhấp ô để chọn, nhấp đúp để mở chi tiết).',
+                testLbl: 'Nhập Test score',
+                testHint: '<b>Chế độ Test score:</b> mọi điểm gõ vào sẽ được đánh dấu là điểm Bài Kiểm Tra · <kbd>Enter</kbd> xuống học sinh kế · <kbd>A</kbd> vắng · <kbd>Del</kbd> xóa',
                 saved: 'Đã lưu',
                 overMax: 'Điểm phải từ 0 đến 10.',
                 fab: 'Cộng điểm',
@@ -1700,6 +1786,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 quickLbl: 'Quick entry',
                 quickHint: 'Select a cell → type <kbd>10</kbd> <kbd>5</kbd> <kbd>0</kbd> → <kbd>Enter</kbd> next student · <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> move · <kbd>A</kbd> absent · <kbd>Del</kbd> clear · double-click for details',
                 quickHintOff: 'Turn on to enter scores with the keyboard (click a cell to select, double-click for details).',
+                testLbl: 'Test score entry',
+                testHint: '<b>Test score mode:</b> every score you type is marked as an Exam Score · <kbd>Enter</kbd> next student · <kbd>A</kbd> absent · <kbd>Del</kbd> clear',
                 saved: 'Saved',
                 overMax: 'Score must be between 0 and 10.',
                 fab: 'Add points',
@@ -1736,6 +1824,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             return !(window.matchMedia && matchMedia('(pointer: coarse)').matches);
         })();
         let qsSelCell = null, qsBuf = '', qsFlashCell = null, qsToolbarSig = '', qsPresKind = null;
+        let qsTest = false; // chế độ nhập nhanh Test score (không lưu giữa các lần mở trang)
         const qsSel = {};
         const qsRank = { rk: {}, fe: {} };
         const qsCU = {};
@@ -1900,7 +1989,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 student.rewardPoints = Math.max(0, (student.rewardPoints || 0) - qsOldExcess(old));
                 appData.scores[key] = { score: 0, absent: true, speakingCount: 0 };
             } else {
-                appData.scores[key] = { score: val, absent: false, speakingCount: (old && !old.absent && old.speakingCount !== undefined) ? old.speakingCount : 0 };
+                appData.scores[key] = { score: val, absent: false, speakingCount: (old && !old.absent && old.speakingCount !== undefined) ? old.speakingCount : 0, isExam: qsTest ? true : !!(old && !old.absent && old.isExam) };
             }
             return true;
         }
@@ -1970,16 +2059,21 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
         window.qsToggleQuick = function () {
             qsQuick = !qsQuick;
             try { localStorage.setItem(QS_PREF_KEY, qsQuick ? '1' : '0'); } catch (e) {}
-            if (!qsQuick) qsDeselect();
+            if (!qsQuick) { qsTest = false; qsDeselect(); }
+            qsToolbarSig = ''; qsRefreshToolbar();
+        };
+        window.qsToggleTest = function () {
+            qsTest = !qsTest;
+            if (qsTest && !qsQuick) { qsQuick = true; try { localStorage.setItem(QS_PREF_KEY, '1'); } catch (e) {} }
             qsToolbarSig = ''; qsRefreshToolbar();
         };
         function qsRefreshToolbar() {
             const tb = qsEl('qsToolbar'); if (!tb) return;
-            const sig = (appData.language || 'vi') + '|' + qsQuick;
+            const sig = (appData.language || 'vi') + '|' + qsQuick + '|' + qsTest;
             if (sig === qsToolbarSig) return;
             qsToolbarSig = sig;
             const collapsed = !!window.__qsToolbarCollapsed;
-            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><span id="qsQuickHint">${qsQuick ? qsT('quickHint') : qsT('quickHintOff')}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
+            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><span id="qsQuickHint">${qsTest ? qsT('testHint') : (qsQuick ? qsT('quickHint') : qsT('quickHintOff'))}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
         }
 
@@ -2020,6 +2114,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             qsUpdateSelUI(true);
         };
         function qsFabUpdate() {
+            qgFabUpdate();
             const fab = qsEl('qsFab'); if (!fab) return;
             fab.style.display = (qsIsMatrix() && !qsArchived() && !qsPresKind) ? 'flex' : 'none';
             const n = qsSelIds().length;
@@ -2109,7 +2204,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     const key = `${id}_${d}`, old = appData.scores[key];
                     if (old && old.absent) { skip++; return; }
                     const cur = (old && old.score !== null && old.score !== undefined) ? parseFloat(old.score) : 0;
-                    appData.scores[key] = { score: Math.min(10, Math.max(0, Math.round((cur + amt) * 10) / 10)), absent: false, speakingCount: old && old.speakingCount !== undefined ? old.speakingCount : 0 };
+                    appData.scores[key] = { score: Math.min(10, Math.max(0, Math.round((cur + amt) * 10) / 10)), absent: false, speakingCount: old && old.speakingCount !== undefined ? old.speakingCount : 0, isExam: !!(old && old.isExam) };
                     n++;
                 });
                 msg = qsT('doneDay', n, skip);
@@ -2157,6 +2252,236 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             });
         }
 
+        /* ===================== QUÀ NHANH (Quick Gift Use) ===================== */
+        let qgBusy = false, qgOnly = false;
+        function qgT(key, vars) {
+            const l = (appData && appData.language === 'en') ? 'en' : 'vi';
+            let v = (translations[l] && translations[l][key]) || translations.vi[key] || key;
+            if (vars) v = v.replace(/\{(\w+)\}/g, (m, k) => (vars[k] !== undefined ? vars[k] : m));
+            return v;
+        }
+        const qgFmt = v => parseFloat(v).toFixed(1);
+        const qgHasValue = c => !!c && (c.absent === true || (c.score !== undefined && c.score !== null && !isNaN(parseFloat(c.score))));
+        const qgVal = c => c.absent ? 0 : parseFloat(c.score);
+        const qgClamp = v => Math.min(10, Math.max(0, Math.round(v * 10) / 10));
+        function qgKind(g) {
+            const t = String(g.type || '').toLowerCase();
+            if (t === 'lucky_spin' || String(g.itemId || g.id || '') === 'fix_lucky_spin') return 'lucky';
+            if (t === 'plus' || t === 'add' || t === 'change' || t === 'delete_score' || t === 'plus_match' || t === 'plus_exam') return t;
+            return 'none';
+        }
+        const QG_ICON = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', none: 'fa-gift', lucky: 'fa-dice' };
+        const QG_TYPE_KEY = { plus: 'qg_type_plus', add: 'qg_type_add', change: 'qg_type_change', delete_score: 'qg_type_delete', plus_match: 'qg_type_plus_match', plus_exam: 'qg_type_plus_exam', none: 'qg_type_none', lucky: 'qg_type_wheel' };
+        const PM_OPS = { lte: '≤', eq: '=', gte: '≥' };
+        function matchGiftCond(g, v) {
+            const m = parseFloat(g.matchScore);
+            if (isNaN(m) || isNaN(v)) return false;
+            const op = g.matchOp || 'lte';
+            return op === 'eq' ? Math.abs(v - m) < 1e-9 : op === 'gte' ? v >= m - 1e-9 : v <= m + 1e-9;
+        }
+        function pmDesc(g) { return qgT('pm_desc', { op: PM_OPS[g.matchOp || 'lte'] || '≤', score: g.matchScore, delta: g.deltaScore }); }
+        const qgDateLabel = key => { const p = String(key).split('-'); return `${p[2]}/${p[1]}`; };
+
+        // Tìm ô áp dụng quà. Thứ tự "gần nhất" = ngày muộn hơn trên thanh lịch của Matrix Score.
+        function qgPlan(studentId, gift) {
+            const kind = qgKind(gift);
+            if (kind === 'none' || kind === 'lucky') return null;
+            const dates = qsDateOptions().map(o => o.key), sc = appData.scores || {};
+            const lowest = includeAbsent => {
+                let best = null;
+                dates.forEach((d, idx) => {
+                    const c = sc[`${studentId}_${d}`];
+                    if (!qgHasValue(c) || (c.absent && !includeAbsent)) return;
+                    const v = qgVal(c);
+                    if (!best || v < best.v - 1e-9 || (Math.abs(v - best.v) < 1e-9 && idx > best.idx)) best = { key: d, idx, v, absent: !!c.absent };
+                });
+                return best;
+            };
+            if (kind === 'plus_exam') {
+                // Chỉ quét ô có isExam, chọn ô thấp nhất còn cộng được; hòa điểm thì chọn ngày mới nhất
+                const delta = parseFloat(gift.deltaScore);
+                if (isNaN(delta) || delta <= 0) return null;
+                let best = null;
+                dates.forEach((d, idx) => {
+                    const c = sc[`${studentId}_${d}`];
+                    if (!c || !c.isExam || c.absent || !qgHasValue(c)) return;
+                    const v = qgVal(c);
+                    if (qgClamp(v + delta) === qgClamp(v)) return;
+                    if (!best || v < best.v - 1e-9 || (Math.abs(v - best.v) < 1e-9 && idx > best.idx)) best = { key: d, idx, v };
+                });
+                if (!best) return null;
+                const after = qgClamp(best.v + delta);
+                return { kind, key: best.key, before: qgFmt(best.v), after: qgFmt(after), afterNum: after };
+            }
+            if (kind === 'plus') {
+                const b = lowest(false), delta = parseFloat(gift.deltaScore);
+                if (!b || isNaN(delta)) return null;
+                const after = qgClamp(b.v + delta);
+                return after === qgClamp(b.v) ? null : { kind, key: b.key, before: qgFmt(b.v), after: qgFmt(after), afterNum: after };
+            }
+            if (kind === 'plus_match') {
+                // Ô khớp điều kiện; nếu nhiều ô, chọn ô có điểm gần mức quy định nhất, hòa thì ngày muộn nhất
+                const m = parseFloat(gift.matchScore), delta = parseFloat(gift.deltaScore);
+                if (isNaN(m) || isNaN(delta)) return null;
+                let best = null;
+                dates.forEach((d, idx) => {
+                    const c = sc[`${studentId}_${d}`];
+                    if (!qgHasValue(c) || c.absent) return;
+                    const v = qgVal(c);
+                    if (!matchGiftCond(gift, v)) return;
+                    const dist = Math.abs(v - m);
+                    if (!best || dist < best.dist - 1e-9 || (Math.abs(dist - best.dist) < 1e-9 && idx > best.idx)) best = { key: d, idx, v, dist };
+                });
+                if (!best) return null;
+                const after = qgClamp(best.v + delta);
+                return after === qgClamp(best.v) ? null : { kind, key: best.key, before: qgFmt(best.v), after: qgFmt(after), afterNum: after };
+            }
+            if (kind === 'change') {
+                const b = lowest(false), target = parseFloat(gift.targetScore);
+                if (!b || isNaN(target) || !(target > b.v)) return null;
+                const after = qgClamp(target);
+                return after > b.v ? { kind, key: b.key, before: qgFmt(b.v), after: qgFmt(after), afterNum: after } : null;
+            }
+            if (kind === 'delete_score') {
+                const b = lowest(true);
+                return b ? { kind, key: b.key, before: b.absent ? qgT('dsValueAbsent') : qgFmt(b.v), absent: b.absent } : null;
+            }
+            // add: ô trống trước hoặc bằng ngày mới nhất có điểm trong Matrix (toàn lớp)
+            const target = parseFloat(gift.targetScore);
+            if (isNaN(target)) return null;
+            const cls = appData.students.filter(x => x.classId === appData.activeClassId);
+            let maxIdx = -1;
+            dates.forEach((d, idx) => { if (cls.some(x => qgHasValue(sc[`${x.id}_${d}`]))) maxIdx = idx; });
+            for (let i = 0; i <= maxIdx; i++) {
+                if (!qgHasValue(sc[`${studentId}_${dates[i]}`])) { const after = qgClamp(target); return { kind, key: dates[i], after: qgFmt(after), afterNum: after }; }
+            }
+            return null;
+        }
+
+        window.qgUse = async function (studentId, invId) {
+            if (qgBusy) return;
+            if (qsArchived()) { saveData(); return; }
+            const findGift = () => {
+                const st = appData.students.find(x => x.id === studentId);
+                return (st && Array.isArray(st.inventory)) ? st.inventory.find(i => i.invId === invId) : null;
+            };
+            let student = appData.students.find(x => x.id === studentId), gift = findGift();
+            if (!student || !gift) { qsToast(qgT('qg_gift_missing'), 'warning'); qgRender(); return; }
+            const kind = qgKind(gift);
+            if (kind === 'lucky') { qsToast(qgT('qg_wheel_note'), 'info'); return; }
+            const sName = getStudentDisplayName(student), gName = getRewardName(gift);
+            let plan = null;
+            if (kind !== 'none') {
+                plan = qgPlan(studentId, gift);
+                if (!plan) { qsToast(qgT(kind === 'plus_exam' ? 'no_exam_cell_for_gift' : 'no_valid_cell_for_gift'), 'warning'); return; }
+            }
+            const detailOf = pl => !pl ? qgT('qg_detail_plain', { student: sName, giftName: gName })
+                : qgT(pl.kind === 'plus_exam' ? 'qg_detail_exam' : pl.kind === 'delete_score' ? 'qg_detail_delete' : pl.kind === 'add' ? 'qg_detail_add' : 'qg_detail_change',
+                    { student: sName, date: qgDateLabel(pl.key), before: pl.before, after: pl.after });
+            qgBusy = true;
+            try {
+                const td = plan ? qsGetCell(studentId, plan.key) : null;
+                if (td) td.classList.add('ds-target');
+                let ok = false;
+                try { ok = await showAppConfirm(`${qgT('confirm_use_quick_gift')} ${gName} — ${detailOf(plan)}`, qgT('quick_gift_title')); }
+                finally { if (td) td.classList.remove('ds-target'); }
+                if (!ok) return;
+
+                // Kiểm tra lại sau xác nhận rồi mới ghi dữ liệu
+                student = appData.students.find(x => x.id === studentId); gift = findGift();
+                if (!student || !gift) { qsToast(qgT('qg_gift_missing'), 'warning'); qgRender(); return; }
+                if (kind !== 'none') { plan = qgPlan(studentId, gift); if (!plan) { qsToast(qgT(kind === 'plus_exam' ? 'no_exam_cell_for_gift' : 'no_valid_cell_for_gift'), 'warning'); return; } }
+
+                if (!appData.scores) appData.scores = {};
+                const prevGift = deepCopy(gift), prevPoints = student.rewardPoints || 0;
+                const key = plan ? `${studentId}_${plan.key}` : null;
+                const prevCell = (key && appData.scores[key] !== undefined) ? deepCopy(appData.scores[key]) : undefined;
+                const cur = key ? appData.scores[key] : null;
+                if (plan && (plan.kind === 'plus' || plan.kind === 'change' || plan.kind === 'add' || plan.kind === 'plus_match' || plan.kind === 'plus_exam')) {
+                    appData.scores[key] = { score: plan.afterNum, absent: false, speakingCount: (cur && cur.speakingCount !== undefined) ? cur.speakingCount : 0, isExam: plan.kind === 'plus_exam' ? true : !!(cur && cur.isExam) };
+                } else if (plan && plan.kind === 'delete_score') {
+                    student.rewardPoints = Math.max(0, prevPoints - qsOldExcess(cur));
+                    delete appData.scores[key];
+                }
+                student.inventory = student.inventory.filter(i => i.invId !== invId);
+
+                const saved = await saveData();
+                if (!saved) {
+                    const st2 = appData.students.find(x => x.id === studentId);
+                    if (st2) {
+                        if (!st2.inventory) st2.inventory = [];
+                        if (!st2.inventory.some(i => i.invId === invId)) {
+                            st2.inventory.push(prevGift); st2.rewardPoints = prevPoints;
+                            if (key) { if (prevCell === undefined) delete appData.scores[key]; else appData.scores[key] = prevCell; }
+                        }
+                    }
+                    qsToast(qgT('dsToastError'), 'error');
+                    try { renderCurrentView(); } catch (e) {}
+                    return;
+                }
+                let extra = '';
+                if (plan && plan.kind === 'plus_exam') extra = ' ' + qgT('qg_exam_done', { delta: prevGift.deltaScore, date: qgDateLabel(plan.key), before: plan.before, after: plan.after });
+                else if (plan && plan.kind === 'plus_match') extra = ' ' + qgT('qg_plus_match_done', { delta: prevGift.deltaScore, date: qgDateLabel(plan.key), before: plan.before, after: plan.after });
+                else if (plan && (plan.kind === 'plus' || plan.kind === 'change')) extra = ' ' + qgT('lowest_score_improved', { score: plan.after });
+                else if (plan && plan.kind === 'add') extra = ' ' + qgT('empty_cell_filled');
+                else if (plan && plan.kind === 'delete_score') extra = ' ' + qgT('score_deleted_quick');
+                qsToast(qgT('apply_gift_success', { giftName: gName, studentName: sName }) + extra, 'success');
+                qgRender();
+            } finally { qgBusy = false; }
+        };
+
+        function qgGiftTotal() {
+            return appData.students.filter(x => x.classId === appData.activeClassId).reduce((n, x) => n + (Array.isArray(x.inventory) ? x.inventory.length : 0), 0);
+        }
+        function qgFabUpdate() {
+            const fab = qsEl('qgFab'); if (!fab) return;
+            fab.style.display = (qsIsMatrix() && !qsArchived() && !qsPresKind) ? 'flex' : 'none';
+            qsEl('qgFabLbl').textContent = qgT('quick_gift_button');
+            const n = qgGiftTotal(), b = qsEl('qgFabBadge'); b.textContent = n; fab.classList.toggle('has-gifts', n > 0);
+        }
+        window.qgOpen = function () { const d = qsEl('qgDrawer'); if (!d) return; d.classList.add('open'); qgRender(); };
+        window.qgClose = function () { const d = qsEl('qgDrawer'); if (d) { d.classList.remove('open'); d.innerHTML = ''; } };
+        window.qgToggleOnly = function (on) { qgOnly = !!on; qgRender(); };
+        function qgRender() {
+            const dr = qsEl('qgDrawer'); if (!dr || !dr.classList.contains('open')) return;
+            const cls = appData.classes.find(c => c.id === appData.activeClassId);
+            if (!cls || !qsIsMatrix() || qsArchived()) { qgClose(); return; }
+            const oldBody = qsEl('qgBody'), scrollTop = oldBody ? oldBody.scrollTop : 0;
+            const students = appData.students.filter(s => s.classId === cls.id);
+            let rows = '', shown = 0;
+            students.forEach(st => {
+                const inv = Array.isArray(st.inventory) ? st.inventory : [];
+                if (qgOnly && !inv.length) return;
+                shown++;
+                let gifts = '';
+                inv.forEach(g => {
+                    const kind = qgKind(g);
+                    const action = kind === 'lucky' ? `<span class="qg-note">${qgT('qg_wheel_note')}</span>`
+                        : `<button type="button" class="qg-use" onclick="qgUse('${st.id}','${g.invId}')">${kind === 'none' ? qgT('qg_consume_btn') : qgT('qg_use_btn')}</button>`;
+                    gifts += `<div class="qg-gift"><i class="fa-solid ${QG_ICON[kind]}"></i><div class="min-w-0"><div class="qg-gn">${escapeHtml(getRewardName(g))}</div><div class="qg-gt">${qgT(QG_TYPE_KEY[kind])}${kind === 'plus_match' ? ' · ' + pmDesc(g) : (kind === 'plus_exam' ? ' · +' + g.deltaScore : '')}</div></div>${action}</div>`;
+                });
+                if (!inv.length) gifts = `<p class="text-xs italic text-slate-400">${qgT('no_gifts_available')}</p>`;
+                rows += `<div class="qg-stu"><div class="qg-stu-h"><span>${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}</span><span class="qg-pts">${inv.length ? qgT('qg_gift_count', { n: inv.length }) : ''}</span></div>${gifts}</div>`;
+            });
+            if (!students.length) rows = `<p class="text-center text-xs italic text-slate-400 py-8">${qgT('qg_no_students')}</p>`;
+            else if (!shown) rows = `<p class="text-center text-xs italic text-slate-400 py-8">${qgT('qg_no_gift_in_class')}</p>`;
+            dr.innerHTML = `<div class="qg-panel" role="dialog" aria-modal="true">
+                <div class="px-5 py-4 text-white flex items-start justify-between gap-3" style="background:linear-gradient(135deg,#f59e0b,#ea580c)">
+                    <div><div class="text-[11px] font-black uppercase tracking-wider opacity-90">${escapeHtml(cls.name)}</div><h3 class="font-black text-lg">🎁 ${qgT('quick_gift_title')}</h3><p class="text-xs opacity-90">${qgT('select_student_gift')}</p></div>
+                    <button type="button" onclick="qgClose()" class="text-2xl leading-none px-2" aria-label="${qgT('qg_close')}">×</button>
+                </div>
+                <label class="flex items-center gap-2 px-5 py-2 border-b text-xs font-bold text-slate-600 cursor-pointer"><input type="checkbox" ${qgOnly ? 'checked' : ''} onchange="qgToggleOnly(this.checked)"> ${qgT('qg_only_gifts')}</label>
+                <div id="qgBody" class="flex-1 overflow-y-auto p-4 space-y-2">${rows}</div>
+            </div>`;
+            dr.onclick = e => { if (e.target === dr) qgClose(); };
+            const nb = qsEl('qgBody'); if (nb) nb.scrollTop = scrollTop;
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Escape') return;
+            const d = qsEl('qgDrawer'), c = document.getElementById('appConfirmModal');
+            if (d && d.classList.contains('open') && !(c && !c.classList.contains('hidden'))) qgClose();
+        });
+
         /* ---- DOM bootstrap + after-render hook ---- */
         function qsInitDom() {
             if (!qsEl('qsFab')) {
@@ -2166,6 +2491,13 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 document.body.appendChild(fab);
             }
             if (!qsEl('qsBulkModal')) { const m = document.createElement('div'); m.id = 'qsBulkModal'; document.body.appendChild(m); }
+            if (!qsEl('qgFab')) {
+                const gf = document.createElement('button');
+                gf.id = 'qgFab'; gf.type = 'button'; gf.setAttribute('onclick', 'qgOpen()');
+                gf.innerHTML = '<i class="fa-solid fa-gift"></i><span id="qgFabLbl"></span><span class="qg-badge" id="qgFabBadge">0</span>';
+                document.body.appendChild(gf);
+            }
+            if (!qsEl('qgDrawer')) { const d = document.createElement('div'); d.id = 'qgDrawer'; document.body.appendChild(d); }
             ['ranking', 'finalExam'].forEach(kind => {
                 const el = qsPresEl(kind);
                 if (el && !el.querySelector(':scope > .qs-pres-bar')) {
@@ -2176,7 +2508,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             });
         }
         function qsAfterRender() {
-            qsInitDom(); qsRefreshToolbar();
+            qsInitDom(); qsRefreshToolbar(); qgFabUpdate(); qgRender();
             document.querySelectorAll('[data-qs]').forEach(el => { el.textContent = qsT(el.dataset.qs); });
             qsRefreshPresBar(); qsFabUpdate();
             if (qsIsMatrix() && qsSelCell) {
@@ -2986,7 +3318,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             if (!student.inventory) student.inventory = [];
 
             const invData = {
-                invId: "inv_" + Date.now(),
+                invId: "inv_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
                 itemId: item.id,
                 name: item.name,
                 itemName: item.name,
@@ -2997,6 +3329,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 
             if (item.targetScore !== undefined) invData.targetScore = item.targetScore;
             if (item.deltaScore !== undefined) invData.deltaScore = item.deltaScore;
+            if (item.matchScore !== undefined) invData.matchScore = item.matchScore;
+            if (item.matchOp !== undefined) invData.matchOp = item.matchOp;
 
             student.inventory.push(invData);
 
@@ -3332,13 +3666,13 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             const valueInput = document.getElementById('inputItemValue');
             const isEn = appData.language === 'en';
 
-            if (type === 'none' || !type) {
+            if (type === 'none' || type === 'delete_score' || !type) {
                 container.classList.add('hidden');
                 valueInput.required = false;
             } else {
                 container.classList.remove('hidden');
                 valueInput.required = true;
-                if (type === 'plus') {
+                if (type === 'plus' || type === 'plus_match' || type === 'plus_exam') {
                     label.innerText = isEn ? 'Bonus score to add:' : 'Số điểm muốn cộng thêm:';
                     valueInput.placeholder = isEn ? 'e.g. 1 (+1 point)' : 'VD: 1 (Cộng 1 điểm)';
                     if (!valueInput.value) valueInput.value = '1';
@@ -3348,6 +3682,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     if (!valueInput.value) valueInput.value = '10';
                 }
             }
+            pmSyncBox('giftMatchContainer', 'inputItemMatchScore', type);
         };
 
         window.toggleEditGiftTypeOptions = function(type) {
@@ -3356,13 +3691,13 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             const valueInput = document.getElementById('editItemValue');
             const isEn = appData.language === 'en';
 
-            if (type === 'none' || !type) {
+            if (type === 'none' || type === 'delete_score' || !type) {
                 container.classList.add('hidden');
                 valueInput.required = false;
             } else {
                 container.classList.remove('hidden');
                 valueInput.required = true;
-                if (type === 'plus') {
+                if (type === 'plus' || type === 'plus_match' || type === 'plus_exam') {
                     label.innerText = isEn ? 'Bonus score to add:' : 'Số điểm muốn cộng thêm:';
                     valueInput.placeholder = isEn ? 'e.g. 1 (+1 point)' : 'VD: 1 (Cộng 1 điểm)';
                 } else if (type === 'add' || type === 'change') {
@@ -3370,13 +3705,25 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     valueInput.placeholder = isEn ? 'e.g. 10 (Set as 10)' : 'VD: 10 (Đặt thành 10đ)';
                 }
             }
+            pmSyncBox('editGiftMatchContainer', 'editItemMatchScore', type);
         };
+
+        function pmSyncBox(boxId, scoreId, type) {
+            const box = document.getElementById(boxId), inp = document.getElementById(scoreId);
+            if (!box || !inp) return;
+            const on = type === 'plus_match';
+            box.classList.toggle('hidden', !on);
+            inp.required = on;
+            inp.placeholder = uiTr('phMatchScore');
+        }
 
         window.openCreateItemModal = function() {
             document.getElementById('inputItemName').value = '';
             document.getElementById('inputItemCost').value = '';
             document.getElementById('inputItemType').value = 'none';
             document.getElementById('inputItemValue').value = '';
+            document.getElementById('inputItemMatchScore').value = '';
+            document.getElementById('inputItemMatchOp').value = 'lte';
             toggleGiftTypeOptions('none');
             document.getElementById('createItemModal').classList.remove('hidden');
             document.getElementById('createItemModal').classList.add('flex');
@@ -3406,10 +3753,16 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 type: type !== 'none' ? type : null
             };
 
-            if (type === 'plus') {
+            if (type === 'plus' || type === 'plus_exam') {
                 newItem.deltaScore = !isNaN(valueVal) ? valueVal : 1;
             } else if (type === 'add' || type === 'change') {
                 newItem.targetScore = !isNaN(valueVal) ? valueVal : 10;
+            } else if (type === 'plus_match') {
+                const mScore = parseFloat(document.getElementById('inputItemMatchScore').value);
+                if (isNaN(mScore)) return;
+                newItem.deltaScore = !isNaN(valueVal) ? valueVal : 1;
+                newItem.matchScore = Math.min(10, Math.max(0, mScore));
+                newItem.matchOp = document.getElementById('inputItemMatchOp').value || 'lte';
             }
 
             appData.globalShopItems.push(newItem);
@@ -3439,7 +3792,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             typeSelect.value = itemType;
 
             const valueInput = document.getElementById('editItemValue');
-            if (itemType === 'plus') {
+            if (itemType === 'plus' || itemType === 'plus_match' || itemType === 'plus_exam') {
                 valueInput.value = item.deltaScore !== undefined ? item.deltaScore : 1;
             } else if (itemType === 'add' || itemType === 'change') {
                 valueInput.value = item.targetScore !== undefined ? item.targetScore : 10;
@@ -3447,6 +3800,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 valueInput.value = '';
             }
 
+            document.getElementById('editItemMatchScore').value = (itemType === 'plus_match' && item.matchScore !== undefined) ? item.matchScore : '';
+            document.getElementById('editItemMatchOp').value = (itemType === 'plus_match' && item.matchOp) ? item.matchOp : 'lte';
             toggleEditGiftTypeOptions(itemType);
             if (isLuckySpinSpecial) {
                 valueInput.required = false;
@@ -3507,11 +3862,19 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 
                     delete item.deltaScore;
                     delete item.targetScore;
+                    delete item.matchScore;
+                    delete item.matchOp;
 
-                    if (type === 'plus') {
+                    if (type === 'plus' || type === 'plus_exam') {
                         item.deltaScore = !isNaN(valueVal) ? valueVal : 1;
                     } else if (type === 'add' || type === 'change') {
                         item.targetScore = !isNaN(valueVal) ? valueVal : 10;
+                    } else if (type === 'plus_match') {
+                        const mScore = parseFloat(document.getElementById('editItemMatchScore').value);
+                        if (isNaN(mScore)) return;
+                        item.deltaScore = !isNaN(valueVal) ? valueVal : 1;
+                        item.matchScore = Math.min(10, Math.max(0, mScore));
+                        item.matchOp = document.getElementById('editItemMatchOp').value || 'lte';
                     }
                 }
                 item.cost = cost;
@@ -3912,6 +4275,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                         
                         let cellClass = "grid-cell border-r border-b border-slate-200 text-[11px] font-semibold text-center cell-empty";
                         let cellText = "";
+                        let examTag = '';
 
                         if (scoreItem) {
                             if (scoreItem.absent) {
@@ -3920,10 +4284,11 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                             } else if (scoreItem.score !== null && scoreItem.score !== undefined) {
                                 cellText = parseFloat(scoreItem.score).toFixed(1);
                                 cellClass = cellClass.replace(" cell-empty", "") + " text-slate-800 font-bold bg-amber-50 cell-scored";
+                                if (scoreItem.isExam) { cellClass += " cell-exam font-black text-purple-900"; examTag = ' ' + uiTr('exam_tag'); }
                             }
                         }
 
-                        html += `<td class="${cellClass}" data-sid="${student.id}" data-d="${d.dateStr}" onclick="qsCellClick(event, '${student.id}', '${d.dateStr}')" title="${getStudentDisplayName(student)} - ${lang === 'en' ? 'Date' : 'Ngày'} ${d.day}/${d.month}">`;
+                        html += `<td class="${cellClass}" data-sid="${student.id}" data-d="${d.dateStr}" onclick="qsCellClick(event, '${student.id}', '${d.dateStr}')" title="${getStudentDisplayName(student)} - ${lang === 'en' ? 'Date' : 'Ngày'} ${d.day}/${d.month}${examTag}">`;
                         html += cellText;
                         html += `</td>`;
                     });
@@ -3959,6 +4324,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             const scoreInput = document.getElementById('modalScoreInput');
             const speakingInput = document.getElementById('modalSpeakingCountInput');
 
+            const examChk = document.getElementById('modalIsExamCheckbox');
+            if (examChk) examChk.checked = !!(existing && existing.isExam && !existing.absent);
             if (existing) {
                 absentCheckbox.checked = existing.absent || false;
                 scoreInput.value = existing.score !== undefined ? existing.score : '';
@@ -4046,6 +4413,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     isApplicable = true;
                 } else if (invItem.type === 'plus') {
                     isApplicable = true;
+                } else if (invItem.type === 'delete_score' || invItem.type === 'plus_match' || invItem.type === 'plus_exam') {
+                    isApplicable = true;
                 } else if (!invItem.isFixed && (!invItem.type || invItem.type === 'none')) {
                     isApplicable = true;
                 }
@@ -4055,11 +4424,12 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = 'w-full text-left p-2 bg-white hover:bg-amber-100 border border-amber-200 rounded text-xs font-bold text-amber-900 transition flex justify-between items-center mb-1';
+                    const isDeleteGift = invItem.type === 'delete_score';
                     btn.innerHTML = `
-                        <span>🎁 ${getRewardName(invItem)}</span>
+                        <span>🎁 ${getRewardName(invItem)}${isDeleteGift ? `<span class="block text-[10px] font-medium text-amber-700">${t.dsGiftHint}</span>` : (invItem.type === 'plus_exam' ? `<span class="block text-[10px] font-medium text-amber-700">${t.qg_type_plus_exam} +${invItem.deltaScore}</span>` : invItem.type === 'plus_match' ? `<span class="block text-[10px] font-medium text-amber-700">${pmDesc(invItem)}</span>` : '')}</span>
                         <span class="text-[10px] bg-amber-200 text-amber-800 px-1.5 py-0.5 rounded shadow-sm">${t.lblApplyBtn}</span>
                     `;
-                    btn.onclick = () => applyGiftToCell(student.id, invItem);
+                    btn.onclick = () => isDeleteGift ? applyDeleteScoreGift(student.id, invItem) : applyGiftToCell(student.id, invItem);
                     giftList.appendChild(btn);
                 }
             });
@@ -4071,7 +4441,154 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             }
         }
 
+        /* --- QUÀ XÓA ĐIỂM (delete_score): xóa đúng 1 ô điểm của đúng học sinh, chỉ tiêu thụ quà khi lưu thành công --- */
+        let dsBusy = false;
+        async function applyDeleteScoreGift(studentId, invItem) {
+            if (dsBusy) return;
+            if (qsArchived()) { saveData(); return; }
+            const invId = invItem && invItem.invId;
+            const dateStr = document.getElementById('modalDateStr').value;
+            if (document.getElementById('modalStudentId').value !== studentId) return;
+            const key = `${studentId}_${dateStr}`;
+            const findGift = () => {
+                const st = appData.students.find(x => x.id === studentId);
+                return (st && Array.isArray(st.inventory)) ? st.inventory.find(i => i.invId === invId && i.type === 'delete_score') : null;
+            };
+            const hasValue = c => !!c && (c.absent === true || (c.score !== undefined && c.score !== null));
+
+            if (!findGift()) { uiToast('dsToastNoGift', 'warning'); return; }
+            const cell = appData.scores[key];
+            if (!hasValue(cell)) { uiToast('dsToastEmpty', 'warning'); return; }
+
+            const lang = appData.language || 'vi';
+            const t = translations[lang];
+            const student = appData.students.find(x => x.id === studentId);
+            const [y, m, d] = dateStr.split('-');
+            const valueText = cell.absent ? t.dsValueAbsent : parseFloat(cell.score).toFixed(1);
+            const msg = t.dsConfirmMsg
+                .replace('{student}', getStudentDisplayName(student))
+                .replace('{date}', `${d}/${m}/${y}`)
+                .replace('{value}', valueText)
+                .replace('{gift}', getRewardName(findGift()));
+
+            dsBusy = true;
+            try {
+                const td = qsGetCell(studentId, dateStr);
+                if (td) td.classList.add('ds-target');
+                let ok = false;
+                try { ok = await showAppConfirm(msg, t.dsConfirmTitle); } finally { if (td) td.classList.remove('ds-target'); }
+                if (!ok) { uiToast('dsToastCancel', 'info'); return; }
+
+                // Kiểm tra lại sau khi xác nhận (dữ liệu có thể đã đồng bộ/thay đổi)
+                const st = appData.students.find(x => x.id === studentId);
+                const gift = findGift();
+                const cur = appData.scores[key];
+                if (!st || !gift) { uiToast('dsToastNoGift', 'warning'); return; }
+                if (!hasValue(cur)) { uiToast('dsToastNoValid', 'warning'); return; }
+
+                const prevCell = deepCopy(cur);
+                const prevGift = deepCopy(gift);
+                const prevPoints = st.rewardPoints || 0;
+
+                // Xóa đúng 1 ô (cả điểm lẫn cờ vắng nằm trong cùng bản ghi) + trừ điểm dư phát biểu của ô đó như clearScore
+                st.rewardPoints = Math.max(0, prevPoints - qsOldExcess(cur));
+                delete appData.scores[key];
+                // Tiêu thụ đúng món quà theo invId
+                st.inventory = st.inventory.filter(i => i.invId !== invId);
+
+                const saved = await saveData();
+                if (!saved) {
+                    // Hoàn nguyên nếu dữ liệu chưa được khôi phục (bản ghi/quà không còn nguyên vẹn)
+                    const st2 = appData.students.find(x => x.id === studentId);
+                    if (st2) {
+                        if (!appData.scores) appData.scores = {};
+                        if (!st2.inventory) st2.inventory = [];
+                        const cellGone = !(key in appData.scores);
+                        const giftGone = !st2.inventory.some(i => i.invId === invId);
+                        if (cellGone || giftGone) {
+                            if (cellGone) appData.scores[key] = prevCell;
+                            if (giftGone) st2.inventory.push(prevGift);
+                            st2.rewardPoints = prevPoints;
+                        }
+                    }
+                    uiToast('dsToastError', 'error');
+                    try { renderCurrentView(); } catch (e) {}
+                    return;
+                }
+                closeScoreModal();
+                uiToast('dsToastSuccess', 'success');
+            } finally {
+                dsBusy = false;
+            }
+        }
+
+        /* --- Quà cộng điểm vào ô có điểm quy định (plus_match): dùng thủ công trên ô đang mở --- */
+        function applyPlusMatchGift(studentId, invItem) {
+            if (qsArchived()) { saveData(); return; }
+            const dateStr = document.getElementById('modalDateStr').value;
+            const key = `${studentId}_${dateStr}`;
+            const cell = appData.scores[key];
+            const student = appData.students.find(s => s.id === studentId);
+            const owned = student && Array.isArray(student.inventory) && student.inventory.find(i => i.invId === invItem.invId);
+            if (!owned) { uiToast('qg_gift_missing', 'warning'); return; }
+            const cur = (cell && !cell.absent && cell.score !== undefined && cell.score !== null) ? parseFloat(cell.score) : NaN;
+            const delta = parseFloat(invItem.deltaScore);
+            const after = Math.min(10, Math.max(0, Math.round((cur + delta) * 10) / 10));
+            if (isNaN(cur) || isNaN(delta) || !matchGiftCond(invItem, cur) || after === cur) { uiToast('no_valid_cell_for_gift', 'warning'); return; }
+
+            const prevCell = deepCopy(cell), prevGift = deepCopy(owned);
+            appData.scores[key] = { score: after, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: !!cell.isExam };
+            student.inventory = student.inventory.filter(i => i.invId !== invItem.invId);
+            saveData().then(ok => {
+                if (ok) { uiToast('toastGiftGiven', 'success'); return; }
+                const st2 = appData.students.find(s => s.id === studentId);
+                if (st2) {
+                    if (!st2.inventory) st2.inventory = [];
+                    if (!st2.inventory.some(i => i.invId === prevGift.invId)) { st2.inventory.push(prevGift); appData.scores[key] = prevCell; }
+                }
+                uiToast('dsToastError', 'error');
+                try { renderCurrentView(); } catch (e) {}
+            });
+            closeScoreModal();
+        }
+
+        /* --- Quà cộng điểm Bài Kiểm Tra (plus_exam): tự quét ô isExam thấp nhất của học sinh --- */
+        async function applyExamGift(studentId, invItem) {
+            if (qsArchived()) { saveData(); return; }
+            const student = appData.students.find(s => s.id === studentId);
+            const owned = student && Array.isArray(student.inventory) && student.inventory.find(i => i.invId === invItem.invId);
+            if (!owned) { uiToast('qg_gift_missing', 'warning'); return; }
+            let plan = qgPlan(studentId, owned);
+            if (!plan) { uiToast('no_exam_cell_for_gift', 'warning'); return; }
+            const detail = qgT('qg_detail_exam', { student: getStudentDisplayName(student), date: qgDateLabel(plan.key), before: plan.before, after: plan.after });
+            const okConfirm = await showAppConfirm(`${qgT('confirm_use_quick_gift')} ${getRewardName(owned)} — ${detail}`, qgT('quick_gift_title'));
+            if (!okConfirm) return;
+            const st = appData.students.find(s => s.id === studentId);
+            const own2 = st && Array.isArray(st.inventory) && st.inventory.find(i => i.invId === invItem.invId);
+            if (!own2) { uiToast('qg_gift_missing', 'warning'); return; }
+            plan = qgPlan(studentId, own2);
+            if (!plan) { uiToast('no_exam_cell_for_gift', 'warning'); return; }
+            const key = `${studentId}_${plan.key}`, cell = appData.scores[key];
+            const prevCell = deepCopy(cell), prevGift = deepCopy(own2);
+            appData.scores[key] = { score: plan.afterNum, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: true };
+            st.inventory = st.inventory.filter(i => i.invId !== invItem.invId);
+            closeScoreModal();
+            saveData().then(ok => {
+                if (ok) { uiToast('toastGiftGiven', 'success'); return; }
+                const st2 = appData.students.find(s => s.id === studentId);
+                if (st2) {
+                    if (!st2.inventory) st2.inventory = [];
+                    if (!st2.inventory.some(i => i.invId === prevGift.invId)) { st2.inventory.push(prevGift); appData.scores[key] = prevCell; }
+                }
+                uiToast('dsToastError', 'error');
+                try { renderCurrentView(); } catch (e) {}
+            });
+        }
+
         function applyGiftToCell(studentId, invItem) {
+            if (invItem && invItem.type === 'plus_exam') { applyExamGift(studentId, invItem); return; }
+            if (invItem && invItem.type === 'delete_score') { applyDeleteScoreGift(studentId, invItem); return; }
+            if (invItem && invItem.type === 'plus_match') { applyPlusMatchGift(studentId, invItem); return; }
             const dateStr = document.getElementById('modalDateStr').value;
             const key = `${studentId}_${dateStr}`;
             const existing = appData.scores[key];
@@ -4079,9 +4596,9 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             if (invItem.type === 'plus' && invItem.deltaScore !== undefined) {
                 let currentScore = (existing && existing.score !== undefined && existing.score !== null) ? parseFloat(existing.score) : 0;
                 let newScore = Math.min(10, currentScore + parseFloat(invItem.deltaScore));
-                appData.scores[key] = { score: newScore, absent: false, speakingCount: existing ? existing.speakingCount : 0 };
+                appData.scores[key] = { score: newScore, absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
             } else if (invItem.targetScore !== null && invItem.targetScore !== undefined) {
-                appData.scores[key] = { score: parseFloat(invItem.targetScore), absent: false, speakingCount: existing ? existing.speakingCount : 0 };
+                appData.scores[key] = { score: parseFloat(invItem.targetScore), absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
             }
 
             const student = appData.students.find(s => s.id === studentId);
@@ -4149,7 +4666,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             student.rewardPoints = Math.max(0, student.rewardPoints - oldExcess);
 
             if (isAbsent) {
-                appData.scores[key] = { score: 0, absent: true, speakingCount: 0 };
+                appData.scores[key] = { score: 0, absent: true, speakingCount: 0, isExam: false };
             } else {
                 let N = parseInt(speakingVal);
                 if (isNaN(N) || speakingVal === '') {
@@ -4172,7 +4689,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 appData.scores[key] = {
                     score: finalScore,
                     absent: false,
-                    speakingCount: N
+                    speakingCount: N,
+                    isExam: !!(document.getElementById('modalIsExamCheckbox') || {}).checked
                 };
 
                 student.rewardPoints += newExcess;
@@ -5013,11 +5531,11 @@ window.openStudentProfile=function(studentId){
         function wheelInventory(student){return (student?.inventory||[]).filter(isLuckyWheelGift);}
         function renderWheelView(){
           ensureWheelData(); const en=appData.language==='en';
-          const labels={tab:en?'Lucky Wheel':'Vòng Quay May Mắn',sub:en?'Weighted random selection with persistent Firebase history.':'Quay theo trọng số, lưu lịch sử trong Firebase.',manage:en?'Manage prizes':'Quản lý phần thưởng',name:en?'Prize name':'Tên phần thưởng',weight:en?'Weight':'Trọng số',add:en?'Add to wheel':'Thêm vào vòng quay',clear:en?'Clear all configuration':'Xóa toàn bộ cấu hình',help:en?'Weights are relative; probabilities are normalized.':'Trọng số là tỷ lệ tương đối; xác suất được chuẩn hóa.',mode:en?'Spin mode':'Chế độ quay',free:en?'Free spin':'Quay tự do',student:en?'Spin for student (uses 1 turn)':'Quay cho học sinh (dùng 1 lượt)',studentLabel:en?'Student':'Học sinh',classLabel:en?'Filter by class':'Lọc theo lớp',prob:en?'Current probabilities':'Xác suất hiện tại',history:en?'Spin history':'Lịch sử quay',clearHistory:en?'Clear visible history':'Xóa lịch sử hiển thị',spin:en?'SPIN':'QUAY',ready:en?'Ready':'Sẵn sàng',empty:en?'No prizes yet. Add prizes in Manage prizes.':'Chưa có phần thưởng. Hãy thêm trong mục Quản lý phần thưởng.',noValid:en?'No enabled prize has a valid weight.':'Không có phần thưởng đang bật với trọng số hợp lệ.',none:en?'No history yet.':'Chưa có lịch sử quay.',turns:en?'Available turns':'Số lượt còn lại',edit:en?'Edit':'Sửa',disable:en?'Disable':'Tắt',enable:en?'Enable':'Bật',del:en?'Delete':'Xóa',emptyStudent:en?'Select a student':'Chọn học sinh',allClasses:en?'All classes':'Tất cả lớp',noTurn:en?'This student has no Lucky Wheel turn gift.':'Học sinh này không có quà lượt quay may mắn.',archived:en?'Archived course is read-only.':'Khóa đã lưu trữ chỉ được xem.',saved:en?'Spin saved successfully.':'Đã lưu kết quả quay thành công.',failed:en?'The spin could not be confirmed. Check Firebase before retrying.':'Chưa xác nhận được lượt quay. Hãy kiểm tra Firebase trước khi thử lại.'};
+          const labels={tab:en?'Lucky Wheel':'Vòng Quay May Mắn',sub:en?'Weighted random selection with persistent Firebase history.':'Quay theo trọng số, lưu lịch sử trong Firebase.',manage:en?'Manage prizes':'Quản lý phần thưởng',name:en?'Prize name':'Tên phần thưởng',weight:en?'Weight':'Trọng số',add:en?'Add to wheel':'Thêm vào vòng quay',clear:en?'Clear all configuration':'Xóa toàn bộ cấu hình',help:en?'Weights are relative; probabilities are normalized.':'Trọng số là tỷ lệ tương đối; xác suất được chuẩn hóa.',mode:en?'Spin mode':'Chế độ quay',free:en?'Free spin':'Quay tự do',student:en?'Spin for student (uses 1 turn)':'Quay cho học sinh (dùng 1 lượt)',studentLabel:en?'Student':'Học sinh',classLabel:en?'Filter by class':'Lọc theo lớp',prob:en?'Current probabilities':'Xác suất hiện tại',history:en?'Spin history':'Lịch sử quay',clearHistory:en?'Clear visible history':'Xóa lịch sử hiển thị',spin:en?'SPIN':'QUAY',ready:en?'Ready':'Sẵn sàng',empty:en?'No prizes yet. Add prizes in Manage prizes.':'Chưa có phần thưởng. Hãy thêm trong mục Quản lý phần thưởng.',noValid:en?'No enabled prize has a valid weight.':'Không có phần thưởng đang bật với trọng số hợp lệ.',none:en?'No history yet.':'Chưa có lịch sử quay.',turns:en?'Available turns':'Số lượt còn lại',legend:en?'Green = student has Lucky Wheel turns (x = turns left; each spin uses 1)':'Xanh lá = học sinh còn lượt quay (x = số lượt còn lại; mỗi lần quay dùng 1)',edit:en?'Edit':'Sửa',disable:en?'Disable':'Tắt',enable:en?'Enable':'Bật',del:en?'Delete':'Xóa',emptyStudent:en?'Select a student':'Chọn học sinh',allClasses:en?'All classes':'Tất cả lớp',noTurn:en?'This student has no Lucky Wheel turn gift.':'Học sinh này không có quà lượt quay may mắn.',archived:en?'Archived course is read-only.':'Khóa đã lưu trữ chỉ được xem.',saved:en?'Spin saved successfully.':'Đã lưu kết quả quay thành công.',failed:en?'The spin could not be confirmed. Check Firebase before retrying.':'Chưa xác nhận được lượt quay. Hãy kiểm tra Firebase trước khi thử lại.'};
           const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
           put('wheelTabLabel',labels.tab);put('wheelTitle',labels.tab);put('wheelSubtitle',labels.sub);put('wheelManageToggle',labels.manage);put('wheelPrizeName',document.getElementById('wheelPrizeName').placeholder=labels.name);put('wheelPrizeWeight',document.getElementById('wheelPrizeWeight').placeholder=labels.weight);put('wheelWeightHelp',labels.help);put('wheelModeTitle',labels.mode);put('wheelFreeLabel',labels.free);put('wheelStudentLabel',labels.student);put('wheelStudentPickerLabel',labels.studentLabel);put('wheelClassFilterLabel',labels.classLabel);put('wheelProbabilityTitle',labels.prob);put('wheelHistoryTitle',labels.history);const clearBtn=document.querySelector('#viewWheelContainer button[onclick="clearWheelHistoryView()"]');if(clearBtn)clearBtn.textContent=labels.clearHistory;put('wheelSpinBtn',labels.spin);
           const cls=document.getElementById('wheelClassFilter'),oldClass=cls.value;cls.innerHTML=`<option value="">${labels.allClasses}</option>`+(appData.classes||[]).map(c=>`<option value="${wheelEsc(c.id)}">${wheelEsc(c.name)}</option>`).join('');if([...cls.options].some(o=>o.value===oldClass))cls.value=oldClass;
-          const st=document.getElementById('wheelStudentPicker'),oldStudent=st.value;const eligible=(appData.students||[]).filter(x=>!cls.value||String(x.classId)===String(cls.value));st.innerHTML=`<option value="">${labels.emptyStudent}</option>`+eligible.map(x=>`<option value="${wheelEsc(x.id)}">${wheelEsc(x.name)} · ${wheelEsc((appData.classes||[]).find(c=>String(c.id)===String(x.classId))?.name||'')}</option>`).join('');if([...st.options].some(o=>o.value===oldStudent))st.value=oldStudent;
+          const st=document.getElementById('wheelStudentPicker'),oldStudent=st.value;const eligible=(appData.students||[]).filter(x=>(!cls.value||String(x.classId)===String(cls.value))&&wheelInventory(x).length>0);st.innerHTML=`<option value="" style="color:#334155;font-weight:400;background-color:#fff">${labels.emptyStudent}</option>`+eligible.map(x=>{const n=wheelInventory(x).length;return `<option value="${wheelEsc(x.id)}" style="color:#047857;font-weight:700;background-color:#fff">🎡 ${wheelEsc(x.name)} · ${wheelEsc((appData.classes||[]).find(c=>String(c.id)===String(x.classId))?.name||'')}${n>0?' · x'+n:''}</option>`;}).join('');if([...st.options].some(o=>o.value===oldStudent))st.value=oldStudent;const selTurns=wheelInventory((appData.students||[]).find(x=>String(x.id)===st.value)).length;['text-emerald-700','font-bold','bg-emerald-50','border-emerald-400'].forEach(c=>st.classList.toggle(c,selTurns>0));
           const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';st.disabled=mode!=='student';document.getElementById('wheelTurns').textContent=mode==='student'?(labels.turns+': x'+wheelInventory((appData.students||[]).find(x=>String(x.id)===st.value)).length):'';
           const sum=wheelEnabled().reduce((n,p)=>n+Number(p.weight),0);put('wheelStatus',wheelEnabled().length?labels.ready:labels.noValid);
           document.getElementById('wheelProbabilities').innerHTML=wheelProbabilityRows().map(p=>`<div class="flex items-center gap-2 text-sm"><span class="w-3 h-3 rounded-sm shrink-0" style="background:${wheelEsc(p.color||'#64748b')}"></span><span class="flex-1 break-words">${wheelEsc(p.name)}</span><b>${p.prob.toFixed(2)}%</b></div>`).join('')||`<p class="text-sm text-slate-500">${labels.empty}</p>`;
@@ -5295,6 +5813,7 @@ window.openStudentProfile=function(studentId){
           updateRealtimeCalculationDisplay: updateRealtimeCalculationDisplay,
           renderInventoryGiftsForModal: renderInventoryGiftsForModal,
           applyGiftToCell: applyGiftToCell,
+          applyDeleteScoreGift: applyDeleteScoreGift,
           datePlus: datePlus,
           mondayOfDate: mondayOfDate,
           deepCopy: deepCopy,
