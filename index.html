@@ -111,10 +111,9 @@
         .shop-fx-switch.on { color:#4338ca; border-color:#a5b4fc; background:#eef2ff; }
         .shop-fx-switch.on .shop-fx-track { background:#4f46e5; }
         .shop-fx-switch.on .shop-fx-knob { transform:translateX(.9rem); }
-        #viewShopContainer.shop-fx-off .gift-card, #viewShopContainer.shop-fx-off .gift-card .gift-emoji { transition:none !important; }
-        #viewShopContainer.shop-fx-off .gift-card:hover { transform:none; box-shadow:0 1px 2px rgba(15,23,42,.08); border-color:#e2e8f0; }
-        #viewShopContainer.shop-fx-off .gift-card::after { display:none; }
-        #viewShopContainer.shop-fx-off .gift-card:hover .gift-emoji { transform:none; }
+        /* Công tắc chỉ điều khiển animation đổi quà thành công toàn màn hình.
+           Hiệu ứng hover lấp lánh trên thẻ quà luôn được giữ cố định. */
+        html.shop-success-fx-off .xf-gift { display:none !important; }
         @media (prefers-reduced-motion: reduce) { .tg-float, .tg-logo { animation:none; } .teacher-card, .gift-card, .teacher-card *, .gift-card * { transition:none !important; } }
         /* 3. Score matrix hover helpers */
         .grid-cell { transition:background-color .12s; }
@@ -644,11 +643,11 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 @keyframes xfGRays{from{transform:rotate(0) scale(.4);opacity:0}15%{opacity:1}to{transform:rotate(60deg) scale(1);opacity:.9}}
 .xf-gift{position:fixed;inset:0;z-index:9200;display:flex;align-items:center;justify-content:center;padding:14px;background:radial-gradient(circle at center,rgba(251,191,36,.3),rgba(15,23,42,.86));animation:xfFade .25s ease;cursor:pointer;transition:opacity .25s}
 .xf-gift.out{opacity:0}
-.xf-gstage{position:relative;width:min(88vw,22rem);text-align:center;color:#fff}
+.xf-gstage{position:relative;width:min(88vw,25rem);text-align:center;color:#fff}
 .xf-grays{position:absolute;left:50%;top:60px;width:360px;height:360px;margin:-180px 0 0 -180px;border-radius:50%;background:repeating-conic-gradient(rgba(253,224,71,.55) 0 8deg,transparent 8deg 24deg);-webkit-mask:radial-gradient(circle,#000 18%,transparent 68%);mask:radial-gradient(circle,#000 18%,transparent 68%);opacity:0;pointer-events:none}
-.opened .xf-grays{animation:xfGRays 2.4s ease-out forwards}
+.opened .xf-grays{animation:xfGRays 1.4s ease-out forwards}
 .xf-gitemwrap{position:relative;height:110px;display:flex;align-items:center;justify-content:center}
-.xf-gitem{font-size:4.2rem;line-height:1;opacity:0;filter:drop-shadow(0 6px 14px rgba(0,0,0,.45))}
+.xf-gitem{display:inline-flex;align-items:center;justify-content:center;max-width:min(88vw,25rem);min-height:2.8rem;padding:.55rem 1rem;border:2px solid rgba(255,255,255,.9);border-radius:1rem;background:linear-gradient(135deg,#fef3c7,#fbbf24);color:#78350f;font-size:clamp(1rem,4.2vw,1.4rem);font-weight:1000;line-height:1.25;overflow-wrap:anywhere;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0}
 .opened .xf-gitem{animation:xfGItem .9s cubic-bezier(.3,1.4,.5,1) both}
 .xf-gbox{position:relative;width:150px;height:150px;margin:0 auto;animation:xfGDrop .6s cubic-bezier(.3,1.5,.5,1) both}
 .xf-gbox.shake{animation:xfGShake .9s ease-in-out both}
@@ -657,11 +656,9 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 .xf-glid{position:absolute;left:0;right:0;bottom:84px;height:40px;border-radius:10px;background:linear-gradient(135deg,#f43f5e,#be123c);box-shadow:0 4px 0 rgba(0,0,0,.14);transform-origin:left bottom;transition:transform .7s cubic-bezier(.3,1.4,.5,1),opacity .7s .1s}
 .xf-glid::before{content:"🎀";position:absolute;left:50%;top:-24px;transform:translateX(-50%);font-size:32px;z-index:2}
 .xf-gbox.open .xf-glid{transform:translate(78px,-90px) rotate(34deg);opacity:0}
-.xf-gtext{margin-top:1rem;opacity:0;transform:translateY(14px);transition:opacity .5s .5s,transform .5s .5s}
+.xf-gtext{margin:.8rem auto 0;max-width:100%;padding:.35rem .25rem;border:0;border-radius:0;background:transparent;box-shadow:none;opacity:0;transform:translateY(10px);transition:opacity .25s .2s,transform .25s .2s}
 .opened .xf-gtext{opacity:1;transform:none}
-.xf-gwho{font-size:13px;font-weight:700;color:#fde68a}
-.xf-gname{font-size:1.5rem;font-weight:900;line-height:1.2;margin:.15rem 0}
-.xf-gleft{font-size:12px;font-weight:700;color:#e2e8f0}
+.xf-gwho{font-size:clamp(1rem,4vw,1.25rem);font-weight:1000;color:#fff;line-height:1.5;text-shadow:0 2px 5px rgba(0,0,0,.9)}
 .xf-gok{margin-top:.8rem;border-radius:.8rem;background:#f59e0b;color:#451a03;font-weight:900;font-size:13px;padding:.55rem 1.5rem}
 .xf-gok:hover{background:#fbbf24}
 </style>
@@ -3809,7 +3806,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
         function shopFxApply() {
             let on = true; try { on = localStorage.getItem(SHOP_FX_KEY) !== '0'; } catch (e) {}
             const box = document.getElementById('viewShopContainer'), sw = document.getElementById('shopFxToggle');
-            if (box) box.classList.toggle('shop-fx-off', !on);
+            document.documentElement.classList.toggle('shop-success-fx-off', !on);
             if (sw) { sw.classList.toggle('on', on); sw.setAttribute('aria-checked', on ? 'true' : 'false'); }
         }
         window.toggleShopFx = function () {
@@ -3883,7 +3880,13 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 student.inventory.push(invData);
                 lastInv = invData;
             }
-            try { xfGiftOpenFx(student, lastInv, qty); } catch (e) { console.warn('Gift FX skipped:', e); }
+            /* Chỉ phát animation toàn màn hình khi công tắc đang bật.
+               Hover sparkle của thẻ quà là hiệu ứng cố định, không bị ảnh hưởng. */
+            let showSuccessFx = true;
+            try { showSuccessFx = localStorage.getItem(SHOP_FX_KEY) !== '0'; } catch (e) {}
+            if (showSuccessFx) {
+                try { xfGiftOpenFx(student, lastInv, qty); } catch (e) { console.warn('Gift FX skipped:', e); }
+            }
 
             saveData().then(ok => { if (ok) uiToast('toastGiftGiven', 'success'); });
             closeSelectStudentModal();
@@ -7053,10 +7056,10 @@ window.openStudentProfile=function(studentId){
         /* ---------- Hiệu ứng mở hộp quà (Cửa hàng) ---------- */
         function xfGiftOpenFx(student, inv, qty) {
             const old = document.getElementById('xfGift'); if (old) old.remove();
-            const name = getRewardName(inv) + (qty > 1 ? ' ×' + qty : ''), icon = inv.isFixed ? '⭐' : '🎁', sname = getStudentDisplayName(student), left = student.rewardPoints || 0;
+            const name = getRewardName(inv) + (qty > 1 ? ' ×' + qty : ''), sname = getStudentDisplayName(student);
             const w = document.createElement('div'); w.id = 'xfGift'; w.className = 'xf-gift';
             w.setAttribute('role', 'dialog'); w.setAttribute('aria-modal', 'true');
-            w.innerHTML = `<div class="xf-gstage"><div class="xf-grays"></div><div class="xf-gitemwrap"><div class="xf-gitem">${icon}</div></div><div class="xf-gbox"><div class="xf-gbody"></div><div class="xf-glid"></div></div><div class="xf-gtext"><p class="xf-gwho">${xfEsc(sname)} ${L2('vừa đổi được', 'just redeemed')}</p><h3 class="xf-gname">${xfEsc(name)}</h3><p class="xf-gleft">${L2(`Còn lại ${left} Pts`, `${left} Pts left`)}</p><button type="button" class="xf-gok">${L2('Tuyệt vời!', 'Awesome!')}</button></div></div>`;
+            w.innerHTML = `<div class="xf-gstage"><div class="xf-grays"></div><div class="xf-gitemwrap"><div class="xf-gitem">${xfEsc(name)}</div></div><div class="xf-gbox"><div class="xf-gbody"></div><div class="xf-glid"></div></div><div class="xf-gtext"><p class="xf-gwho">🎉 ${xfEsc(sname)} · ${L2('Đổi quà thành công!', 'Gift redeemed successfully!')}</p><button type="button" class="xf-gok">${L2('Tuyệt vời!', 'Awesome!')}</button></div></div>`;
             document.body.appendChild(w);
             const box = w.querySelector('.xf-gbox'), timers = []; let opened = false, closed = false;
             const close = () => { if (closed) return; closed = true; timers.forEach(clearTimeout); w.classList.add('out'); setTimeout(() => w.remove(), 260); };
@@ -7069,13 +7072,13 @@ window.openStudentProfile=function(studentId){
                         tfBurst(x, y, 70, 360); setTimeout(() => tfBurst(x - 90, y + 20, 30, 200), 180); setTimeout(() => tfBurst(x + 90, y + 20, 30, 200), 320);
                         [523, 659, 784, 1047].forEach((f, i) => tfBeep(f, .18, .25, i * .09));
                     } catch (e) {}
-                    timers.push(setTimeout(close, 11000));
+                    timers.push(setTimeout(close, 6500));
                 }
             };
             w.onclick = () => { if (!opened) open(); else close(); };
             w.querySelector('.xf-gok').onclick = e => { e.stopPropagation(); close(); };
             if (xfRM()) { open(); return; }
-            timers.push(setTimeout(() => box.classList.add('shake'), 650), setTimeout(open, 1650));
+            timers.push(setTimeout(() => box.classList.add('shake'), 400), setTimeout(open, 950));
         }
 
         /* ---------- Phím Esc cho các lớp phủ mới ---------- */
