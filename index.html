@@ -325,6 +325,12 @@
         .rank-card:hover .rk-ring { animation-duration:1.2s; }
         .rank-card:hover .rk-spark { animation-duration:1s; }
         @media (prefers-reduced-motion: reduce) { .hl-row, .hl-row * { transition:none !important; transform:none !important; filter:none !important; } }
+        /* ===== Sửa điểm (gỡ liên kết số lần phát biểu) ===== */
+        .qs-toggle.qs-toggle-edit.on { background:#be185d; border-color:#be185d; box-shadow:0 2px 8px rgba(190,24,93,.4); }
+        td.grid-cell.cell-manual { position:relative; }
+        td.grid-cell.cell-manual::before { content:"✎"; position:absolute; top:0; right:2px; font-size:8px; line-height:1.2; color:#be185d; opacity:.9; pointer-events:none; }
+        .qs-edit-on td.grid-cell.qs-sel { outline-color:#be185d !important; background-color:#fce7f3 !important; color:#831843; }
+        .qs-edit-on td.grid-cell.qs-typing { background-color:#fbcfe8 !important; color:#831843; }
         thead th.col-hl { background-color:#4338ca !important; color:#fff !important; }
         .avg-cell { background:#eef2ff; }
         .score-row:hover > td.avg-cell { background-color:#c7d2fe !important; }
@@ -712,85 +718,85 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 
 /* 01 Sao băng */
 .ct.ct-t01{--ha:rgba(165,243,252,.8);background:linear-gradient(160deg,#0b1026,#1b2559 60%,#2d1b69)}
-.ct-t01 i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;box-shadow:0 0 6px #fff;animation-name:ctTwinkle}
-.ct-t01 b{width:90px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff 80%,#a5f3fc);transform-origin:left center;animation-name:ctMeteor;animation-timing-function:ease-in}
+.ct-t01 .ct-fx>i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;box-shadow:0 0 6px #fff;animation-name:ctTwinkle}
+.ct-t01 .ct-fx>b{width:90px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff 80%,#a5f3fc);transform-origin:left center;animation-name:ctMeteor;animation-timing-function:ease-in}
 /* 02 Cầu vồng */
 .ct.ct-t02{--ha:rgba(244,114,182,.6);background:linear-gradient(100deg,#fecaca,#fde68a,#bbf7d0,#bae6fd,#ddd6fe,#fbcfe8,#fecaca);background-size:700px 100%;animation:ctSlide 7s linear infinite}
-.ct-t02 i{font-size:var(--z);animation-name:ctTwinkle}
-.ct-t02 s{font-size:var(--z);opacity:.9;animation-name:ctDrift}
+.ct-t02 .ct-fx>i{font-size:var(--z);animation-name:ctTwinkle}
+.ct-t02 .ct-fx>s{font-size:var(--z);opacity:.9;animation-name:ctDrift}
 /* 03 Bong bóng */
 .ct.ct-t03{--ha:rgba(255,255,255,.95);background:linear-gradient(180deg,#e0f2fe,#bae6fd 60%,#7dd3fc)}
-.ct-t03 i{width:var(--z);height:var(--z);border-radius:50%;border:1px solid rgba(255,255,255,.85);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.95),rgba(255,255,255,.25) 40%,rgba(255,255,255,.08));animation-name:ctRise}
+.ct-t03 .ct-fx>i{width:var(--z);height:var(--z);border-radius:50%;border:1px solid rgba(255,255,255,.85);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.95),rgba(255,255,255,.25) 40%,rgba(255,255,255,.08));animation-name:ctRise}
 /* 04 Tuyết rơi */
 .ct.ct-t04{--ha:rgba(96,165,250,.7);background:linear-gradient(180deg,#dbeafe,#eff6ff 70%,#fff)}
-.ct-t04 i{font-size:var(--z);color:#60a5fa;text-shadow:0 0 4px #fff;animation-name:ctFall}
+.ct-t04 .ct-fx>i{font-size:var(--z);color:#60a5fa;text-shadow:0 0 4px #fff;animation-name:ctFall}
 .ct-t04 .ct-x{left:-10%;right:-10%;bottom:-20px;height:32px;background:#fff;border-radius:50% 50% 0 0;box-shadow:0 -4px 8px rgba(148,163,184,.3)}
 /* 05 Hoa anh đào */
 .ct.ct-t05{--ha:rgba(244,114,182,.6);background:linear-gradient(135deg,#fdf2f8,#fce7f3 55%,#fbcfe8)}
-.ct-t05 i{width:var(--z);height:calc(var(--z)*1.25);background:linear-gradient(135deg,#fbcfe8,#f472b6);border-radius:80% 0 80% 0;animation-name:ctFall}
-.ct-t05 s{font-size:var(--z);animation-name:ctFall}
+.ct-t05 .ct-fx>i{width:var(--z);height:calc(var(--z)*1.25);background:linear-gradient(135deg,#fbcfe8,#f472b6);border-radius:80% 0 80% 0;animation-name:ctFall}
+.ct-t05 .ct-fx>s{font-size:var(--z);animation-name:ctFall}
 /* 06 Ma trận */
 .ct.ct-t06{--ha:rgba(74,222,128,.7);background:linear-gradient(180deg,#02100a,#052e16)}
-.ct-t06 i{font:700 var(--z)/1.25 ui-monospace,Menlo,Consolas,monospace;background:linear-gradient(180deg,transparent,#86efac 70%,#22c55e);-webkit-background-clip:text;background-clip:text;color:transparent;animation-name:ctStraight}
+.ct-t06 .ct-fx>i{font:700 var(--z)/1.25 ui-monospace,Menlo,Consolas,monospace;background:linear-gradient(180deg,transparent,#86efac 70%,#22c55e);-webkit-background-clip:text;background-clip:text;color:transparent;animation-name:ctStraight}
 .ct-t06 .ct-x{left:0;right:0;top:0;height:24px;background:linear-gradient(transparent,rgba(74,222,128,.16),transparent);animation:ctScanY 3.4s linear infinite}
 /* 07 Neon Cyber */
 .ct.ct-t07{--ha:rgba(217,70,239,.8);background:linear-gradient(180deg,#0a0618,#1a0b3b 70%,#2b0a4f)}
 .ct-t07::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;box-shadow:inset 0 0 0 1px #22d3ee,inset 0 0 18px rgba(217,70,239,.4);animation:ctNeon 2.4s ease-in-out infinite}
 .ct-t07 .ct-x.a{left:-20%;right:-20%;bottom:0;height:62%;background-image:linear-gradient(#d946ef 1px,transparent 1px),linear-gradient(90deg,#d946ef 1px,transparent 1px);background-size:18px 18px;opacity:.45;transform:perspective(90px) rotateX(58deg);transform-origin:50% 100%;animation:ctGrid 1.4s linear infinite}
 .ct-t07 .ct-x.b{top:0;bottom:0;left:0;width:40px;background:linear-gradient(90deg,transparent,rgba(34,211,238,.4),transparent);animation:ctScanX 3.2s linear infinite}
-.ct-t07 i{width:var(--z);height:var(--z);background:#22d3ee;box-shadow:0 0 8px #22d3ee;animation-name:ctRise}
+.ct-t07 .ct-fx>i{width:var(--z);height:var(--z);background:#22d3ee;box-shadow:0 0 8px #22d3ee;animation-name:ctRise}
 /* 08 Dung nham */
 .ct.ct-t08{--ha:rgba(251,146,60,.85);background:linear-gradient(180deg,#1c0a05,#4a1308 60%,#7c2d12)}
-.ct-t08 i{width:var(--z);height:var(--z);border-radius:50%;background:#fb923c;box-shadow:0 0 8px 2px #f97316;animation-name:ctRise}
+.ct-t08 .ct-fx>i{width:var(--z);height:var(--z);border-radius:50%;background:#fb923c;box-shadow:0 0 8px 2px #f97316;animation-name:ctRise}
 .ct-t08 .ct-x{left:-5%;right:-5%;bottom:-16px;height:36px;background:linear-gradient(90deg,#ea580c,#fbbf24,#ea580c,#fbbf24,#ea580c);background-size:700px 100%;filter:blur(.6px);animation:ctSlide 5s linear infinite,ctLava 3s ease-in-out infinite alternate}
 /* 09 Đại dương */
 .ct.ct-t09{--ha:rgba(125,211,252,.85);background:linear-gradient(180deg,#0ea5e9,#0369a1 70%,#075985)}
-.ct-t09 s{font-size:var(--z);animation-name:ctDriftL,ctBobT;animation-duration:var(--t),2.2s;animation-timing-function:linear,ease-in-out}
-.ct-t09 i{width:var(--z);height:var(--z);border-radius:50%;border:1px solid rgba(255,255,255,.8);animation-name:ctRise}
+.ct-t09 .ct-fx>s{font-size:var(--z);animation-name:ctDriftL,ctBobT;animation-duration:var(--t),2.2s;animation-timing-function:linear,ease-in-out}
+.ct-t09 .ct-fx>i{width:var(--z);height:var(--z);border-radius:50%;border:1px solid rgba(255,255,255,.8);animation-name:ctRise}
 .ct-t09 .ct-x{left:0;right:0;height:14px;background-repeat:repeat-x}
 .ct-t09 .ct-x.a{bottom:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 14' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q15 0 30 7T60 7T90 7T120 7V14H0Z' fill='%23fff' fill-opacity='.3'/%3E%3C/svg%3E");background-size:120px 14px;animation:ctWaveA 5s linear infinite}
 .ct-t09 .ct-x.b{bottom:-3px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 14' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q10 1 20 7T40 7T60 7T80 7V14H0Z' fill='%23fff' fill-opacity='.2'/%3E%3C/svg%3E");background-size:80px 14px;animation:ctWaveB 7s linear infinite}
 /* 10 Thiên hà */
 .ct.ct-t10{--ha:rgba(167,139,250,.85);background:radial-gradient(ellipse at 30% 20%,#4c1d95,#1e1b4b 55%,#0b0720)}
-.ct-t10 i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;box-shadow:0 0 5px #fff;animation-name:ctTwinkle}
+.ct-t10 .ct-fx>i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;box-shadow:0 0 5px #fff;animation-name:ctTwinkle}
 .ct-t10 .ct-x{right:-70px;top:-70px;width:240px;height:240px;border-radius:50%;filter:blur(5px);background:conic-gradient(from 0deg,transparent,rgba(167,139,250,.6),transparent 40%,rgba(56,189,248,.45),transparent 80%);animation:ctSpin 14s linear infinite}
-.ct-t10 s{left:74%;top:38%;font-size:18px;animation-name:ctOrbit;animation-duration:9s}
+.ct-t10 .ct-fx>s{left:74%;top:38%;font-size:18px;animation-name:ctOrbit;animation-duration:9s}
 /* 11 Đom đóm */
 .ct.ct-t11{--ha:rgba(253,224,71,.7);background:linear-gradient(180deg,#07130d,#0f2a1a 60%,#14361f)}
-.ct-t11 i{width:var(--z);height:var(--z);border-radius:50%;background:#fde047;box-shadow:0 0 8px 3px rgba(253,224,71,.75);animation-name:ctFlyPath,ctGlow;animation-duration:var(--t),2.4s;animation-timing-function:ease-in-out}
+.ct-t11 .ct-fx>i{width:var(--z);height:var(--z);border-radius:50%;background:#fde047;box-shadow:0 0 8px 3px rgba(253,224,71,.75);animation-name:ctFlyPath,ctGlow;animation-duration:var(--t),2.4s;animation-timing-function:ease-in-out}
 /* 12 Kẹo ngọt */
 .ct.ct-t12{--ha:rgba(236,72,153,.55);background:linear-gradient(45deg,#fbcfe8 25%,#fff 25% 50%,#fbcfe8 50% 75%,#fff 75%);background-size:40px 40px;animation:ctStripe 2.2s linear infinite}
-.ct-t12 s{font-size:var(--z);animation-name:ctBob;animation-timing-function:ease-in-out}
+.ct-t12 .ct-fx>s{font-size:var(--z);animation-name:ctBob;animation-timing-function:ease-in-out}
 /* 13 Pháo hoa */
 .ct.ct-t13{--ha:rgba(250,204,21,.75);background:radial-gradient(ellipse at 50% 120%,#1e3a8a,#0b1230 60%,#050816)}
-.ct-t13 b{width:2px;height:2px;border-radius:50%;color:var(--c);box-shadow:0.0px -14.0px 0 0 currentColor,9.9px -9.9px 0 0 currentColor,14.0px -0.0px 0 0 currentColor,9.9px 9.9px 0 0 currentColor,0.0px 14.0px 0 0 currentColor,-9.9px 9.9px 0 0 currentColor,-14.0px 0.0px 0 0 currentColor,-9.9px -9.9px 0 0 currentColor,3.1px -7.4px 0 0 currentColor,7.4px -3.1px 0 0 currentColor,7.4px 3.1px 0 0 currentColor,3.1px 7.4px 0 0 currentColor,-3.1px 7.4px 0 0 currentColor,-7.4px 3.1px 0 0 currentColor,-7.4px -3.1px 0 0 currentColor,-3.1px -7.4px 0 0 currentColor;animation-name:ctBurst;animation-timing-function:ease-out}
-.ct-t13 i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;animation-name:ctTwinkle}
+.ct-t13 .ct-fx>b{width:2px;height:2px;border-radius:50%;color:var(--c);box-shadow:0.0px -14.0px 0 0 currentColor,9.9px -9.9px 0 0 currentColor,14.0px -0.0px 0 0 currentColor,9.9px 9.9px 0 0 currentColor,0.0px 14.0px 0 0 currentColor,-9.9px 9.9px 0 0 currentColor,-14.0px 0.0px 0 0 currentColor,-9.9px -9.9px 0 0 currentColor,3.1px -7.4px 0 0 currentColor,7.4px -3.1px 0 0 currentColor,7.4px 3.1px 0 0 currentColor,3.1px 7.4px 0 0 currentColor,-3.1px 7.4px 0 0 currentColor,-7.4px 3.1px 0 0 currentColor,-7.4px -3.1px 0 0 currentColor,-3.1px -7.4px 0 0 currentColor;animation-name:ctBurst;animation-timing-function:ease-out}
+.ct-t13 .ct-fx>i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;animation-name:ctTwinkle}
 /* 14 Hoàng kim */
 .ct.ct-t14{--ha:rgba(245,158,11,.8);background:linear-gradient(135deg,#fef3c7,#fde68a 40%,#fbbf24)}
 .ct-t14::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;box-shadow:inset 0 0 0 2px rgba(217,119,6,.55)}
-.ct-t14 i{font-size:var(--z);color:#b45309;animation-name:ctTwinkle}
-.ct-t14 s{font-size:var(--z);animation-name:ctTwinkle}
+.ct-t14 .ct-fx>i{font-size:var(--z);color:#b45309;animation-name:ctTwinkle}
+.ct-t14 .ct-fx>s{font-size:var(--z);animation-name:ctTwinkle}
 .ct-t14 .ct-x{top:-10%;bottom:-10%;left:0;width:56px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);animation:ctShine 3.4s ease-in-out infinite}
 /* 15 Hoàng hôn */
 .ct.ct-t15{--ha:rgba(253,186,116,.9);background:linear-gradient(180deg,#312e81 0%,#be185d 45%,#fb923c 80%,#fde68a)}
 .ct-t15 .ct-x{right:16%;bottom:-26px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle,#fff7ae,#fde047 40%,#fb923c);animation:ctSun 3s ease-in-out infinite}
-.ct-t15 b{width:var(--z);height:14px;border-radius:50%;background:rgba(255,255,255,.35);filter:blur(4px);animation-name:ctDrift}
-.ct-t15 s{font-size:var(--z);scale:-1 1;animation-name:ctDrift,ctBobT;animation-duration:var(--t),1.6s;animation-timing-function:linear,ease-in-out}
+.ct-t15 .ct-fx>b{width:var(--z);height:14px;border-radius:50%;background:rgba(255,255,255,.35);filter:blur(4px);animation-name:ctDrift}
+.ct-t15 .ct-fx>s{font-size:var(--z);scale:-1 1;animation-name:ctDrift,ctBobT;animation-duration:var(--t),1.6s;animation-timing-function:linear,ease-in-out}
 /* 16 Mưa & sấm */
 .ct.ct-t16{--ha:rgba(186,230,253,.8);background:linear-gradient(180deg,#334155,#475569 60%,#64748b)}
-.ct-t16 i{width:1.5px;height:var(--z);background:linear-gradient(transparent,#bae6fd);animation-name:ctRain}
+.ct-t16 .ct-fx>i{width:1.5px;height:var(--z);background:linear-gradient(transparent,#bae6fd);animation-name:ctRain}
 .ct-t16 .ct-x{left:0;right:0;top:0;bottom:0;background:radial-gradient(circle at 70% 0%,#fff,rgba(186,230,253,.6) 40%,transparent 70%);opacity:0;animation:ctFlash 6s linear infinite}
 /* 17 Trái tim */
 .ct.ct-t17{--ha:rgba(244,63,94,.6);background:linear-gradient(135deg,#fff1f2,#ffe4e6 50%,#fecdd3)}
-.ct-t17 s{font-size:var(--z);animation-name:ctRise}
+.ct-t17 .ct-fx>s{font-size:var(--z);animation-name:ctRise}
 .ct-t17 .ct-x{right:12px;top:50%;margin-top:-28px;font-size:56px;line-height:1;opacity:.14;animation:ctHeartbeat 1.3s ease-in-out infinite}
 .ct-t17 .ct-x::before{content:"\2764"; color:#e11d48}
 /* 18 Lá mùa thu */
 .ct.ct-t18{--ha:rgba(234,88,12,.6);background:linear-gradient(160deg,#fff7ed,#fed7aa 60%,#fdba74)}
-.ct-t18 s{font-size:var(--z);animation-name:ctFall}
+.ct-t18 .ct-fx>s{font-size:var(--z);animation-name:ctFall}
 /* 19 Cực quang */
 .ct.ct-t19{--ha:rgba(52,211,153,.8);background:linear-gradient(180deg,#020617,#0b1b3a 70%,#0f2a4a)}
-.ct-t19 i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;animation-name:ctTwinkle}
+.ct-t19 .ct-fx>i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;animation-name:ctTwinkle}
 .ct-t19 .ct-x{left:-20%;width:140%;height:60px;border-radius:50%;filter:blur(14px);mix-blend-mode:screen;animation:ctAurora 7s ease-in-out infinite}
 .ct-t19 .ct-x.a{top:6%;background:linear-gradient(90deg,transparent,#34d399,#22d3ee,transparent)}
 .ct-t19 .ct-x.b{top:30%;background:linear-gradient(90deg,transparent,#a78bfa,#f472b6,transparent);animation-duration:9s;animation-delay:-3s}
@@ -798,9 +804,9 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 /* 20 Arcade */
 .ct.ct-t20{--ha:rgba(250,204,21,.8);background-color:#1e1b4b;background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:16px 16px;animation:ctGrid20 1.6s linear infinite}
 @keyframes ctGrid20{to{background-position:0 16px,16px 0}}
-.ct-t20 i{width:var(--z);height:var(--z);background:#facc15;animation-name:ctBlink;animation-timing-function:steps(1)}
-.ct-t20 s{font-size:var(--z);animation-name:ctCoin}
-.ct-t20 u{font-size:18px;animation-name:ctDrift;animation-timing-function:steps(16)}
+.ct-t20 .ct-fx>i{width:var(--z);height:var(--z);background:#facc15;animation-name:ctBlink;animation-timing-function:steps(1)}
+.ct-t20 .ct-fx>s{font-size:var(--z);animation-name:ctCoin}
+.ct-t20 .ct-fx>u{font-size:18px;animation-name:ctDrift;animation-timing-function:steps(16)}
 .ct-t20 .ct-x.a{left:0;bottom:6px;width:16px;height:16px;border-radius:50%;background:#facc15;animation:ctDrift 5s linear infinite,ctChomp .3s steps(2) infinite alternate}
 .ct-t20 .ct-x.b{left:0;right:0;bottom:12px;height:4px;background:radial-gradient(circle,#fde68a 1.5px,transparent 2px) 0 0/14px 4px repeat-x}
 
@@ -828,7 +834,228 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 .ct-pfoot button{border-radius:.75rem;padding:.55rem 1.2rem;font-size:13px;font-weight:800}
 .ct-pcancel{background:#f1f5f9;color:#475569}.ct-pcancel:hover{background:#e2e8f0}
 .ct-pok{background:#7c3aed;color:#fff}.ct-pok:hover{background:#6d28d9}
+
+/* ===== FIX: nút thao tác luôn hiển thị rõ ở mọi template ===== */
+.roster-card.ct button{position:relative;z-index:2;isolation:isolate;box-shadow:0 0 0 1.5px rgba(255,255,255,.85),0 2px 6px rgba(15,23,42,.35)}
+.roster-card.ct:hover button{box-shadow:0 0 0 1.5px #fff,0 4px 10px rgba(15,23,42,.4)}
+.roster-card.ct button>i,.roster-card.xf-bday button>i{position:static!important;display:inline-block;width:auto!important;height:auto!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;opacity:1!important;animation:none!important;transform:none!important;filter:none!important;mix-blend-mode:normal!important;font-size:inherit;line-height:1;color:inherit}
+.roster-card.ct .pl-2.ml-1{border-color:rgba(148,163,184,.8)}
+.ct.ct-dark .pl-2.ml-1{border-color:rgba(255,255,255,.45)}
+.ct-prev .ct-pv-av,.ct-prev .ct-pv b{position:relative;z-index:1}
 </style>
+<style id="ct-style2">
+/* ===== CT2: thêm 30 template thẻ học sinh (t21–t50). Mọi hiệu ứng nằm trong .ct-fx nên không ảnh hưởng chữ/nút của thẻ ===== */
+:root{
+--ct-wa:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 14' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q15 0 30 7T60 7T90 7T120 7V14H0Z' fill='%23fff' fill-opacity='.3'/%3E%3C/svg%3E");
+--ct-wb:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 14' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q10 1 20 7T40 7T60 7T80 7V14H0Z' fill='%23fff' fill-opacity='.2'/%3E%3C/svg%3E");
+--ct-wc:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 14' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q15 0 30 7T60 7T90 7T120 7V14H0Z' fill='%230ea5e9' fill-opacity='.4'/%3E%3C/svg%3E");
+}
+/* Các template có vật thể trôi ngang: dùng quãng đường dài hơn để không biến mất giữa thẻ khi thẻ rộng (không áp dụng cho ô xem trước) */
+.ct-t21:not(.ct-prev),.ct-t22:not(.ct-prev),.ct-t23:not(.ct-prev),.ct-t24:not(.ct-prev),.ct-t25:not(.ct-prev),.ct-t26:not(.ct-prev),.ct-t27:not(.ct-prev),.ct-t35:not(.ct-prev),.ct-t36:not(.ct-prev),.ct-t40:not(.ct-prev),.ct-t41:not(.ct-prev),.ct-t46:not(.ct-prev),.ct-t47:not(.ct-prev){--w:640px}
+
+@keyframes ctDriftL2{0%{transform:translateX(0)}100%{transform:translateX(calc(var(--w)*-1 - 40px))}}
+@keyframes ctBounceT{0%,100%{translate:0 0;animation-timing-function:cubic-bezier(.2,.6,.4,1)}50%{translate:0 calc(var(--h)*-.5);animation-timing-function:cubic-bezier(.6,0,.8,.4)}}
+@keyframes ctRotT{to{rotate:360deg}}
+@keyframes ctHop{0%,45%,100%{transform:translateY(0)}20%{transform:translateY(-12px)}}
+@keyframes ctSway{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+@keyframes ctSwing{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+@keyframes ctFlap{0%,100%{scale:1 1}50%{scale:.55 1}}
+@keyframes ctPop{0%,52%{transform:scale(0);opacity:0}62%{transform:scale(1.4) rotate(8deg);opacity:1}72%{transform:scale(1) rotate(-5deg);opacity:1}90%{transform:scale(1.05);opacity:1}100%{transform:scale(0);opacity:0}}
+@keyframes ctEq{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+@keyframes ctDashL{to{background-position-x:calc(var(--k,35px)*-1)}}
+@keyframes ctPan{to{background-position:var(--pan,56px 28px)}}
+@keyframes ctDots{to{background-position:16px 16px}}
+
+/* 21 Phi hành gia */
+.ct.ct-t21{--ha:rgba(147,197,253,.85);background:linear-gradient(160deg,#050816,#0f1b4d 60%,#2a1a6e)}
+.ct-t21 .ct-fx>i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;box-shadow:0 0 6px #fff;animation-name:ctTwinkle}
+.ct-t21 .ct-fx>s{font-size:var(--z);animation-name:ctDrift,ctBobT;animation-duration:var(--t),2.2s;animation-timing-function:linear,ease-in-out}
+.ct-t21 .ct-fx>u{font-size:var(--z);animation-name:ctBobT,ctRotT;animation-duration:3s,var(--t);animation-timing-function:ease-in-out,linear}
+.ct-t21 .ct-fx>.ct-x{right:-34px;bottom:-46px;width:112px;height:112px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#7dd3fc,#2563eb 55%,#1e1b4b);box-shadow:0 0 18px rgba(96,165,250,.5)}
+/* 22 Khủng long */
+.ct.ct-t22{--ha:rgba(132,204,22,.8);background:linear-gradient(180deg,#ecfccb,#d9f99d 60%,#bef264)}
+.ct-t22 .ct-fx>.ct-x{left:-5%;right:-5%;bottom:-14px;height:32px;background:linear-gradient(180deg,#a3e635,#65a30d);border-radius:50% 50% 0 0/60% 60% 0 0}
+.ct-t22 .ct-fx>s{font-size:var(--z);animation-name:ctDrift,ctBobT;animation-duration:var(--t),1.1s;animation-timing-function:linear,ease-in-out}
+.ct-t22 .ct-fx>i{font-size:var(--z);animation-name:ctFall}
+.ct-t22 .ct-fx>u{font-size:var(--z);transform-origin:50% 100%;animation-name:ctSway;animation-timing-function:ease-in-out}
+/* 23 Sân bóng đá */
+.ct.ct-t23{--ha:rgba(255,255,255,.85);background:repeating-linear-gradient(90deg,#16a34a 0 36px,#15803d 36px 72px)}
+.ct-t23 .ct-fx>.ct-x.a{right:-30px;top:50%;margin-top:-50px;width:100px;height:100px;border:2px solid rgba(255,255,255,.4);border-radius:50%}
+.ct-t23 .ct-fx>.ct-x.b{right:19px;top:0;bottom:0;width:2px;background:rgba(255,255,255,.4)}
+.ct-t23 .ct-fx>s{font-size:var(--z);animation-name:ctDrift,ctRotT;animation-duration:var(--t),1.1s}
+.ct-t23 .ct-fx>u{font-size:var(--z);animation-name:ctBounceT}
+.ct-t23 .ct-fx>i{font-size:var(--z);color:#fde047;animation-name:ctTwinkle}
+/* 24 Lâu đài cổ tích */
+.ct.ct-t24{--ha:rgba(244,114,182,.6);background:linear-gradient(180deg,#e0e7ff,#fbcfe8 60%,#fef3c7)}
+.ct-t24 .ct-fx>.ct-x{right:8px;bottom:-4px;font-size:64px;line-height:1;opacity:.3}
+.ct-t24 .ct-fx>.ct-x::before{content:"\1F3F0"}
+.ct-t24 .ct-fx>i{font-size:var(--z);animation-name:ctTwinkle}
+.ct-t24 .ct-fx>s{font-size:var(--z);animation-name:ctDriftL2,ctBobT;animation-duration:var(--t),2s;animation-timing-function:linear,ease-in-out}
+/* 25 Siêu anh hùng */
+.ct.ct-t25{--ha:rgba(239,68,68,.6);background:radial-gradient(circle,rgba(220,38,38,.2) 1.6px,transparent 2.1px) 0 0/10px 10px,linear-gradient(135deg,#fef9c3,#fef08a)}
+.ct-t25 .ct-fx>.ct-x{right:-70px;top:-70px;width:210px;height:210px;border-radius:50%;background:repeating-conic-gradient(rgba(239,68,68,.22) 0 10deg,transparent 10deg 20deg);animation:ctSpin 20s linear infinite}
+.ct-t25 .ct-fx>s{font-size:var(--z);animation-name:ctPop;animation-timing-function:ease-out}
+.ct-t25 .ct-fx>u{font-size:var(--z);animation-name:ctDrift,ctBobT;animation-duration:var(--t),1.2s;animation-timing-function:linear,ease-in-out}
+/* 26 Safari */
+.ct.ct-t26{--ha:rgba(251,146,60,.7);background:linear-gradient(180deg,#fffbeb,#fef3c7 55%,#fed7aa)}
+.ct-t26 .ct-fx>.ct-x.a{right:12px;top:8px;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle,#fff7ae,#fde047 50%,#fb923c);animation:ctSun 3s ease-in-out infinite}
+.ct-t26 .ct-fx>.ct-x.b{left:-3%;right:-3%;bottom:-10px;height:26px;background:repeating-linear-gradient(100deg,#84cc16 0 6px,#65a30d 6px 12px);border-radius:50% 50% 0 0/55% 55% 0 0}
+.ct-t26 .ct-fx>s{font-size:var(--z);animation-name:ctDriftL2,ctBobT;animation-duration:var(--t),1.2s;animation-timing-function:linear,ease-in-out}
+.ct-t26 .ct-fx>u{font-size:var(--z);animation-name:ctDriftL2,ctBobT;animation-duration:var(--t),.9s;animation-timing-function:linear,ease-in-out}
+/* 27 Đảo kho báu */
+.ct.ct-t27{--ha:rgba(250,204,21,.8);background:linear-gradient(180deg,#0b1b4a,#1d4ed8 55%,#0c4a6e)}
+.ct-t27 .ct-fx>.ct-x{left:0;right:0;height:14px;background-repeat:repeat-x}
+.ct-t27 .ct-fx>.ct-x.a{bottom:0;background-image:var(--ct-wa);background-size:120px 14px;animation:ctWaveA 5s linear infinite}
+.ct-t27 .ct-fx>.ct-x.b{bottom:-3px;background-image:var(--ct-wb);background-size:80px 14px;animation:ctWaveB 7s linear infinite}
+.ct-t27 .ct-fx>s{font-size:var(--z);animation-name:ctDrift,ctBobT;animation-duration:var(--t),2s;animation-timing-function:linear,ease-in-out}
+.ct-t27 .ct-fx>u{font-size:var(--z);animation-name:ctDriftL2,ctBobT;animation-duration:var(--t),.8s;animation-timing-function:linear,ease-in-out}
+.ct-t27 .ct-fx>i{font-size:var(--z);color:#fff;animation-name:ctTwinkle}
+/* 28 Phòng thí nghiệm */
+.ct.ct-t28{--ha:rgba(45,212,191,.7);background:linear-gradient(135deg,#ecfeff,#cffafe 55%,#e0e7ff)}
+.ct-t28 .ct-fx>.ct-x{left:-5%;right:-5%;bottom:-14px;height:26px;background:linear-gradient(90deg,#34d399,#22d3ee,#a78bfa,#34d399);background-size:700px 100%;border-radius:50% 50% 0 0/40% 40% 0 0;opacity:.55;animation:ctSlide 6s linear infinite}
+.ct-t28 .ct-fx>i{width:var(--z);height:var(--z);border-radius:50%;border:1px solid rgba(13,148,136,.55);background:rgba(45,212,191,.25);animation-name:ctRise}
+.ct-t28 .ct-fx>s{font-size:var(--z);animation-name:ctBobT;animation-timing-function:ease-in-out}
+.ct-t28 .ct-fx>u{font-size:var(--z);animation-name:ctSpin}
+/* 29 Vở toán ô li */
+.ct.ct-t29{--ha:rgba(59,130,246,.55);background-color:#fffef7;background-image:linear-gradient(rgba(59,130,246,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.2) 1px,transparent 1px);background-size:16px 16px;animation:ctGrid20 3.2s linear infinite}
+.ct-t29 .ct-fx>i{font-size:var(--z);font-weight:800;color:var(--c);animation-name:ctFall}
+.ct-t29 .ct-fx>s{font-size:var(--z);animation-name:ctBobT;animation-timing-function:ease-in-out}
+/* 30 Bảng đen lớp học */
+.ct.ct-t30{--ha:rgba(253,230,138,.7);background:linear-gradient(135deg,#14532d,#166534 60%,#14532d)}
+.ct-t30::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;box-shadow:inset 0 0 0 3px #a16207,inset 0 0 18px rgba(0,0,0,.35)}
+.ct-t30 .ct-fx>.ct-x{left:0;right:0;bottom:0;height:5px;background:#a16207}
+.ct-t30 .ct-fx>i{font:700 var(--z)/1 "Comic Sans MS","Segoe Print",cursive;color:rgba(255,255,255,.7);animation-name:ctFall}
+.ct-t30 .ct-fx>s{font-size:var(--z);animation-name:ctBobT;animation-timing-function:ease-in-out}
+/* 31 Giai điệu */
+.ct.ct-t31{--ha:rgba(192,132,252,.7);background:linear-gradient(135deg,#ede9fe,#fae8ff 55%,#fce7f3)}
+.ct-t31 .ct-fx>s{font-size:var(--z);animation-name:ctRise}
+.ct-t31 .ct-fx>b{width:5px;height:var(--z);top:auto;bottom:0;border-radius:3px 3px 0 0;background:var(--c);opacity:.5;transform-origin:50% 100%;animation-name:ctEq;animation-timing-function:ease-in-out}
+/* 32 Vườn hoa bướm */
+.ct.ct-t32{--ha:rgba(134,239,172,.9);background:linear-gradient(180deg,#e0f2fe,#ecfccb 70%,#bbf7d0)}
+.ct-t32 .ct-fx>.ct-x{left:-5%;right:-5%;bottom:-12px;height:26px;background:linear-gradient(180deg,#86efac,#4ade80);border-radius:50% 50% 0 0/70% 70% 0 0}
+.ct-t32 .ct-fx>s{font-size:var(--z);transform-origin:50% 100%;animation-name:ctSway;animation-timing-function:ease-in-out}
+.ct-t32 .ct-fx>u{font-size:var(--z);animation-name:ctFlyPath,ctFlap;animation-duration:var(--t),.6s;animation-timing-function:ease-in-out,ease-in-out}
+/* 33 Tiệc bóng bay */
+.ct.ct-t33{--ha:rgba(244,114,182,.6);background:linear-gradient(135deg,#fef9c3,#fce7f3 55%,#e0f2fe)}
+.ct-t33 .ct-fx>i{width:var(--z);height:calc(var(--z)*1.2);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:var(--c);opacity:.85;animation-name:ctRise}
+.ct-t33 .ct-fx>i::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:calc(var(--z)*.9);background:rgba(100,116,139,.5)}
+.ct-t33 .ct-fx>b{width:5px;height:9px;background:var(--c);animation-name:ctFall}
+.ct-t33 .ct-fx>s{font-size:var(--z);animation-name:ctTwinkle}
+/* 34 Thú cưng */
+.ct.ct-t34{--ha:rgba(251,146,60,.55);background:linear-gradient(135deg,#fff7ed,#ffedd5 55%,#fde7d3)}
+.ct-t34 .ct-fx>i{font-size:var(--z);animation-name:ctTwinkle}
+.ct-t34 .ct-fx>s{font-size:var(--z);animation-name:ctHop}
+.ct-t34 .ct-fx>u{font-size:var(--z);animation-name:ctRise}
+/* 35 Đường đua tốc độ */
+.ct.ct-t35{--ha:rgba(250,204,21,.8);background:linear-gradient(180deg,#111827,#1f2937 50%,#111827)}
+.ct-t35 .ct-fx>.ct-x.a{left:0;right:0;top:50%;height:3px;background:repeating-linear-gradient(90deg,#fde047 0 18px,transparent 18px 35px);animation:ctDashL .45s linear infinite}
+.ct-t35 .ct-fx>.ct-x.b,.ct-t35 .ct-fx>.ct-x.c{left:0;right:0;height:5px;--k:28px;background:repeating-linear-gradient(90deg,#ef4444 0 14px,#fff 14px 28px);animation:ctDashL .35s linear infinite}
+.ct-t35 .ct-fx>.ct-x.b{top:9px}
+.ct-t35 .ct-fx>.ct-x.c{top:auto;bottom:9px}
+.ct-t35 .ct-fx>s{font-size:var(--z);animation-name:ctDriftL2}
+.ct-t35 .ct-fx>i{font-size:var(--z);animation-name:ctTwinkle}
+/* 36 Bay trên mây */
+.ct.ct-t36{--ha:rgba(125,211,252,.9);background:linear-gradient(180deg,#bae6fd,#e0f2fe 55%,#f0f9ff)}
+.ct-t36 .ct-fx>b{font-size:var(--z);opacity:.95;animation-name:ctDrift}
+.ct-t36 .ct-fx>s{font-size:var(--z);animation-name:ctDrift,ctBobT;animation-duration:var(--t),1.8s;animation-timing-function:linear,ease-in-out}
+.ct-t36 .ct-fx>u{font-size:var(--z);animation-name:ctFall}
+/* 37 Sân bóng rổ */
+.ct.ct-t37{--ha:rgba(249,115,22,.65);background:repeating-linear-gradient(90deg,rgba(146,64,14,.08) 0 2px,transparent 2px 22px),linear-gradient(90deg,#ffedd5,#fed7aa)}
+.ct-t37 .ct-fx>.ct-x.a{right:-40px;top:50%;margin-top:-60px;width:120px;height:120px;border:2px solid rgba(255,255,255,.85);border-radius:50%}
+.ct-t37 .ct-fx>.ct-x.b{right:30px;top:0;bottom:0;width:2px;background:rgba(255,255,255,.85)}
+.ct-t37 .ct-fx>s{font-size:var(--z);animation-name:ctBounceT,ctRotT;animation-duration:var(--t),1.2s}
+.ct-t37 .ct-fx>u{font-size:var(--z);animation-name:ctBounceT}
+.ct-t37 .ct-fx>i{font-size:var(--z);animation-name:ctTwinkle}
+/* 38 Cờ vua */
+.ct.ct-t38{--ha:rgba(250,204,21,.7);--pan:72px 36px;background:conic-gradient(#3f3f46 25%,#27272a 0 50%,#3f3f46 0 75%,#27272a 0) 0 0/36px 36px;animation:ctPan 9s linear infinite}
+.ct-t38 .ct-fx>i{font-size:var(--z);color:rgba(255,255,255,.75);animation-name:ctRise}
+.ct-t38 .ct-fx>s{font-size:var(--z);animation-name:ctTwinkle}
+/* 39 Xếp hình */
+.ct.ct-t39{--ha:rgba(34,211,238,.75);background:linear-gradient(rgba(148,163,184,.07) 1px,transparent 1px) 0 0/14px 14px,linear-gradient(90deg,rgba(148,163,184,.07) 1px,transparent 1px) 0 0/14px 14px,#0f172a}
+.ct-t39 .ct-fx>i{width:var(--z);height:var(--z);border-radius:1px;background:var(--c);opacity:.9;animation-name:ctStraight}
+.ct-t39 .ct-fx>i:nth-of-type(4n+1){box-shadow:var(--z) 0 0 0 var(--c),calc(var(--z)*2) 0 0 0 var(--c),calc(var(--z)*2) var(--z) 0 0 var(--c)}
+.ct-t39 .ct-fx>i:nth-of-type(4n+2){box-shadow:var(--z) 0 0 0 var(--c),calc(var(--z)*2) 0 0 0 var(--c),var(--z) var(--z) 0 0 var(--c)}
+.ct-t39 .ct-fx>i:nth-of-type(4n+3){box-shadow:var(--z) 0 0 0 var(--c),0 var(--z) 0 0 var(--c),var(--z) var(--z) 0 0 var(--c)}
+.ct-t39 .ct-fx>i:nth-of-type(4n+4){box-shadow:0 var(--z) 0 0 var(--c),0 calc(var(--z)*2) 0 0 var(--c),var(--z) calc(var(--z)*2) 0 0 var(--c)}
+.ct-t39 .ct-fx>.ct-x.a{left:0;right:0;bottom:0;height:12px;opacity:.7;background:repeating-linear-gradient(90deg,#f43f5e 0 14px,#facc15 14px 28px,#22d3ee 28px 42px,#a3e635 42px 56px,#a78bfa 56px 70px)}
+.ct-t39 .ct-fx>.ct-x.b{left:0;bottom:12px;width:42%;height:12px;opacity:.7;background:repeating-linear-gradient(90deg,#22d3ee 0 14px,#a78bfa 14px 28px,#f43f5e 28px 42px)}
+/* 40 Robot */
+.ct.ct-t40{--ha:rgba(34,211,238,.8);background:linear-gradient(135deg,#0f172a,#1e293b 60%,#0c4a6e)}
+.ct-t40 .ct-fx>.ct-x.a{left:0;right:0;top:0;bottom:0;background:radial-gradient(circle,rgba(34,211,238,.3) 1.2px,transparent 1.7px) 0 0/16px 16px;animation:ctDots 3s linear infinite}
+.ct-t40 .ct-fx>.ct-x.b{left:0;top:0;bottom:0;width:36px;background:linear-gradient(90deg,transparent,rgba(34,211,238,.35),transparent);animation:ctScanX 3.4s linear infinite}
+.ct-t40 .ct-fx>i{font:700 var(--z)/1 ui-monospace,Menlo,Consolas,monospace;color:#22d3ee;animation-name:ctRise}
+.ct-t40 .ct-fx>s{font-size:var(--z);animation-name:ctDrift,ctBobT;animation-duration:var(--t),1.4s;animation-timing-function:linear,ease-in-out}
+.ct-t40 .ct-fx>u{font-size:var(--z);animation-name:ctSpin}
+/* 41 Bãi biển mùa hè */
+.ct.ct-t41{--ha:rgba(253,224,71,.8);background:linear-gradient(180deg,#bae6fd,#e0f2fe 45%,#fef3c7 75%,#fde68a)}
+.ct-t41 .ct-fx>.ct-x.a{right:14px;top:8px;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle,#fff7ae,#fde047 55%,#fb923c);animation:ctSun 3s ease-in-out infinite}
+.ct-t41 .ct-fx>.ct-x.b{left:0;right:0;bottom:0;height:14px;background-image:var(--ct-wc);background-size:120px 14px;background-repeat:repeat-x;animation:ctWaveA 5s linear infinite}
+.ct-t41 .ct-fx>b{font-size:var(--z);opacity:.9;animation-name:ctDrift}
+.ct-t41 .ct-fx>s{font-size:var(--z);animation-name:ctDrift,ctBobT;animation-duration:var(--t),.7s;animation-timing-function:linear,ease-in-out}
+.ct-t41 .ct-fx>u{font-size:var(--z);transform-origin:50% 100%;animation-name:ctSway;animation-timing-function:ease-in-out}
+/* 42 Phù thủy phép thuật */
+.ct.ct-t42{--ha:rgba(192,132,252,.85);background:radial-gradient(ellipse at 70% 10%,#6d28d9,#2e1065 55%,#12062e)}
+.ct-t42 .ct-fx>.ct-x{right:14px;top:10px;width:30px;height:30px;border-radius:50%;box-shadow:inset -9px -3px 0 0 #fde68a,0 0 12px rgba(253,230,138,.35);animation:ctNeon 3s ease-in-out infinite}
+.ct-t42 .ct-fx>i{font-size:var(--z);color:#fde68a;animation-name:ctTwinkle}
+.ct-t42 .ct-fx>s{font-size:var(--z);animation-name:ctBobT;animation-timing-function:ease-in-out}
+.ct-t42 .ct-fx>b{width:var(--z);height:var(--z);border-radius:50%;background:var(--c);opacity:.7;animation-name:ctRise}
+/* 43 Trà sữa trân châu */
+.ct.ct-t43{--ha:rgba(180,120,70,.6);background:linear-gradient(160deg,#fff1e6,#fbe3d0 55%,#f3d2b3)}
+.ct-t43 .ct-fx>.ct-x.a{left:-5%;right:-5%;bottom:-14px;height:28px;background:linear-gradient(180deg,#d6a77a,#a16b3f);border-radius:50% 50% 0 0/40% 40% 0 0;animation:ctLava 3s ease-in-out infinite alternate}
+.ct-t43 .ct-fx>.ct-x.b{left:0;right:0;bottom:2px;height:10px;background:radial-gradient(circle,#3b1d0a 4px,transparent 4.6px) 0 0/12px 10px repeat-x}
+.ct-t43 .ct-fx>i{width:var(--z);height:var(--z);border-radius:50%;background:radial-gradient(circle at 35% 30%,#78350f,#3b1d0a);animation-name:ctFall}
+.ct-t43 .ct-fx>s{font-size:var(--z);animation-name:ctBobT;animation-timing-function:ease-in-out}
+/* 44 Tiệc pizza */
+.ct.ct-t44{--ha:rgba(239,68,68,.55);--pan:56px 28px;background:conic-gradient(#fee2e2 25%,#fff 0 50%,#fee2e2 0 75%,#fff 0) 0 0/28px 28px;animation:ctPan 7s linear infinite}
+.ct-t44 .ct-fx>s{font-size:var(--z);animation-name:ctFall}
+/* 45 Sàn disco */
+.ct.ct-t45{--ha:rgba(244,114,182,.85);background:radial-gradient(ellipse at 50% 0%,#581c87,#1e1b4b 60%,#0b0720)}
+.ct-t45 .ct-fx>.ct-x.a,.ct-t45 .ct-fx>.ct-x.b{left:50%;top:-150px;width:300px;height:300px;margin-left:-150px;border-radius:50%}
+.ct-t45 .ct-fx>.ct-x.a{background:repeating-conic-gradient(from 0deg,rgba(244,114,182,.32) 0 8deg,transparent 8deg 30deg);animation:ctSpin 9s linear infinite}
+.ct-t45 .ct-fx>.ct-x.b{background:repeating-conic-gradient(from 15deg,rgba(34,211,238,.28) 0 6deg,transparent 6deg 30deg);animation:ctSpin 12s linear infinite reverse}
+.ct-t45 .ct-fx>.ct-x.c{left:50%;top:-6px;width:26px;height:26px;margin-left:-13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#c7d2fe 40%,#4f46e5);box-shadow:0 0 14px #c4b5fd;animation:ctNeon 1.6s ease-in-out infinite}
+.ct-t45 .ct-fx>i{width:var(--z);height:var(--z);border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c);animation-name:ctGlow}
+.ct-t45 .ct-fx>s{font-size:var(--z);animation-name:ctHop}
+/* 46 Kim tự tháp */
+.ct.ct-t46{--ha:rgba(245,158,11,.7);background:radial-gradient(ellipse at 30% 115%,#f5c26b 40%,transparent 41%),radial-gradient(ellipse at 80% 125%,#eab35a 40%,transparent 41%),linear-gradient(180deg,#fffbeb,#fef3c7 55%,#fde68a)}
+.ct-t46 .ct-fx>.ct-x.a{right:10px;bottom:0;width:0;height:0;border-left:44px solid transparent;border-right:44px solid transparent;border-bottom:60px solid #d6a756;opacity:.6}
+.ct-t46 .ct-fx>.ct-x.b{right:78px;bottom:0;width:0;height:0;border-left:28px solid transparent;border-right:28px solid transparent;border-bottom:38px solid #c9923f;opacity:.55}
+.ct-t46 .ct-fx>.ct-x.c{left:14px;top:8px;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle,#fff7ae,#fde047 55%,#fb923c);animation:ctSun 3s ease-in-out infinite}
+.ct-t46 .ct-fx>s{font-size:var(--z);animation-name:ctDriftL2,ctBobT;animation-duration:var(--t),1.3s;animation-timing-function:linear,ease-in-out}
+.ct-t46 .ct-fx>u{font-size:var(--z);transform-origin:50% 100%;animation-name:ctSway;animation-timing-function:ease-in-out}
+.ct-t46 .ct-fx>b{font-size:var(--z);animation-name:ctDriftL2,ctBobT;animation-duration:var(--t),1.6s;animation-timing-function:linear,ease-in-out}
+/* 47 Đêm trăng sao */
+.ct.ct-t47{--ha:rgba(253,230,138,.7);background:linear-gradient(180deg,#0b1026,#1e2a63 60%,#3b2f7a)}
+.ct-t47 .ct-fx>.ct-x.a{right:16px;top:10px;width:34px;height:34px;border-radius:50%;box-shadow:inset -10px -3px 0 0 #fde68a,0 0 14px rgba(253,230,138,.35);animation:ctBobT 4s ease-in-out infinite}
+.ct-t47 .ct-fx>i{font-size:var(--z);color:#fff;animation-name:ctTwinkle}
+.ct-t47 .ct-fx>b{font-size:var(--z);opacity:.35;animation-name:ctDrift}
+.ct-t47 .ct-fx>u{font:italic 800 var(--z)/1 Georgia,serif;color:#e0e7ff;animation-name:ctRise}
+/* 48 Huy chương vàng */
+.ct.ct-t48{--ha:rgba(250,204,21,.8);background:linear-gradient(135deg,#fffbeb,#fef9c3 50%,#e0f2fe)}
+.ct-t48 .ct-fx>.ct-x.a{left:50%;top:-150px;width:300px;height:300px;margin-left:-150px;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(250,204,21,.22) 0 8deg,transparent 8deg 24deg);animation:ctSpin 16s linear infinite}
+.ct-t48 .ct-fx>s{font-size:var(--z);animation-name:ctFall}
+.ct-t48 .ct-fx>b{width:5px;height:9px;background:var(--c);animation-name:ctFall}
+.ct-t48 .ct-fx>i{font-size:var(--z);animation-name:ctTwinkle}
+/* 49 Công viên giải trí */
+.ct.ct-t49{--ha:rgba(244,114,182,.85);background:linear-gradient(180deg,#312e81,#6d28d9 60%,#db2777)}
+.ct-t49 .ct-fx>.ct-x.a{right:-30px;bottom:-40px;width:124px;height:124px;border-radius:50%;border:3px solid rgba(255,255,255,.65);background:repeating-conic-gradient(rgba(255,255,255,.6) 0 1.4deg,transparent 1.4deg 30deg);animation:ctSpin 18s linear infinite}
+.ct-t49 .ct-fx>.ct-x.a::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#facc15}
+.ct-t49 .ct-fx>.ct-x.b,.ct-t49 .ct-fx>.ct-x.c{left:0;right:0;top:5px;height:8px;background:radial-gradient(circle,#facc15 2.4px,transparent 3px) 0 50%/18px 8px repeat-x;animation:ctBlink 1.2s steps(1) infinite}
+.ct-t49 .ct-fx>.ct-x.c{background:radial-gradient(circle,#f9a8d4 2.4px,transparent 3px) 9px 50%/18px 8px repeat-x;animation-delay:-.6s}
+.ct-t49 .ct-fx>s{font-size:var(--z);animation-name:ctRise}
+.ct-t49 .ct-fx>i{font-size:var(--z);animation-name:ctTwinkle}
+.ct-t49 .ct-fx>u{font-size:var(--z);animation-name:ctBobT;animation-timing-function:ease-in-out}
+/* 50 Tết Việt Nam */
+.ct.ct-t50{--ha:rgba(253,224,71,.85);background:linear-gradient(135deg,#7f1d1d,#b91c1c 55%,#dc2626)}
+.ct-t50::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;box-shadow:inset 0 0 0 2px rgba(253,224,71,.7),inset 0 0 14px rgba(0,0,0,.25)}
+.ct-t50 .ct-fx>.ct-x{top:-10%;bottom:-10%;left:0;width:56px;background:linear-gradient(90deg,transparent,rgba(253,224,71,.35),transparent);animation:ctShine 4s ease-in-out infinite}
+.ct-t50 .ct-fx>s{font-size:var(--z);animation-name:ctFall}
+.ct-t50 .ct-fx>i{font-size:var(--z);color:#fde047;animation-name:ctTwinkle}
+.ct-t50 .ct-fx>u{font-size:var(--z);transform-origin:50% 0;animation-name:ctSwing;animation-timing-function:ease-in-out}
+
+@media (prefers-reduced-motion:reduce){.ct-t30::after,.ct-t50::after{animation:none!important}}
+</style>
+
 
 <style id="tf-streak-color-sync">
 /* Đồng bộ màu streak: huy hiệu, lửa, viền phát quang, tên học sinh và banner chúc mừng */
@@ -2358,6 +2585,11 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 testLbl: 'Nhập Test score',
                 testHint: '<b>Chế độ Test score:</b> mọi điểm gõ vào sẽ được đánh dấu là điểm Bài Kiểm Tra · <kbd>Enter</kbd> xuống học sinh kế · <kbd>A</kbd> vắng · <kbd>Del</kbd> xóa',
                 saved: 'Đã lưu',
+                editLbl: 'Sửa điểm',
+                editHint: '<b>Chế độ Sửa điểm:</b> bấm ô điểm rồi gõ số mới → ô đó <b>thôi tính theo số lần phát biểu</b> (điểm dư đã quy đổi trong túi quà được giữ nguyên) · <kbd>Enter</kbd> xuống học sinh kế · <kbd>A</kbd> vắng · <kbd>Del</kbd> xóa',
+                editTitle: 'Bật để sửa tay điểm: ô được sửa sẽ gỡ liên kết với số lần phát biểu; điểm dư trong túi quà không đổi',
+                editOn: 'Đã bật Sửa điểm: điểm sửa tay sẽ không còn tính theo số lần phát biểu, điểm dư trong túi quà giữ nguyên.',
+                editTag: 'Điểm sửa tay',
                 overMax: 'Điểm phải từ 0 đến 10.',
                 fab: 'Cộng điểm',
                 bulkTitle: c => `Cộng điểm hàng loạt · Lớp ${c}`,
@@ -2390,6 +2622,11 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 testLbl: 'Test score entry',
                 testHint: '<b>Test score mode:</b> every score you type is marked as an Exam Score · <kbd>Enter</kbd> next student · <kbd>A</kbd> absent · <kbd>Del</kbd> clear',
                 saved: 'Saved',
+                editLbl: 'Edit score',
+                editHint: '<b>Edit-score mode:</b> click a score cell and type a new number → that cell is <b>detached from the speaking-count rule</b> (surplus points already converted into the gift bag stay unchanged) · <kbd>Enter</kbd> next student · <kbd>A</kbd> absent · <kbd>Del</kbd> clear',
+                editTitle: 'Turn on to hand-edit scores: edited cells are detached from the speaking count; gift-bag points stay unchanged',
+                editOn: 'Edit-score mode on: hand-edited scores no longer follow the speaking count, and gift-bag points stay unchanged.',
+                editTag: 'Hand-edited score',
                 overMax: 'Score must be between 0 and 10.',
                 fab: 'Add points',
                 bulkTitle: c => `Bulk add points · Class ${c}`,
@@ -2430,6 +2667,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
         })();
         let qsSelCell = null, qsBuf = '', qsFlashCell = null, qsToolbarSig = '', qsPresKind = null;
         let qsTrend = false; // Xu hướng điểm: luôn TẮT mỗi lần mở trang (không lưu)
+        let qsEdit = false; // chế độ Sửa điểm: sửa tay, gỡ liên kết số lần phát biểu (không lưu giữa các lần mở trang)
+        function mfl(o) { return (o && o.manual) ? { manual: true } : {}; }
         let qsTest = false; // chế độ nhập nhanh Test score (không lưu giữa các lần mở trang)
         const qsSel = {};
         const qsRank = { rk: {}, fe: {} };
@@ -2587,15 +2826,20 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
         function qsWriteCell(sid, d, mode, val) {
             const student = appData.students.find(s => s.id === sid); if (!student) return false;
             const key = `${sid}_${d}`, old = appData.scores[key];
+            // Chế độ Sửa điểm: KHÔNG đụng tới điểm dư (rewardPoints) đã quy đổi trong túi quà
+            const keepPts = qsEdit;
             if (mode === 'clear') {
                 if (!old) return false;
-                student.rewardPoints = Math.max(0, (student.rewardPoints || 0) - qsOldExcess(old));
+                if (!keepPts) student.rewardPoints = Math.max(0, (student.rewardPoints || 0) - qsOldExcess(old));
                 delete appData.scores[key];
             } else if (mode === 'absent') {
-                student.rewardPoints = Math.max(0, (student.rewardPoints || 0) - qsOldExcess(old));
+                if (!keepPts) student.rewardPoints = Math.max(0, (student.rewardPoints || 0) - qsOldExcess(old));
                 appData.scores[key] = { score: 0, absent: true, speakingCount: 0 };
+            } else if (qsEdit) {
+                // Sửa tay: bỏ speakingCount (hết tính theo lần phát biểu), đánh dấu manual
+                appData.scores[key] = { score: val, absent: false, manual: true, isExam: qsTest ? true : !!(old && !old.absent && old.isExam) };
             } else {
-                appData.scores[key] = { score: val, absent: false, speakingCount: (old && !old.absent && old.speakingCount !== undefined) ? old.speakingCount : 0, isExam: qsTest ? true : !!(old && !old.absent && old.isExam) };
+                appData.scores[key] = { ...mfl(old), score: val, absent: false, speakingCount: (old && !old.absent && old.speakingCount !== undefined) ? old.speakingCount : 0, isExam: qsTest ? true : !!(old && !old.absent && old.isExam) };
             }
             return true;
         }
@@ -2665,13 +2909,19 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
         window.qsToggleQuick = function () {
             qsQuick = !qsQuick;
             try { localStorage.setItem(QS_PREF_KEY, qsQuick ? '1' : '0'); } catch (e) {}
-            if (!qsQuick) { qsTest = false; qsDeselect(); }
+            if (!qsQuick) { qsTest = false; qsEdit = false; qsDeselect(); }
             qsToolbarSig = ''; qsRefreshToolbar();
         };
         window.qsToggleTest = function () {
             qsTest = !qsTest;
             if (qsTest && !qsQuick) { qsQuick = true; try { localStorage.setItem(QS_PREF_KEY, '1'); } catch (e) {} }
             qsToolbarSig = ''; qsRefreshToolbar();
+        };
+        window.qsToggleEdit = function () {
+            qsEdit = !qsEdit;
+            if (qsEdit && !qsQuick) { qsQuick = true; try { localStorage.setItem(QS_PREF_KEY, '1'); } catch (e) {} }
+            qsToolbarSig = ''; qsRefreshToolbar();
+            if (qsEdit) qsToast(qsT('editOn'), 'info');
         };
         window.qsToggleTrend = function () {
             qsTrend = !qsTrend;
@@ -2680,12 +2930,13 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
         };
         function qsRefreshToolbar() {
             const tb = qsEl('qsToolbar'); if (!tb) return;
-            const sig = (appData.language || 'vi') + '|' + qsQuick + '|' + qsTest + '|' + qsTrend;
+            const sig = (appData.language || 'vi') + '|' + qsQuick + '|' + qsTest + '|' + qsEdit + '|' + qsTrend;
             if (sig === qsToolbarSig) return;
             qsToolbarSig = sig;
             const collapsed = !!window.__qsToolbarCollapsed;
-            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><span id="qsQuickHint">${qsTest ? qsT('testHint') : (qsQuick ? qsT('quickHint') : qsT('quickHintOff'))}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
+            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i>${qsT('editLbl')}<b>${qsEdit ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><span id="qsQuickHint">${qsEdit ? qsT('editHint') : (qsTest ? qsT('testHint') : (qsQuick ? qsT('quickHint') : qsT('quickHintOff')))}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
+            const mt = qsEl('scoreMatrix'); if (mt) mt.classList.toggle('qs-edit-on', qsEdit);
         }
 
         window.__qsToolbarCollapsed = !!window.__qsToolbarCollapsed;
@@ -2815,7 +3066,9 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     const key = `${id}_${d}`, old = appData.scores[key];
                     if (old && old.absent) { skip++; return; }
                     const cur = (old && old.score !== null && old.score !== undefined) ? parseFloat(old.score) : 0;
-                    appData.scores[key] = { score: Math.min(10, Math.max(0, Math.round((cur + amt) * 10) / 10)), absent: false, speakingCount: old && old.speakingCount !== undefined ? old.speakingCount : 0, isExam: !!(old && old.isExam) };
+                    const nsc = Math.min(10, Math.max(0, Math.round((cur + amt) * 10) / 10));
+                    if (qsEdit) appData.scores[key] = { score: nsc, absent: false, manual: true, isExam: !!(old && old.isExam) };
+                    else appData.scores[key] = { ...mfl(old), score: nsc, absent: false, speakingCount: old && old.speakingCount !== undefined ? old.speakingCount : 0, isExam: !!(old && old.isExam) };
                     n++;
                 });
                 msg = qsT('doneDay', n, skip);
@@ -3009,7 +3262,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 const prevCell = (key && appData.scores[key] !== undefined) ? deepCopy(appData.scores[key]) : undefined;
                 const cur = key ? appData.scores[key] : null;
                 if (plan && (plan.kind === 'plus' || plan.kind === 'change' || plan.kind === 'add' || plan.kind === 'plus_match' || plan.kind === 'plus_exam')) {
-                    appData.scores[key] = { score: plan.afterNum, absent: false, speakingCount: (cur && cur.speakingCount !== undefined) ? cur.speakingCount : 0, isExam: plan.kind === 'plus_exam' ? true : !!(cur && cur.isExam) };
+                    appData.scores[key] = { ...mfl(cur), score: plan.afterNum, absent: false, speakingCount: (cur && cur.speakingCount !== undefined) ? cur.speakingCount : 0, isExam: plan.kind === 'plus_exam' ? true : !!(cur && cur.isExam) };
                 } else if (plan && plan.kind === 'delete_score') {
                     student.rewardPoints = Math.max(0, prevPoints - qsOldExcess(cur));
                     delete appData.scores[key];
@@ -5322,6 +5575,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                                 cellText = parseFloat(scoreItem.score).toFixed(1);
                                 cellClass = cellClass.replace(" cell-empty", "") + " text-slate-800 font-bold bg-amber-50 cell-scored";
                                 if (scoreItem.isExam) { cellClass += " cell-exam font-black text-purple-900"; examTag = ' ' + uiTr('exam_tag'); }
+                                if (scoreItem.manual) { cellClass += " cell-manual"; examTag += ' ✎ ' + qsT('editTag'); }
                             }
                         }
 
@@ -5579,7 +5833,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             if (isNaN(cur) || isNaN(delta) || !matchGiftCond(invItem, cur) || after === cur) { uiToast('no_valid_cell_for_gift', 'warning'); return; }
 
             const prevCell = deepCopy(cell), prevGift = deepCopy(owned);
-            appData.scores[key] = { score: after, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: !!cell.isExam };
+            appData.scores[key] = { ...mfl(cell), score: after, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: !!cell.isExam };
             student.inventory = student.inventory.filter(i => i.invId !== invItem.invId);
             saveData().then(ok => {
                 if (ok) { uiToast('toastGiftGiven', 'success'); return; }
@@ -5612,7 +5866,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             if (!plan) { uiToast('no_exam_cell_for_gift', 'warning'); return; }
             const key = `${studentId}_${plan.key}`, cell = appData.scores[key];
             const prevCell = deepCopy(cell), prevGift = deepCopy(own2);
-            appData.scores[key] = { score: plan.afterNum, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: true };
+            appData.scores[key] = { ...mfl(cell), score: plan.afterNum, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: true };
             st.inventory = st.inventory.filter(i => i.invId !== invItem.invId);
             closeScoreModal();
             saveData().then(ok => {
@@ -5639,9 +5893,9 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             if (invItem.type === 'plus' && invItem.deltaScore !== undefined) {
                 let currentScore = (existing && existing.score !== undefined && existing.score !== null) ? parseFloat(existing.score) : 0;
                 let newScore = Math.min(10, currentScore + parseFloat(invItem.deltaScore));
-                appData.scores[key] = { score: newScore, absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
+                appData.scores[key] = { ...mfl(existing), score: newScore, absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
             } else if (invItem.targetScore !== null && invItem.targetScore !== undefined) {
-                appData.scores[key] = { score: parseFloat(invItem.targetScore), absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
+                appData.scores[key] = { ...mfl(existing), score: parseFloat(invItem.targetScore), absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
             }
 
             const student = appData.students.find(s => s.id === studentId);
@@ -5698,12 +5952,28 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             const key = `${studentId}_${dateStr}`;
             const oldScoreItem = appData.scores[key];
 
+            // Chế độ Sửa điểm: sửa tay ô điểm → gỡ liên kết số lần phát biểu, giữ nguyên điểm dư trong túi quà
+            const editDetach = qsEdit && !isAbsent && scoreVal !== '' && !isNaN(parseFloat(scoreVal)) &&
+                (!oldScoreItem || oldScoreItem.manual || parseFloat(scoreVal) !== parseFloat(oldScoreItem.score));
+            if (editDetach) {
+                appData.scores[key] = {
+                    score: Math.min(10, Math.max(0, parseFloat(scoreVal))),
+                    absent: false,
+                    manual: true,
+                    isExam: !!(document.getElementById('modalIsExamCheckbox') || {}).checked
+                };
+                saveData().then(ok => { if (ok) uiToast('toastScoreSaved', 'success'); });
+                closeScoreModal();
+                return;
+            }
+
             let oldExcess = 0;
             if (oldScoreItem && oldScoreItem.speakingCount !== undefined) {
                 const oldN = oldScoreItem.speakingCount;
                 const M = parseInt(appData.maxSpeakingLimit) || 15;
                 oldExcess = Math.max(0, oldN - M);
             }
+            if (qsEdit && isAbsent) oldExcess = 0;
 
             if (student.rewardPoints === undefined) student.rewardPoints = 0;
             student.rewardPoints = Math.max(0, student.rewardPoints - oldExcess);
@@ -5758,7 +6028,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     const M = parseInt(appData.maxSpeakingLimit) || 15;
                     oldExcess = Math.max(0, oldN - M);
                 }
-                student.rewardPoints = Math.max(0, (student.rewardPoints || 0) - oldExcess);
+                if (!qsEdit) student.rewardPoints = Math.max(0, (student.rewardPoints || 0) - oldExcess);
                 delete appData.scores[key];
                 saveData();
             }
@@ -7258,6 +7528,7 @@ window.openStudentProfile=function(studentId){
 
         /* ===================== CT: 20 template thẻ học sinh ===================== */
         var CT_MG = (i, r) => Array.from({ length: 7 }, (_, j) => '01ABCDEF'[Math.floor(r(20 + j) * 8)]).join('<br>');
+        var CT_P = ['#f43f5e', '#facc15', '#22d3ee', '#a3e635', '#a78bfa', '#fb923c'];
         var CT_LIST = [
             { id: 't01', vi: 'Sao băng', en: 'Meteor shower', ic: '🌠', dark: 1, L: [{ k: 'i', n: 12, tp: [0, 100], d: [0, 6], t: [2, 5], z: [1.5, 3.5] }, { k: 'b', n: 3, l: [0, 55], tp: [0, 45], d: [0, 9], t: [5, 8] }] },
             { id: 't02', vi: 'Cầu vồng', en: 'Rainbow', ic: '🌈', L: [{ k: 's', n: 3, g: ['☁️'], l: [0, 80], tp: [4, 60], d: [0, 20], t: [16, 26], z: [16, 24] }, { k: 'i', n: 7, g: ['✨'], tp: [0, 90], t: [2, 3.5], z: [9, 14] }] },
@@ -7279,6 +7550,38 @@ window.openStudentProfile=function(studentId){
             { id: 't18', vi: 'Lá mùa thu', en: 'Autumn leaves', ic: '🍁', L: [{ k: 's', n: 9, g: ['🍂', '🍁', '🍃'], t: [5, 9], z: [12, 18] }] },
             { id: 't19', vi: 'Cực quang', en: 'Aurora', ic: '🌌', dark: 1, x: 3, L: [{ k: 'i', n: 10, tp: [0, 100], t: [2, 4.5], z: [1.5, 3] }] },
             { id: 't20', vi: 'Arcade 8-bit', en: 'Arcade 8-bit', ic: '👾', dark: 1, x: 2, L: [{ k: 'i', n: 10, tp: [0, 90], t: [0.9, 1.8], z: [3, 5] }, { k: 's', n: 2, g: ['🪙'], tp: [10, 60], t: [1.4, 2], z: [14, 16] }, { k: 'u', n: 1, g: ['👾'], tp: [20, 50], t: [6, 8] }] }
+,
+            /* ===== CT2: 30 template mới (t21–t50) ===== */
+            { id: 't21', vi: 'Phi hành gia', en: 'Astronaut', ic: '🚀', dark: 1, x: 1, L: [{ k: 'i', n: 12, tp: [0, 100], t: [2, 4.5], z: [1.5, 3.5] }, { k: 's', n: 2, g: ['🚀', '🛸'], l: [0, 0], tp: [8, 60], d: [0, 12], t: [12, 19], z: [16, 22] }, { k: 'u', n: 1, g: ['🧑\u200d🚀'], l: [55, 80], tp: [15, 45], t: [18, 30], z: [20, 24] }] },
+            { id: 't22', vi: 'Khủng long', en: 'Dinosaurs', ic: '🦖', x: 1, L: [{ k: 's', n: 2, g: ['🦖', '🦕'], l: [0, 0], tp: [50, 64], d: [0, 14], t: [16, 24], z: [22, 28] }, { k: 'i', n: 6, g: ['🍃', '🌿'], t: [6, 10], z: [10, 14] }, { k: 'u', n: 3, g: ['🌴'], l: [6, 90], tp: [4, 30], t: [3, 5], z: [16, 22] }] },
+            { id: 't23', vi: 'Sân bóng đá', en: 'Football pitch', ic: '⚽', dark: 1, x: 2, L: [{ k: 's', n: 2, g: ['⚽'], l: [0, 0], tp: [68, 80], d: [0, 8], t: [7, 11], z: [14, 18] }, { k: 'u', n: 2, g: ['⚽'], l: [15, 80], tp: [74, 80], d: [0, 2], t: [0.9, 1.2], z: [13, 16] }, { k: 'i', n: 5, g: ['✦'], l: [3, 85], tp: [0, 35], t: [2, 3.5], z: [8, 12] }] },
+            { id: 't24', vi: 'Lâu đài cổ tích', en: 'Fairytale castle', ic: '🏰', x: 1, L: [{ k: 'i', n: 8, g: ['✨', '⭐'], tp: [0, 90], t: [2, 3.5], z: [9, 14] }, { k: 's', n: 2, g: ['🦄', '🧚'], l: [100, 100], tp: [15, 60], d: [0, 10], t: [14, 22], z: [16, 20] }] },
+            { id: 't25', vi: 'Siêu anh hùng', en: 'Superheroes', ic: '🦸', x: 1, L: [{ k: 's', n: 5, g: ['💥', '⚡', '⭐', '💫'], l: [5, 92], tp: [5, 80], d: [0, 6], t: [2.6, 4], z: [14, 22] }, { k: 'u', n: 1, g: ['🦸'], l: [0, 0], tp: [10, 55], t: [8, 12], z: [20, 24] }] },
+            { id: 't26', vi: 'Thảo nguyên Safari', en: 'Safari', ic: '🦁', x: 2, L: [{ k: 's', n: 3, g: ['🐘', '🦒', '🦁', '🦓'], l: [100, 100], tp: [46, 60], d: [0, 16], t: [18, 28], z: [18, 24] }, { k: 'u', n: 2, g: ['🦅', '🦜'], l: [100, 100], tp: [8, 35], d: [0, 10], t: [10, 15], z: [13, 17] }] },
+            { id: 't27', vi: 'Đảo kho báu', en: 'Treasure island', ic: '🏴\u200d☠️', dark: 1, x: 2, L: [{ k: 's', n: 2, g: ['⛵', '🚢'], l: [0, 0], tp: [30, 52], d: [0, 14], t: [15, 24], z: [18, 24] }, { k: 'u', n: 1, g: ['🦜'], l: [100, 100], tp: [8, 25], t: [8, 12], z: [14, 16] }, { k: 'i', n: 7, g: ['✦', '🪙', '💎'], tp: [0, 70], t: [2, 3.5], z: [8, 13] }] },
+            { id: 't28', vi: 'Phòng thí nghiệm', en: 'Science lab', ic: '🧪', x: 1, L: [{ k: 'i', n: 9, l: [3, 95], tp: [100, 100], d: [0, 7], t: [3, 6], z: [5, 13], x: [4, 12] }, { k: 's', n: 3, g: ['🧪', '⚗️', '🔬'], tp: [8, 60], t: [2.4, 3.6], z: [13, 17] }, { k: 'u', n: 1, g: ['⚛️'], l: [70, 82], tp: [10, 30], t: [8, 12], z: [18, 22] }] },
+            { id: 't29', vi: 'Vở toán ô li', en: 'Math notebook', ic: '➕', L: [{ k: 'i', n: 10, g: ['+', '−', '×', '÷', '=', 'π', '∑', '√', '%'], t: [6, 10], z: [11, 18], c: ['#2563eb', '#db2777', '#16a34a', '#ea580c', '#7c3aed'] }, { k: 's', n: 2, g: ['📐', '📏'], tp: [10, 60], t: [2.5, 3.5], z: [14, 18] }] },
+            { id: 't30', vi: 'Bảng đen lớp học', en: 'Classroom chalkboard', ic: '📚', dark: 1, x: 1, L: [{ k: 'i', n: 10, g: ['A', 'B', 'C', '1', '2', '3', '✓', 'π', 'a²', '+', '='], t: [6, 10], z: [11, 18] }, { k: 's', n: 2, g: ['🍎', '✏️', '📖'], tp: [8, 60], t: [2.4, 3.6], z: [14, 18] }] },
+            { id: 't31', vi: 'Giai điệu âm nhạc', en: 'Music melody', ic: '🎵', L: [{ k: 's', n: 6, g: ['🎵', '🎶', '🎼'], l: [3, 95], tp: [100, 100], d: [0, 6], t: [4, 7], z: [12, 20], x: [8, 18] }, { k: 'b', n: 14, l: [2, 97], d: [0, 3], t: [0.8, 1.6], z: [14, 38], c: ['#a855f7', '#ec4899', '#6366f1', '#14b8a6', '#f59e0b'] }] },
+            { id: 't32', vi: 'Vườn hoa bướm', en: 'Butterfly garden', ic: '🦋', x: 1, L: [{ k: 's', n: 6, g: ['🌷', '🌻', '🌼', '🌸', '🌺'], l: [4, 94], tp: [72, 80], d: [0, 3], t: [2.5, 4], z: [16, 22] }, { k: 'u', n: 3, g: ['🦋', '🐝', '🐞'], l: [10, 85], tp: [10, 50], d: [0, 8], t: [7, 12], z: [14, 18] }] },
+            { id: 't33', vi: 'Tiệc bóng bay', en: 'Balloon party', ic: '🎈', L: [{ k: 'i', n: 7, l: [3, 95], tp: [100, 100], d: [0, 8], t: [5, 9], z: [12, 22], x: [6, 14], c: CT_P }, { k: 'b', n: 10, t: [4, 7], x: [8, 20], c: CT_P }, { k: 's', n: 2, g: ['🎉', '✨'], tp: [5, 50], t: [2, 3.2], z: [12, 16] }] },
+            { id: 't34', vi: 'Thú cưng đáng yêu', en: 'Cute pets', ic: '🐾', L: [{ k: 'i', n: 8, g: ['🐾'], tp: [0, 85], t: [3, 5], z: [10, 15] }, { k: 's', n: 4, g: ['🐱', '🐶', '🐰', '🐹'], l: [8, 90], tp: [66, 76], d: [0, 3], t: [1.6, 2.6], z: [18, 22] }, { k: 'u', n: 3, g: ['💗'], tp: [100, 100], t: [4, 7], z: [9, 13], x: [5, 10] }] },
+            { id: 't35', vi: 'Đường đua tốc độ', en: 'Speed racing', ic: '🏁', dark: 1, x: 3, L: [{ k: 's', n: 3, g: ['🚗', '🚙', '🚕', '🚓'], l: [100, 100], tp: [20, 62], d: [0, 4], t: [2.4, 3.8], z: [16, 20] }, { k: 'i', n: 2, g: ['🏁'], l: [10, 85], tp: [16, 30], t: [1.5, 2.5], z: [12, 16] }] },
+            { id: 't36', vi: 'Bay trên mây', en: 'Above the clouds', ic: '✈️', L: [{ k: 'b', n: 4, g: ['☁️'], l: [0, 0], tp: [4, 70], d: [0, 30], t: [26, 40], z: [22, 38] }, { k: 's', n: 1, g: ['✈️', '🛩️'], l: [0, 0], tp: [10, 55], d: [0, 10], t: [10, 15], z: [16, 20] }, { k: 'u', n: 1, g: ['🪂'], t: [8, 12], z: [16, 18], x: [10, 20] }] },
+            { id: 't37', vi: 'Sân bóng rổ', en: 'Basketball court', ic: '🏀', x: 2, L: [{ k: 's', n: 1, g: ['🏀'], l: [10, 80], tp: [70, 78], d: [0, 2], t: [1, 1.3], z: [15, 18] }, { k: 'u', n: 2, g: ['🏀'], l: [20, 85], tp: [72, 78], d: [0, 2], t: [0.8, 1.1], z: [14, 17] }, { k: 'i', n: 3, g: ['⭐'], tp: [0, 40], t: [2, 3.4], z: [10, 13] }] },
+            { id: 't38', vi: 'Cờ vua', en: 'Chess', ic: '♟️', dark: 1, L: [{ k: 'i', n: 8, g: ['♜', '♞', '♝', '♛', '♚', '♟'], l: [3, 95], tp: [100, 100], d: [0, 8], t: [6, 10], z: [14, 24], x: [6, 14] }, { k: 's', n: 2, g: ['👑'], tp: [8, 60], t: [2, 3.2], z: [12, 15] }] },
+            { id: 't39', vi: 'Xếp hình', en: 'Block puzzle', ic: '🧱', dark: 1, x: 2, L: [{ k: 'i', n: 10, d: [0, 6], t: [3.5, 6], z: [8, 11], c: CT_P }] },
+            { id: 't40', vi: 'Robot công nghệ', en: 'Tech robot', ic: '🤖', dark: 1, x: 2, L: [{ k: 'i', n: 10, g: ['0', '1', '01', '10', '{}', '#', '//', '0x'], l: [3, 96], tp: [100, 100], d: [0, 6], t: [4, 7], z: [9, 13], x: [4, 10] }, { k: 's', n: 1, g: ['🤖'], l: [0, 0], tp: [18, 50], d: [0, 10], t: [12, 18], z: [20, 22] }, { k: 'u', n: 2, g: ['⚙️'], l: [75, 90], tp: [10, 60], t: [6, 10], z: [14, 20] }] },
+            { id: 't41', vi: 'Bãi biển mùa hè', en: 'Summer beach', ic: '🏖️', x: 2, L: [{ k: 'b', n: 2, g: ['☁️'], l: [0, 0], tp: [4, 25], d: [0, 30], t: [22, 34], z: [18, 28] }, { k: 's', n: 1, g: ['🦀'], l: [0, 0], tp: [66, 76], d: [0, 10], t: [14, 20], z: [16, 18] }, { k: 'u', n: 2, g: ['🌴', '⛱️'], l: [6, 60], tp: [48, 62], t: [3, 4.5], z: [16, 20] }] },
+            { id: 't42', vi: 'Phù thủy phép thuật', en: 'Magic wizard', ic: '🔮', dark: 1, x: 1, L: [{ k: 'i', n: 10, g: ['✨', '⭐', '✦'], tp: [0, 100], t: [1.8, 3.5], z: [8, 14] }, { k: 's', n: 2, g: ['🔮', '🦉', '🧙'], tp: [10, 60], t: [2.4, 3.6], z: [16, 20] }, { k: 'b', n: 7, l: [3, 95], tp: [100, 100], d: [0, 7], t: [4, 7], z: [4, 10], x: [4, 10], c: ['#a78bfa', '#34d399', '#f0abfc'] }] },
+            { id: 't43', vi: 'Trà sữa trân châu', en: 'Bubble tea', ic: '🧋', x: 2, L: [{ k: 'i', n: 9, l: [3, 96], d: [0, 8], t: [4, 8], z: [5, 9], x: [6, 14] }, { k: 's', n: 4, g: ['🧋', '🍓', '🥭', '🍑'], tp: [5, 60], t: [2.4, 3.8], z: [13, 18] }] },
+            { id: 't44', vi: 'Tiệc pizza', en: 'Pizza party', ic: '🍕', L: [{ k: 's', n: 8, g: ['🍕', '🍔', '🌭', '🍟', '🍩', '🥤', '🍦'], t: [5, 9], z: [14, 20] }] },
+            { id: 't45', vi: 'Sàn disco', en: 'Disco floor', ic: '🕺', dark: 1, x: 3, L: [{ k: 'i', n: 10, tp: [0, 100], d: [0, 3], t: [1, 2.2], z: [3, 5], c: ['#f472b6', '#22d3ee', '#facc15', '#a78bfa', '#4ade80'] }, { k: 's', n: 3, g: ['🕺', '💃'], l: [10, 88], tp: [68, 76], d: [0, 2], t: [0.8, 1.2], z: [18, 20] }] },
+            { id: 't46', vi: 'Kim tự tháp', en: 'Pyramids', ic: '🏜️', x: 3, L: [{ k: 's', n: 2, g: ['🐪'], l: [100, 100], tp: [60, 70], d: [0, 16], t: [18, 26], z: [18, 22] }, { k: 'u', n: 2, g: ['🌵'], l: [8, 50], tp: [58, 70], t: [3, 5], z: [14, 18] }, { k: 'b', n: 2, g: ['🦅'], l: [100, 100], tp: [8, 30], d: [0, 12], t: [10, 16], z: [13, 16] }] },
+            { id: 't47', vi: 'Đêm trăng sao', en: 'Starry night', ic: '🌙', dark: 1, x: 1, L: [{ k: 'i', n: 10, g: ['✦', '⋆'], tp: [0, 70], t: [2, 4], z: [5, 10] }, { k: 'b', n: 3, g: ['☁️'], l: [0, 0], tp: [10, 70], d: [0, 30], t: [26, 38], z: [22, 32] }, { k: 'u', n: 3, g: ['z', 'Z'], l: [8, 30], tp: [85, 85], d: [0, 6], t: [4, 6], z: [10, 16], x: [5, 8] }] },
+            { id: 't48', vi: 'Huy chương vàng', en: 'Gold medal', ic: '🏅', x: 1, L: [{ k: 's', n: 5, g: ['🥇', '🥈', '🥉', '🏅'], t: [5, 9], z: [13, 19] }, { k: 'b', n: 9, t: [4, 7], x: [8, 20], c: CT_P }, { k: 'i', n: 3, g: ['🏆', '⭐'], tp: [5, 70], t: [2, 3.4], z: [12, 15] }] },
+            { id: 't49', vi: 'Công viên giải trí', en: 'Amusement park', ic: '🎡', dark: 1, x: 3, L: [{ k: 's', n: 4, g: ['🎈'], l: [3, 60], tp: [100, 100], d: [0, 8], t: [5, 9], z: [12, 18], x: [6, 12] }, { k: 'i', n: 6, g: ['✨'], tp: [10, 90], t: [2, 3.5], z: [9, 13] }, { k: 'u', n: 1, g: ['🎠'], l: [8, 25], tp: [66, 72], t: [2.4, 3], z: [20, 22] }] },
+            { id: 't50', vi: 'Tết Việt Nam', en: 'Lunar New Year', ic: '🧧', dark: 1, x: 1, L: [{ k: 's', n: 6, g: ['🧧', '🌸', '🌼', '🪙'], t: [5, 9], z: [13, 19] }, { k: 'i', n: 7, g: ['✦'], tp: [0, 95], t: [1.8, 3.2], z: [8, 13] }, { k: 'u', n: 2, g: ['🏮'], l: [6, 90], tp: [0, 0], t: [2.4, 3.4], z: [18, 22] }] }
         ];
         var CT_MAP = {}; CT_LIST.forEach((t, i) => { t.i = i; CT_MAP[t.id] = t; });
         function ctRnd(a, b) { const s = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return s - Math.floor(s); }
