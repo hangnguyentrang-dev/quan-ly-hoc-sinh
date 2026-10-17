@@ -319,6 +319,15 @@
         .avg-cell { background:#eef2ff; }
         .score-row:hover > td.avg-cell { background-color:#c7d2fe !important; }
         .avg-pill { display:inline-block; min-width:2.4rem; padding:.18rem .5rem; border-radius:9999px; font-weight:900; font-size:.75rem; box-shadow:inset 0 0 0 1px rgba(15,23,42,.07), 0 1px 2px rgba(15,23,42,.08); }
+        /* Rê chuột vào hàng: làm nổi bật nhẹ CHỈ cột "Họ & Tên" và "ĐTB" (không đụng tới các ô điểm chi tiết) */
+        #scoreMatrix td.sticky-col-2, #scoreMatrix td.sticky-col-3 { transition:background-color .15s, color .15s; }
+        #scoreMatrix .avg-pill { transition:transform .15s, box-shadow .15s; }
+        #scoreMatrix td.sticky-col-2 > div { transition:transform .15s; transform-origin:left center; }
+        #scoreMatrix .score-row:hover > td.sticky-col-2 > div { transform:scale(1.06); }
+        #scoreMatrix .score-row:hover > td.sticky-col-2 { background-color:#c7d2fe !important; color:#1e1b4b; }
+        #scoreMatrix .score-row:hover > td.sticky-col-3 { background-color:#c7d2fe !important; }
+        #scoreMatrix .score-row:hover > td.sticky-col-3 .avg-pill { transform:scale(1.12); box-shadow:inset 0 0 0 1px rgba(15,23,42,.1), 0 0 0 2px #4f46e5, 0 2px 6px rgba(79,70,229,.35); }
+        @media (prefers-reduced-motion: reduce) { #scoreMatrix .avg-pill, #scoreMatrix td.sticky-col-2 > div { transition:none; } #scoreMatrix .score-row:hover > td.sticky-col-3 .avg-pill, #scoreMatrix .score-row:hover > td.sticky-col-2 > div { transform:none; } }
         /* 4. Strong focus ring for teaching inputs */
         #viewTeachingContainer input:focus, #viewTeachingContainer textarea:focus, #viewTeachingContainer select:focus, .teaching-grid-input:focus { outline:none !important; border-color:#6366f1 !important; background-color:#eef2ff; box-shadow:0 0 0 2px #fff, 0 0 0 4px #6366f1 !important; transition:box-shadow .15s, background-color .15s; }
         /* 5. Toast notifications */
