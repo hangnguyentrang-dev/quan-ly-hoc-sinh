@@ -328,6 +328,23 @@
         #scoreMatrix .score-row:hover > td.sticky-col-3 { background-color:#c7d2fe !important; }
         #scoreMatrix .score-row:hover > td.sticky-col-3 .avg-pill { transform:scale(1.12); box-shadow:inset 0 0 0 1px rgba(15,23,42,.1), 0 0 0 2px #4f46e5, 0 2px 6px rgba(79,70,229,.35); }
         @media (prefers-reduced-motion: reduce) { #scoreMatrix .avg-pill, #scoreMatrix td.sticky-col-2 > div { transition:none; } #scoreMatrix .score-row:hover > td.sticky-col-3 .avg-pill, #scoreMatrix .score-row:hover > td.sticky-col-2 > div { transform:none; } }
+        /* ===== Chuỗi điểm 10 liên tiếp: lửa nhiều lớp + "10 x N" (Leaderboard) ===== */
+        .tf-streak { display:inline-flex; align-items:center; gap:.2rem; margin-left:.45rem; padding:0 .5rem 0 .3rem; height:1.55rem; border-radius:9999px; vertical-align:middle; flex-shrink:0; white-space:nowrap; background:linear-gradient(180deg,#fff7ed,#ffedd5); border:1.5px solid #facc15; box-shadow:0 0 0 1px #ef4444, 0 0 10px rgba(249,115,22,.55); animation:tfGlow 1.3s ease-in-out infinite; cursor:default; }
+        .tf-flame { position:relative; display:inline-block; width:16px; height:22px; flex-shrink:0; }
+        .tf-flame .tf-l { position:absolute; left:50%; border-radius:50% 0 50% 50%; transform-origin:50% 60%; }
+        .tf-flame .tf-l1 { width:13px; height:13px; margin-left:-6.5px; bottom:3px; background:linear-gradient(135deg,#dc2626,#ef4444 60%,#f97316); animation:tfFlick 0.9s ease-in-out infinite; }
+        .tf-flame .tf-l2 { width:9px; height:9px; margin-left:-4.5px; bottom:3px; background:linear-gradient(135deg,#f97316,#fb923c 60%,#fbbf24); animation:tfFlick 0.7s ease-in-out infinite -.2s; }
+        .tf-flame .tf-l3 { width:5px; height:5px; margin-left:-2.5px; bottom:3px; background:linear-gradient(135deg,#facc15,#fef08a); animation:tfFlick 0.55s ease-in-out infinite -.35s; }
+        .tf-flame .tf-sp { position:absolute; left:50%; bottom:12px; width:3px; height:3px; border-radius:50%; background:#fde047; box-shadow:0 0 4px #f97316; opacity:0; animation:tfSpark 1.1s ease-out infinite; }
+        .tf-flame .tf-sp2 { margin-left:-4px; animation-delay:.55s; }
+        .tf-txt { font-weight:900; font-size:.8rem; line-height:1; letter-spacing:.02em; color:#ea580c; -webkit-text-stroke:.5px #facc15; paint-order:stroke fill; text-shadow:0 1px 0 #dc2626, 0 0 6px rgba(239,68,68,.75); animation:tfText 1.3s ease-in-out infinite; }
+        .tf-txt .tf-x { font-size:.72rem; margin:0 .08rem 0 .12rem; color:#dc2626; }
+        .tf-txt .tf-n { font-size:1rem; color:#ef4444; }
+        @keyframes tfFlick { 0%,100%{transform:rotate(-45deg) scale(1,1)} 25%{transform:rotate(-40deg) scale(.9,1.1)} 50%{transform:rotate(-50deg) scale(1.08,.92)} 75%{transform:rotate(-43deg) scale(.95,1.06)} }
+        @keyframes tfGlow { 0%,100%{box-shadow:0 0 0 1px #ef4444, 0 0 8px rgba(249,115,22,.45)} 50%{box-shadow:0 0 0 1px #dc2626, 0 0 15px rgba(249,115,22,.85)} }
+        @keyframes tfText { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+        @keyframes tfSpark { 0%{transform:translateY(0);opacity:0} 20%{opacity:1} 100%{transform:translateY(-12px);opacity:0} }
+        @media (prefers-reduced-motion: reduce) { .tf-streak, .tf-txt, .tf-flame .tf-l, .tf-flame .tf-sp { animation:none !important; } .tf-flame .tf-l { transform:rotate(-45deg); } .tf-flame .tf-sp { display:none; } }
         /* 4. Strong focus ring for teaching inputs */
         #viewTeachingContainer input:focus, #viewTeachingContainer textarea:focus, #viewTeachingContainer select:focus, .teaching-grid-input:focus { outline:none !important; border-color:#6366f1 !important; background-color:#eef2ff; box-shadow:0 0 0 2px #fff, 0 0 0 4px #6366f1 !important; transition:box-shadow .15s, background-color .15s; }
         /* 5. Toast notifications */
@@ -622,6 +639,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     <div id="utilityMenu" role="menu" class="hidden absolute right-0 top-full mt-2 w-72 rounded-2xl bg-white text-slate-700 shadow-2xl ring-1 ring-slate-200 overflow-hidden z-[60]">
                         <div class="px-4 py-2.5 bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 text-white text-[11px] font-black uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-toolbox"></i><span data-i18n="utilitiesTitle">Tiện ích &amp; Dữ liệu</span></div>
                         <div class="p-1.5">
+                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openCourseManager()"><span class="menu-ico bg-violet-100 text-violet-600"><i class="fa-solid fa-folder-open"></i></span><span data-i18n="courseManagerBtn">Quản lý khóa học</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openClassModal()"><span class="menu-ico bg-emerald-100 text-emerald-600"><i class="fa-solid fa-folder-plus"></i></span><span data-i18n="btnAddClass">Thêm Lớp Mới</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openDeletedStudents()"><span class="menu-ico bg-fuchsia-100 text-fuchsia-600"><i class="fa-solid fa-trash-arrow-up"></i></span><span data-i18n="menuRestoreStudents">Khôi phục học sinh đã xóa</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();exportData()" data-i18n-title="backupTitle" title="Tải bản sao lưu dữ liệu ra file JSON"><span class="menu-ico bg-slate-100 text-slate-600"><i class="fa-solid fa-download"></i></span><span data-i18n="btnBackup">Sao lưu dữ liệu</span></button>
@@ -697,9 +715,6 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             <div class="flex flex-wrap items-end justify-between gap-2 pt-2">
                 <div class="flex items-center space-x-0 overflow-x-auto min-w-0 flex-1" id="classTabsContainer">
                     <!-- Dynamic Class Tabs -->
-                </div>
-                <div class="flex items-center gap-2 pb-1">
-                    <button onclick="openCourseManager()" class="px-3 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold shadow flex items-center gap-1.5"><i class="fa-solid fa-folder-open"></i><span data-i18n="courseManagerBtn">Quản lý khóa học</span></button>
                 </div>
             </div>
 
@@ -4261,6 +4276,35 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             }));
         }
 
+        // Chuỗi điểm 10: quét từ ngày cuối cùng đang hiển thị trên Score Matrix lùi về ngày đầu tiên.
+        // Ô trống bỏ qua; gặp điểm < 10 (hoặc vắng) thì dừng. Hiện lửa khi chuỗi >= TEN_STREAK_MIN (1 = chỉ cần 1 điểm 10).
+        const TEN_STREAK_MIN = 1;
+        function getTenStreak(studentId) {
+            const startMonth = appData.startMonth || 9, monthCount = appData.monthCount || 3, year = appData.year || 2026;
+            const keys = [];
+            for (let i = 0; i < monthCount; i++) {
+                const m = ((startMonth - 1 + i) % 12) + 1;
+                const dim = (m === 9 || m === 11 || m === 4 || m === 6) ? 30 : 31;
+                for (let d = 1; d <= dim; d++) keys.push(`${year}-${m}-${d}`);
+            }
+            let n = 0;
+            for (let i = keys.length - 1; i >= 0; i--) {
+                const it = appData.scores[`${studentId}_${keys[i]}`];
+                if (!it) continue;
+                if (it.absent) break;
+                if (it.score === null || it.score === undefined || it.score === '') continue;
+                if (parseFloat(it.score) >= 10) n++; else break;
+            }
+            return n;
+        }
+        function tenStreakHtml(studentId) {
+            const n = getTenStreak(studentId);
+            if (n < TEN_STREAK_MIN) return '';
+            const en = (appData.language || 'vi') === 'en';
+            const tip = en ? `${n} consecutive scores of 10` : `${n} điểm 10 liên tiếp`;
+            return `<span class="tf-streak" title="${tip}" aria-label="${tip}"><span class="tf-flame" aria-hidden="true"><i class="tf-l tf-l1"></i><i class="tf-l tf-l2"></i><i class="tf-l tf-l3"></i><i class="tf-sp"></i><i class="tf-sp tf-sp2"></i></span><span class="tf-txt">10<span class="tf-x">x</span><span class="tf-n">${n}</span></span></span>`;
+        }
+
         function renderRankingView() {
             const activeClass = appData.classes.find(c => c.id === appData.activeClassId);
             if (!activeClass) return;
@@ -4336,7 +4380,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                         <tr class="hl-row ${rank===1?'hl-r1':rank===2?'hl-r2':rank===3?'hl-r3':''} ${qsRowFlash('rk', activeClass.id, s.id, st.hasData)}">
                             <td class="py-3.5 px-4 text-center">${rankBadge}</td>
                             <td class="py-3.5 px-4 font-bold text-slate-800">
-                                <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> ${getStudentDisplayName(s)} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span>
+                                <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> ${getStudentDisplayName(s)}${tenStreakHtml(s.id)} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span>
                             </td>
                             <td class="py-3.5 px-4 text-center font-black text-amber-600"><span data-cu="rkt:${s.id}:p" data-to="${s.rewardPoints || 0}" data-dec="0">${s.rewardPoints || 0}</span> Pts</td>
                             <td class="py-3.5 px-4 text-center font-semibold text-slate-600"><span data-cu="rkt:${s.id}:n" data-to="${st.attendedCount}" data-dec="0">${st.attendedCount}</span></td>
