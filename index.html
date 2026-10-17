@@ -663,6 +663,173 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 .xf-gok:hover{background:#fbbf24}
 </style>
 
+<style id="ct-style">
+/* ===== CT: 20 template thẻ học sinh (không đụng tới hover của .roster-card) ===== */
+.ct{--h:170px;--w:380px;--ha:rgba(255,255,255,0)}
+.ct.ct-prev{--h:92px;--w:210px}
+.ct-fx{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;border-radius:inherit}
+.ct-fx>*{position:absolute;display:block;left:var(--l);top:var(--tp);margin:0;padding:0;font-style:normal;font-weight:400;text-decoration:none;line-height:1;animation-delay:var(--d);animation-duration:var(--t);animation-iteration-count:infinite;animation-timing-function:linear}
+.ct .ct-fx>.ct-x{left:auto;top:auto;animation-delay:0s}
+.roster-card.ct>div:not(.ct-fx),.ct-prev>div:not(.ct-fx){position:relative;z-index:1}
+.ct .roster-avatar{animation:ctHalo 2.8s ease-in-out infinite}
+.ct.ct-dark .text-slate-800{color:#f8fafc;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.ct.ct-dark .text-slate-500{color:#cbd5e1;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.ct.ct-dark .xf-brow,.ct.ct-dark .xf-brow b{color:#fbcfe8}
+
+@keyframes ctHalo{0%,100%{box-shadow:0 0 0 2px rgba(255,255,255,.65),0 0 0 0 var(--ha)}50%{box-shadow:0 0 0 2px rgba(255,255,255,.9),0 0 14px 5px var(--ha)}}
+@keyframes ctTwinkle{0%,100%{opacity:.15;transform:scale(.55) rotate(0)}50%{opacity:1;transform:scale(1.25) rotate(40deg)}}
+@keyframes ctFall{0%{opacity:0;transform:translate(0,-16px) rotate(0)}8%{opacity:1}25%{transform:translate(var(--x),calc(var(--h)*.25)) rotate(90deg)}50%{transform:translate(calc(var(--x)*-1),calc(var(--h)*.5)) rotate(180deg)}75%{transform:translate(var(--x),calc(var(--h)*.75)) rotate(270deg)}92%{opacity:1}100%{opacity:0;transform:translate(0,var(--h)) rotate(360deg)}}
+@keyframes ctRise{0%{opacity:0;transform:translate(0,0) scale(.6)}12%{opacity:.95}50%{transform:translate(var(--x),calc(var(--h)*-.55)) scale(1)}100%{opacity:0;transform:translate(calc(var(--x)*-1),calc(var(--h)*-1.1)) scale(1.1)}}
+@keyframes ctStraight{0%{opacity:0;transform:translateY(-80px)}10%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateY(var(--h))}}
+@keyframes ctRain{0%{opacity:0;transform:translate(0,-20px) rotate(12deg)}15%{opacity:.9}100%{opacity:.2;transform:translate(-30px,var(--h)) rotate(12deg)}}
+@keyframes ctDrift{0%{transform:translateX(-70px)}100%{transform:translateX(var(--w))}}
+@keyframes ctDriftL{0%{transform:translateX(0)}100%{transform:translateX(calc(var(--w)*-1))}}
+@keyframes ctBobT{0%,100%{translate:0 0}50%{translate:0 -6px}}
+@keyframes ctMeteor{0%{opacity:0;transform:translate(0,0) rotate(30deg) scaleX(.2)}7%{opacity:1;transform:translate(14px,8px) rotate(30deg) scaleX(1)}34%{opacity:0;transform:translate(230px,133px) rotate(30deg) scaleX(1)}100%{opacity:0;transform:translate(230px,133px) rotate(30deg)}}
+@keyframes ctSlide{to{background-position-x:700px}}
+@keyframes ctStripe{to{background-position:40px 0}}
+@keyframes ctNeon{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes ctGrid{from{background-position:0 0,0 0}to{background-position:0 18px,0 0}}
+@keyframes ctScanX{0%{transform:translateX(-40px)}100%{transform:translateX(var(--w))}}
+@keyframes ctScanY{0%{transform:translateY(-30px)}100%{transform:translateY(var(--h))}}
+@keyframes ctSpin{to{transform:rotate(360deg)}}
+@keyframes ctOrbit{from{transform:rotate(0) translateX(46px) rotate(0)}to{transform:rotate(360deg) translateX(46px) rotate(-360deg)}}
+@keyframes ctLava{0%{border-radius:45% 55% 0 0/100% 100% 0 0;transform:translateY(0)}50%{border-radius:62% 38% 0 0/100% 100% 0 0;transform:translateY(-6px)}100%{border-radius:38% 62% 0 0/100% 100% 0 0;transform:translateY(1px)}}
+@keyframes ctWaveA{to{background-position-x:120px}}
+@keyframes ctWaveB{to{background-position-x:-80px}}
+@keyframes ctFlyPath{0%,100%{transform:translate(0,0)}20%{transform:translate(26px,-16px)}40%{transform:translate(-6px,-32px)}60%{transform:translate(-30px,-10px)}80%{transform:translate(14px,12px)}}
+@keyframes ctGlow{0%,100%{opacity:.12}50%{opacity:1}}
+@keyframes ctBurst{0%{transform:scale(0);opacity:0}6%{opacity:1}38%{transform:scale(2.6);opacity:1}58%{transform:scale(2.9);opacity:0}100%{transform:scale(0);opacity:0}}
+@keyframes ctShine{0%{transform:translateX(-90px) skewX(-20deg)}55%,100%{transform:translateX(var(--w)) skewX(-20deg)}}
+@keyframes ctSun{0%,100%{transform:scale(1);box-shadow:0 0 22px 8px rgba(253,186,116,.65)}50%{transform:scale(1.1);box-shadow:0 0 36px 14px rgba(253,186,116,.9)}}
+@keyframes ctFlash{0%,86%,100%{opacity:0}88%{opacity:.7}90%{opacity:.05}92%{opacity:.55}95%{opacity:0}}
+@keyframes ctAurora{0%,100%{transform:translateX(-12%) scaleY(.8) rotate(-4deg);opacity:.5}50%{transform:translateX(10%) scaleY(1.4) rotate(3deg);opacity:.9}}
+@keyframes ctChomp{0%{clip-path:polygon(100% 74%,44% 48%,100% 21%,100% 0,0 0,0 100%,100% 100%)}100%{clip-path:polygon(100% 58%,44% 48%,100% 42%,100% 0,0 0,0 100%,100% 100%)}}
+@keyframes ctBob{0%,100%{transform:translateY(0) rotate(-12deg) scale(1)}50%{transform:translateY(-9px) rotate(12deg) scale(1.15)}}
+@keyframes ctBlink{0%,49%{opacity:1}50%,100%{opacity:.1}}
+@keyframes ctCoin{0%,100%{transform:translateY(0) scaleX(1)}25%{transform:translateY(-6px) scaleX(.15)}50%{transform:translateY(-10px) scaleX(1)}75%{transform:translateY(-6px) scaleX(.15)}}
+@keyframes ctHeartbeat{0%,100%{transform:scale(1)}15%{transform:scale(1.2)}30%{transform:scale(1)}45%{transform:scale(1.12)}60%{transform:scale(1)}}
+
+/* 01 Sao băng */
+.ct.ct-t01{--ha:rgba(165,243,252,.8);background:linear-gradient(160deg,#0b1026,#1b2559 60%,#2d1b69)}
+.ct-t01 i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;box-shadow:0 0 6px #fff;animation-name:ctTwinkle}
+.ct-t01 b{width:90px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff 80%,#a5f3fc);transform-origin:left center;animation-name:ctMeteor;animation-timing-function:ease-in}
+/* 02 Cầu vồng */
+.ct.ct-t02{--ha:rgba(244,114,182,.6);background:linear-gradient(100deg,#fecaca,#fde68a,#bbf7d0,#bae6fd,#ddd6fe,#fbcfe8,#fecaca);background-size:700px 100%;animation:ctSlide 7s linear infinite}
+.ct-t02 i{font-size:var(--z);animation-name:ctTwinkle}
+.ct-t02 s{font-size:var(--z);opacity:.9;animation-name:ctDrift}
+/* 03 Bong bóng */
+.ct.ct-t03{--ha:rgba(255,255,255,.95);background:linear-gradient(180deg,#e0f2fe,#bae6fd 60%,#7dd3fc)}
+.ct-t03 i{width:var(--z);height:var(--z);border-radius:50%;border:1px solid rgba(255,255,255,.85);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.95),rgba(255,255,255,.25) 40%,rgba(255,255,255,.08));animation-name:ctRise}
+/* 04 Tuyết rơi */
+.ct.ct-t04{--ha:rgba(96,165,250,.7);background:linear-gradient(180deg,#dbeafe,#eff6ff 70%,#fff)}
+.ct-t04 i{font-size:var(--z);color:#60a5fa;text-shadow:0 0 4px #fff;animation-name:ctFall}
+.ct-t04 .ct-x{left:-10%;right:-10%;bottom:-20px;height:32px;background:#fff;border-radius:50% 50% 0 0;box-shadow:0 -4px 8px rgba(148,163,184,.3)}
+/* 05 Hoa anh đào */
+.ct.ct-t05{--ha:rgba(244,114,182,.6);background:linear-gradient(135deg,#fdf2f8,#fce7f3 55%,#fbcfe8)}
+.ct-t05 i{width:var(--z);height:calc(var(--z)*1.25);background:linear-gradient(135deg,#fbcfe8,#f472b6);border-radius:80% 0 80% 0;animation-name:ctFall}
+.ct-t05 s{font-size:var(--z);animation-name:ctFall}
+/* 06 Ma trận */
+.ct.ct-t06{--ha:rgba(74,222,128,.7);background:linear-gradient(180deg,#02100a,#052e16)}
+.ct-t06 i{font:700 var(--z)/1.25 ui-monospace,Menlo,Consolas,monospace;background:linear-gradient(180deg,transparent,#86efac 70%,#22c55e);-webkit-background-clip:text;background-clip:text;color:transparent;animation-name:ctStraight}
+.ct-t06 .ct-x{left:0;right:0;top:0;height:24px;background:linear-gradient(transparent,rgba(74,222,128,.16),transparent);animation:ctScanY 3.4s linear infinite}
+/* 07 Neon Cyber */
+.ct.ct-t07{--ha:rgba(217,70,239,.8);background:linear-gradient(180deg,#0a0618,#1a0b3b 70%,#2b0a4f)}
+.ct-t07::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;box-shadow:inset 0 0 0 1px #22d3ee,inset 0 0 18px rgba(217,70,239,.4);animation:ctNeon 2.4s ease-in-out infinite}
+.ct-t07 .ct-x.a{left:-20%;right:-20%;bottom:0;height:62%;background-image:linear-gradient(#d946ef 1px,transparent 1px),linear-gradient(90deg,#d946ef 1px,transparent 1px);background-size:18px 18px;opacity:.45;transform:perspective(90px) rotateX(58deg);transform-origin:50% 100%;animation:ctGrid 1.4s linear infinite}
+.ct-t07 .ct-x.b{top:0;bottom:0;left:0;width:40px;background:linear-gradient(90deg,transparent,rgba(34,211,238,.4),transparent);animation:ctScanX 3.2s linear infinite}
+.ct-t07 i{width:var(--z);height:var(--z);background:#22d3ee;box-shadow:0 0 8px #22d3ee;animation-name:ctRise}
+/* 08 Dung nham */
+.ct.ct-t08{--ha:rgba(251,146,60,.85);background:linear-gradient(180deg,#1c0a05,#4a1308 60%,#7c2d12)}
+.ct-t08 i{width:var(--z);height:var(--z);border-radius:50%;background:#fb923c;box-shadow:0 0 8px 2px #f97316;animation-name:ctRise}
+.ct-t08 .ct-x{left:-5%;right:-5%;bottom:-16px;height:36px;background:linear-gradient(90deg,#ea580c,#fbbf24,#ea580c,#fbbf24,#ea580c);background-size:700px 100%;filter:blur(.6px);animation:ctSlide 5s linear infinite,ctLava 3s ease-in-out infinite alternate}
+/* 09 Đại dương */
+.ct.ct-t09{--ha:rgba(125,211,252,.85);background:linear-gradient(180deg,#0ea5e9,#0369a1 70%,#075985)}
+.ct-t09 s{font-size:var(--z);animation-name:ctDriftL,ctBobT;animation-duration:var(--t),2.2s;animation-timing-function:linear,ease-in-out}
+.ct-t09 i{width:var(--z);height:var(--z);border-radius:50%;border:1px solid rgba(255,255,255,.8);animation-name:ctRise}
+.ct-t09 .ct-x{left:0;right:0;height:14px;background-repeat:repeat-x}
+.ct-t09 .ct-x.a{bottom:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 14' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q15 0 30 7T60 7T90 7T120 7V14H0Z' fill='%23fff' fill-opacity='.3'/%3E%3C/svg%3E");background-size:120px 14px;animation:ctWaveA 5s linear infinite}
+.ct-t09 .ct-x.b{bottom:-3px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 14' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q10 1 20 7T40 7T60 7T80 7V14H0Z' fill='%23fff' fill-opacity='.2'/%3E%3C/svg%3E");background-size:80px 14px;animation:ctWaveB 7s linear infinite}
+/* 10 Thiên hà */
+.ct.ct-t10{--ha:rgba(167,139,250,.85);background:radial-gradient(ellipse at 30% 20%,#4c1d95,#1e1b4b 55%,#0b0720)}
+.ct-t10 i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;box-shadow:0 0 5px #fff;animation-name:ctTwinkle}
+.ct-t10 .ct-x{right:-70px;top:-70px;width:240px;height:240px;border-radius:50%;filter:blur(5px);background:conic-gradient(from 0deg,transparent,rgba(167,139,250,.6),transparent 40%,rgba(56,189,248,.45),transparent 80%);animation:ctSpin 14s linear infinite}
+.ct-t10 s{left:74%;top:38%;font-size:18px;animation-name:ctOrbit;animation-duration:9s}
+/* 11 Đom đóm */
+.ct.ct-t11{--ha:rgba(253,224,71,.7);background:linear-gradient(180deg,#07130d,#0f2a1a 60%,#14361f)}
+.ct-t11 i{width:var(--z);height:var(--z);border-radius:50%;background:#fde047;box-shadow:0 0 8px 3px rgba(253,224,71,.75);animation-name:ctFlyPath,ctGlow;animation-duration:var(--t),2.4s;animation-timing-function:ease-in-out}
+/* 12 Kẹo ngọt */
+.ct.ct-t12{--ha:rgba(236,72,153,.55);background:linear-gradient(45deg,#fbcfe8 25%,#fff 25% 50%,#fbcfe8 50% 75%,#fff 75%);background-size:40px 40px;animation:ctStripe 2.2s linear infinite}
+.ct-t12 s{font-size:var(--z);animation-name:ctBob;animation-timing-function:ease-in-out}
+/* 13 Pháo hoa */
+.ct.ct-t13{--ha:rgba(250,204,21,.75);background:radial-gradient(ellipse at 50% 120%,#1e3a8a,#0b1230 60%,#050816)}
+.ct-t13 b{width:2px;height:2px;border-radius:50%;color:var(--c);box-shadow:0.0px -14.0px 0 0 currentColor,9.9px -9.9px 0 0 currentColor,14.0px -0.0px 0 0 currentColor,9.9px 9.9px 0 0 currentColor,0.0px 14.0px 0 0 currentColor,-9.9px 9.9px 0 0 currentColor,-14.0px 0.0px 0 0 currentColor,-9.9px -9.9px 0 0 currentColor,3.1px -7.4px 0 0 currentColor,7.4px -3.1px 0 0 currentColor,7.4px 3.1px 0 0 currentColor,3.1px 7.4px 0 0 currentColor,-3.1px 7.4px 0 0 currentColor,-7.4px 3.1px 0 0 currentColor,-7.4px -3.1px 0 0 currentColor,-3.1px -7.4px 0 0 currentColor;animation-name:ctBurst;animation-timing-function:ease-out}
+.ct-t13 i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;animation-name:ctTwinkle}
+/* 14 Hoàng kim */
+.ct.ct-t14{--ha:rgba(245,158,11,.8);background:linear-gradient(135deg,#fef3c7,#fde68a 40%,#fbbf24)}
+.ct-t14::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;box-shadow:inset 0 0 0 2px rgba(217,119,6,.55)}
+.ct-t14 i{font-size:var(--z);color:#b45309;animation-name:ctTwinkle}
+.ct-t14 s{font-size:var(--z);animation-name:ctTwinkle}
+.ct-t14 .ct-x{top:-10%;bottom:-10%;left:0;width:56px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);animation:ctShine 3.4s ease-in-out infinite}
+/* 15 Hoàng hôn */
+.ct.ct-t15{--ha:rgba(253,186,116,.9);background:linear-gradient(180deg,#312e81 0%,#be185d 45%,#fb923c 80%,#fde68a)}
+.ct-t15 .ct-x{right:16%;bottom:-26px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle,#fff7ae,#fde047 40%,#fb923c);animation:ctSun 3s ease-in-out infinite}
+.ct-t15 b{width:var(--z);height:14px;border-radius:50%;background:rgba(255,255,255,.35);filter:blur(4px);animation-name:ctDrift}
+.ct-t15 s{font-size:var(--z);scale:-1 1;animation-name:ctDrift,ctBobT;animation-duration:var(--t),1.6s;animation-timing-function:linear,ease-in-out}
+/* 16 Mưa & sấm */
+.ct.ct-t16{--ha:rgba(186,230,253,.8);background:linear-gradient(180deg,#334155,#475569 60%,#64748b)}
+.ct-t16 i{width:1.5px;height:var(--z);background:linear-gradient(transparent,#bae6fd);animation-name:ctRain}
+.ct-t16 .ct-x{left:0;right:0;top:0;bottom:0;background:radial-gradient(circle at 70% 0%,#fff,rgba(186,230,253,.6) 40%,transparent 70%);opacity:0;animation:ctFlash 6s linear infinite}
+/* 17 Trái tim */
+.ct.ct-t17{--ha:rgba(244,63,94,.6);background:linear-gradient(135deg,#fff1f2,#ffe4e6 50%,#fecdd3)}
+.ct-t17 s{font-size:var(--z);animation-name:ctRise}
+.ct-t17 .ct-x{right:12px;top:50%;margin-top:-28px;font-size:56px;line-height:1;opacity:.14;animation:ctHeartbeat 1.3s ease-in-out infinite}
+.ct-t17 .ct-x::before{content:"\2764"; color:#e11d48}
+/* 18 Lá mùa thu */
+.ct.ct-t18{--ha:rgba(234,88,12,.6);background:linear-gradient(160deg,#fff7ed,#fed7aa 60%,#fdba74)}
+.ct-t18 s{font-size:var(--z);animation-name:ctFall}
+/* 19 Cực quang */
+.ct.ct-t19{--ha:rgba(52,211,153,.8);background:linear-gradient(180deg,#020617,#0b1b3a 70%,#0f2a4a)}
+.ct-t19 i{width:var(--z);height:var(--z);border-radius:50%;background:#fff;animation-name:ctTwinkle}
+.ct-t19 .ct-x{left:-20%;width:140%;height:60px;border-radius:50%;filter:blur(14px);mix-blend-mode:screen;animation:ctAurora 7s ease-in-out infinite}
+.ct-t19 .ct-x.a{top:6%;background:linear-gradient(90deg,transparent,#34d399,#22d3ee,transparent)}
+.ct-t19 .ct-x.b{top:30%;background:linear-gradient(90deg,transparent,#a78bfa,#f472b6,transparent);animation-duration:9s;animation-delay:-3s}
+.ct-t19 .ct-x.c{top:52%;background:linear-gradient(90deg,transparent,#4ade80,#38bdf8,transparent);animation-duration:11s;animation-delay:-6s}
+/* 20 Arcade */
+.ct.ct-t20{--ha:rgba(250,204,21,.8);background-color:#1e1b4b;background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:16px 16px;animation:ctGrid20 1.6s linear infinite}
+@keyframes ctGrid20{to{background-position:0 16px,16px 0}}
+.ct-t20 i{width:var(--z);height:var(--z);background:#facc15;animation-name:ctBlink;animation-timing-function:steps(1)}
+.ct-t20 s{font-size:var(--z);animation-name:ctCoin}
+.ct-t20 u{font-size:18px;animation-name:ctDrift;animation-timing-function:steps(16)}
+.ct-t20 .ct-x.a{left:0;bottom:6px;width:16px;height:16px;border-radius:50%;background:#facc15;animation:ctDrift 5s linear infinite,ctChomp .3s steps(2) infinite alternate}
+.ct-t20 .ct-x.b{left:0;right:0;bottom:12px;height:4px;background:radial-gradient(circle,#fde68a 1.5px,transparent 2px) 0 0/14px 4px repeat-x}
+
+@media (prefers-reduced-motion:reduce){.ct,.ct::after,.ct .roster-avatar,.ct-fx *{animation:none!important}.ct-fx{display:none}}
+
+/* ===== CT: hộp chọn template ===== */
+.ct-picker{position:fixed;inset:0;z-index:9050;display:flex;align-items:center;justify-content:center;padding:12px;background:rgba(15,23,42,.62);backdrop-filter:blur(3px)}
+.ct-pcard{width:min(96vw,58rem);max-height:92vh;display:flex;flex-direction:column;border-radius:1.25rem;overflow:hidden;background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.ct-phead{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.9rem 1.1rem;background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff}
+.ct-phead h3{font-size:1.05rem;font-weight:900}.ct-phead p{font-size:12px;opacity:.9;margin-top:.1rem}
+.ct-px{width:2rem;height:2rem;border-radius:.6rem;background:rgba(255,255,255,.18);color:#fff;font-weight:900}
+.ct-px:hover{background:rgba(255,255,255,.3)}
+.ct-pbody{overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.7rem;padding:1rem}
+.ct-tile{display:flex;flex-direction:column;gap:.35rem;padding:.35rem;border:2px solid transparent;border-radius:.9rem;background:#f8fafc;text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}
+.ct-tile:hover{transform:translateY(-2px);border-color:#c4b5fd}
+.ct-tile.sel{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.22)}
+.ct-tn{font-size:11px;font-weight:800;color:#334155;padding:0 .2rem .1rem}
+.ct-prev{position:relative;overflow:hidden;height:92px;padding:.6rem;border-radius:.7rem;border:1px solid #e2e8f0;background:#fff}
+.ct-prev.ct-none{display:flex;align-items:center}
+.ct-pv{display:flex;align-items:center;gap:.5rem;min-width:0}
+.ct-pv-av{flex:none;display:grid;place-items:center;width:2.1rem;height:2.1rem;border-radius:9999px;background:#eef2ff;font-size:1.15rem}
+.ct-pv b{font-size:12px;font-weight:900;color:#1e293b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ct-prev.ct-dark .ct-pv b{color:#f8fafc;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.ct-pfoot{display:flex;justify-content:flex-end;gap:.5rem;padding:.8rem 1rem;border-top:1px solid #e2e8f0;background:#fff}
+.ct-pfoot button{border-radius:.75rem;padding:.55rem 1.2rem;font-size:13px;font-weight:800}
+.ct-pcancel{background:#f1f5f9;color:#475569}.ct-pcancel:hover{background:#e2e8f0}
+.ct-pok{background:#7c3aed;color:#fff}.ct-pok:hover{background:#6d28d9}
+</style>
+
 <style id="tf-streak-color-sync">
 /* Đồng bộ màu streak: huy hiệu, lửa, viền phát quang, tên học sinh và banner chúc mừng */
 .tf-streak.tf-t20 {
@@ -6207,7 +6374,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
         function archivedFinalTotal(snap,id){const ex=(snap.finalExams||{})[id]||{};const stats=calculateSnapshotTotal(snap,id);const accumulated=stats.avg;const num=v=>v!==''&&v!==null&&v!==undefined&&Number.isFinite(Number(v))?Number(v):null;const cats=['listening','speaking','reading','writing'].map(k=>num(ex[k]));let g=num(ex.grammar),v=num(ex.vocabulary);if(ex.bonusTo?.grammar&&g!==null)g=(g+accumulated)/2;if(ex.bonusTo?.vocabulary&&v!==null)v=(v+accumulated)/2;if(ex.bonusTo?.grammarVocabulary){if(g!==null)g=(g+accumulated)/2;if(v!==null)v=(v+accumulated)/2;}const gv=[g,v].filter(x=>x!==null);if(gv.length)cats.push(gv.reduce((a,b)=>a+b,0)/gv.length);const valid=cats.filter(x=>x!==null);return valid.length? (valid.reduce((a,b)=>a+b,0)/valid.length).toFixed(2):'—';}
         function calculateSnapshotTotal(snap,id){let total=0,count=0;Object.entries(snap.scores||{}).forEach(([k,v])=>{if(k.startsWith(id+'_')){total+=Number(v.score)||0;count++;}});return {total,avg:count?total/count:0};}
         window.closeStudentProfile=function(){hideModuleModal('studentProfileModal');};
-        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':''}">${xfBdayFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar">${escapeHtml(st.icon||'🎓')}</div><div class="min-w-0 flex-1"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
+        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':ctCls(st)}">${xfBdayFx(st)}${xfBdayToday(st)?'':ctFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar">${escapeHtml(st.icon||'🎓')}</div><div class="min-w-0 flex-1"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="ctOpenPicker('${st.id}')" aria-label="${appData.language==='en'?'Card template':'Template thẻ'}" title="${appData.language==='en'?'Choose card template':'Chọn template thẻ'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 text-xs"><i class="fa-solid fa-palette"></i></button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
         window.openStudentProgress=function(studentId){ensureNewModules();const st=appData.students.find(x=>String(x.id)===String(studentId));if(!st)return;window.studentProgressViewingId=String(studentId);document.getElementById('studentProgressTitle').innerText=(st.icon||'🎓')+' '+getStudentDisplayName(st)+' · '+(appData.language==='en'?'Progress profile':'Hồ sơ tiến độ');window.renderStudentProgress();showModuleModal('studentProgressModal');};
 window.closeStudentProgress=function(){hideModuleModal('studentProgressModal');};
 window.renderStudentProgress=function(){
@@ -6276,6 +6443,7 @@ window.openStudentProfile=function(studentId){
           <p class="mt-3 text-sm"><b>${moduleText('violationsLabel')}:</b> ${escapeHtml(violations)}</p>
 
           ${xfBdaySection(st,isArchived)}
+          ${ctProfileSection(st,isArchived)}
           <label class="block text-sm font-bold mt-4">${moduleText('notesLabel')}<textarea id="studentProfileNotes" class="mt-1 w-full border rounded-lg p-2" rows="3" ${isArchived?'readonly':''}>${escapeHtml(noteValue)}</textarea></label>${isArchived?'':`<button onclick="saveStudentNotes('${String(studentId).replace(/'/g,"\\'")}')" class="mt-2 rounded-lg bg-indigo-600 text-white px-3 py-2 text-xs font-bold">${moduleText('saveBtn')}</button>`}`;
           document.getElementById('studentProfileContent').innerHTML=html;
         };
@@ -7087,6 +7255,97 @@ window.openStudentProfile=function(studentId){
             const pop = document.getElementById('xfBdayPop'); if (pop) { pop.remove(); return; }
             const g = document.getElementById('xfGift'); if (g) { g.click(); return; }
         });
+
+        /* ===================== CT: 20 template thẻ học sinh ===================== */
+        var CT_MG = (i, r) => Array.from({ length: 7 }, (_, j) => '01ABCDEF'[Math.floor(r(20 + j) * 8)]).join('<br>');
+        var CT_LIST = [
+            { id: 't01', vi: 'Sao băng', en: 'Meteor shower', ic: '🌠', dark: 1, L: [{ k: 'i', n: 12, tp: [0, 100], d: [0, 6], t: [2, 5], z: [1.5, 3.5] }, { k: 'b', n: 3, l: [0, 55], tp: [0, 45], d: [0, 9], t: [5, 8] }] },
+            { id: 't02', vi: 'Cầu vồng', en: 'Rainbow', ic: '🌈', L: [{ k: 's', n: 3, g: ['☁️'], l: [0, 80], tp: [4, 60], d: [0, 20], t: [16, 26], z: [16, 24] }, { k: 'i', n: 7, g: ['✨'], tp: [0, 90], t: [2, 3.5], z: [9, 14] }] },
+            { id: 't03', vi: 'Bong bóng xà phòng', en: 'Soap bubbles', ic: '🫧', L: [{ k: 'i', n: 11, l: [3, 95], tp: [100, 100], d: [0, 7], t: [4, 8], z: [8, 22], x: [6, 16] }] },
+            { id: 't04', vi: 'Tuyết rơi', en: 'Snowfall', ic: '❄️', x: 1, L: [{ k: 'i', n: 14, g: ['❄'], t: [4, 8], z: [8, 16] }] },
+            { id: 't05', vi: 'Hoa anh đào', en: 'Cherry blossom', ic: '🌸', L: [{ k: 'i', n: 11, t: [5, 9], z: [7, 12] }, { k: 's', n: 3, g: ['🌸'], t: [6, 10], z: [12, 16] }] },
+            { id: 't06', vi: 'Ma trận', en: 'Matrix code', ic: '🟩', dark: 1, x: 1, L: [{ k: 'i', n: 11, l: [2, 96], g: CT_MG, d: [0, 5], t: [2.5, 5], z: [9, 12] }] },
+            { id: 't07', vi: 'Neon Cyber', en: 'Neon cyber', ic: '🌆', dark: 1, x: 2, L: [{ k: 'i', n: 9, tp: [100, 100], t: [3, 6], z: [3, 5], x: [5, 14] }] },
+            { id: 't08', vi: 'Dung nham', en: 'Lava', ic: '🌋', dark: 1, x: 1, L: [{ k: 'i', n: 12, tp: [100, 100], t: [2.5, 5], z: [3, 6], x: [8, 20] }] },
+            { id: 't09', vi: 'Đại dương', en: 'Ocean', ic: '🐠', dark: 1, x: 2, L: [{ k: 's', n: 3, g: ['🐠', '🐟', '🐡'], l: [55, 95], tp: [12, 60], t: [9, 15], z: [14, 20] }, { k: 'i', n: 8, tp: [100, 100], t: [3, 6], z: [3, 7], x: [4, 10] }] },
+            { id: 't10', vi: 'Thiên hà', en: 'Galaxy', ic: '🪐', dark: 1, x: 1, L: [{ k: 'i', n: 14, tp: [0, 100], t: [2, 4.5], z: [1.5, 3] }, { k: 's', n: 1, g: ['🪐'] }] },
+            { id: 't11', vi: 'Rừng đom đóm', en: 'Fireflies', ic: '✨', dark: 1, L: [{ k: 'i', n: 11, tp: [10, 85], t: [6, 11], z: [3, 5] }] },
+            { id: 't12', vi: 'Kẹo ngọt', en: 'Candy land', ic: '🍭', L: [{ k: 's', n: 6, g: ['🍬', '🍭', '🍩', '🧁', '🍪', '🍓'], tp: [5, 80], t: [2.2, 4], z: [14, 20] }] },
+            { id: 't13', vi: 'Pháo hoa', en: 'Fireworks', ic: '🎆', dark: 1, L: [{ k: 'b', n: 4, l: [12, 88], tp: [18, 62], d: [0, 4], t: [3, 4.5], c: ['#f472b6', '#facc15', '#38bdf8', '#a78bfa', '#4ade80', '#fb923c'] }, { k: 'i', n: 9, tp: [0, 100], t: [2, 4], z: [1.5, 2.5] }] },
+            { id: 't14', vi: 'Hoàng kim', en: 'Golden shine', ic: '👑', x: 1, L: [{ k: 'i', n: 8, g: ['✦'], tp: [0, 92], t: [1.8, 3.2], z: [8, 15] }, { k: 's', n: 3, g: ['✨'], tp: [0, 85], t: [2, 3.4], z: [9, 13] }] },
+            { id: 't15', vi: 'Hoàng hôn', en: 'Sunset', ic: '🌇', dark: 1, x: 1, L: [{ k: 'b', n: 3, tp: [8, 50], d: [0, 30], t: [30, 45], z: [50, 80] }, { k: 's', n: 2, g: ['🕊️'], l: [0, 30], tp: [10, 50], t: [9, 14], z: [14, 18] }] },
+            { id: 't16', vi: 'Mưa & sấm chớp', en: 'Rain & lightning', ic: '⛈️', dark: 1, x: 1, L: [{ k: 'i', n: 22, l: [3, 100], t: [0.7, 1.3], z: [10, 16] }] },
+            { id: 't17', vi: 'Trái tim bay', en: 'Floating hearts', ic: '💖', x: 1, L: [{ k: 's', n: 8, g: ['💗', '💖', '💕', '❤️'], tp: [100, 100], t: [3.5, 6.5], z: [10, 18], x: [6, 16] }] },
+            { id: 't18', vi: 'Lá mùa thu', en: 'Autumn leaves', ic: '🍁', L: [{ k: 's', n: 9, g: ['🍂', '🍁', '🍃'], t: [5, 9], z: [12, 18] }] },
+            { id: 't19', vi: 'Cực quang', en: 'Aurora', ic: '🌌', dark: 1, x: 3, L: [{ k: 'i', n: 10, tp: [0, 100], t: [2, 4.5], z: [1.5, 3] }] },
+            { id: 't20', vi: 'Arcade 8-bit', en: 'Arcade 8-bit', ic: '👾', dark: 1, x: 2, L: [{ k: 'i', n: 10, tp: [0, 90], t: [0.9, 1.8], z: [3, 5] }, { k: 's', n: 2, g: ['🪙'], tp: [10, 60], t: [1.4, 2], z: [14, 16] }, { k: 'u', n: 1, g: ['👾'], tp: [20, 50], t: [6, 8] }] }
+        ];
+        var CT_MAP = {}; CT_LIST.forEach((t, i) => { t.i = i; CT_MAP[t.id] = t; });
+        function ctRnd(a, b) { const s = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return s - Math.floor(s); }
+        function ctSeed(id) { let h = 0; String(id).split('').forEach(c => { h = (h * 31 + c.charCodeAt(0)) % 9973; }); return h; }
+        function ctGet(st) { return (st && CT_MAP[st.cardTemplate]) || null; }
+        function ctName(t) { return t ? L2(t.vi, t.en) : L2('Không dùng template', 'No template'); }
+        function ctBuild(t, seed) {
+            const D = { l: [3, 96], tp: [0, 0], d: [0, 8], t: [4, 8], z: [8, 14], x: [10, 26] };
+            let h = '';
+            for (let i = 0; i < (t.x || 0); i++) h += '<span class="ct-x ' + 'abc'[i] + '"></span>';
+            t.L.forEach((s, li) => {
+                const o = Object.assign({}, D, s);
+                for (let i = 0; i < o.n; i++) {
+                    const r = k => ctRnd(t.i * 101 + li * 29 + i * 13 + seed, k + 1);
+                    const pk = (a, k) => a[0] + (a[1] - a[0]) * r(k);
+                    const c = o.c ? o.c[Math.floor(r(9) * o.c.length)] : '';
+                    const g = typeof o.g === 'function' ? o.g(i, r) : (o.g ? o.g[i % o.g.length] : '');
+                    h += `<${o.k} style="--l:${pk(o.l, 1).toFixed(1)}%;--tp:${pk(o.tp, 2).toFixed(1)}%;--d:-${pk(o.d, 3).toFixed(2)}s;--t:${pk(o.t, 4).toFixed(2)}s;--z:${pk(o.z, 5).toFixed(1)}px;--x:${pk(o.x, 6).toFixed(0)}px${c ? ';--c:' + c : ''}">${g}</${o.k}>`;
+                }
+            });
+            return `<div class="ct-fx" aria-hidden="true">${h}</div>`;
+        }
+        // Gắn vào thẻ học sinh. Ngày sinh nhật (xf-bday) luôn ghi đè template nên ở ngày đó không trả về gì.
+        function ctCls(st) { const t = ctGet(st); return t ? 'ct ct-' + t.id + (t.dark ? ' ct-dark' : '') : ''; }
+        function ctFx(st) { const t = ctGet(st); return t ? ctBuild(t, ctSeed(st.id)) : ''; }
+        function ctProfileSection(st, isArchived) {
+            const id = xfEsc(st.id), t = ctGet(st);
+            const btn = isArchived ? '' : `<button type="button" onclick="ctOpenPicker('${id}')" class="mt-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-3 py-2 text-xs font-bold">${L2('Chọn template', 'Choose template')}</button>`;
+            return `<section class="mt-4 rounded-xl border border-fuchsia-200 bg-fuchsia-50 p-3"><h3 class="font-bold text-sm text-fuchsia-700">🎨 ${L2('Template thẻ học sinh', 'Student card template')}</h3><p class="text-xs mt-1 text-slate-600">${t ? t.ic + ' ' : ''}${xfEsc(ctName(t))}</p>${btn}</section>`;
+        }
+        window.ctClosePicker = function () { const w = document.getElementById('ctPicker'); if (w) w.remove(); };
+        window.ctOpenPicker = function (id) {
+            const st = appData.students.find(x => String(x.id) === String(id)); if (!st) return;
+            ctClosePicker();
+            const cur = ctGet(st) ? st.cardTemplate : 'none';
+            let pending = cur;
+            const nm = xfEsc(getStudentDisplayName(st)), ico = xfEsc(st.icon || '🎓');
+            const tiles = [{ id: 'none', ic: '⬜' }].concat(CT_LIST).map((t, k) => {
+                const none = t.id === 'none';
+                const cls = none ? 'ct-prev ct-none' : 'ct-prev ct ct-' + t.id + (t.dark ? ' ct-dark' : '');
+                const fx = none ? '' : ctBuild(t, 0);
+                return `<button type="button" class="ct-tile ${t.id === cur ? 'sel' : ''}" data-id="${t.id}"><div class="${cls}">${fx}<div class="ct-pv"><span class="ct-pv-av">${ico}</span><b>${nm}</b></div></div><span class="ct-tn">${none ? '' : k + '. '}${t.ic} ${xfEsc(ctName(none ? null : t))}</span></button>`;
+            }).join('');
+            const w = document.createElement('div'); w.id = 'ctPicker'; w.className = 'ct-picker';
+            w.setAttribute('role', 'dialog'); w.setAttribute('aria-modal', 'true');
+            w.innerHTML = `<div class="ct-pcard"><div class="ct-phead"><div><h3>🎨 ${L2('Chọn template thẻ', 'Choose card template')}</h3><p>${nm}</p></div><button type="button" class="ct-px" aria-label="Close" onclick="ctClosePicker()">✕</button></div><div class="ct-pbody">${tiles}</div><div class="ct-pfoot"><button type="button" class="ct-pcancel" onclick="ctClosePicker()">${L2('Hủy', 'Cancel')}</button><button type="button" class="ct-pok">${L2('Áp dụng', 'Apply')}</button></div></div>`;
+            document.body.appendChild(w);
+            w.addEventListener('click', e => {
+                if (e.target === w) { ctClosePicker(); return; }
+                const b = e.target.closest('.ct-tile'); if (!b) return;
+                pending = b.dataset.id;
+                w.querySelectorAll('.ct-tile').forEach(x => x.classList.toggle('sel', x === b));
+            });
+            w.querySelector('.ct-pok').addEventListener('click', () => {
+                if (pending === cur) { ctClosePicker(); return; }
+                const prev = st.cardTemplate;
+                if (pending === 'none') delete st.cardTemplate; else st.cardTemplate = pending;
+                saveData().then(ok => {
+                    if (!ok) { if (prev) st.cardTemplate = prev; else delete st.cardTemplate; return; }
+                    ctClosePicker();
+                    try { renderStudentRoster(); } catch (e) {}
+                    try { if (window.studentProfileViewingId && document.getElementById('studentProfileContent')) renderStudentCourseProfile(); } catch (e) {}
+                    if (window.showAppToast) window.showAppToast(L2('Đã đổi template thẻ.', 'Card template updated.'), 'success');
+                });
+            });
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('ctPicker')) ctClosePicker(); });
 
         function xfAfterRender() {
             clearTimeout(xfScanT); xfScanT = setTimeout(xfBdayScan, 700);
