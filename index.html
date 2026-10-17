@@ -345,6 +345,19 @@
         @keyframes tfText { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
         @keyframes tfSpark { 0%{transform:translateY(0);opacity:0} 20%{opacity:1} 100%{transform:translateY(-12px);opacity:0} }
         @media (prefers-reduced-motion: reduce) { .tf-streak, .tf-txt, .tf-flame .tf-l, .tf-flame .tf-sp { animation:none !important; } .tf-flame .tf-l { transform:rotate(-45deg); } .tf-flame .tf-sp { display:none; } }
+        /* Mốc lửa: >=5 lớn hơn, >=10 vàng rực */
+        .tf-streak.tf-t5 { height:1.85rem; padding:0 .6rem 0 .4rem; }
+        .tf-streak.tf-t5 .tf-flame { transform:scale(1.3); transform-origin:50% 85%; margin-right:.15rem; }
+        .tf-streak.tf-t5 .tf-txt { font-size:.92rem; }
+        .tf-streak.tf-t5 .tf-txt .tf-n { font-size:1.15rem; }
+        .tf-streak.tf-t10 { background:linear-gradient(180deg,#fffbeb,#fef08a); border-color:#f59e0b; box-shadow:0 0 0 1.5px #facc15, 0 0 14px rgba(250,204,21,.9); animation:tfGlowGold 1s ease-in-out infinite; }
+        .tf-streak.tf-t10 .tf-flame .tf-l1 { background:linear-gradient(135deg,#f59e0b,#facc15 60%,#fde047); }
+        .tf-streak.tf-t10 .tf-flame .tf-l2 { background:linear-gradient(135deg,#fde047,#fef08a); }
+        .tf-streak.tf-t10 .tf-flame .tf-l3 { background:linear-gradient(135deg,#fff,#fffbeb); }
+        .tf-streak.tf-t10 .tf-txt { color:#d97706; -webkit-text-stroke:.5px #fff; text-shadow:0 1px 0 #b45309, 0 0 8px rgba(250,204,21,.95); }
+        .tf-streak.tf-t10 .tf-txt .tf-x { color:#b45309; }
+        .tf-streak.tf-t10 .tf-txt .tf-n { color:#f59e0b; }
+        @keyframes tfGlowGold { 0%,100%{box-shadow:0 0 0 1.5px #facc15, 0 0 10px rgba(250,204,21,.7)} 50%{box-shadow:0 0 0 1.5px #f59e0b, 0 0 20px rgba(250,204,21,1)} }
         /* 4. Strong focus ring for teaching inputs */
         #viewTeachingContainer input:focus, #viewTeachingContainer textarea:focus, #viewTeachingContainer select:focus, .teaching-grid-input:focus { outline:none !important; border-color:#6366f1 !important; background-color:#eef2ff; box-shadow:0 0 0 2px #fff, 0 0 0 4px #6366f1 !important; transition:box-shadow .15s, background-color .15s; }
         /* 5. Toast notifications */
@@ -2756,6 +2769,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 alert(appData.language === 'en' ? 'Archived course is read-only. Return to the active course to make changes.' : 'Khóa đã lưu trữ chỉ được xem. Hãy quay lại khóa hiện tại để chỉnh sửa.');
                 return Promise.resolve(false);
             }
+            try { stampScoreTimes(); updateTenRecords(); } catch (e) { console.warn('stampScoreTimes skipped:', e); }
             // Ghi lại trạng thái đã lưu gần nhất trước khi thay đổi, để có thể hoàn tác.
             if (!suppressUndoCapture && lastPersistedSnapshot && JSON.stringify(lastPersistedSnapshot) !== JSON.stringify(appData)) {
                 undoHistory.push(deepCopy(lastPersistedSnapshot));
@@ -4276,33 +4290,72 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             }));
         }
 
-        // Chuỗi điểm 10: quét từ ngày cuối cùng đang hiển thị trên Score Matrix lùi về ngày đầu tiên.
-        // Ô trống bỏ qua; gặp điểm < 10 (hoặc vắng) thì dừng. Hiện lửa khi chuỗi >= TEN_STREAK_MIN (1 = chỉ cần 1 điểm 10).
+        // Chuỗi điểm 10 tính theo THỜI ĐIỂM NHẬP ĐIỂM (không theo ngày trên bảng điểm):
+        // lấy mọi điểm của học sinh, sắp xếp từ lần nhập gần nhất lùi về trước, đếm các điểm 10 liên tiếp
+        // cho đến khi gặp điểm dưới 10 (ngày vắng được bỏ qua). Hiện lửa khi chuỗi >= TEN_STREAK_MIN.
         const TEN_STREAK_MIN = 1;
-        function getTenStreak(studentId) {
-            const startMonth = appData.startMonth || 9, monthCount = appData.monthCount || 3, year = appData.year || 2026;
-            const keys = [];
-            for (let i = 0; i < monthCount; i++) {
-                const m = ((startMonth - 1 + i) % 12) + 1;
-                const dim = (m === 9 || m === 11 || m === 4 || m === 6) ? 30 : 31;
-                for (let d = 1; d <= dim; d++) keys.push(`${year}-${m}-${d}`);
-            }
-            let n = 0;
-            for (let i = keys.length - 1; i >= 0; i--) {
-                const it = appData.scores[`${studentId}_${keys[i]}`];
-                if (!it) continue;
-                if (it.absent) break;
-                if (it.score === null || it.score === undefined || it.score === '') continue;
-                if (parseFloat(it.score) >= 10) n++; else break;
-            }
-            return n;
+        function scoreKeyDateMs(key) {
+            const m = String(key).match(/_(\d{4})-(\d{1,2})-(\d{1,2})$/);
+            return m ? Date.UTC(+m[1], +m[2] - 1, +m[3], 12) : 0;
         }
+        // Gắn mốc thời gian nhập (ts) cho điểm mới/đổi giá trị mỗi lần lưu. Dữ liệu cũ chưa có ts
+        // được gán tạm theo ngày trên bảng điểm (không vượt quá hiện tại) để vẫn có thứ tự gần đúng.
+        function stampScoreTimes() {
+            const now = Date.now(), prevScores = (lastPersistedSnapshot && lastPersistedSnapshot.scores) || {};
+            const sig = c => c ? (c.absent ? 'A' : String(c.score)) : '';
+            Object.keys(appData.scores || {}).forEach(key => {
+                const cur = appData.scores[key]; if (!cur || typeof cur !== 'object') return;
+                const prev = prevScores[key];
+                const changed = !prev || sig(prev) !== sig(cur);
+                if (changed) {
+                    if (!(cur.ts && (!prev || cur.ts !== prev.ts))) cur.ts = now;
+                } else if (!cur.ts) {
+                    cur.ts = (prev && prev.ts) || Math.min(scoreKeyDateMs(key) || now, now);
+                }
+            });
+        }
+        // Chuỗi theo thời điểm nhập (tăng dần). Ngày vắng là TRUNG LẬP: bỏ qua, không cộng và không làm đứt streak.
+        function tenSeries(studentId) {
+            const now = Date.now(), prefix = studentId + '_', list = [];
+            Object.keys(appData.scores || {}).forEach(key => {
+                if (key.indexOf(prefix) !== 0) return;
+                const it = appData.scores[key]; if (!it || it.absent) return;
+                if (it.score === null || it.score === undefined || it.score === '') return;
+                const v = parseFloat(it.score); if (isNaN(v)) return;
+                const dms = scoreKeyDateMs(key);
+                list.push({ v, ts: it.ts || Math.min(dms || now, now), dms });
+            });
+            list.sort((a, b) => (a.ts - b.ts) || (a.dms - b.dms));
+            return list;
+        }
+        // cur = streak hiện tại; best = kỷ lục (lớn nhất giữa lịch sử đã tính và giá trị đã lưu ở học sinh)
+        function tenStreakInfo(studentId) {
+            let run = 0, best = 0;
+            tenSeries(studentId).forEach(e => { if (e.v >= 10) { run++; if (run > best) best = run; } else run = 0; });
+            const st = appData.students.find(x => x.id === studentId);
+            return { cur: run, best: Math.max(best, (st && st.bestTenStreak) || 0) };
+        }
+        function getTenStreak(studentId) { return tenStreakInfo(studentId).cur; }
+        // Lưu kỷ lục vào dữ liệu học sinh mỗi lần lưu (chỉ tăng, không giảm).
+        function updateTenRecords() {
+            (appData.students || []).forEach(st => { const b = tenStreakInfo(st.id).best; if (b > (st.bestTenStreak || 0)) st.bestTenStreak = b; });
+        }
+        // Xem nhanh trong Console (F12): window.tenStreakReport() -> streak hiện tại và kỷ lục của từng học sinh.
+        window.tenStreakReport = function () {
+            const rows = appData.students.map(st => {
+                const cls = appData.classes.find(c => c.id === st.classId), inf = tenStreakInfo(st.id);
+                const total10 = tenSeries(st.id).filter(e => e.v >= 10).length;
+                return { lop: cls ? cls.name : '', hocSinh: st.name, streak10: inf.cur, kyLuc: inf.best, tongSoDiem10: total10 };
+            }).sort((a, b) => b.streak10 - a.streak10);
+            console.table(rows); return rows;
+        };
         function tenStreakHtml(studentId) {
-            const n = getTenStreak(studentId);
+            const inf = tenStreakInfo(studentId), n = inf.cur;
             if (n < TEN_STREAK_MIN) return '';
             const en = (appData.language || 'vi') === 'en';
-            const tip = en ? `${n} consecutive scores of 10` : `${n} điểm 10 liên tiếp`;
-            return `<span class="tf-streak" title="${tip}" aria-label="${tip}"><span class="tf-flame" aria-hidden="true"><i class="tf-l tf-l1"></i><i class="tf-l tf-l2"></i><i class="tf-l tf-l3"></i><i class="tf-sp"></i><i class="tf-sp tf-sp2"></i></span><span class="tf-txt">10<span class="tf-x">x</span><span class="tf-n">${n}</span></span></span>`;
+            const tip = en ? `${n} consecutive scores of 10 · Record: ${inf.best}` : `${n} điểm 10 liên tiếp · Kỷ lục: ${inf.best}`;
+            const tier = n >= 10 ? ' tf-t10' : (n >= 5 ? ' tf-t5' : '');
+            return `<span class="tf-streak${tier}" title="${tip}" aria-label="${tip}"><span class="tf-flame" aria-hidden="true"><i class="tf-l tf-l1"></i><i class="tf-l tf-l2"></i><i class="tf-l tf-l3"></i><i class="tf-sp"></i><i class="tf-sp tf-sp2"></i></span><span class="tf-txt">10<span class="tf-x">x</span><span class="tf-n">${n}</span></span></span>`;
         }
 
         function renderRankingView() {
