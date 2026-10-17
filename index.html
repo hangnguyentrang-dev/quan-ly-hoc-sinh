@@ -104,6 +104,17 @@
         .gift-card:hover::after { left:130%; }
         .gift-card .gift-emoji { display:inline-block; transition:transform .35s cubic-bezier(.2,.9,.3,1.5); }
         .gift-card:hover .gift-emoji { transform:scale(1.25) rotate(-10deg); }
+        /* Công tắc bật/tắt hiệu ứng nhỏ trong tab Quà tặng */
+        .shop-fx-switch { display:inline-flex; align-items:center; gap:.5rem; border-radius:9999px; padding:.3rem .75rem .3rem .35rem; font-size:.75rem; font-weight:800; border:1px solid #cbd5e1; background:#fff; color:#64748b; transition:.15s; cursor:pointer; }
+        .shop-fx-switch .shop-fx-track { position:relative; width:2rem; height:1.1rem; border-radius:9999px; background:#cbd5e1; transition:background .2s; flex-shrink:0; }
+        .shop-fx-switch .shop-fx-knob { position:absolute; top:.125rem; left:.125rem; width:.85rem; height:.85rem; border-radius:9999px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.3); transition:transform .2s; }
+        .shop-fx-switch.on { color:#4338ca; border-color:#a5b4fc; background:#eef2ff; }
+        .shop-fx-switch.on .shop-fx-track { background:#4f46e5; }
+        .shop-fx-switch.on .shop-fx-knob { transform:translateX(.9rem); }
+        #viewShopContainer.shop-fx-off .gift-card, #viewShopContainer.shop-fx-off .gift-card .gift-emoji { transition:none !important; }
+        #viewShopContainer.shop-fx-off .gift-card:hover { transform:none; box-shadow:0 1px 2px rgba(15,23,42,.08); border-color:#e2e8f0; }
+        #viewShopContainer.shop-fx-off .gift-card::after { display:none; }
+        #viewShopContainer.shop-fx-off .gift-card:hover .gift-emoji { transform:none; }
         @media (prefers-reduced-motion: reduce) { .tg-float, .tg-logo { animation:none; } .teacher-card, .gift-card, .teacher-card *, .gift-card * { transition:none !important; } }
         /* 3. Score matrix hover helpers */
         .grid-cell { transition:background-color .12s; }
@@ -329,17 +340,28 @@
         #scoreMatrix .score-row:hover > td.sticky-col-3 .avg-pill { transform:scale(1.12); box-shadow:inset 0 0 0 1px rgba(15,23,42,.1), 0 0 0 2px #4f46e5, 0 2px 6px rgba(79,70,229,.35); }
         @media (prefers-reduced-motion: reduce) { #scoreMatrix .avg-pill, #scoreMatrix td.sticky-col-2 > div { transition:none; } #scoreMatrix .score-row:hover > td.sticky-col-3 .avg-pill, #scoreMatrix .score-row:hover > td.sticky-col-2 > div { transform:none; } }
         /* ===== Chuỗi điểm 10 liên tiếp: lửa nhiều lớp + "10 x N" (Leaderboard) ===== */
-        .tf-streak { display:inline-flex; align-items:center; gap:.2rem; margin-left:.45rem; padding:0 .5rem 0 .3rem; height:1.55rem; border-radius:9999px; vertical-align:middle; flex-shrink:0; white-space:nowrap; background:linear-gradient(180deg,#fff7ed,#ffedd5); border:1.5px solid #facc15; box-shadow:0 0 0 1px #ef4444, 0 0 10px rgba(249,115,22,.55); animation:tfGlow 1.3s ease-in-out infinite; cursor:default; }
+        .tf-streak { display:inline-flex; align-items:center; gap:.2rem; margin-left:.45rem; padding:0 .5rem 0 .3rem; height:1.55rem; border-radius:9999px; vertical-align:middle; flex-shrink:0; white-space:nowrap; background:linear-gradient(180deg,#fff7ed,#ffedd5); border:1.5px solid #facc15; box-shadow:0 0 0 1px #f97316, 0 0 10px rgba(251,146,60,.55); position:relative; --gh:0 0 16px rgba(251,146,60,.9); cursor:default; }
+        .tf-streak::after { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; box-shadow:var(--gh); opacity:0; animation:tfGlowOp 1.3s ease-in-out infinite; }
+        @keyframes tfGlowOp { 0%,100%{opacity:0} 50%{opacity:1} }
+        /* Streak 1-4: lửa màu đồng thau */
+        .tf-streak.tf-t1 { background:linear-gradient(180deg,#fefce8,#f3e6b3); border-color:#b5942f; box-shadow:0 0 0 1px #8a6d1f, 0 0 8px rgba(181,148,58,.5); --gh:0 0 14px rgba(181,148,58,.85); }
+        .tf-streak.tf-t1 .tf-flame .tf-l1 { background:linear-gradient(135deg,#7a5f19,#b5942f 60%,#d4b252); }
+        .tf-streak.tf-t1 .tf-flame .tf-l2 { background:linear-gradient(135deg,#c9a227,#e6cc7a); }
+        .tf-streak.tf-t1 .tf-flame .tf-l3 { background:linear-gradient(135deg,#f5e6b0,#fffbea); }
+        .tf-streak.tf-t1 .tf-flame .tf-sp { background:#f5e6b0; box-shadow:0 0 4px #b5942f; }
+        .tf-streak.tf-t1 .tf-txt { color:#8a6d1f; -webkit-text-stroke:.5px #f5e6b0; text-shadow:0 1px 0 #6b5316, 0 0 6px rgba(181,148,58,.7); }
+        .tf-streak.tf-t1 .tf-txt .tf-x { color:#6b5316; }
+        .tf-streak.tf-t1 .tf-txt .tf-n { color:#a67c1b; }
         .tf-flame { position:relative; display:inline-block; width:16px; height:22px; flex-shrink:0; }
         .tf-flame .tf-l { position:absolute; left:50%; border-radius:50% 0 50% 50%; transform-origin:50% 60%; }
-        .tf-flame .tf-l1 { width:13px; height:13px; margin-left:-6.5px; bottom:3px; background:linear-gradient(135deg,#dc2626,#ef4444 60%,#f97316); animation:tfFlick 0.9s ease-in-out infinite; }
-        .tf-flame .tf-l2 { width:9px; height:9px; margin-left:-4.5px; bottom:3px; background:linear-gradient(135deg,#f97316,#fb923c 60%,#fbbf24); animation:tfFlick 0.7s ease-in-out infinite -.2s; }
+        .tf-flame .tf-l1 { width:13px; height:13px; margin-left:-6.5px; bottom:3px; background:linear-gradient(135deg,#ea580c,#f97316 60%,#fdba74); animation:tfFlick 0.9s ease-in-out infinite; }
+        .tf-flame .tf-l2 { width:9px; height:9px; margin-left:-4.5px; bottom:3px; background:linear-gradient(135deg,#fb923c,#fcd34d 70%,#fef08a); animation:tfFlick 0.7s ease-in-out infinite -.2s; }
         .tf-flame .tf-l3 { width:5px; height:5px; margin-left:-2.5px; bottom:3px; background:linear-gradient(135deg,#facc15,#fef08a); animation:tfFlick 0.55s ease-in-out infinite -.35s; }
         .tf-flame .tf-sp { position:absolute; left:50%; bottom:12px; width:3px; height:3px; border-radius:50%; background:#fde047; box-shadow:0 0 4px #f97316; opacity:0; animation:tfSpark 1.1s ease-out infinite; }
         .tf-flame .tf-sp2 { margin-left:-4px; animation-delay:.55s; }
         .tf-txt { font-weight:900; font-size:.8rem; line-height:1; letter-spacing:.02em; color:#ea580c; -webkit-text-stroke:.5px #facc15; paint-order:stroke fill; text-shadow:0 1px 0 #dc2626, 0 0 6px rgba(239,68,68,.75); animation:tfText 1.3s ease-in-out infinite; }
-        .tf-txt .tf-x { font-size:.72rem; margin:0 .08rem 0 .12rem; color:#dc2626; }
-        .tf-txt .tf-n { font-size:1rem; color:#ef4444; }
+        .tf-txt .tf-x { font-size:.72rem; margin:0 .08rem 0 .12rem; color:#ea580c; }
+        .tf-txt .tf-n { font-size:1rem; color:#f97316; }
         @keyframes tfFlick { 0%,100%{transform:rotate(-45deg) scale(1,1)} 25%{transform:rotate(-40deg) scale(.9,1.1)} 50%{transform:rotate(-50deg) scale(1.08,.92)} 75%{transform:rotate(-43deg) scale(.95,1.06)} }
         @keyframes tfGlow { 0%,100%{box-shadow:0 0 0 1px #ef4444, 0 0 8px rgba(249,115,22,.45)} 50%{box-shadow:0 0 0 1px #dc2626, 0 0 15px rgba(249,115,22,.85)} }
         @keyframes tfText { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
@@ -350,14 +372,104 @@
         .tf-streak.tf-t5 .tf-flame { transform:scale(1.3); transform-origin:50% 85%; margin-right:.15rem; }
         .tf-streak.tf-t5 .tf-txt { font-size:.92rem; }
         .tf-streak.tf-t5 .tf-txt .tf-n { font-size:1.15rem; }
-        .tf-streak.tf-t10 { background:linear-gradient(180deg,#fffbeb,#fef08a); border-color:#f59e0b; box-shadow:0 0 0 1.5px #facc15, 0 0 14px rgba(250,204,21,.9); animation:tfGlowGold 1s ease-in-out infinite; }
-        .tf-streak.tf-t10 .tf-flame .tf-l1 { background:linear-gradient(135deg,#f59e0b,#facc15 60%,#fde047); }
-        .tf-streak.tf-t10 .tf-flame .tf-l2 { background:linear-gradient(135deg,#fde047,#fef08a); }
-        .tf-streak.tf-t10 .tf-flame .tf-l3 { background:linear-gradient(135deg,#fff,#fffbeb); }
-        .tf-streak.tf-t10 .tf-txt { color:#d97706; -webkit-text-stroke:.5px #fff; text-shadow:0 1px 0 #b45309, 0 0 8px rgba(250,204,21,.95); }
-        .tf-streak.tf-t10 .tf-txt .tf-x { color:#b45309; }
-        .tf-streak.tf-t10 .tf-txt .tf-n { color:#f59e0b; }
+        .tf-streak.tf-t10 { position:relative; height:1.7rem; padding:0 .55rem 0 .35rem; background:linear-gradient(180deg,#ecfdf5,#a7f3d0); border-color:#10b981; box-shadow:0 0 0 1.5px #34d399, 0 0 10px rgba(16,185,129,.7); --gh:0 0 18px rgba(52,211,153,1); animation:none; }
+        .tf-streak.tf-t10 .tf-flame { transform:scale(1.15); transform-origin:50% 85%; margin-right:.1rem; filter:drop-shadow(0 0 3px rgba(16,185,129,.85)); }
+        .tf-streak.tf-t10 .tf-flame .tf-l1 { background:linear-gradient(135deg,#047857,#10b981 60%,#6ee7b7); }
+        .tf-streak.tf-t10 .tf-flame .tf-l2 { background:linear-gradient(135deg,#34d399,#a7f3d0); }
+        .tf-streak.tf-t10 .tf-flame .tf-l3 { background:linear-gradient(135deg,#fff,#ecfdf5); }
+        .tf-streak.tf-t10 .tf-flame .tf-sp { background:#ecfdf5; box-shadow:0 0 5px #10b981; }
+        .tf-streak.tf-t10 .tf-flame .tf-sp3 { margin-left:5px; animation-delay:.3s; }
+        .tf-streak.tf-t10 .tf-txt { font-size:.86rem; color:#047857; -webkit-text-stroke:.5px #fff; text-shadow:0 1px 0 #065f46, 0 0 8px rgba(52,211,153,.95); }
+        .tf-streak.tf-t10 .tf-txt .tf-x { color:#065f46; }
+        .tf-streak.tf-t10 .tf-txt .tf-n { color:#059669; font-size:1.08rem; }
         @keyframes tfGlowGold { 0%,100%{box-shadow:0 0 0 1.5px #facc15, 0 0 10px rgba(250,204,21,.7)} 50%{box-shadow:0 0 0 1.5px #f59e0b, 0 0 20px rgba(250,204,21,1)} }
+        /* ===== Các mốc streak: 15 ngọc lục bảo · 20 cầu vồng chàm · 30 đỏ rực · 40 vũ trụ · 50 thần thánh ===== */
+        @property --tf-a { syntax:'<angle>'; inherits:false; initial-value:0deg; }
+        @keyframes tfSpin20 { to { --tf-a:360deg; } }
+        @keyframes tfCrown20 { 0%,100%{transform:translateY(0) rotate(12deg)} 50%{transform:translateY(-2px) rotate(2deg)} }
+        @keyframes tfText20 { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+        @keyframes tfShine50 { to { background-position:-200% 0; } }
+        /* Mốc 15: vàng rực, to hơn mốc 10, nhẹ hơn mốc 20 */
+        .tf-streak.tf-t15 { height:1.95rem; padding:0 .65rem 0 .4rem; background:linear-gradient(180deg,#fffbeb,#fef08a); border-color:#f59e0b; box-shadow:0 0 0 1.5px #facc15, 0 0 12px rgba(250,204,21,.8); --gh:0 0 22px rgba(250,204,21,1); animation:none; }
+        .tf-streak.tf-t15 .tf-flame { transform:scale(1.4); transform-origin:50% 85%; margin-right:.15rem; }
+        .tf-streak.tf-t15 .tf-flame .tf-l1 { background:linear-gradient(135deg,#f59e0b,#facc15 60%,#fde047); }
+        .tf-streak.tf-t15 .tf-flame .tf-l2 { background:linear-gradient(135deg,#fde047,#fef08a); }
+        .tf-streak.tf-t15 .tf-flame .tf-l3 { background:linear-gradient(135deg,#fff,#fffbeb); }
+        .tf-streak.tf-t15 .tf-txt { font-size:.95rem; color:#d97706; -webkit-text-stroke:.5px #fff; text-shadow:0 1px 0 #b45309, 0 0 8px rgba(250,204,21,.95); }
+        .tf-streak.tf-t15 .tf-txt .tf-x { color:#b45309; }
+        .tf-streak.tf-t15 .tf-txt .tf-n { color:#f59e0b; font-size:1.25rem; }
+        @keyframes tfGlow15 { 0%,100%{box-shadow:0 0 0 1.5px #34d399, 0 0 10px rgba(16,185,129,.7)} 50%{box-shadow:0 0 0 1.5px #10b981, 0 0 20px rgba(52,211,153,1)} }
+        /* Mốc 20+ dùng chung khung; mỗi mốc đổi biến màu/kích thước */
+        .tf-streak.tf-hi { position:relative; height:var(--h); padding:0 .85rem 0 .55rem; border:2px solid transparent; background:var(--bg) padding-box, conic-gradient(from var(--tf-a), var(--ring)) border-box; box-shadow:0 0 12px var(--g1), 0 0 24px var(--g2); --gh:0 0 18px var(--g3), 0 0 34px var(--g4); animation:tfSpin20 var(--spin) linear infinite; }
+        .tf-streak.tf-hi .tf-flame { transform:scale(var(--fs)); transform-origin:50% 85%; margin-right:.3rem; filter:drop-shadow(0 0 5px var(--fglow)); }
+        .tf-streak.tf-hi .tf-flame .tf-l1 { background:var(--f1); }
+        .tf-streak.tf-hi .tf-flame .tf-l2 { background:var(--f2); }
+        .tf-streak.tf-hi .tf-flame .tf-l3 { background:var(--f3); }
+        .tf-streak.tf-hi .tf-flame .tf-sp { background:#fff; box-shadow:0 0 6px var(--spk), 0 0 10px var(--spk); }
+        .tf-streak.tf-hi .tf-flame .tf-sp3 { margin-left:5px; animation-delay:.25s; }
+        .tf-streak.tf-hi .tf-flame .tf-sp4 { margin-left:-9px; animation-delay:.8s; }
+        .tf-streak.tf-hi .tf-flame .tf-sp5 { margin-left:9px; animation-delay:.4s; }
+        .tf-streak.tf-hi .tf-flame .tf-sp6 { margin-left:-12px; animation-delay:.95s; }
+        .tf-streak.tf-hi .tf-txt { font-size:1rem; color:#fff; -webkit-text-stroke:0; text-shadow:0 0 6px var(--tg1), 0 0 14px var(--tg2); animation:tfText20 1.1s ease-in-out infinite; }
+        .tf-streak.tf-hi .tf-txt .tf-x { color:var(--x); font-size:.8rem; }
+        .tf-streak.tf-hi .tf-txt .tf-n { color:var(--n); font-size:var(--ns); }
+        @keyframes tfGlowHi { 0%,100%{box-shadow:0 0 10px var(--g1), 0 0 20px var(--g2)} 50%{box-shadow:0 0 18px var(--g3), 0 0 34px var(--g4)} }
+        .tf-streak.tf-t20 { --h:2.15rem; --fs:1.55; --ns:1.35rem; --spin:3s; --bg:linear-gradient(#1e1b4b,#312e81); --ring:#f43f5e,#f59e0b,#fde047,#22d3ee,#818cf8,#e879f9,#f43f5e; --g1:rgba(129,140,248,.85); --g2:rgba(34,211,238,.45); --g3:rgba(232,121,249,.95); --g4:rgba(34,211,238,.8); --f1:linear-gradient(135deg,#7c3aed,#38bdf8 60%,#a5f3fc); --f2:linear-gradient(135deg,#22d3ee,#a5f3fc); --f3:linear-gradient(135deg,#fff,#e0f2fe); --fglow:rgba(56,189,248,.95); --spk:#22d3ee; --tg1:rgba(253,224,71,.95); --tg2:rgba(244,114,182,.8); --x:#fde047; --n:#fef08a; }
+        .tf-streak.tf-t30 { --h:2.3rem; --fs:1.75; --ns:1.45rem; --spin:2.4s; --bg:linear-gradient(#1c0507,#450a0a); --ring:#7f1d1d,#b91c1c,#ef4444,#fecaca,#ef4444,#b91c1c,#7f1d1d; --g1:rgba(185,28,28,.9); --g2:rgba(127,29,29,.6); --g3:rgba(239,68,68,.95); --g4:rgba(153,27,27,.9); --f1:linear-gradient(135deg,#450a0a,#7f1d1d 55%,#b91c1c); --f2:linear-gradient(135deg,#991b1b,#dc2626); --f3:linear-gradient(135deg,#fca5a5,#fee2e2); --fglow:rgba(185,28,28,.95); --spk:#fca5a5; --tg1:rgba(239,68,68,.9); --tg2:rgba(127,29,29,.9); --x:#f87171; --n:#fecaca; }
+        .tf-streak.tf-t40 { --h:2.45rem; --fs:1.95; --ns:1.55rem; --spin:2s; --bg:radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 1.6px), radial-gradient(circle at 70% 65%,#fff 0 1px,transparent 1.6px), radial-gradient(circle at 45% 82%,#f0abfc 0 1px,transparent 1.6px), linear-gradient(#1e0a3c,#4c1d95); --ring:#d946ef,#8b5cf6,#38bdf8,#e879f9,#d946ef; --g1:rgba(217,70,239,.9); --g2:rgba(139,92,246,.55); --g3:rgba(56,189,248,.95); --g4:rgba(217,70,239,.9); --f1:linear-gradient(135deg,#581c87,#d946ef 55%,#f5d0fe); --f2:linear-gradient(135deg,#e879f9,#fae8ff); --f3:linear-gradient(135deg,#fff,#fdf4ff); --fglow:rgba(217,70,239,.95); --spk:#f0abfc; --tg1:rgba(240,171,252,.95); --tg2:rgba(56,189,248,.85); --x:#f0abfc; --n:#fff; }
+        .tf-streak.tf-t50 { --h:2.6rem; --fs:2.15; --ns:1.7rem; --spin:1.3s; --bg:linear-gradient(#0b1020,#1e1b4b); --ring:#ef4444,#f59e0b,#facc15,#22c55e,#06b6d4,#6366f1,#d946ef,#ef4444; --g1:rgba(255,255,255,.9); --g2:rgba(236,72,153,.5); --g3:rgba(34,211,238,.95); --g4:rgba(250,204,21,.9); --f1:linear-gradient(135deg,#ef4444,#f59e0b 20%,#22c55e 45%,#06b6d4 65%,#6366f1 85%,#d946ef); --f2:linear-gradient(135deg,#fde047,#4ade80,#22d3ee,#a78bfa); --f3:linear-gradient(135deg,#fff,#fff); --fglow:rgba(255,255,255,.95); --spk:#fff; --tg1:rgba(255,255,255,.95); --tg2:rgba(236,72,153,.85); --x:#fff; --n:#fff; }
+        .tf-streak.tf-t50 .tf-txt .tf-n { background:linear-gradient(90deg,#f87171,#fbbf24,#4ade80,#22d3ee,#a78bfa,#f472b6,#f87171); background-size:200% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:tfShine50 1.6s linear infinite; }
+        .tf-streak.tf-t50 .tf-flame { animation:tfHue50 3s linear infinite; }
+        @keyframes tfHue50 { from{filter:hue-rotate(0deg) drop-shadow(0 0 5px rgba(255,255,255,.95))} to{filter:hue-rotate(360deg) drop-shadow(0 0 5px rgba(255,255,255,.95))} }
+        @media (prefers-reduced-motion: reduce) { .tf-streak::after, .tf-streak.tf-hi .tf-txt, .tf-streak.tf-t50 .tf-txt .tf-n, .tf-streak.tf-t50 .tf-flame { animation:none !important; } }
+        /* Score Matrix: tên học sinh + lửa mini theo màu mốc streak (>= 10) */
+        .tf-streak.tf-mini { display:inline-flex; align-items:center; margin:0 0 0 .1rem; padding:0; height:22px; border:0; border-radius:0; background:none; box-shadow:none; animation:none; }
+        .tf-streak.tf-mini::after { display:none; }
+        .tf-streak.tf-mini .tf-flame { transform:scale(.95); margin:0; }
+        .tf-nm { font-weight:900; }
+        .tf-nm-t10 { color:#047857; text-shadow:0 0 6px rgba(52,211,153,.85); }
+        .tf-nm-t15 { color:#b45309; text-shadow:0 0 7px rgba(250,204,21,.95); }
+        .tf-nm-t20, .tf-nm-t30, .tf-nm-t40, .tf-nm-t50 { color:transparent; -webkit-text-fill-color:transparent; background-clip:text; -webkit-background-clip:text; }
+        .tf-nm-t20 { background-image:linear-gradient(90deg,#4f46e5,#06b6d4 40%,#db2777 75%,#4f46e5); filter:drop-shadow(0 0 4px rgba(129,140,248,.75)); }
+        .tf-nm-t30 { background-image:linear-gradient(90deg,#450a0a,#7f1d1d 50%,#b91c1c); filter:drop-shadow(0 0 4px rgba(127,29,29,.8)); }
+        .tf-nm-t40 { background-image:linear-gradient(90deg,#7e22ce,#c026d3 50%,#0ea5e9); filter:drop-shadow(0 0 5px rgba(217,70,239,.85)); }
+        .tf-nm-t50 { background-image:linear-gradient(90deg,#ef4444,#f59e0b 18%,#16a34a 40%,#0891b2 60%,#6366f1 80%,#c026d3); filter:drop-shadow(0 0 4px rgba(236,72,153,.7)); }
+        .tf-nm-t5 { color:#ea580c; text-shadow:0 0 5px rgba(251,146,60,.7); }
+        /* Banner chúc mừng theo mốc */
+        .tf-banner { display:flex; align-items:center; gap:.45rem; }
+        .tf-banner .tf-streak.tf-mini .tf-flame { transform:scale(1.25); margin:0 .2rem; }
+        .tf-banner.amber { font-size:1.05rem; color:#fff; background:linear-gradient(135deg,#ea580c,#f97316 55%,#fb923c); border:2px solid #fde68a; box-shadow:0 8px 24px rgba(249,115,22,.45); }
+        .tf-banner.emerald { font-size:1.15rem; color:#fff; background:linear-gradient(135deg,#059669,#10b981 50%,#34d399); border:2px solid #fde047; box-shadow:0 8px 28px rgba(16,185,129,.6); }
+        .tf-banner.legend { font-size:1.3rem; padding:.7rem 1.6rem; color:#fff; background:linear-gradient(135deg,#4f46e5,#7c3aed 45%,#db2777); border:2px solid #fde047; box-shadow:0 0 0 3px rgba(253,224,71,.35), 0 10px 36px rgba(124,58,237,.6), 0 0 50px rgba(34,211,238,.45); }
+        .tf-banner.crimson { font-size:1.4rem; padding:.75rem 1.8rem; color:#fff; background:linear-gradient(135deg,#1c0507,#7f1d1d 55%,#b91c1c); border:2px solid #fca5a5; box-shadow:0 0 0 3px rgba(127,29,29,.5), 0 10px 38px rgba(127,29,29,.8), 0 0 60px rgba(185,28,28,.55); }
+        .tf-banner.cosmic { font-size:1.5rem; padding:.8rem 1.9rem; color:#fff; background:linear-gradient(135deg,#1e0a3c,#6d28d9 45%,#c026d3); border:2px solid #f0abfc; box-shadow:0 0 0 4px rgba(217,70,239,.4), 0 12px 40px rgba(139,92,246,.75), 0 0 70px rgba(56,189,248,.5); }
+        .tf-banner.divine { font-size:1.65rem; padding:.85rem 2.1rem; color:#fff; background:linear-gradient(135deg,#ef4444,#f59e0b 18%,#eab308 34%,#22c55e 52%,#06b6d4 68%,#6366f1 84%,#d946ef); border:3px solid #fff; text-shadow:0 1px 3px rgba(0,0,0,.65), 0 0 8px rgba(0,0,0,.35); box-shadow:0 0 0 4px rgba(255,255,255,.55), 0 12px 46px rgba(236,72,153,.7), 0 0 90px rgba(34,211,238,.55); }
+        .tf-banner.lv { top:auto; font-size:.95rem; padding:.45rem 1.1rem; }
+        .tf-flash { position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at 50% 35%, rgba(253,224,71,.55), rgba(124,58,237,.25) 45%, transparent 70%); }
+        /* Pháo giấy + banner streak */
+        #tfConfLayer { position:fixed; inset:0; pointer-events:none; z-index:9999; overflow:hidden; }
+        #tfConfLayer, #tfConfLayer * { pointer-events:none !important; user-select:none; }
+        .tf-banner { position:absolute; top:16%; left:50%; transform:translateX(-50%); padding:.55rem 1.2rem; border-radius:9999px; font-weight:900; font-size:1.05rem; color:#fff; white-space:nowrap; background:linear-gradient(135deg,#dc2626,#f97316); border:2px solid #facc15; box-shadow:0 8px 24px rgba(239,68,68,.45); text-shadow:0 1px 2px rgba(0,0,0,.35); }
+        .tf-banner.gold { background:linear-gradient(135deg,#d97706,#facc15); color:#78350f; text-shadow:0 1px 0 rgba(255,255,255,.6); box-shadow:0 8px 28px rgba(250,204,21,.65); }
+        /* Xu hướng điểm cạnh ĐTB */
+        .tf-trend { display:inline-block; margin-left:.25rem; font-size:10px; font-weight:900; line-height:1; vertical-align:middle; cursor:default; }
+        .tf-trend.up { color:#16a34a; animation:tfNudgeUp 1.6s ease-in-out infinite; }
+        .tf-trend.down { color:#dc2626; animation:tfNudgeDown 1.6s ease-in-out infinite; }
+        .tf-trend.flat { color:#94a3b8; }
+        @keyframes tfNudgeUp { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-1.5px)} }
+        @keyframes tfNudgeDown { 0%,100%{transform:translateY(0)} 50%{transform:translateY(1.5px)} }
+        @media (prefers-reduced-motion: reduce) { .tf-trend { animation:none !important; } }
+        /* Đồng hồ 10 giây cuối, hồ sơ, cấp độ, khói */
+        .tf-timer-warn { color:#ef4444 !important; animation:tfPulse 1s ease-in-out infinite; }
+        @keyframes tfPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.14)} }
+        .tf-name-link { cursor:pointer; } .tf-name-link:hover { text-decoration:underline; text-underline-offset:2px; }
+        .tf-lv { display:inline-flex; align-items:center; gap:.25rem; margin-left:.45rem; vertical-align:middle; font-size:10px; font-weight:900; color:#4338ca; }
+        .tf-lv i { display:inline-block; width:34px; height:5px; border-radius:9999px; background:#e0e7ff; position:relative; overflow:hidden; }
+        .tf-lv i::after { content:""; position:absolute; inset:0 auto 0 0; width:var(--p); background:linear-gradient(90deg,#6366f1,#a855f7); }
+        .tf-xpbar { height:8px; border-radius:9999px; background:#e0e7ff; overflow:hidden; margin-top:.2rem; } .tf-xpbar i { display:block; height:100%; background:linear-gradient(90deg,#6366f1,#a855f7); }
+        .tf-smoke { position:absolute; width:26px; height:26px; border-radius:50%; background:radial-gradient(circle,#cbd5e1,#94a3b8); filter:blur(2px); }
+        .tf-banner.smoke-b { background:linear-gradient(135deg,#475569,#64748b); border-color:#cbd5e1; box-shadow:0 8px 24px rgba(71,85,105,.45); }
+        @media (prefers-reduced-motion: reduce) { .tf-timer-warn { animation:none !important; } }
         /* 4. Strong focus ring for teaching inputs */
         #viewTeachingContainer input:focus, #viewTeachingContainer textarea:focus, #viewTeachingContainer select:focus, .teaching-grid-input:focus { outline:none !important; border-color:#6366f1 !important; background-color:#eef2ff; box-shadow:0 0 0 2px #fff, 0 0 0 4px #6366f1 !important; transition:box-shadow .15s, background-color .15s; }
         /* 5. Toast notifications */
@@ -485,6 +597,73 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 .qs-pres-bar .exit{background:#e11d48;color:#fff;border-color:#e11d48}
 .qs-pres-bar .exit:hover{background:#be123c}
 @media (prefers-reduced-motion:reduce){.rk-delta,.rk-delta i,tr.rk-row-up,tr.rk-row-down,td.qs-flash{animation:none !important}}
+</style>
+<style id="xf-style">
+/* ===== XF: trend toggle ===== */
+.qs-toggle.qs-toggle-trend.on{background:#059669;border-color:#059669;box-shadow:0 2px 8px rgba(5,150,105,.4)}
+/* ===== XF: birthday ===== */
+@keyframes xfBdayGlow{0%,100%{box-shadow:0 0 0 2px rgba(244,114,182,.35),0 10px 26px rgba(244,114,182,.22)}50%{box-shadow:0 0 0 3px rgba(250,204,21,.55),0 12px 30px rgba(244,114,182,.4)}}
+@keyframes xfRainbow{from{background-position:0 0}to{background-position:200% 0}}
+@keyframes xfBalloon{0%{transform:translateY(0) rotate(-6deg);opacity:0}12%{opacity:.9}100%{transform:translateY(-190px) rotate(8deg);opacity:0}}
+@keyframes xfConf{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:1}100%{transform:translateY(210px) rotate(540deg);opacity:0}}
+@keyframes xfWiggle{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.roster-card.xf-bday{border-color:#f472b6;background:linear-gradient(135deg,#fff1f2,#fffbeb 55%,#fdf2f8);animation:xfBdayGlow 2.2s ease-in-out infinite}
+.roster-card.xf-bday::before{transform:scaleX(1);background:linear-gradient(90deg,#f472b6,#facc15,#38bdf8,#a78bfa,#f472b6);background-size:200% 100%;animation:xfRainbow 3s linear infinite}
+.roster-card.xf-bday>div:not(.xf-bfx){position:relative;z-index:1}
+.xf-bfx{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.xf-bfx .b{position:absolute;bottom:-30px;opacity:0;animation:xfBalloon 6s ease-in infinite}
+.xf-bfx .c{position:absolute;top:-10px;width:6px;height:9px;border-radius:2px;opacity:0;animation:xfConf 4s linear infinite}
+.xf-bribbon{position:absolute;top:6px;right:8px;z-index:2;font-size:20px;display:inline-block;animation:xfWiggle 1.1s ease-in-out infinite}
+.xf-brow{margin-top:.2rem;font-size:11px;font-weight:700;color:#be185d}
+.xf-brow b{color:#db2777}
+.xf-brow.today{font-weight:900;color:#be185d}
+@media (prefers-reduced-motion:reduce){.roster-card.xf-bday,.roster-card.xf-bday::before,.xf-bfx .b,.xf-bfx .c,.xf-bribbon,.xf-pop,.xf-pop-card,.xf-pop-cake,.xf-gift,.xf-gbox,.xf-grays,.xf-gitem{animation:none !important}.xf-bfx{display:none}}
+/* ===== XF: birthday popup ===== */
+@keyframes xfPopIn{from{transform:translateY(24px) scale(.88);opacity:0}to{transform:none;opacity:1}}
+@keyframes xfCake{from{transform:rotate(-8deg) scale(1)}to{transform:rotate(8deg) scale(1.12)}}
+.xf-pop{position:fixed;inset:0;z-index:9100;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(15,23,42,.62);backdrop-filter:blur(3px);animation:xfFade .25s ease}
+.xf-pop-card{width:100%;max-width:26rem;border-radius:1.5rem;overflow:hidden;background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.45);text-align:center;animation:xfPopIn .5s cubic-bezier(.2,1.4,.4,1) both}
+.xf-pop-head{padding:1.2rem 1rem .9rem;background:linear-gradient(135deg,#ec4899,#f59e0b);color:#fff}
+.xf-pop-head h3{font-size:1.25rem;font-weight:900;margin-top:.2rem}
+.xf-pop-head p{font-size:12px;opacity:.92;margin-top:.15rem}
+.xf-pop-cake{font-size:3.2rem;line-height:1.1;display:inline-block;animation:xfCake 1.2s ease-in-out infinite alternate}
+.xf-pop-list{padding:.9rem 1rem .3rem;max-height:40vh;overflow:auto}
+.xf-pop-item{display:flex;align-items:center;gap:.7rem;padding:.55rem .7rem;border-radius:.9rem;background:#fdf2f8;border:1px solid #fbcfe8;margin-bottom:.5rem;text-align:left}
+.xf-pop-av{flex:none;width:2.6rem;height:2.6rem;border-radius:9999px;background:#fff;border:2px solid #f9a8d4;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+.xf-pop-name{font-weight:900;color:#831843;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.xf-pop-sub{font-size:11px;font-weight:700;color:#9d174d}
+.xf-pop-ico{margin-left:auto;font-size:1.3rem}
+.xf-pop-foot{padding:.4rem 1rem 1.1rem}
+.xf-pop-foot p{font-size:12px;color:#64748b;margin-bottom:.7rem}
+.xf-pop-foot button{border-radius:.8rem;background:#db2777;color:#fff;font-weight:800;font-size:13px;padding:.55rem 1.4rem}
+.xf-pop-foot button:hover{background:#be185d}
+/* ===== XF: gift opening ===== */
+@keyframes xfGDrop{from{transform:translateY(-140px) scale(.7);opacity:0}to{transform:none;opacity:1}}
+@keyframes xfGShake{0%,100%{transform:rotate(0)}10%{transform:rotate(-9deg) translateX(-4px)}25%{transform:rotate(9deg) translateX(4px)}40%{transform:rotate(-8deg)}55%{transform:rotate(8deg)}70%{transform:rotate(-5deg)}85%{transform:rotate(5deg)}}
+@keyframes xfGItem{0%{transform:translateY(110px) scale(.2) rotate(-20deg);opacity:0}55%{transform:translateY(-14px) scale(1.25) rotate(8deg);opacity:1}100%{transform:translateY(0) scale(1) rotate(0);opacity:1}}
+@keyframes xfGRays{from{transform:rotate(0) scale(.4);opacity:0}15%{opacity:1}to{transform:rotate(60deg) scale(1);opacity:.9}}
+.xf-gift{position:fixed;inset:0;z-index:9200;display:flex;align-items:center;justify-content:center;padding:14px;background:radial-gradient(circle at center,rgba(251,191,36,.3),rgba(15,23,42,.86));animation:xfFade .25s ease;cursor:pointer;transition:opacity .25s}
+.xf-gift.out{opacity:0}
+.xf-gstage{position:relative;width:min(88vw,22rem);text-align:center;color:#fff}
+.xf-grays{position:absolute;left:50%;top:60px;width:360px;height:360px;margin:-180px 0 0 -180px;border-radius:50%;background:repeating-conic-gradient(rgba(253,224,71,.55) 0 8deg,transparent 8deg 24deg);-webkit-mask:radial-gradient(circle,#000 18%,transparent 68%);mask:radial-gradient(circle,#000 18%,transparent 68%);opacity:0;pointer-events:none}
+.opened .xf-grays{animation:xfGRays 2.4s ease-out forwards}
+.xf-gitemwrap{position:relative;height:110px;display:flex;align-items:center;justify-content:center}
+.xf-gitem{font-size:4.2rem;line-height:1;opacity:0;filter:drop-shadow(0 6px 14px rgba(0,0,0,.45))}
+.opened .xf-gitem{animation:xfGItem .9s cubic-bezier(.3,1.4,.5,1) both}
+.xf-gbox{position:relative;width:150px;height:150px;margin:0 auto;animation:xfGDrop .6s cubic-bezier(.3,1.5,.5,1) both}
+.xf-gbox.shake{animation:xfGShake .9s ease-in-out both}
+.xf-gbody{position:absolute;left:10px;right:10px;bottom:0;height:92px;border-radius:0 0 12px 12px;background:linear-gradient(135deg,#ef4444,#be123c);box-shadow:inset 0 -10px 0 rgba(0,0,0,.14)}
+.xf-gbody::after,.xf-glid::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:26px;margin-left:-13px;background:linear-gradient(90deg,#fde68a,#fbbf24)}
+.xf-glid{position:absolute;left:0;right:0;bottom:84px;height:40px;border-radius:10px;background:linear-gradient(135deg,#f43f5e,#be123c);box-shadow:0 4px 0 rgba(0,0,0,.14);transform-origin:left bottom;transition:transform .7s cubic-bezier(.3,1.4,.5,1),opacity .7s .1s}
+.xf-glid::before{content:"🎀";position:absolute;left:50%;top:-24px;transform:translateX(-50%);font-size:32px;z-index:2}
+.xf-gbox.open .xf-glid{transform:translate(78px,-90px) rotate(34deg);opacity:0}
+.xf-gtext{margin-top:1rem;opacity:0;transform:translateY(14px);transition:opacity .5s .5s,transform .5s .5s}
+.opened .xf-gtext{opacity:1;transform:none}
+.xf-gwho{font-size:13px;font-weight:700;color:#fde68a}
+.xf-gname{font-size:1.5rem;font-weight:900;line-height:1.2;margin:.15rem 0}
+.xf-gleft{font-size:12px;font-weight:700;color:#e2e8f0}
+.xf-gok{margin-top:.8rem;border-radius:.8rem;background:#f59e0b;color:#451a03;font-weight:900;font-size:13px;padding:.55rem 1.5rem}
+.xf-gok:hover{background:#fbbf24}
 </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
@@ -848,6 +1027,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                         </h2>
                     </div>
                     <div class="flex items-center space-x-2">
+                        <button type="button" id="shopFxToggle" role="switch" aria-checked="true" onclick="toggleShopFx()" class="shop-fx-switch on"><span class="shop-fx-track"><span class="shop-fx-knob"></span></span><span data-i18n="shopFxLabel">Hiệu ứng nhỏ</span></button>
                         <button onclick="resetAllStudentsUnusedPoints()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5">
                             <i class="fa-solid fa-trash-arrow-up"></i> <span data-i18n="btnResetPoints">Reset Toàn Bộ Điểm Dư Phát Biểu</span>
                         </button>
@@ -1156,7 +1336,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 
     <!-- Modal: Thêm / Sửa Học Sinh -->
     <div id="studentModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-2xl w-96 p-6">
+        <div class="bg-white rounded-xl shadow-2xl w-96 max-w-[96vw] max-h-[94vh] overflow-y-auto p-6">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
                 <h3 class="text-base font-bold text-slate-800" id="studentModalTitle" data-i18n="modalAddStudentTitle">Thêm Học Sinh Mới</h3>
                 <button onclick="closeStudentModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -1176,6 +1356,11 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     <input type="search" id="studentIconSearch" oninput="renderStudentIconPicker()" class="mt-3 w-full border border-slate-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Tìm icon theo tên hoặc emoji...">
                     <div id="studentIconPicker" class="mt-2 max-h-56 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50 p-2 space-y-3" aria-label="Danh sách icon học sinh"></div>
                     <p class="mt-1 text-[10px] text-slate-500">Chọn một icon để đồng bộ với hồ sơ học sinh. Bạn vẫn có thể nhập emoji riêng.</p>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1" for="newStudentBirthday" data-qs="bdayLbl">Ngày sinh nhật (không bắt buộc):</label>
+                    <input type="date" id="newStudentBirthday" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    <p class="mt-1 text-[10px] text-slate-500" data-qs="bdayHint">Đến ngày này hệ thống sẽ thông báo và thẻ học sinh có hiệu ứng sinh nhật.</p>
                 </div>
                 <div class="flex justify-end space-x-2">
                     <button type="button" onclick="closeStudentModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold" data-i18n="btnCancel">Hủy</button>
@@ -1306,6 +1491,11 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             <div class="mb-4 bg-indigo-50 p-3 rounded-lg border border-indigo-100">
                 <p class="text-xs text-indigo-600 font-medium" data-i18n="lblSelectedReward">Món quà chọn tặng:</p>
                 <p class="text-sm font-bold text-indigo-900" id="modalSelectedItemName">--</p>
+            </div>
+            <div class="mb-3 flex items-center gap-2">
+                <label for="giftQtyInput" class="text-xs font-semibold text-slate-600" data-i18n="lblGiftQty">Số lượng quà:</label>
+                <input id="giftQtyInput" type="number" min="1" step="1" value="1" inputmode="numeric" oninput="refreshGiftQtyHint()" class="w-20 rounded-lg border border-slate-300 bg-slate-50 px-2 py-1.5 text-center text-sm font-bold text-slate-800 outline-none focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100">
+                <span id="giftQtyTotal" class="ml-auto text-[11px] font-black text-amber-600"></span>
             </div>
             <p class="text-xs font-semibold text-slate-600 mb-2" data-i18n="lblSelectStudentPrompt">Click chọn học sinh để trừ điểm Pts và lưu quà vào túi đồ:</p>
             <div id="studentSelectList" class="max-h-60 overflow-y-auto space-y-1.5 mb-4 pr-1">
@@ -1593,6 +1783,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 lblMonthModalPrefix: "tháng",
                 lblYearModalPrefix: "năm",
                 lblRedeemBtn: "Đổi Quà",
+                shopFxLabel: "Hiệu ứng nhỏ",
+                lblGiftQty: "Số lượng quà:",
                 lblApplyBtn: "Áp dụng",
                 lblEmptyBag: "Túi trống",
                 lblNoStudentInClass: "Lớp chưa có học sinh nào.",
@@ -1741,6 +1933,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 lblMonthModalPrefix: "/",
                 lblYearModalPrefix: "/",
                 lblRedeemBtn: "Redeem",
+                shopFxLabel: "Small effects",
+                lblGiftQty: "Gift quantity:",
                 lblApplyBtn: "Apply",
                 lblEmptyBag: "Empty bag",
                 lblNoStudentInClass: "No students in this class.",
@@ -1944,7 +2138,11 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 podiumOnly: 'Chỉ hiện bục', showTable: 'Hiện cả bảng',
                 presRanking: c => `Bảng xếp loại thi đua · Lớp ${c}`,
                 presFinal: c => `Bảng xếp hạng cuối kỳ · Lớp ${c}`,
-                rankUp: n => `Lên ${n} hạng`, rankDown: n => `Xuống ${n} hạng`
+                rankUp: n => `Lên ${n} hạng`, rankDown: n => `Xuống ${n} hạng`,
+                trendLbl: 'Xu hướng điểm',
+                trendHint: 'Hiện mũi tên ▲▼ cạnh ĐTB: so sánh TB 5 điểm gần nhất với 5 điểm trước đó (luôn tắt khi mở trang).',
+                bdayLbl: 'Ngày sinh nhật (không bắt buộc):',
+                bdayHint: 'Đến ngày này hệ thống sẽ thông báo và thẻ học sinh có hiệu ứng sinh nhật.'
             },
             en: {
                 quickLbl: 'Quick entry',
@@ -1972,7 +2170,11 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 podiumOnly: 'Podium only', showTable: 'Show table',
                 presRanking: c => `Class Leaderboard · Class ${c}`,
                 presFinal: c => `Final Exam Leaderboard · Class ${c}`,
-                rankUp: n => `Up ${n} place${n === 1 ? '' : 's'}`, rankDown: n => `Down ${n} place${n === 1 ? '' : 's'}`
+                rankUp: n => `Up ${n} place${n === 1 ? '' : 's'}`, rankDown: n => `Down ${n} place${n === 1 ? '' : 's'}`,
+                trendLbl: 'Score trend',
+                trendHint: 'Shows a ▲▼ arrow next to the average: last 5 scores vs the 5 before (always off when the page opens).',
+                bdayLbl: 'Birthday (optional):',
+                bdayHint: 'On this day the system will notify you and the student card gets a birthday effect.'
             }
         };
         function qsT(k, ...a) {
@@ -1988,6 +2190,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             return !(window.matchMedia && matchMedia('(pointer: coarse)').matches);
         })();
         let qsSelCell = null, qsBuf = '', qsFlashCell = null, qsToolbarSig = '', qsPresKind = null;
+        let qsTrend = false; // Xu hướng điểm: luôn TẮT mỗi lần mở trang (không lưu)
         let qsTest = false; // chế độ nhập nhanh Test score (không lưu giữa các lần mở trang)
         const qsSel = {};
         const qsRank = { rk: {}, fe: {} };
@@ -2231,13 +2434,18 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             if (qsTest && !qsQuick) { qsQuick = true; try { localStorage.setItem(QS_PREF_KEY, '1'); } catch (e) {} }
             qsToolbarSig = ''; qsRefreshToolbar();
         };
+        window.qsToggleTrend = function () {
+            qsTrend = !qsTrend;
+            qsToolbarSig = ''; qsRefreshToolbar();
+            renderCurrentView();
+        };
         function qsRefreshToolbar() {
             const tb = qsEl('qsToolbar'); if (!tb) return;
-            const sig = (appData.language || 'vi') + '|' + qsQuick + '|' + qsTest;
+            const sig = (appData.language || 'vi') + '|' + qsQuick + '|' + qsTest + '|' + qsTrend;
             if (sig === qsToolbarSig) return;
             qsToolbarSig = sig;
             const collapsed = !!window.__qsToolbarCollapsed;
-            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><span id="qsQuickHint">${qsTest ? qsT('testHint') : (qsQuick ? qsT('quickHint') : qsT('quickHintOff'))}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
+            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><span id="qsQuickHint">${qsTest ? qsT('testHint') : (qsQuick ? qsT('quickHint') : qsT('quickHintOff'))}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
         }
 
@@ -3003,6 +3211,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
         };
 
         window.startTimer = function() {
+            tfAudio(); // mở khóa âm thanh bằng thao tác bấm của người dùng
             if (timerRemainingSeconds <= 0) {
                 const h = parseInt(document.getElementById('timerHours').value) || 0;
                 const m = parseInt(document.getElementById('timerMinutes').value) || 0;
@@ -3019,18 +3228,23 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             timerInterval = setInterval(() => {
                 timerRemainingSeconds--;
                 updateTimerDisplay();
+                const tdsp = document.getElementById('timerDisplay'), warn = timerRemainingSeconds > 0 && timerRemainingSeconds <= 10;
+                if (tdsp) tdsp.classList.toggle('tf-timer-warn', warn);
+                if (warn) tfBeep(880, 0.09, 0.18);
 
                 if (timerRemainingSeconds <= 0) {
                     clearInterval(timerInterval);
                     timerInterval = null;
                     document.getElementById('btnStartTimer').classList.remove('hidden');
                     document.getElementById('btnPauseTimer').classList.add('hidden');
-                    alert(appData.language === 'en' ? "Time is up!" : "Đã hết giờ!");
+                    tfAlarm();
+                    setTimeout(() => alert(appData.language === 'en' ? "Time is up!" : "Đã hết giờ!"), 80);
                 }
             }, 1000);
         };
 
         window.pauseTimer = function() {
+            { const d = document.getElementById('timerDisplay'); if (d) d.classList.remove('tf-timer-warn'); }
             if (timerInterval) clearInterval(timerInterval);
             timerInterval = null;
             document.getElementById('btnStartTimer').classList.remove('hidden');
@@ -3515,7 +3729,41 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             }
         }
 
-        /* --- XỬ LÝ ĐỔI QUÀ VÀ KIỂM TRA ĐIỂM Pts --- */
+        /* --- BẬT/TẮT HIỆU ỨNG NHỎ TRONG TAB QUÀ TẶNG --- */
+        const SHOP_FX_KEY = 'shopSmallFx';
+        function shopFxApply() {
+            let on = true; try { on = localStorage.getItem(SHOP_FX_KEY) !== '0'; } catch (e) {}
+            const box = document.getElementById('viewShopContainer'), sw = document.getElementById('shopFxToggle');
+            if (box) box.classList.toggle('shop-fx-off', !on);
+            if (sw) { sw.classList.toggle('on', on); sw.setAttribute('aria-checked', on ? 'true' : 'false'); }
+        }
+        window.toggleShopFx = function () {
+            let on = true; try { on = localStorage.getItem(SHOP_FX_KEY) !== '0'; } catch (e) {}
+            try { localStorage.setItem(SHOP_FX_KEY, on ? '0' : '1'); } catch (e) {}
+            shopFxApply();
+        };
+        shopFxApply();
+
+        /* --- XỬ LÝ ĐỔI QUÀ VÀ KIỂM TRA ĐIỂM Pts (có số lượng) --- */
+        function readGiftQty() {
+            const el = document.getElementById('giftQtyInput');
+            const raw = el ? String(el.value).trim() : '1';
+            const q = Number(raw);
+            return (raw !== '' && Number.isInteger(q) && q >= 1) ? q : 0;
+        }
+        window.refreshGiftQtyHint = function () {
+            const item = (appData.globalShopItems || []).find(i => i.id === selectedItemIdForPurchase);
+            const q = readGiftQty(), en = appData.language === 'en';
+            const totalEl = document.getElementById('giftQtyTotal');
+            if (totalEl) totalEl.textContent = (item && q) ? (en ? `Total: ${item.cost * q} Pts` : `Tổng: ${item.cost * q} Pts`) : '';
+            document.querySelectorAll('#studentSelectList [data-pts]').forEach(row => {
+                const short = !!(item && q) && (Number(row.dataset.pts) < item.cost * q);
+                row.classList.toggle('opacity-60', short);
+                row.classList.toggle('border-rose-200', short);
+                const note = row.querySelector('[data-short]');
+                if (note) note.textContent = short ? (en ? 'Not enough' : 'Không đủ') : '';
+            });
+        };
         window.assignGiftToStudent = function(studentId) {
             const student = appData.students.find(s => s.id === studentId);
             if (!student) return;
@@ -3523,34 +3771,44 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             const item = (appData.globalShopItems || []).find(i => i.id === selectedItemIdForPurchase);
             if (!item) return;
 
-            const currentPts = student.rewardPoints || 0;
-            if (currentPts < item.cost) {
-                alert(appData.language === 'en' 
-                    ? `Not enough points! Student currently has ${currentPts} Pts, gift costs ${item.cost} Pts.` 
-                    : `Không đủ điểm đổi! Học sinh hiện có ${currentPts} Pts, món quà cần ${item.cost} Pts.`);
+            const en = appData.language === 'en';
+            const qty = readGiftQty();
+            if (!qty) {
+                alert(en ? 'Invalid quantity! Please enter a whole number of at least 1.' : 'Số lượng không hợp lệ! Hãy nhập số nguyên từ 1 trở lên.');
                 return;
             }
 
-            student.rewardPoints = currentPts - item.cost;
+            const currentPts = student.rewardPoints || 0;
+            const totalCost = item.cost * qty;
+            if (currentPts < totalCost) {
+                alert(en
+                    ? `Not enough points to redeem! ${getStudentDisplayName(student)} has ${currentPts} Pts, but ${qty} gift(s) cost ${totalCost} Pts (${item.cost} Pts each).`
+                    : `Không đủ điểm để đổi! ${getStudentDisplayName(student)} hiện có ${currentPts} Pts, nhưng ${qty} quà cần ${totalCost} Pts (${item.cost} Pts/quà).`);
+                return;
+            }
 
+            student.rewardPoints = currentPts - totalCost;
             if (!student.inventory) student.inventory = [];
 
-            const invData = {
-                invId: "inv_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
-                itemId: item.id,
-                name: item.name,
-                itemName: item.name,
-                isFixed: !!item.isFixed,
-                type: item.type || null,
-                date: new Date().toISOString().split('T')[0]
-            };
-
-            if (item.targetScore !== undefined) invData.targetScore = item.targetScore;
-            if (item.deltaScore !== undefined) invData.deltaScore = item.deltaScore;
-            if (item.matchScore !== undefined) invData.matchScore = item.matchScore;
-            if (item.matchOp !== undefined) invData.matchOp = item.matchOp;
-
-            student.inventory.push(invData);
+            let lastInv = null;
+            for (let k = 0; k < qty; k++) {
+                const invData = {
+                    invId: "inv_" + Date.now() + "_" + k + "_" + Math.random().toString(36).slice(2, 8),
+                    itemId: item.id,
+                    name: item.name,
+                    itemName: item.name,
+                    isFixed: !!item.isFixed,
+                    type: item.type || null,
+                    date: new Date().toISOString().split('T')[0]
+                };
+                if (item.targetScore !== undefined) invData.targetScore = item.targetScore;
+                if (item.deltaScore !== undefined) invData.deltaScore = item.deltaScore;
+                if (item.matchScore !== undefined) invData.matchScore = item.matchScore;
+                if (item.matchOp !== undefined) invData.matchOp = item.matchOp;
+                student.inventory.push(invData);
+                lastInv = invData;
+            }
+            try { xfGiftOpenFx(student, lastInv, qty); } catch (e) { console.warn('Gift FX skipped:', e); }
 
             saveData().then(ok => { if (ok) uiToast('toastGiftGiven', 'success'); });
             closeSelectStudentModal();
@@ -4122,6 +4380,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             selectedItemIdForPurchase = itemId;
             const item = (appData.globalShopItems || []).find(i => i.id === itemId);
             document.getElementById("modalSelectedItemName").innerText = item ? `${getRewardName(item)} (${item.cost} Pts)` : '';
+            const qtyInput = document.getElementById("giftQtyInput"); if (qtyInput) qtyInput.value = 1;
 
             const listContainer = document.getElementById("studentSelectList");
             listContainer.innerHTML = "";
@@ -4136,15 +4395,17 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     const currentPts = student.rewardPoints || 0;
                     const div = document.createElement("div");
                     div.className = "p-2.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:border-indigo-300 cursor-pointer transition flex items-center justify-between";
+                    div.dataset.pts = currentPts;
                     div.innerHTML = `
                         <div class="flex items-center gap-2"><span>${student.icon || '🎓'}</span> <span>${getStudentDisplayName(student)}</span></div>
-                        <span class="text-[11px] font-black text-amber-600">${currentPts} Pts</span>
+                        <span class="flex items-center gap-2"><span data-short class="text-[10px] font-bold text-rose-500"></span><span class="text-[11px] font-black text-amber-600">${currentPts} Pts</span></span>
                     `;
                     div.onclick = () => assignGiftToStudent(student.id);
                     listContainer.appendChild(div);
                 });
             }
 
+            refreshGiftQtyHint();
             document.getElementById("selectStudentModal").classList.remove("hidden");
             document.getElementById("selectStudentModal").classList.add("flex");
         };
@@ -4294,6 +4555,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
         // lấy mọi điểm của học sinh, sắp xếp từ lần nhập gần nhất lùi về trước, đếm các điểm 10 liên tiếp
         // cho đến khi gặp điểm dưới 10 (ngày vắng được bỏ qua). Hiện lửa khi chuỗi >= TEN_STREAK_MIN.
         const TEN_STREAK_MIN = 1;
+        const TEN_PROTECT_MIN = 10;
         function scoreKeyDateMs(key) {
             const m = String(key).match(/_(\d{4})-(\d{1,2})-(\d{1,2})$/);
             return m ? Date.UTC(+m[1], +m[2] - 1, +m[3], 12) : 0;
@@ -4303,23 +4565,39 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
         function stampScoreTimes() {
             const now = Date.now(), prevScores = (lastPersistedSnapshot && lastPersistedSnapshot.scores) || {};
             const sig = c => c ? (c.absent ? 'A' : String(c.score)) : '';
+            const tenEvents = [], changedSids = new Set(); let changedCount = 0;
             Object.keys(appData.scores || {}).forEach(key => {
                 const cur = appData.scores[key]; if (!cur || typeof cur !== 'object') return;
                 const prev = prevScores[key];
                 const changed = !prev || sig(prev) !== sig(cur);
                 if (changed) {
                     if (!(cur.ts && (!prev || cur.ts !== prev.ts))) cur.ts = now;
+                    changedCount++; changedSids.add(String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, ''));
+                    if (!cur.absent && parseFloat(cur.score) >= 10) tenEvents.push(key);
                 } else if (!cur.ts) {
                     cur.ts = (prev && prev.ts) || Math.min(scoreKeyDateMs(key) || now, now);
                 }
             });
+            // Pháo giấy: chỉ khi nhập tay vài ô (không bắn khi tải/nhập dữ liệu hàng loạt hoặc hoàn tác)
+            if (tenEvents.length && changedCount <= 3 && lastPersistedSnapshot && !suppressUndoCapture) setTimeout(() => tfCelebrate(tenEvents), 150);
+            if (changedCount && changedCount <= 3 && lastPersistedSnapshot && !suppressUndoCapture) {
+                const fx = [];
+                changedSids.forEach(sid => {
+                    const bf = tenStreakInfo(sid, prevScores).cur, af = tenStreakInfo(sid).cur;
+                    if (bf >= 1 && af === 0) fx.push({ t: 'broke', sid, n: bf });
+                    else if (af < bf) fx.push({ t: 'drop', sid, n: bf - af, cur: af });
+                    const nl = Math.floor(xpOf(sid) / XP_PER_LEVEL);
+                    if (nl > Math.floor(xpOf(sid, prevScores) / XP_PER_LEVEL)) fx.push({ t: 'lv', sid, n: nl + 1 });
+                });
+                if (fx.length) setTimeout(() => tfStatusFx(fx), 450);
+            }
         }
         // Chuỗi theo thời điểm nhập (tăng dần). Ngày vắng là TRUNG LẬP: bỏ qua, không cộng và không làm đứt streak.
-        function tenSeries(studentId) {
-            const now = Date.now(), prefix = studentId + '_', list = [];
-            Object.keys(appData.scores || {}).forEach(key => {
+        function tenSeries(studentId, scores) {
+            const src = scores || appData.scores || {}, now = Date.now(), prefix = studentId + '_', list = [];
+            Object.keys(src).forEach(key => {
                 if (key.indexOf(prefix) !== 0) return;
-                const it = appData.scores[key]; if (!it || it.absent) return;
+                const it = src[key]; if (!it || it.absent) return;
                 if (it.score === null || it.score === undefined || it.score === '') return;
                 const v = parseFloat(it.score); if (isNaN(v)) return;
                 const dms = scoreKeyDateMs(key);
@@ -4329,9 +4607,20 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             return list;
         }
         // cur = streak hiện tại; best = kỷ lục (lớn nhất giữa lịch sử đã tính và giá trị đã lưu ở học sinh)
-        function tenStreakInfo(studentId) {
-            let run = 0, best = 0;
-            tenSeries(studentId).forEach(e => { if (e.v >= 10) { run++; if (run > best) best = run; } else run = 0; });
+        function tenStreakInfo(studentId, scores) {
+            let run = 0, best = 0, miss = 0;
+            tenSeries(studentId, scores).forEach(e => {
+                if (e.v >= 10) { run++; if (run > best) best = run; }
+                else if (run >= TEN_PROTECT_MIN) {
+                    // Từ streak 10 trở đi: điểm dưới 9 bị trừ dần thay vì mất ngay; 9 đến dưới 10 giữ nguyên streak.
+                    // Lần thứ k (k=1..5) trừ k streak; lần 6..10 trừ 5; quá 10 lần thì mất hết.
+                    if (e.v < 9) {
+                        miss++;
+                        if (miss > 10) { run = 0; miss = 0; }
+                        else { run = Math.max(0, run - Math.min(miss, 5)); if (run === 0) miss = 0; }
+                    }
+                } else { run = 0; miss = 0; }
+            });
             const st = appData.students.find(x => x.id === studentId);
             return { cur: run, best: Math.max(best, (st && st.bestTenStreak) || 0) };
         }
@@ -4349,13 +4638,230 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             }).sort((a, b) => b.streak10 - a.streak10);
             console.table(rows); return rows;
         };
+        // ===== Pháo giấy khi nhập điểm 10; streak chạm mốc 5/10/15... bắn lớn kèm banner =====
+        function tfEnsureLayer() {
+            let l = document.getElementById('tfConfLayer');
+            if (!l) { l = document.createElement('div'); l.id = 'tfConfLayer'; document.body.appendChild(l); }
+            return l;
+        }
+        // Pháo giấy vẽ bằng 1 canvas duy nhất (không tạo hàng trăm phần tử DOM) để không làm giật khi chúc mừng
+        let tfCv = null, tfCtx = null, tfParts = [], tfRaf = 0, tfLast = 0;
+        function tfStep(now) {
+            const dt = Math.min(.05, (now - tfLast) / 1000); tfLast = now;
+            if (tfCv.width !== innerWidth || tfCv.height !== innerHeight) { tfCv.width = innerWidth; tfCv.height = innerHeight; }
+            tfCtx.setTransform(1, 0, 0, 1, 0, 0); tfCtx.clearRect(0, 0, tfCv.width, tfCv.height);
+            for (let i = tfParts.length - 1; i >= 0; i--) {
+                const q = tfParts[i]; q.t += dt;
+                if (q.t >= q.life) { tfParts[i] = tfParts[tfParts.length - 1]; tfParts.pop(); continue; }
+                const px = q.x + q.vx * q.t, py = q.y + q.vy * q.t + .5 * q.g * q.t * q.t, r = q.rot + q.vr * q.t, k = q.t / q.life;
+                tfCtx.globalAlpha = k > .6 ? 1 - (k - .6) / .4 : 1; tfCtx.fillStyle = q.c;
+                const cs = Math.cos(r), sn = Math.sin(r); tfCtx.setTransform(cs, sn, -sn, cs, px, py);
+                if (q.round) { tfCtx.beginPath(); tfCtx.arc(0, 0, 4, 0, 6.283); tfCtx.fill(); } else tfCtx.fillRect(-4, -6, 8, 12);
+            }
+            if (tfParts.length) tfRaf = requestAnimationFrame(tfStep);
+            else { tfRaf = 0; tfCtx.setTransform(1, 0, 0, 1, 0, 0); tfCtx.clearRect(0, 0, tfCv.width, tfCv.height); }
+        }
+        function tfBurst(x, y, count, spread, palette) {
+            const colors = palette || ['#ef4444', '#f97316', '#facc15', '#22c55e', '#38bdf8', '#a855f7', '#ec4899'];
+            if (!tfCv) {
+                tfCv = document.createElement('canvas'); tfCv.id = 'tfConfCanvas';
+                tfCv.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:9998';
+                document.body.appendChild(tfCv); tfCtx = tfCv.getContext('2d');
+            }
+            count = Math.min(count, Math.max(0, 200 - tfParts.length));
+            for (let i = 0; i < count; i++) {
+                const ang = (-90 + (Math.random() - .5) * spread) * Math.PI / 180, v = 60 + Math.random() * (spread > 200 ? 200 : 130);
+                const T = .9 + Math.random() * .7, dx = Math.cos(ang) * v, up = Math.sin(ang) * v, fall = 80 + Math.random() * 120;
+                tfParts.push({ x, y, vx: dx / T, vy: 1.9 * up / T, g: 2 * (fall - .9 * up) / (T * T), rot: 0, vr: (Math.random() - .5) * 12, t: 0, life: T, c: colors[i % colors.length], round: i % 3 === 0 });
+            }
+            if (tfParts.length && !tfRaf) { tfLast = performance.now(); tfRaf = requestAnimationFrame(tfStep); }
+        }
+        function tfToast(text, cls, dur, flameCls) {
+            const el = document.createElement('div'); el.className = 'tf-banner ' + (cls || '');
+            if (flameCls) {
+                // Lửa cùng màu mốc streak thay cho icon emoji
+                el.innerHTML = `<span class="tf-streak tf-mini ${flameCls}"><span class="tf-flame" aria-hidden="true"><i class="tf-l tf-l1"></i><i class="tf-l tf-l2"></i><i class="tf-l tf-l3"></i></span></span>`;
+                const sp = document.createElement('span'); sp.textContent = text; el.appendChild(sp);
+            } else el.textContent = text;
+            tfEnsureLayer().appendChild(el);
+            const a = el.animate([
+                { opacity: 0, transform: 'translate(-50%,-14px) scale(.85)' }, { opacity: 1, transform: 'translate(-50%,0) scale(1.05)', offset: .15 },
+                { opacity: 1, transform: 'translate(-50%,0) scale(1)', offset: .8 }, { opacity: 0, transform: 'translate(-50%,-10px) scale(.95)' }
+            ], { duration: dur || 2800, fill: 'forwards' });
+            a.onfinish = () => el.remove();
+        }
+        function tfBanner(sid, n) {
+            const st = appData.students.find(x => x.id === sid); if (!st) return;
+            const tk = tfTierKey(n), name = getStudentDisplayName(st);
+            if (tk) { const c = TF_TIERS[tk]; tfToast(`${name} · streak 10 x${n} — ${L2(c.vi, c.en)}`, c.cls, c.dur, (tk >= 20 ? 'tf-hi ' : '') + 'tf-t' + tk); return; }
+            tfToast(`${name} · streak 10 x${n}!`, 'amber', undefined, 'tf-t5');
+        }
+        // Cấu hình chúc mừng theo mốc streak: càng cao càng nhiều pháo, chớp sáng, nhạc, màu riêng
+        const TF_TIERS = {
+            10: { cls: 'emerald', vi: 'TUYỆT VỜI!', en: 'AWESOME!', dur: 3200, waves: 1, burst: 70, flash: null, notes: [523, 659, 784, 1047],
+                  pal: ['#10b981', '#34d399', '#6ee7b7', '#fde047', '#ffffff', '#22c55e'] },
+            15: { cls: 'gold', vi: 'BÙNG CHÁY!', en: 'ON FIRE!', dur: 3600, waves: 2, burst: 90, flash: 'rgba(250,204,21,.35)', notes: [523, 659, 784, 1047, 1319],
+                  pal: ['#facc15', '#f59e0b', '#fde047', '#fb923c', '#ffffff', '#fbbf24'] },
+            20: { cls: 'legend', vi: 'HUYỀN THOẠI!', en: 'LEGENDARY!', dur: 4200, waves: 3, burst: 100, flash: 'rgba(253,224,71,.55)', notes: [523, 659, 784, 1047, 1319, 1568],
+                  pal: ['#fde047', '#22d3ee', '#818cf8', '#e879f9', '#f43f5e', '#ffffff', '#f59e0b'] },
+            30: { cls: 'crimson', vi: 'BẤT BẠI!', en: 'UNSTOPPABLE!', dur: 4800, waves: 4, burst: 120, flash: 'rgba(127,29,29,.55)', notes: [392, 523, 659, 784, 1047, 1319, 1568],
+                  pal: ['#7f1d1d', '#b91c1c', '#dc2626', '#ef4444', '#fca5a5', '#ffffff', '#450a0a'] },
+            40: { cls: 'cosmic', vi: 'VÔ ĐỊCH!', en: 'INVINCIBLE!', dur: 5400, waves: 5, burst: 140, flash: 'rgba(217,70,239,.6)', notes: [330, 440, 523, 659, 784, 1047, 1319, 1568],
+                  pal: ['#d946ef', '#8b5cf6', '#38bdf8', '#f0abfc', '#ffffff', '#22d3ee', '#fde047'] },
+            50: { cls: 'divine', vi: 'THẦN THÁNH!', en: 'GODLIKE!', dur: 6500, waves: 7, burst: 170, flash: 'rgba(255,255,255,.85)', notes: [262, 330, 392, 523, 659, 784, 1047, 1319, 1568, 2093],
+                  pal: ['#ef4444', '#f59e0b', '#facc15', '#22c55e', '#06b6d4', '#6366f1', '#d946ef'] }
+        };
+        function tfTierKey(n) { return n >= 50 ? 50 : n >= 40 ? 40 : n >= 30 ? 30 : n >= 20 ? 20 : n >= 15 ? 15 : n >= 10 ? 10 : 0; }
+        // Chỉ chúc mừng đúng các mốc 5, 10, 15, 20, 30, 40, 50 (và mỗi bội số của 10 sau 50); không chúc mừng 25/35/45
+        function tfIsMilestone(n) { return n === 5 || n === 10 || n === 15 || n === 20 || n === 30 || n === 40 || (n >= 50 && n % 10 === 0); }
+        function tfTierFx(key) {
+            const c = TF_TIERS[key]; if (!c) return;
+            const cx = innerWidth / 2, cy = innerHeight * 0.32;
+            if (c.flash) {
+                const flash = document.createElement('div'); flash.className = 'tf-flash';
+                flash.style.background = `radial-gradient(circle at 50% 35%, ${c.flash}, rgba(124,58,237,.18) 45%, transparent 70%)`;
+                tfEnsureLayer().appendChild(flash);
+                const fa = flash.animate([{ opacity: 0 }, { opacity: 1, offset: .15 }, { opacity: 0 }], { duration: 900 + key * 12, easing: 'ease-out' }); fa.onfinish = () => flash.remove();
+            }
+            tfBurst(cx, cy, c.burst, 360, c.pal);
+            for (let i = 0; i < c.waves; i++) {
+                const fx = .15 + Math.random() * .3, n = Math.round(c.burst * .4);
+                setTimeout(() => {
+                    tfBurst(innerWidth * fx, innerHeight * (.25 + Math.random() * .25), n, 360, c.pal);
+                    tfBurst(innerWidth * (1 - fx), innerHeight * (.25 + Math.random() * .25), n, 360, c.pal);
+                }, 200 + i * 230);
+            }
+            c.notes.forEach((f, i) => tfBeep(f, .2, .22, i * .09));
+        }
+        const L2 = (vi, en) => ((appData.language || 'vi') === 'en' ? en : vi);
+        // ===== Cấp độ & XP: XP = tổng điểm các buổi; mỗi XP_PER_LEVEL điểm lên 1 cấp =====
+        const XP_PER_LEVEL = 50;
+        function xpOf(sid, scores) { return Math.round(tenSeries(sid, scores).reduce((a, e) => a + e.v, 0) * 10) / 10; }
+        function levelPillHtml(sid) {
+            const xp = xpOf(sid), lv = Math.floor(xp / XP_PER_LEVEL) + 1, cur = xp % XP_PER_LEVEL;
+            return `<span class="tf-lv" title="XP ${cur.toFixed(0)}/${XP_PER_LEVEL}"><b>Lv${lv}</b><i style="--p:${(cur / XP_PER_LEVEL * 100).toFixed(0)}%"></i></span>`;
+        }
+        // Hiệu ứng khi đứt streak (lửa tắt, khói) hoặc lên cấp
+        // Thông báo lên cấp: hiện ở góc dưới màn hình, tách riêng với banner chúc mừng streak (ở trên)
+        function tfLevelToast(text) {
+            const layer = tfEnsureLayer(), el = document.createElement('div');
+            el.className = 'tf-banner lv'; el.textContent = text;
+            const slot = layer.querySelectorAll('.tf-banner.lv').length;
+            el.style.bottom = (20 + slot * 52) + 'px';
+            layer.appendChild(el);
+            tfBurst(innerWidth / 2, innerHeight - 70 - slot * 52, 36, 200);
+            const a = el.animate([
+                { opacity: 0, transform: 'translate(-50%,24px) scale(.9)' }, { opacity: 1, transform: 'translate(-50%,0) scale(1.04)', offset: .15 },
+                { opacity: 1, transform: 'translate(-50%,0) scale(1)', offset: .85 }, { opacity: 0, transform: 'translate(-50%,12px) scale(.96)' }
+            ], { duration: 3200, fill: 'forwards' });
+            a.onfinish = () => el.remove();
+        }
+        function tfStatusFx(list) {
+            try {
+                if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                list.forEach(f => {
+                    const st = appData.students.find(x => x.id === f.sid); if (!st) return;
+                    const name = getStudentDisplayName(st);
+                    if (f.t === 'lv') { tfLevelToast(`⭐ ${name} ${L2('lên cấp', 'reached level')} ${f.n}!`); return; }
+                    if (f.t === 'drop') { tfToast(L2(`📉 ${name} bị trừ ${f.n} streak · còn ${f.cur}`, `📉 ${name} lost ${f.n} streak · ${f.cur} left`), 'smoke-b'); return; }
+                    const best = tenStreakInfo(f.sid).best, layer = tfEnsureLayer();
+                    for (let i = 0; i < 7; i++) {
+                        const puff = document.createElement('i'); puff.className = 'tf-smoke';
+                        puff.style.left = (innerWidth / 2 - 40 + Math.random() * 80) + 'px'; puff.style.top = (innerHeight * 0.2) + 'px'; layer.appendChild(puff);
+                        const a = puff.animate([{ transform: 'translateY(0) scale(.4)', opacity: .7 }, { transform: `translate(${(Math.random() - .5) * 50}px,-70px) scale(1.6)`, opacity: 0 }], { duration: 1400 + Math.random() * 600, delay: i * 90, fill: 'forwards' });
+                        a.onfinish = () => puff.remove();
+                    }
+                    tfToast(L2(`💨 ${name} đứt streak x${f.n} · Kỷ lục: ${best} — thử lại nhé!`, `💨 ${name} streak x${f.n} ended · Record: ${best} — try again!`), 'smoke-b');
+                });
+            } catch (e) { console.warn('tfStatusFx skipped:', e); }
+        }
+        // ===== Hồ sơ học sinh (bấm vào tên) =====
+        window.tfCloseProfile = function () { const m = document.getElementById('tfProfile'); if (m) m.remove(); };
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') tfCloseProfile(); });
+        window.tfOpenProfile = function (sid) {
+            const st = appData.students.find(x => x.id === sid); if (!st) return;
+            tfCloseProfile();
+            const cls = appData.classes.find(c => c.id === st.classId);
+            const w = document.createElement('div'); w.id = 'tfProfile';
+            w.className = 'fixed inset-0 z-[85] flex items-center justify-center bg-slate-900/60 p-3';
+            w.onclick = e => { if (e.target === w) tfCloseProfile(); };
+            w.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-5 relative">
+                <button type="button" onclick="tfCloseProfile()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+                <div class="flex items-center gap-3"><div class="text-4xl">${st.icon || '🎓'}</div><div><h3 class="font-black text-slate-800 leading-tight">${getStudentDisplayName(st)}</h3><p class="text-xs text-slate-500">${cls ? cls.name : ''}</p>${xfBdayRow(st)}</div></div>
+                ${xfStatInner(sid)}</div>`;
+            document.body.appendChild(w);
+        };
+        // ===== Âm thanh (WebAudio, không cần file) =====
+        let tfAudioCtx = null;
+        function tfAudio() {
+            try { if (!tfAudioCtx) { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; tfAudioCtx = new AC(); } if (tfAudioCtx.state === 'suspended') tfAudioCtx.resume(); return tfAudioCtx; } catch (e) { return null; }
+        }
+        function tfBeep(freq, dur, vol, at) {
+            const c = tfAudio(); if (!c) return; const t = c.currentTime + (at || 0), o = c.createOscillator(), g = c.createGain();
+            o.type = 'sine'; o.frequency.value = freq; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+            o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.02);
+        }
+        function tfAlarm() { for (let k = 0; k < 3; k++) for (let j = 0; j < 3; j++) tfBeep(j === 2 ? 1175 : 988, 0.14, 0.35, k * 0.9 + j * 0.2); }
+        function tfCelebrate(keys) {
+            try {
+                if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                keys.forEach(key => {
+                    const m = String(key).match(/^(.*)_(\d{4}-\d{1,2}-\d{1,2})$/); if (!m) return;
+                    const sid = m[1], d = m[2];
+                    const cell = document.querySelector(`#scoreMatrix td.grid-cell[data-sid="${sid}"][data-d="${d}"]`);
+                    let x = innerWidth / 2, y = innerHeight * 0.3;
+                    if (cell) { const r = cell.getBoundingClientRect(); if (r.width && r.bottom > 0 && r.top < innerHeight) { x = r.left + r.width / 2; y = r.top + r.height / 2; } }
+                    tfBurst(x, y, 28, 140);
+                    const cur = getTenStreak(sid);
+                    if (tfIsMilestone(cur)) { if (tfTierKey(cur)) tfTierFx(tfTierKey(cur)); else tfBurst(innerWidth / 2, innerHeight * 0.32, cur >= 10 ? 110 : 70, 360); tfBanner(sid, cur); }
+                });
+            } catch (e) { console.warn('tfCelebrate skipped:', e); }
+        }
+        // ===== Xu hướng điểm: TB 5 điểm gần nhất (theo ngày trên bảng điểm) so với 5 điểm trước đó =====
+        function scoreTrend(studentId) {
+            const prefix = studentId + '_', arr = [];
+            Object.keys(appData.scores || {}).forEach(k => {
+                if (k.indexOf(prefix) !== 0) return;
+                const it = appData.scores[k]; if (!it || it.absent) return;
+                if (it.score === null || it.score === undefined || it.score === '') return;
+                const v = parseFloat(it.score); if (isNaN(v)) return;
+                arr.push({ v, d: scoreKeyDateMs(k) });
+            });
+            arr.sort((a, b) => b.d - a.d);
+            const W = 5, last = arr.slice(0, W), prev = arr.slice(W, 2 * W);
+            if (last.length < 3 || prev.length < 3) return null;
+            const avg = a => a.reduce((x, y) => x + y.v, 0) / a.length, al = avg(last), ap = avg(prev);
+            return { al, ap, delta: al - ap, nl: last.length, np: prev.length };
+        }
+        function trendHtml(studentId) {
+            const t = scoreTrend(studentId); if (!t) return '';
+            const en = (appData.language || 'vi') === 'en', d = t.delta;
+            let cls = 'flat', sym = '▬';
+            if (d >= 0.3) { cls = 'up'; sym = '▲'; } else if (d <= -0.3) { cls = 'down'; sym = '▼'; }
+            const sign = d > 0 ? '+' : '';
+            const tip = en ? `Last ${t.nl} scores avg ${t.al.toFixed(1)} vs previous ${t.np}: ${t.ap.toFixed(1)} (${sign}${d.toFixed(1)})`
+                           : `${t.nl} điểm gần nhất TB ${t.al.toFixed(1)} · ${t.np} điểm trước đó TB ${t.ap.toFixed(1)} (${sign}${d.toFixed(1)})`;
+            return `<span class="tf-trend ${cls}" title="${tip}">${sym}${cls === 'flat' ? '' : Math.abs(d).toFixed(1)}</span>`;
+        }
+        // Hiệu ứng tên + lửa mini cho Score Matrix: màu theo đúng mốc streak (từ streak 5 trở lên)
+        function tfNameFx(studentId) {
+            const n = tenStreakInfo(studentId).cur;
+            if (n < 5) return { nm: '', flame: '' };
+            const k = n >= 50 ? 50 : n >= 40 ? 40 : n >= 30 ? 30 : n >= 20 ? 20 : n >= 15 ? 15 : n >= 10 ? 10 : 5;
+            const en = (appData.language || 'vi') === 'en', tip = en ? `${n} consecutive scores of 10` : `${n} điểm 10 liên tiếp`;
+            return {
+                nm: ` tf-nm tf-nm-t${k}`,
+                flame: `<span class="tf-streak tf-mini ${k >= 20 ? 'tf-hi ' : ''}tf-t${k}" title="${tip}" aria-label="${tip}"><span class="tf-flame" aria-hidden="true"><i class="tf-l tf-l1"></i><i class="tf-l tf-l2"></i><i class="tf-l tf-l3"></i></span></span>`
+            };
+        }
         function tenStreakHtml(studentId) {
             const inf = tenStreakInfo(studentId), n = inf.cur;
             if (n < TEN_STREAK_MIN) return '';
             const en = (appData.language || 'vi') === 'en';
             const tip = en ? `${n} consecutive scores of 10 · Record: ${inf.best}` : `${n} điểm 10 liên tiếp · Kỷ lục: ${inf.best}`;
-            const tier = n >= 10 ? ' tf-t10' : (n >= 5 ? ' tf-t5' : '');
-            return `<span class="tf-streak${tier}" title="${tip}" aria-label="${tip}"><span class="tf-flame" aria-hidden="true"><i class="tf-l tf-l1"></i><i class="tf-l tf-l2"></i><i class="tf-l tf-l3"></i><i class="tf-sp"></i><i class="tf-sp tf-sp2"></i></span><span class="tf-txt">10<span class="tf-x">x</span><span class="tf-n">${n}</span></span></span>`;
+            const tier = n >= 50 ? ' tf-hi tf-t50' : (n >= 40 ? ' tf-hi tf-t40' : (n >= 30 ? ' tf-hi tf-t30' : (n >= 20 ? ' tf-hi tf-t20' : (n >= 15 ? ' tf-t15' : (n >= 10 ? ' tf-t10' : (n >= 5 ? ' tf-t5' : ' tf-t1'))))));
+            const extraSp = n >= 40 ? '<i class="tf-sp tf-sp3"></i><i class="tf-sp tf-sp4"></i><i class="tf-sp tf-sp5"></i><i class="tf-sp tf-sp6"></i>' : (n >= 20 ? '<i class="tf-sp tf-sp3"></i><i class="tf-sp tf-sp4"></i>' : (n >= 15 ? '' : (n >= 10 ? '<i class="tf-sp tf-sp3"></i>' : '')));
+            return `<span class="tf-streak${tier}" title="${tip}" aria-label="${tip}"><span class="tf-flame" aria-hidden="true"><i class="tf-l tf-l1"></i><i class="tf-l tf-l2"></i><i class="tf-l tf-l3"></i><i class="tf-sp"></i><i class="tf-sp tf-sp2"></i>${extraSp}</span><span class="tf-txt">10<span class="tf-x">x</span><span class="tf-n">${n}</span></span></span>`;
         }
 
         function renderRankingView() {
@@ -4433,7 +4939,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                         <tr class="hl-row ${rank===1?'hl-r1':rank===2?'hl-r2':rank===3?'hl-r3':''} ${qsRowFlash('rk', activeClass.id, s.id, st.hasData)}">
                             <td class="py-3.5 px-4 text-center">${rankBadge}</td>
                             <td class="py-3.5 px-4 font-bold text-slate-800">
-                                <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> ${getStudentDisplayName(s)}${tenStreakHtml(s.id)} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span>
+                                <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> <span class="tf-name-link" onclick="tfOpenProfile('${s.id}')" title="${lang === 'en' ? 'View profile' : 'Xem hồ sơ'}">${getStudentDisplayName(s)}</span>${levelPillHtml(s.id)}${tenStreakHtml(s.id)} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span>
                             </td>
                             <td class="py-3.5 px-4 text-center font-black text-amber-600"><span data-cu="rkt:${s.id}:p" data-to="${s.rewardPoints || 0}" data-dec="0">${s.rewardPoints || 0}</span> Pts</td>
                             <td class="py-3.5 px-4 text-center font-semibold text-slate-600"><span data-cu="rkt:${s.id}:n" data-to="${st.attendedCount}" data-dec="0">${st.attendedCount}</span></td>
@@ -4538,7 +5044,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     html += `<div class="flex items-center justify-between">`;
                     html += `<div class="flex items-center space-x-1.5">`;
                     html += `<span>${student.icon || '🎓'}</span>`;
-                    html += `<span>${getStudentDisplayName(student)}</span>`;
+                    const nfx = tfNameFx(student.id);
+                    html += `<span class="tf-name-link${nfx.nm}" onclick="tfOpenProfile('${student.id}')" title="${lang === 'en' ? 'View profile' : 'Xem hồ sơ'}">${getStudentDisplayName(student)}</span>${nfx.flame}`;
                     html += `</div>`;
                     html += `<div class="opacity-0 group-hover:opacity-100 transition space-x-1">`;
                     html += `<button onclick="openEditStudentModal('${student.id}')" class="text-slate-400 hover:text-indigo-600 p-0.5"><i class="fa-solid fa-pen"></i></button>`;
@@ -4551,6 +5058,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     html += `<td class="avg-cell border-r border-slate-300 py-1.5 sticky-col-3 text-center shadow-right text-xs" title="${avgBadge.label}">`;
                     if (!stats.hasData) qsCUSeed('mx:' + student.id, 0);
                     html += `<span class="avg-pill ${avgBadge.color}" ${stats.hasData ? `data-cu="mx:${student.id}" data-to="${stats.avg}" data-dec="1"` : ''}>${stats.hasData ? stats.avg.toFixed(1) : '--'}</span>`;
+                    if (stats.hasData && qsTrend) html += trendHtml(student.id);
                     html += `</td>`;
 
                     daysHeader.forEach(d => {
@@ -5327,6 +5835,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             document.getElementById('editStudentId').value = '';
             document.getElementById('newStudentName').value = '';
             document.getElementById('newStudentIcon').value = '🎓';
+            { const bi = document.getElementById('newStudentBirthday'); if (bi) { bi.value = ''; bi.max = xfDateKey(); } }
             document.getElementById('studentIconSearch').value = '';
             renderStudentIconPicker(); updateStudentIconPreview();
             document.getElementById('studentModal').classList.remove('hidden');
@@ -5341,6 +5850,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             document.getElementById('editStudentId').value = student.id;
             document.getElementById('newStudentName').value = student.name;
             document.getElementById('newStudentIcon').value = student.icon || '🎓';
+            { const bi = document.getElementById('newStudentBirthday'); if (bi) { bi.value = student.birthday || ''; bi.max = xfDateKey(); } }
             document.getElementById('studentIconSearch').value = '';
             renderStudentIconPicker(); updateStudentIconPreview();
             document.getElementById('studentModal').classList.remove('hidden');
@@ -5357,6 +5867,9 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             const editId = document.getElementById('editStudentId').value;
             const name = document.getElementById('newStudentName').value.trim();
             const icon = document.getElementById('newStudentIcon').value.trim();
+            const bdayRaw = (document.getElementById('newStudentBirthday') || {}).value || '';
+            const bday = xfNormBday(bdayRaw);
+            if (bdayRaw && !bday) { alert(appData.language === 'en' ? 'Invalid birthday date.' : 'Ngày sinh không hợp lệ.'); return; }
 
             if (!name) return;
 
@@ -5365,6 +5878,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 if (student) {
                     student.name = name;
                     student.icon = icon || '🎓';
+                    if (bday) student.birthday = bday; else delete student.birthday;
                     // Keep the same student's avatar consistent in saved course snapshots and recoverable trash.
                     (appData.courseManager?.courses || []).forEach(course => {
                         const archivedStudent = course.snapshot?.students?.find(s => String(s.id) === String(student.id));
@@ -5382,6 +5896,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     classId: appData.activeClassId,
                     name: name,
                     icon: icon || '🎓',
+                    ...(bday ? { birthday: bday } : {}),
                     rewardPoints: 0,
                     inventory: [],
                     violations: []
@@ -5614,7 +6129,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
         function archivedFinalTotal(snap,id){const ex=(snap.finalExams||{})[id]||{};const stats=calculateSnapshotTotal(snap,id);const accumulated=stats.avg;const num=v=>v!==''&&v!==null&&v!==undefined&&Number.isFinite(Number(v))?Number(v):null;const cats=['listening','speaking','reading','writing'].map(k=>num(ex[k]));let g=num(ex.grammar),v=num(ex.vocabulary);if(ex.bonusTo?.grammar&&g!==null)g=(g+accumulated)/2;if(ex.bonusTo?.vocabulary&&v!==null)v=(v+accumulated)/2;if(ex.bonusTo?.grammarVocabulary){if(g!==null)g=(g+accumulated)/2;if(v!==null)v=(v+accumulated)/2;}const gv=[g,v].filter(x=>x!==null);if(gv.length)cats.push(gv.reduce((a,b)=>a+b,0)/gv.length);const valid=cats.filter(x=>x!==null);return valid.length? (valid.reduce((a,b)=>a+b,0)/valid.length).toFixed(2):'—';}
         function calculateSnapshotTotal(snap,id){let total=0,count=0;Object.entries(snap.scores||{}).forEach(([k,v])=>{if(k.startsWith(id+'_')){total+=Number(v.score)||0;count++;}});return {total,avg:count?total/count:0};}
         window.closeStudentProfile=function(){hideModuleModal('studentProfileModal');};
-        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm"><div class="flex items-start gap-3"><div class="roster-avatar">${escapeHtml(st.icon||'🎓')}</div><div class="min-w-0 flex-1"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div><div class="flex items-center justify-between gap-2 mt-3"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
+        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':''}">${xfBdayFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar">${escapeHtml(st.icon||'🎓')}</div><div class="min-w-0 flex-1"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
         window.openStudentProgress=function(studentId){ensureNewModules();const st=appData.students.find(x=>String(x.id)===String(studentId));if(!st)return;window.studentProgressViewingId=String(studentId);document.getElementById('studentProgressTitle').innerText=(st.icon||'🎓')+' '+getStudentDisplayName(st)+' · '+(appData.language==='en'?'Progress profile':'Hồ sơ tiến độ');window.renderStudentProgress();showModuleModal('studentProgressModal');};
 window.closeStudentProgress=function(){hideModuleModal('studentProgressModal');};
 window.renderStudentProgress=function(){
@@ -5677,10 +6192,12 @@ window.openStudentProfile=function(studentId){
           const noteValue=isArchived?((course.studentNotesSnapshot||{})[studentId]||dataStudent.courseNotes||''):(appData.studentNotes?.[studentId]||st.courseNotes||'');
           const violations=(dataStudent.violations||[]).map(v=>v.name||v.type||v).join(', ')||'—';
           const html=`<section class="border border-indigo-200 bg-indigo-50 rounded-xl p-3 mb-4"><label class="block text-xs font-bold text-slate-700">${appData.language==='en'?'View this student in course':'Xem điểm học sinh theo khóa học'}<select class="mt-1 w-full border border-indigo-200 rounded-lg bg-white p-2 text-sm" onchange="studentProfileSelectedCourseId=this.value;renderStudentCourseProfile()">${courseOptions}</select></label><p class="text-xs text-slate-500 mt-2">${isArchived?(appData.language==='en'?'Read-only archived course data.':'Dữ liệu khóa đã lưu, chỉ xem; không thay đổi dữ liệu khóa hiện tại.'):(appData.language==='en'?'Showing the currently selected course.':'Đang hiển thị dữ liệu của khóa học đang chọn.')}</p></section>
+          ${xfDetailCard(studentId,isArchived,snap,dataStudent)}
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4"><div class="border rounded-xl p-3"><div class="text-xs text-slate-500">${moduleText('classLabel')}</div><b>${escapeHtml(cls?.name||'—')}</b></div><div class="border rounded-xl p-3"><div class="text-xs text-slate-500">${moduleText('totalAccumulated')}</div><b>${(Number(stats.total)||0).toFixed(2)}</b></div><div class="border rounded-xl p-3"><div class="text-xs text-slate-500">${moduleText('averageAccumulated')}</div><b>${(Number(stats.avg)||0).toFixed(2)}</b></div></div>
           <h3 class="font-bold mb-2">${moduleText('finalScore')}</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">${[['Listening',ex.listening],['Speaking',ex.speaking],['Reading',ex.reading],['Writing',ex.writing],['Grammar',ex.grammar],['Vocabulary',ex.vocabulary]].map(([k,v])=>`<div class="bg-slate-50 rounded-lg p-2">${k}<b class="block">${v??'—'}</b></div>`).join('')}<div class="bg-indigo-50 rounded-lg p-2">${moduleText('finalScore')}<b class="block">${examTotal}</b></div></div>
           <p class="mt-3 text-sm"><b>${moduleText('violationsLabel')}:</b> ${escapeHtml(violations)}</p>
 
+          ${xfBdaySection(st,isArchived)}
           <label class="block text-sm font-bold mt-4">${moduleText('notesLabel')}<textarea id="studentProfileNotes" class="mt-1 w-full border rounded-lg p-2" rows="3" ${isArchived?'readonly':''}>${escapeHtml(noteValue)}</textarea></label>${isArchived?'':`<button onclick="saveStudentNotes('${String(studentId).replace(/'/g,"\\'")}')" class="mt-2 rounded-lg bg-indigo-600 text-white px-3 py-2 text-xs font-bold">${moduleText('saveBtn')}</button>`}`;
           document.getElementById('studentProfileContent').innerHTML=html;
         };
@@ -6211,7 +6728,7 @@ window.openStudentProfile=function(studentId){
         }
 
         function afterViewRender() {
-            try { updateCourseBadge(); scrollActiveTabIntoView(); qsAfterRender(); } catch (e) { console.warn('UI refresh skipped:', e); }
+            try { updateCourseBadge(); scrollActiveTabIntoView(); qsAfterRender(); xfAfterRender(); } catch (e) { console.warn('UI refresh skipped:', e); }
         }
 
         /* Dropdown menus (utilities + class options) */
@@ -6290,6 +6807,212 @@ window.openStudentProfile=function(studentId){
         /* Connectivity feedback (Firebase keeps edits queued while offline) */
         window.addEventListener('offline', () => uiToast('toastOffline', 'warning'));
         window.addEventListener('online', () => uiToast('toastOnline', 'success'));
+
+        /* ===================== XF: birthdays · gift opening · achievement card ===================== */
+        const xfRM = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+        const xfPad = n => String(n).padStart(2, '0');
+        const xfDateKey = d => { d = d || new Date(); return d.getFullYear() + '-' + xfPad(d.getMonth() + 1) + '-' + xfPad(d.getDate()); };
+        const xfLeap = y => (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+        const xfEsc = v => escapeHtml(v);
+
+        /* ---------- Birthdays ---------- */
+        function xfBdayParts(st) {
+            const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((st && st.birthday) || '');
+            return m ? { y: +m[1], m: +m[2], d: +m[3] } : null;
+        }
+        function xfNormBday(v) {
+            const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v || '').trim()); if (!m) return '';
+            const y = +m[1], mo = +m[2], d = +m[3], dt = new Date(y, mo - 1, d);
+            if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return '';
+            if (y < 1900 || m[0] > xfDateKey()) return '';
+            return m[0];
+        }
+        function xfBdayToday(st) {
+            const b = xfBdayParts(st); if (!b) return false;
+            const now = new Date(), mo = now.getMonth() + 1, d = now.getDate();
+            if (b.m === 2 && b.d === 29 && !xfLeap(now.getFullYear())) return mo === 2 && d === 28;
+            return b.m === mo && b.d === d;
+        }
+        function xfBdayDays(st) {
+            const b = xfBdayParts(st); if (!b) return null;
+            const now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const at = y => new Date(y, b.m - 1, (b.m === 2 && b.d === 29 && !xfLeap(y)) ? 28 : b.d);
+            let nx = at(today.getFullYear()); if (nx < today) nx = at(today.getFullYear() + 1);
+            return Math.round((nx - today) / 86400000);
+        }
+        function xfBdayAge(st) {
+            const b = xfBdayParts(st); if (!b) return null;
+            const a = new Date().getFullYear() - b.y; return (a >= 1 && a <= 120) ? a : null;
+        }
+        function xfBdayFmt(st) {
+            const b = xfBdayParts(st); if (!b) return '';
+            if ((appData.language || 'vi') === 'en') return new Date(2000, b.m - 1, b.d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            return xfPad(b.d) + '/' + xfPad(b.m);
+        }
+        // Dòng sinh nhật trên thẻ học sinh / thẻ hồ sơ
+        function xfBdayRow(st) {
+            const b = xfBdayParts(st); if (!b) return '';
+            if (xfBdayToday(st)) {
+                const age = xfBdayAge(st);
+                return `<div class="xf-brow today">🎉 ${L2('Sinh nhật hôm nay!', 'Birthday today!')}${age ? ' · ' + L2(`Tròn ${age} tuổi`, `Turns ${age}`) : ''}</div>`;
+            }
+            const n = xfBdayDays(st);
+            const soon = (n !== null && n >= 1 && n <= 7) ? ` · <b>${n === 1 ? L2('Ngày mai', 'Tomorrow') : L2(`Còn ${n} ngày`, `In ${n} days`)}</b>` : '';
+            return `<div class="xf-brow">🎂 ${xfBdayFmt(st)}${soon}</div>`;
+        }
+        // Hiệu ứng bóng bay + pháo giấy trên thẻ học sinh vào đúng ngày sinh nhật
+        function xfBdayFx(st) {
+            if (!xfBdayToday(st)) return '';
+            const cols = ['#f472b6', '#facc15', '#38bdf8', '#a78bfa', '#34d399', '#fb923c'], em = ['🎈', '🎈', '🎉', '🎈', '🎊'];
+            const balloons = em.map((e, i) => `<span class="b" style="left:${8 + i * 20}%;animation-delay:${(i * 1.1).toFixed(1)}s;font-size:${18 + (i % 3) * 4}px">${e}</span>`).join('');
+            const conf = Array.from({ length: 12 }, (_, i) => `<i class="c" style="left:${(i * 8 + 4) % 96}%;background:${cols[i % 6]};animation-delay:${(i * 0.33).toFixed(2)}s"></i>`).join('');
+            return `<div class="xf-bfx" aria-hidden="true">${balloons}${conf}</div><span class="xf-bribbon" aria-hidden="true">🎂</span>`;
+        }
+        // Phần chỉnh sửa / lưu ngày sinh trong "xem chi tiết"
+        function xfBdaySection(st, isArchived) {
+            const b = xfBdayParts(st), today = xfBdayToday(st), n = xfBdayDays(st);
+            const status = !b ? L2('Chưa nhập ngày sinh nhật.', 'No birthday set yet.')
+                : today ? '🎉 ' + L2('Hôm nay là sinh nhật!', 'Today is the birthday!')
+                : L2(`Sinh nhật kế tiếp sau ${n} ngày (${xfBdayFmt(st)}).`, `Next birthday in ${n} day${n === 1 ? '' : 's'} (${xfBdayFmt(st)}).`);
+            const id = xfEsc(st.id);
+            const controls = isArchived ? '' : `<div class="mt-2 flex flex-wrap items-center gap-2"><input type="date" id="xfBdayInput" value="${xfEsc(st.birthday || '')}" max="${xfDateKey()}" class="border rounded-lg p-2 text-sm bg-white"><button type="button" onclick="xfSaveBday('${id}')" class="rounded-lg bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 text-xs font-bold">${L2('Lưu ngày sinh', 'Save birthday')}</button>${b ? `<button type="button" onclick="xfClearBday('${id}')" class="rounded-lg border border-pink-300 bg-white text-pink-700 px-3 py-2 text-xs font-bold">${L2('Xóa', 'Clear')}</button>` : ''}</div>`;
+            return `<section class="mt-4 rounded-xl border border-pink-200 bg-pink-50 p-3"><h3 class="font-bold text-sm text-pink-700">🎂 ${L2('Ngày sinh nhật', 'Birthday')}</h3><p class="text-xs mt-1 ${today ? 'font-black text-pink-700' : 'text-slate-600'}">${status}</p>${controls}</section>`;
+        }
+        function xfAfterBdayChange() {
+            try { if (window.studentProfileViewingId && document.getElementById('studentProfileContent')) renderStudentCourseProfile(); } catch (e) {}
+            try { renderStudentRoster(); } catch (e) {}
+            setTimeout(xfBdayScan, 400);
+        }
+        window.xfSaveBday = function (id) {
+            const st = appData.students.find(x => String(x.id) === String(id)); if (!st) return;
+            const el = document.getElementById('xfBdayInput'), raw = el ? el.value : '';
+            if (!raw) { window.xfClearBday(id); return; }
+            const v = xfNormBday(raw);
+            if (!v) { alert(L2('Ngày sinh không hợp lệ.', 'Invalid birthday date.')); return; }
+            st.birthday = v;
+            saveData().then(ok => { if (!ok) return; xfAfterBdayChange(); if (window.showAppToast) window.showAppToast(L2('Đã lưu ngày sinh nhật.', 'Birthday saved.'), 'success'); });
+        };
+        window.xfClearBday = function (id) {
+            const st = appData.students.find(x => String(x.id) === String(id)); if (!st) return;
+            delete st.birthday;
+            saveData().then(ok => { if (!ok) return; xfAfterBdayChange(); if (window.showAppToast) window.showAppToast(L2('Đã xóa ngày sinh nhật.', 'Birthday cleared.'), 'success'); });
+        };
+
+        // ----- Quét sinh nhật & thông báo -----
+        const xfBdayShown = new Set();
+        let xfScanT = 0;
+        function xfBdayScan() {
+            try {
+                if (!currentTeacherId || !appData || !Array.isArray(appData.students)) return;
+                if (document.getElementById('xfBdayPop')) return;
+                const today = xfDateKey(), prefix = 'xfBday:', key = prefix + String(currentTeacherId) + ':' + today;
+                let seen = []; try { seen = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) {}
+                try { for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && k.indexOf(prefix) === 0 && k.slice(-10) !== today) localStorage.removeItem(k); } } catch (e) {}
+                const fresh = appData.students.filter(s => xfBdayToday(s) && seen.indexOf(s.id) < 0 && !xfBdayShown.has(today + '|' + s.id));
+                if (!fresh.length) return;
+                fresh.forEach(s => xfBdayShown.add(today + '|' + s.id));
+                try { localStorage.setItem(key, JSON.stringify(seen.concat(fresh.map(s => s.id)))); } catch (e) {}
+                xfShowBdayPop(fresh);
+            } catch (e) { console.warn('Birthday scan skipped:', e); }
+        }
+        function xfShowBdayPop(list) {
+            const w = document.createElement('div'); w.id = 'xfBdayPop'; w.className = 'xf-pop';
+            w.setAttribute('role', 'dialog'); w.setAttribute('aria-modal', 'true');
+            const items = list.map(s => {
+                const cls = appData.classes.find(c => c.id === s.classId), age = xfBdayAge(s);
+                return `<div class="xf-pop-item"><span class="xf-pop-av">${xfEsc(s.icon || '🎓')}</span><div class="min-w-0"><div class="xf-pop-name">${xfEsc(getStudentDisplayName(s))}</div><div class="xf-pop-sub">${xfEsc(cls ? cls.name : '')}${age ? ' · ' + L2(`Tròn ${age} tuổi`, `Turns ${age}`) : ''}</div></div><span class="xf-pop-ico">🎂</span></div>`;
+            }).join('');
+            w.innerHTML = `<div class="xf-pop-card"><div class="xf-pop-head"><div class="xf-pop-cake">🎂</div><h3>${L2('Hôm nay có sinh nhật!', 'Birthday today!')}</h3><p>${L2('Hệ thống phát hiện hôm nay là sinh nhật của:', 'The system found birthdays today for:')}</p></div><div class="xf-pop-list">${items}</div><div class="xf-pop-foot"><p>${L2('Chúc bạn sinh nhật thật vui, học giỏi và luôn hạnh phúc! 🎉', 'Happy birthday! Wishing you joy, great learning and lots of happiness! 🎉')}</p><button type="button" id="xfBdayOk">${L2('Gửi lời chúc', 'Send wishes')}</button></div></div>`;
+            document.body.appendChild(w);
+            const close = () => w.remove();
+            w.querySelector('#xfBdayOk').onclick = close;
+            w.onclick = e => { if (e.target === w) close(); };
+            try {
+                if ('Notification' in window && Notification.permission === 'granted') new Notification(L2('🎂 Hôm nay có sinh nhật!', '🎂 Birthday today!'), { body: list.map(s => getStudentDisplayName(s)).join(', ') });
+            } catch (e) {}
+            if (xfRM()) return;
+            try {
+                const r = w.querySelector('.xf-pop-card').getBoundingClientRect(), cx = r.left + r.width / 2;
+                tfBurst(cx, r.top + 40, 70, 360); setTimeout(() => tfBurst(cx - 120, r.top + 80, 36, 240), 250); setTimeout(() => tfBurst(cx + 120, r.top + 80, 36, 240), 450);
+                [392, 392, 440, 392, 523, 494].forEach((f, i) => tfBeep(f, .22, .22, i * .26));
+            } catch (e) {}
+        }
+        setInterval(() => { try { xfBdayScan(); } catch (e) {} }, 60000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(xfBdayScan, 300); });
+
+        /* ---------- Thẻ thành tích (dùng chung: Score Matrix & Danh sách lớp > xem chi tiết) ---------- */
+        // opt.snap (khóa đã lưu): tính từ bản chụp điểm của khóa đó, còn lại dùng dữ liệu hiện tại.
+        function xfStatInner(sid, opt) {
+            opt = opt || {};
+            const scores = opt.snap ? (opt.snap.scores || {}) : (appData.scores || {});
+            const st = opt.student || appData.students.find(x => x.id === sid); if (!st) return '';
+            const prefix = sid + '_', pts = []; let absent = 0, anyKey = false;
+            Object.keys(scores).forEach(k => {
+                if (k.indexOf(prefix) !== 0) return; const it = scores[k]; if (!it) return; anyKey = true;
+                if (it.absent) { absent++; return; }
+                const v = parseFloat(it.score); if (!isNaN(v) && it.score !== '' && it.score !== null) pts.push({ v, d: scoreKeyDateMs(k) });
+            });
+            pts.sort((a, b) => a.d - b.d);
+            const last = pts.slice(-20), W = 260, H = 56;
+            let inf;
+            if (opt.snap) { let run = 0, best = 0; tenSeries(sid, scores).forEach(e => { if (e.v >= 10) { run++; if (run > best) best = run; } else run = 0; }); inf = { cur: run, best }; }
+            else inf = tenStreakInfo(sid);
+            const xp = xpOf(sid, opt.snap ? scores : undefined), lv = Math.floor(xp / XP_PER_LEVEL) + 1, cur = xp % XP_PER_LEVEL;
+            const stats = opt.snap ? { hasData: anyKey, avg: parseFloat((calculateSnapshotTotal(opt.snap, sid).avg || 0).toFixed(1)) } : calculateStudentStats(sid);
+            let chart = `<p class="text-xs text-slate-400 text-center py-3">${L2('Chưa đủ dữ liệu để vẽ biểu đồ', 'Not enough data for a chart')}</p>`;
+            if (last.length >= 2) {
+                const xy = last.map((e, i) => [4 + i * (W - 8) / (last.length - 1), 4 + (H - 8) * (1 - Math.min(e.v, 10) / 10)]);
+                chart = `<svg viewBox="0 0 ${W} ${H}" class="w-full h-16"><polyline points="${xy.map(q => q.join(',')).join(' ')}" fill="none" stroke="#6366f1" stroke-width="2" stroke-linejoin="round"/>${xy.map((q, i) => `<circle cx="${q[0]}" cy="${q[1]}" r="${i === xy.length - 1 ? 3.5 : 2}" fill="${last[i].v >= 10 ? '#f59e0b' : '#6366f1'}"/>`).join('')}</svg>`;
+            }
+            const box = (ic, val, lb) => `<div class="rounded-xl bg-slate-50 border border-slate-200 p-2 text-center"><div class="text-lg font-black text-slate-800">${ic} ${val}</div><div class="text-[10px] font-bold text-slate-500">${lb}</div></div>`;
+            return `<div class="mt-3"><div class="flex justify-between text-[11px] font-black text-indigo-700"><span>Lv${lv}</span><span>XP ${cur.toFixed(0)}/${XP_PER_LEVEL}</span></div><div class="tf-xpbar"><i style="width:${(cur / XP_PER_LEVEL * 100).toFixed(0)}%"></i></div></div>
+                <div class="grid grid-cols-3 gap-2 mt-3">${box('🔥', inf.cur, L2('Streak 10', 'Streak'))}${box('🏆', inf.best, L2('Kỷ lục', 'Record'))}${box('📊', stats.hasData ? stats.avg : '--', L2('ĐTB', 'AVG'))}${box('🎁', (st.inventory || []).length, L2('Quà đang có', 'Gifts'))}${box('📝', pts.length, L2('Số điểm', 'Scores'))}${box('🚫', absent, L2('Số buổi vắng', 'Absences'))}</div>
+                <div class="mt-3"><p class="text-[11px] font-bold text-slate-500 mb-1">${L2('Điểm 20 lần gần nhất (theo ngày)', 'Last 20 scores (by date)')}</p>${chart}</div>`;
+        }
+        // Khối thẻ thành tích trong cửa sổ "xem chi tiết" (Danh sách lớp)
+        function xfDetailCard(sid, isArchived, snap, dataStudent) {
+            const inner = xfStatInner(sid, isArchived ? { snap, student: dataStudent } : {});
+            return `<section class="mb-4 rounded-xl border border-indigo-200 bg-white p-3"><h3 class="font-bold text-sm text-indigo-700">🏅 ${L2('Thẻ thành tích', 'Achievement card')}${isArchived ? ' · ' + L2('khóa đã lưu', 'saved course') : ''}</h3>${inner}</section>`;
+        }
+
+        /* ---------- Hiệu ứng mở hộp quà (Cửa hàng) ---------- */
+        function xfGiftOpenFx(student, inv, qty) {
+            const old = document.getElementById('xfGift'); if (old) old.remove();
+            const name = getRewardName(inv) + (qty > 1 ? ' ×' + qty : ''), icon = inv.isFixed ? '⭐' : '🎁', sname = getStudentDisplayName(student), left = student.rewardPoints || 0;
+            const w = document.createElement('div'); w.id = 'xfGift'; w.className = 'xf-gift';
+            w.setAttribute('role', 'dialog'); w.setAttribute('aria-modal', 'true');
+            w.innerHTML = `<div class="xf-gstage"><div class="xf-grays"></div><div class="xf-gitemwrap"><div class="xf-gitem">${icon}</div></div><div class="xf-gbox"><div class="xf-gbody"></div><div class="xf-glid"></div></div><div class="xf-gtext"><p class="xf-gwho">${xfEsc(sname)} ${L2('vừa đổi được', 'just redeemed')}</p><h3 class="xf-gname">${xfEsc(name)}</h3><p class="xf-gleft">${L2(`Còn lại ${left} Pts`, `${left} Pts left`)}</p><button type="button" class="xf-gok">${L2('Tuyệt vời!', 'Awesome!')}</button></div></div>`;
+            document.body.appendChild(w);
+            const box = w.querySelector('.xf-gbox'), timers = []; let opened = false, closed = false;
+            const close = () => { if (closed) return; closed = true; timers.forEach(clearTimeout); w.classList.add('out'); setTimeout(() => w.remove(), 260); };
+            const open = () => {
+                if (opened) return; opened = true; timers.forEach(clearTimeout);
+                box.classList.remove('shake'); box.classList.add('open'); w.classList.add('opened');
+                if (!xfRM()) {
+                    try {
+                        const r = box.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top;
+                        tfBurst(x, y, 70, 360); setTimeout(() => tfBurst(x - 90, y + 20, 30, 200), 180); setTimeout(() => tfBurst(x + 90, y + 20, 30, 200), 320);
+                        [523, 659, 784, 1047].forEach((f, i) => tfBeep(f, .18, .25, i * .09));
+                    } catch (e) {}
+                    timers.push(setTimeout(close, 11000));
+                }
+            };
+            w.onclick = () => { if (!opened) open(); else close(); };
+            w.querySelector('.xf-gok').onclick = e => { e.stopPropagation(); close(); };
+            if (xfRM()) { open(); return; }
+            timers.push(setTimeout(() => box.classList.add('shake'), 650), setTimeout(open, 1650));
+        }
+
+        /* ---------- Phím Esc cho các lớp phủ mới ---------- */
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Escape') return;
+            const pop = document.getElementById('xfBdayPop'); if (pop) { pop.remove(); return; }
+            const g = document.getElementById('xfGift'); if (g) { g.click(); return; }
+        });
+
+        function xfAfterRender() {
+            clearTimeout(xfScanT); xfScanT = setTimeout(xfBdayScan, 700);
+        }
 
     </script>
 
