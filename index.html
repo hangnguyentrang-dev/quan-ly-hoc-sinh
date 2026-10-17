@@ -665,6 +665,81 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 .xf-gok{margin-top:.8rem;border-radius:.8rem;background:#f59e0b;color:#451a03;font-weight:900;font-size:13px;padding:.55rem 1.5rem}
 .xf-gok:hover{background:#fbbf24}
 </style>
+
+<style id="tf-streak-color-sync">
+/* Đồng bộ màu streak: huy hiệu, lửa, viền phát quang, tên học sinh và banner chúc mừng */
+.tf-streak.tf-t20 {
+  --bg:linear-gradient(135deg,#172554,#312e81);
+  --ring:#6366f1,#38bdf8,#a5f3fc,#6366f1;
+  --g1:rgba(99,102,241,.8);--g2:rgba(56,189,248,.55);--g3:rgba(165,243,252,.95);--g4:rgba(99,102,241,.85);
+  --f1:linear-gradient(135deg,#4338ca,#2563eb 55%,#7dd3fc);
+  --f2:linear-gradient(135deg,#38bdf8,#bae6fd);--f3:linear-gradient(135deg,#fff,#dbeafe);
+  --fglow:rgba(56,189,248,.95);--spk:#bae6fd;--tg1:rgba(125,211,252,.95);--tg2:rgba(99,102,241,.9);--x:#bae6fd;--n:#e0f2fe;
+}
+.tf-streak.tf-t30 {
+  --bg:linear-gradient(135deg,#450a0a,#7f1d1d);
+  --ring:#991b1b,#ef4444,#fca5a5,#991b1b;
+  --g1:rgba(239,68,68,.85);--g2:rgba(153,27,27,.65);--g3:rgba(252,165,165,.95);--g4:rgba(220,38,38,.9);
+  --f1:linear-gradient(135deg,#7f1d1d,#dc2626 58%,#fca5a5);
+  --f2:linear-gradient(135deg,#ef4444,#fecaca);--f3:linear-gradient(135deg,#fff,#fee2e2);
+  --fglow:rgba(239,68,68,.95);--spk:#fecaca;--tg1:rgba(252,165,165,.95);--tg2:rgba(239,68,68,.9);--x:#fecaca;--n:#fff1f2;
+}
+.tf-streak.tf-t40 {
+  --bg:linear-gradient(135deg,#3b0764,#701a75);
+  --ring:#a855f7,#e879f9,#f5d0fe,#a855f7;
+  --g1:rgba(168,85,247,.85);--g2:rgba(217,70,239,.6);--g3:rgba(245,208,254,.95);--g4:rgba(192,38,211,.9);
+  --f1:linear-gradient(135deg,#7e22ce,#c026d3 58%,#f0abfc);
+  --f2:linear-gradient(135deg,#e879f9,#fae8ff);--f3:linear-gradient(135deg,#fff,#fdf4ff);
+  --fglow:rgba(217,70,239,.95);--spk:#f5d0fe;--tg1:rgba(240,171,252,.95);--tg2:rgba(192,38,211,.9);--x:#f0abfc;--n:#fdf4ff;
+}
+.tf-streak.tf-t50 {
+  --bg:linear-gradient(135deg,#111827,#312e81);
+  --ring:#f87171,#fbbf24,#4ade80,#22d3ee,#a78bfa,#f472b6,#f87171;
+  --g1:rgba(255,255,255,.9);--g2:rgba(236,72,153,.65);--g3:rgba(34,211,238,.95);--g4:rgba(250,204,21,.95);
+  --f1:linear-gradient(135deg,#ef4444,#f59e0b 20%,#22c55e 45%,#06b6d4 65%,#6366f1 85%,#d946ef);
+  --f2:linear-gradient(135deg,#fde047,#4ade80,#22d3ee,#a78bfa);--f3:linear-gradient(135deg,#fff,#fff);
+  --fglow:rgba(255,255,255,.95);--spk:#fff;--tg1:rgba(255,255,255,.95);--tg2:rgba(236,72,153,.9);--x:#fff;--n:#fff;
+}
+/* Text names use the same signature palette as their streak flame */
+.tf-nm-t20{background-image:linear-gradient(90deg,#4338ca,#2563eb 45%,#38bdf8 75%,#bae6fd)!important;filter:drop-shadow(0 0 4px rgba(56,189,248,.8))!important}
+.tf-nm-t30{background-image:linear-gradient(90deg,#7f1d1d,#dc2626 55%,#fca5a5)!important;filter:drop-shadow(0 0 4px rgba(239,68,68,.85))!important}
+.tf-nm-t40{background-image:linear-gradient(90deg,#7e22ce,#c026d3 55%,#f0abfc)!important;filter:drop-shadow(0 0 5px rgba(217,70,239,.9))!important}
+.tf-nm-t50{background-image:linear-gradient(90deg,#ef4444,#f59e0b 18%,#16a34a 40%,#0891b2 60%,#6366f1 80%,#c026d3)!important;filter:drop-shadow(0 0 4px rgba(236,72,153,.8))!important}
+/* Đồng bộ cả chữ "10", dấu nhân và con số hệ số/điểm với màu ngọn lửa từ streak 20 trở lên */
+.tf-streak.tf-hi.tf-t20 .tf-txt,
+.tf-streak.tf-hi.tf-t20 .tf-txt .tf-x,
+.tf-streak.tf-hi.tf-t20 .tf-txt .tf-n {
+  color:#bae6fd!important; -webkit-text-fill-color:#bae6fd!important;
+  text-shadow:0 0 5px rgba(56,189,248,.95),0 0 12px rgba(99,102,241,.8)!important;
+}
+.tf-streak.tf-hi.tf-t30 .tf-txt,
+.tf-streak.tf-hi.tf-t30 .tf-txt .tf-x,
+.tf-streak.tf-hi.tf-t30 .tf-txt .tf-n {
+  color:#fca5a5!important; -webkit-text-fill-color:#fca5a5!important;
+  text-shadow:0 0 5px rgba(239,68,68,.95),0 0 12px rgba(153,27,27,.8)!important;
+}
+.tf-streak.tf-hi.tf-t40 .tf-txt,
+.tf-streak.tf-hi.tf-t40 .tf-txt .tf-x,
+.tf-streak.tf-hi.tf-t40 .tf-txt .tf-n {
+  color:#f0abfc!important; -webkit-text-fill-color:#f0abfc!important;
+  text-shadow:0 0 5px rgba(217,70,239,.95),0 0 12px rgba(126,34,206,.8)!important;
+}
+.tf-streak.tf-hi.tf-t50 .tf-txt,
+.tf-streak.tf-hi.tf-t50 .tf-txt .tf-x,
+.tf-streak.tf-hi.tf-t50 .tf-txt .tf-n {
+  background-image:linear-gradient(90deg,#f87171,#fbbf24,#4ade80,#22d3ee,#a78bfa,#f472b6,#f87171)!important;
+  background-size:200% 100%!important; -webkit-background-clip:text!important; background-clip:text!important;
+  color:transparent!important; -webkit-text-fill-color:transparent!important;
+  text-shadow:0 0 7px rgba(255,255,255,.45)!important;
+  animation:tfShine50 1.6s linear infinite!important;
+}
+/* Banner chúc mừng inherits the same tier colors rather than generic red/gold */
+.tf-banner.tf-t20{background:linear-gradient(135deg,#172554,#2563eb 55%,#0891b2);border-color:#7dd3fc;box-shadow:0 8px 28px rgba(56,189,248,.6),0 0 18px rgba(99,102,241,.55)}
+.tf-banner.tf-t30{background:linear-gradient(135deg,#450a0a,#b91c1c 60%,#ef4444);border-color:#fca5a5;box-shadow:0 8px 28px rgba(239,68,68,.65),0 0 18px rgba(153,27,27,.6)}
+.tf-banner.tf-t40{background:linear-gradient(135deg,#3b0764,#a21caf 60%,#c026d3);border-color:#f0abfc;box-shadow:0 8px 28px rgba(217,70,239,.65),0 0 18px rgba(126,34,206,.6)}
+.tf-banner.tf-t50{background:linear-gradient(120deg,#ef4444,#f59e0b,#16a34a,#0891b2,#6366f1,#c026d3);border-color:#fff;box-shadow:0 8px 30px rgba(236,72,153,.65),0 0 24px rgba(34,211,238,.65)}
+</style>
+
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 
