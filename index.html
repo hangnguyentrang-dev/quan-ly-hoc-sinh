@@ -614,6 +614,25 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 .qs-toggle.qs-toggle-tpl.on{background:#c026d3;border-color:#c026d3;box-shadow:0 2px 8px rgba(192,38,211,.4)}
 .qs-toggle.qs-toggle-trend.on{background:#059669;border-color:#059669;box-shadow:0 2px 8px rgba(5,150,105,.4)}
 .qs-toggle.qs-toggle-keep.on{background:#ea580c;border-color:#ea580c;box-shadow:0 2px 8px rgba(234,88,12,.4)}
+/* ===== Quà thưởng Streak (điểm 10): màu theo mốc streak ===== */
+.sg-t5{--sg-a:#f97316;--sg-bg:#ffedd5;--sg-tx:#9a3412;--sg-bd:#fdba74}
+.sg-t10{--sg-a:#10b981;--sg-bg:#d1fae5;--sg-tx:#065f46;--sg-bd:#6ee7b7}
+.sg-t15{--sg-a:#f59e0b;--sg-bg:#fef08a;--sg-tx:#92400e;--sg-bd:#facc15}
+.sg-t20{--sg-a:#6366f1;--sg-bg:#e0e7ff;--sg-tx:#3730a3;--sg-bd:#a5b4fc}
+.sg-t30{--sg-a:#dc2626;--sg-bg:#fee2e2;--sg-tx:#7f1d1d;--sg-bd:#f87171}
+.sg-t40{--sg-a:#c026d3;--sg-bg:#fae8ff;--sg-tx:#701a75;--sg-bd:#e879f9}
+.sg-t50{--sg-a:#0ea5e9;--sg-bg:linear-gradient(135deg,#fee2e2,#fef9c3,#dcfce7,#cffafe,#e0e7ff,#fae8ff);--sg-tx:#1e1b4b;--sg-bd:#a78bfa}
+.qg-gift.qg-sg{border:1.5px solid var(--sg-bd);background:var(--sg-bg)}
+.qg-sg>i{color:var(--sg-a)}
+.qg-sg .qg-gn{color:var(--sg-tx)}
+.qg-sg .qg-gt{color:var(--sg-tx);opacity:.85}
+.qg-sg .qg-use{background:var(--sg-a)}
+.sg-x10{flex:none;font-weight:900;font-size:12px;line-height:1;padding:.25rem .55rem;border-radius:9999px;background:var(--sg-a);color:#fff;white-space:nowrap}
+.sg-t50 .sg-x10,.sg-t50.qg-sg .qg-use,.sg-t50 .sg-chip-use{background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e,#06b6d4,#6366f1,#d946ef)}
+.sg-chip{display:inline-flex;align-items:center;gap:.4rem;border:1.5px solid var(--sg-bd);background:var(--sg-bg);color:var(--sg-tx);font-size:12px;font-weight:800;padding:.25rem .5rem .25rem .65rem;border-radius:9999px;margin:0 .375rem .25rem 0}
+.sg-chip-use{background:var(--sg-a);color:#fff;font-size:10px;font-weight:900;border-radius:9999px;padding:.2rem .55rem}
+td.grid-cell.cell-sg,.score-row > td.grid-cell.cell-sg,.score-row:hover > td.grid-cell.cell-sg{background:var(--sg-bg) !important;color:var(--sg-tx) !important;font-weight:900 !important;position:relative;box-shadow:inset 0 0 0 1.5px var(--sg-bd);cursor:not-allowed}
+td.grid-cell.cell-sg .sg-cf{position:absolute;top:-2px;left:-1px;transform:scale(.6);transform-origin:top left;pointer-events:none;z-index:1}
 /* ===== XF: birthday ===== */
 @keyframes xfBdayGlow{0%,100%{box-shadow:0 0 0 2px rgba(244,114,182,.35),0 10px 26px rgba(244,114,182,.22)}50%{box-shadow:0 0 0 3px rgba(250,204,21,.55),0 12px 30px rgba(244,114,182,.4)}}
 @keyframes xfRainbow{from{background-position:0 0}to{background-position:200% 0}}
@@ -2599,6 +2618,8 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
         Object.assign(translations.vi, {"quick_gift_title": "Sử dụng quà nhanh", "quick_gift_button": "Quà", "no_gifts_available": "Học sinh này chưa có quà", "select_student_gift": "Chọn quà để sử dụng cho học sinh", "apply_gift_success": "Đã sử dụng quà {giftName} thành công cho {studentName}!", "no_valid_cell_for_gift": "Không tìm thấy ô điểm phù hợp để áp dụng quà này!", "confirm_use_quick_gift": "Bạn có chắc muốn dùng quà này ngay lập tức?", "lowest_score_improved": "Đã cải thiện ô điểm thấp nhất ({score}đ)!", "empty_cell_filled": "Đã điền điểm mới vào ô trống hợp lệ!", "score_deleted_quick": "Đã xóa ô điểm thấp nhất thành công!", "qg_use_btn": "Dùng", "qg_consume_btn": "Tiêu thụ", "qg_close": "Đóng", "qg_type_plus": "Cộng điểm", "qg_type_add": "Tạo điểm mới", "qg_type_change": "Đổi điểm", "qg_type_delete": "Xóa điểm", "qg_type_none": "Quà thông thường", "qg_type_wheel": "Vòng quay may mắn", "qg_wheel_note": "Dùng trong Vòng quay may mắn", "qg_gift_count": "{n} quà", "qg_only_gifts": "Chỉ hiện học sinh có quà", "qg_no_gift_in_class": "Chưa có học sinh nào trong lớp có quà", "qg_no_students": "Lớp chưa có học sinh nào.", "qg_detail_change": "{student} · ô {date}: {before} → {after}", "qg_detail_add": "{student} · điền ô trống {date} = {after}", "qg_detail_delete": "{student} · xóa ô {date} ({before})", "qg_detail_plain": "{student} · {giftName}", "qg_gift_missing": "Không tìm thấy quà này trong túi đồ"});
         Object.assign(translations.en, {"quick_gift_title": "Quick Gift Use", "quick_gift_button": "Gifts", "no_gifts_available": "No gifts available for this student", "select_student_gift": "Select a gift to use for student", "apply_gift_success": "Successfully applied {giftName} for {studentName}!", "no_valid_cell_for_gift": "No eligible score cell found to apply this gift!", "confirm_use_quick_gift": "Are you sure you want to use this gift immediately?", "lowest_score_improved": "Improved lowest score cell ({score} pts)!", "empty_cell_filled": "New score filled into valid empty cell!", "score_deleted_quick": "Lowest score cell deleted successfully!", "qg_use_btn": "Use", "qg_consume_btn": "Consume", "qg_close": "Close", "qg_type_plus": "Add Points", "qg_type_add": "New Score", "qg_type_change": "Change Score", "qg_type_delete": "Delete Score", "qg_type_none": "Regular Gift", "qg_type_wheel": "Lucky Wheel", "qg_wheel_note": "Use it in the Lucky Wheel", "qg_gift_count": "{n} gifts", "qg_only_gifts": "Only students with gifts", "qg_no_gift_in_class": "No student in this class has any gifts", "qg_no_students": "No students in this class.", "qg_detail_change": "{student} · cell {date}: {before} → {after}", "qg_detail_add": "{student} · fill empty cell {date} = {after}", "qg_detail_delete": "{student} · delete cell {date} ({before})", "qg_detail_plain": "{student} · {giftName}", "qg_gift_missing": "This gift was not found in the inventory"});
 
+        Object.assign(translations.vi, {"qg_type_streak": "Quà thưởng Streak", "sg_name": "Quà Streak {tier}", "sg_type_desc": "Cộng {n} điểm 10 · không tính streak", "sg_confirm": "cộng {used} điểm 10 cho {student}: {fills} ô trống trước hôm nay, {ups} ô dưới 9 chuyển thành 10.", "sg_confirm_rest": " Còn dư {left} điểm 10 trong quà.", "sg_done": "Đã cộng {used} điểm 10 cho {student}.", "sg_done_rest": " Còn dư {left} điểm 10 trong quà.", "sg_no_cell": "Không còn ô trống trước hôm nay hoặc ô dưới 9 để dùng quà này.", "sg_award": "🎁 {student} đạt streak {tier}: nhận quà {n} điểm 10!", "sg_award_many": "🎁 Đã tặng quà thưởng streak cho {n} học sinh.", "sg_cell_tag": "Quà Streak {tier} (khóa)"});
+        Object.assign(translations.en, {"qg_type_streak": "Streak reward", "sg_name": "Streak {tier} Gift", "sg_type_desc": "Adds {n} scores of 10 · no streak credit", "sg_confirm": "add {used} scores of 10 for {student}: {fills} empty cells before today, {ups} cells below 9 become 10.", "sg_confirm_rest": " {left} score(s) of 10 stay in the gift.", "sg_done": "Added {used} scores of 10 for {student}.", "sg_done_rest": " {left} score(s) of 10 stay in the gift.", "sg_no_cell": "No empty cell before today or cell below 9 left to use this gift on.", "sg_award": "🎁 {student} hit a {tier} streak: earned a gift of {n} tens!", "sg_award_many": "🎁 Streak reward gifts given to {n} students.", "sg_cell_tag": "Streak {tier} gift (locked)"});
         Object.assign(translations.vi, {"optTypePlusMatch": "Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)", "lblMatchCond": "Ô điểm quy định được cộng (điều kiện & mức điểm):", "optMatchLte": "Từ mức này trở xuống (≤)", "optMatchEq": "Bằng đúng mức này (=)", "optMatchGte": "Từ mức này trở lên (≥)", "phMatchScore": "VD: 7", "qg_type_plus_match": "Cộng điểm theo ô quy định", "pm_desc": "Ô có điểm {op} {score} → +{delta}", "qg_plus_match_done": "Đã cộng {delta} điểm vào ô {date} ({before}đ → {after}đ)!"});
         Object.assign(translations.en, {"optTypePlusMatch": "Add points to a cell with a specified score (e.g. +1 to a cell of 7 or lower)", "lblMatchCond": "Specified cell score to receive points (condition & score):", "optMatchLte": "This score or lower (≤)", "optMatchEq": "Exactly this score (=)", "optMatchGte": "This score or higher (≥)", "phMatchScore": "e.g. 7", "qg_type_plus_match": "Add Points to Specified Cell", "pm_desc": "Cell score {op} {score} → +{delta}", "qg_plus_match_done": "Added {delta} pts to cell {date} ({before} → {after} pts)!"});
 
@@ -2708,6 +2729,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
 
         // Hàm dịch động Tên Quà Tặng
         function getRewardName(item) {
+            if (item && item.type === 'streak_ten') return sgGiftName(item);
             const lang = appData.language || 'vi';
             if (item.isFixed && FIXED_ITEM_NAMES[item.id]) {
                 return FIXED_ITEM_NAMES[item.id][lang] || item.name;
@@ -2784,6 +2806,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 presFinal: c => `Bảng xếp hạng cuối kỳ · Lớp ${c}`,
                 rankUp: n => `Lên ${n} hạng`, rankDown: n => `Xuống ${n} hạng`,
                 trendLbl: 'Xu hướng điểm',
+                sgLocked: 'Điểm quà Streak đã bị khóa: không thể sửa hoặc xóa.',
                 keepLbl: 'Không trừ streak',
                 keepHint: 'Khi BẬT, điểm dưới 10 nhập vào lúc này sẽ không trừ/đứt streak (điểm 10 vẫn cộng streak). Những điểm đó được miễn trừ vĩnh viễn, kể cả sau khi tắt nút. Điểm nhập khi TẮT vẫn tính streak bình thường.',
                 keepOn: 'Đã bật Không trừ streak: các điểm dưới 10 nhập từ bây giờ (vòng quay, quà đổi điểm 7-8-9...) sẽ không trừ streak; điểm 10 vẫn cộng streak bình thường.',
@@ -2843,6 +2866,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 presFinal: c => `Final Exam Leaderboard · Class ${c}`,
                 rankUp: n => `Up ${n} place${n === 1 ? '' : 's'}`, rankDown: n => `Down ${n} place${n === 1 ? '' : 's'}`,
                 trendLbl: 'Score trend',
+                sgLocked: 'Streak gift scores are locked: they cannot be edited or deleted.',
                 keepLbl: 'No streak loss',
                 keepHint: 'When ON, scores below 10 entered now will not reduce or break the streak (a 10 still adds to it). Those scores stay exempt even after turning it off. Scores entered while OFF count normally.',
                 keepOn: 'No streak loss on: scores below 10 entered from now on (lucky wheel, gift-exchange points 7-8-9...) will not reduce streaks; a 10 still adds to the streak.',
@@ -3030,6 +3054,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
         function qsWriteCell(sid, d, mode, val) {
             const student = appData.students.find(s => s.id === sid); if (!student) return false;
             const key = `${sid}_${d}`, old = appData.scores[key];
+            if (old && old.sg) { qsToast(qsT('sgLocked'), 'warning'); return false; }
             const mxBefore = mxClone(old), mxPtsBefore = student.rewardPoints || 0;
             // Chế độ Sửa điểm: KHÔNG đụng tới điểm dư (rewardPoints) đã quy đổi trong túi quà
             const keepPts = qsEdit;
@@ -3115,6 +3140,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 const student = appData.students.find(s => s.id === e.sid);
                 if (!student) return;
                 const key = `${e.sid}_${e.d}`, target = redo ? e.after : e.before;
+                if (appData.scores[key] && appData.scores[key].sg) return;
                 if (target === undefined) delete appData.scores[key]; else appData.scores[key] = mxClone(target);
                 student.rewardPoints = Math.max(0, (student.rewardPoints || 0) + (redo ? e.dPts : -e.dPts));
             });
@@ -3541,7 +3567,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 const d = qsEl('qsBulkDate').value; let n = 0, skip = 0;
                 ids.forEach(id => {
                     const key = `${id}_${d}`, old = appData.scores[key];
-                    if (old && old.absent) { skip++; return; }
+                    if (old && (old.absent || old.sg)) { skip++; return; }
                     const cur = (old && old.score !== null && old.score !== undefined) ? parseFloat(old.score) : 0;
                     const nsc = Math.min(10, Math.max(0, Math.round((cur + amt) * 10) / 10));
                     if (qsEdit) appData.scores[key] = { score: nsc, absent: false, manual: true, isExam: !!(old && old.isExam) };
@@ -3608,11 +3634,11 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
         function qgKind(g) {
             const t = String(g.type || '').toLowerCase();
             if (t === 'lucky_spin' || String(g.itemId || g.id || '') === 'fix_lucky_spin') return 'lucky';
-            if (t === 'plus' || t === 'add' || t === 'change' || t === 'delete_score' || t === 'plus_match' || t === 'plus_exam') return t;
+            if (t === 'plus' || t === 'add' || t === 'change' || t === 'delete_score' || t === 'plus_match' || t === 'plus_exam' || t === 'streak_ten') return t;
             return 'none';
         }
-        const QG_ICON = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', none: 'fa-gift', lucky: 'fa-dice' };
-        const QG_TYPE_KEY = { plus: 'qg_type_plus', add: 'qg_type_add', change: 'qg_type_change', delete_score: 'qg_type_delete', plus_match: 'qg_type_plus_match', plus_exam: 'qg_type_plus_exam', none: 'qg_type_none', lucky: 'qg_type_wheel' };
+        const QG_ICON = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', none: 'fa-gift', lucky: 'fa-dice' };
+        const QG_TYPE_KEY = { plus: 'qg_type_plus', add: 'qg_type_add', change: 'qg_type_change', delete_score: 'qg_type_delete', plus_match: 'qg_type_plus_match', plus_exam: 'qg_type_plus_exam', streak_ten: 'qg_type_streak', none: 'qg_type_none', lucky: 'qg_type_wheel' };
         const PM_OPS = { lte: '≤', eq: '=', gte: '≥' };
         function matchGiftCond(g, v) {
             const m = parseFloat(g.matchScore);
@@ -3626,13 +3652,13 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
         // Tìm ô áp dụng quà. Thứ tự "gần nhất" = ngày muộn hơn trên thanh lịch của Matrix Score.
         function qgPlan(studentId, gift) {
             const kind = qgKind(gift);
-            if (kind === 'none' || kind === 'lucky') return null;
+            if (kind === 'none' || kind === 'lucky' || kind === 'streak_ten') return null;
             const dates = qsDateOptions().map(o => o.key), sc = appData.scores || {};
             const lowest = includeAbsent => {
                 let best = null;
                 dates.forEach((d, idx) => {
                     const c = sc[`${studentId}_${d}`];
-                    if (!qgHasValue(c) || c.isExam || (c.absent && !includeAbsent)) return;
+                    if (!qgHasValue(c) || c.isExam || c.sg || (c.absent && !includeAbsent)) return;
                     const v = qgVal(c);
                     if (!best || v < best.v - 1e-9 || (Math.abs(v - best.v) < 1e-9 && idx > best.idx)) best = { key: d, idx, v, absent: !!c.absent };
                 });
@@ -3667,7 +3693,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 let best = null;
                 dates.forEach((d, idx) => {
                     const c = sc[`${studentId}_${d}`];
-                    if (!qgHasValue(c) || c.absent || c.isExam) return;
+                    if (!qgHasValue(c) || c.absent || c.isExam || c.sg) return;
                     const v = qgVal(c);
                     if (!matchGiftCond(gift, v)) return;
                     const dist = Math.abs(v - m);
@@ -3710,6 +3736,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             if (!student || !gift) { qsToast(qgT('qg_gift_missing'), 'warning'); qgRender(); return; }
             const kind = qgKind(gift);
             if (kind === 'lucky') { qsToast(qgT('qg_wheel_note'), 'info'); return; }
+            if (kind === 'streak_ten') { return sgUseGift(studentId, invId); }
             const sName = getStudentDisplayName(student), gName = getRewardName(gift);
             let plan = null;
             if (kind !== 'none') {
@@ -3797,6 +3824,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 let gifts = '';
                 inv.forEach(g => {
                     const kind = qgKind(g);
+                    if (kind === 'streak_ten') { gifts += sgGiftCardHtml(st.id, g); return; }
                     const action = kind === 'lucky' ? `<span class="qg-note">${qgT('qg_wheel_note')}</span>`
                         : `<button type="button" class="qg-use" onclick="qgUse('${st.id}','${g.invId}')">${kind === 'none' ? qgT('qg_consume_btn') : qgT('qg_use_btn')}</button>`;
                     gifts += `<div class="qg-gift"><i class="fa-solid ${QG_ICON[kind]}"></i><div class="min-w-0"><div class="qg-gn">${escapeHtml(getRewardName(g))}</div><div class="qg-gt">${qgT(QG_TYPE_KEY[kind])}${kind === 'plus_match' ? ' · ' + pmDesc(g) : (kind === 'plus_exam' ? ' · +' + g.deltaScore : '')}</div></div>${action}</div>`;
@@ -3943,9 +3971,11 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 if (!Array.isArray(appData.deletedItems)) appData.deletedItems = [];
                 ensureNewModules();
                 applyLanguageUI();
+                let sgBootChanged = false; try { sgBootChanged = sgSync(); } catch (e) { console.warn('sgSync skipped:', e); }
                 renderClassTabs();
                 renderCurrentView();
                 lastPersistedSnapshot = deepCopy(appData);
+                if (sgBootChanged) { try { saveData(); } catch (e) {} }
                 if (window.__mxYearFixPending) { window.__mxYearFixPending = false; try { saveData(); } catch (e) {} }
             });
         }
@@ -3955,7 +3985,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 alert(appData.language === 'en' ? 'Archived course is read-only. Return to the active course to make changes.' : 'Khóa đã lưu trữ chỉ được xem. Hãy quay lại khóa hiện tại để chỉnh sửa.');
                 return Promise.resolve(false);
             }
-            try { stampScoreTimes(); updateTenRecords(); } catch (e) { console.warn('stampScoreTimes skipped:', e); }
+            try { stampScoreTimes(); updateTenRecords(); sgSync(); } catch (e) { console.warn('stampScoreTimes skipped:', e); }
             // Ghi lại trạng thái đã lưu gần nhất trước khi thay đổi, để có thể hoàn tác.
             if (!suppressUndoCapture && lastPersistedSnapshot && JSON.stringify(lastPersistedSnapshot) !== JSON.stringify(appData)) {
                 undoHistory.push(deepCopy(lastPersistedSnapshot));
@@ -4686,6 +4716,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                     if (student.inventory && student.inventory.length > 0) {
                         student.inventory.forEach(invItem => {
                             const itemName = getRewardName(invItem);
+                            if (invItem.type === 'streak_ten') { giftsHtml += sgGiftChipHtml(student.id, invItem); return; }
                             giftsHtml += `
                                 <span class="inline-flex items-center bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-semibold px-2.5 py-1 rounded-full mr-1.5 mb-1">
                                     🎁 ${itemName}
@@ -5545,6 +5576,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
         // cho đến khi gặp điểm dưới 10 (ngày vắng được bỏ qua). Hiện lửa khi chuỗi >= TEN_STREAK_MIN.
         const TEN_STREAK_MIN = 1;
         const TEN_PROTECT_MIN = 10;
+        const SG_REWARDS = { 5: 1, 10: 2, 15: 3, 20: 4, 30: 5, 40: 10, 50: 20 };
         function scoreKeyDateMs(key) {
             const m = String(key).match(/_(\d{4})-(\d{1,2})-(\d{1,2})$/);
             return m ? Date.UTC(+m[1], +m[2] - 1, +m[3], 12) : 0;
@@ -5565,7 +5597,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                     const curV = parseFloat(cur.score);
                     if (appData.keepStreak && !cur.absent && !isNaN(curV) && curV < 10) cur.keep = true; else delete cur.keep;
                     changedCount++; changedSids.add(String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, ''));
-                    if (!cur.absent && parseFloat(cur.score) >= 10) tenEvents.push(key);
+                    if (!cur.absent && !cur.sg && parseFloat(cur.score) >= 10) tenEvents.push(key);
                 } else if (!cur.ts) {
                     cur.ts = (prev && prev.ts) || Math.min(scoreKeyDateMs(key) || now, now);
                 }
@@ -5593,16 +5625,27 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 if (it.score === null || it.score === undefined || it.score === '') return;
                 const v = parseFloat(it.score); if (isNaN(v)) return;
                 const dms = scoreKeyDateMs(key);
-                list.push({ v, ts: it.ts || Math.min(dms || now, now), dms, keep: !!it.keep });
+                // Ô quà Streak thay thế điểm cũ dưới 9 (sgOrig): với streak vẫn tính như điểm cũ (vẫn trừ/đứt như trước),
+                // nên streak không tăng và không nhận thêm quà do việc đổi thành 10.
+                if (it.sg && it.sgOrig && typeof it.sgOrig === 'object') {
+                    const ov = parseFloat(it.sgOrig.v);
+                    if (!isNaN(ov)) { list.push({ v: ov, ts: it.sgOrig.ts || Math.min(dms || now, now), dms, keep: !!it.sgOrig.keep, sg: false, key }); return; }
+                }
+                list.push({ v, ts: it.ts || Math.min(dms || now, now), dms, keep: !!it.keep, sg: !!it.sg, key });
             });
             list.sort((a, b) => (a.ts - b.ts) || (a.dms - b.dms));
             return list;
         }
         // cur = streak hiện tại; best = kỷ lục (lớn nhất giữa lịch sử đã tính và giá trị đã lưu ở học sinh)
         function tenStreakInfo(studentId, scores) {
-            let run = 0, best = 0, miss = 0;
+            let run = 0, best = 0, miss = 0, live = [];
+            const all = [];
             tenSeries(studentId, scores).forEach(e => {
-                if (e.v >= 10) { run++; if (run > best) best = run; }
+                if (e.sg) return; // Điểm từ quà Streak: trung lập, không cộng cũng không làm đứt/trừ streak
+                if (e.v >= 10) {
+                    run++; if (run > best) best = run;
+                    if (SG_REWARDS[run]) { const h = { tier: run, key: e.key }; all.push(h); live.push(h); }
+                }
                 else if (e.keep) { /* điểm nhập lúc bật 'Không trừ streak': giữ nguyên streak */ }
                 else if (run >= TEN_PROTECT_MIN) {
                     // Từ streak 10 trở đi: điểm dưới 9 bị trừ dần thay vì mất ngay; 9 đến dưới 10 giữ nguyên streak.
@@ -5613,9 +5656,129 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                         else { run = Math.max(0, run - Math.min(miss, 5)); if (run === 0) miss = 0; }
                     }
                 } else { run = 0; miss = 0; }
+                if (run === 0) live = [];
             });
             const st = appData.students.find(x => x.id === studentId);
-            return { cur: run, best: Math.max(best, (st && st.bestTenStreak) || 0) };
+            return { cur: run, best: Math.max(best, (st && st.bestTenStreak) || 0), hits: all, liveHits: live.filter(h => h.tier <= run) };
+        }
+        // ===== Quà thưởng Streak: đạt mốc streak -> nhận quà điểm 10 (số lượng theo mốc) =====
+        function sgTierKey(n) { return n >= 50 ? 50 : n >= 40 ? 40 : n >= 30 ? 30 : n >= 20 ? 20 : n >= 15 ? 15 : n >= 10 ? 10 : 5; }
+        function sgGiftName(g) { return qgT('sg_name', { tier: g.tier }); }
+        function sgFlameHtml(tier) {
+            return `<span class="tf-streak tf-mini ${tier >= 20 ? 'tf-hi ' : ''}tf-t${tier} sg-cf" aria-hidden="true"><span class="tf-flame"><i class="tf-l tf-l1"></i><i class="tf-l tf-l2"></i><i class="tf-l tf-l3"></i></span></span>`;
+        }
+        function sgGiftCardHtml(sid, g) {
+            const tier = sgTierKey(g.tier), n = parseInt(g.count) || 1;
+            return `<div class="qg-gift qg-sg sg-t${tier}"><i class="fa-solid fa-fire-flame-curved"></i><div class="min-w-0"><div class="qg-gn">${escapeHtml(sgGiftName(g))}</div><div class="qg-gt">${qgT('qg_type_streak')} · ${qgT('sg_type_desc', { n })}</div></div><span class="sg-x10">10 ×${n}</span><button type="button" class="qg-use" onclick="qgUse('${sid}','${g.invId}')">${qgT('qg_use_btn')}</button></div>`;
+        }
+        function sgGiftChipHtml(sid, g) {
+            const tier = sgTierKey(g.tier), n = parseInt(g.count) || 1;
+            return `<span class="sg-chip sg-t${tier}" title="${escapeHtml(qgT('sg_type_desc', { n }))}">🔥 ${escapeHtml(sgGiftName(g))} <span class="sg-x10">10 ×${n}</span><button type="button" class="sg-chip-use" onclick="qgUse('${sid}','${g.invId}')">${qgT('qg_use_btn')}</button></span>`;
+        }
+        // Tặng quà cho mọi mốc mới đạt. Lần đầu (chưa có sgInit): chỉ tặng các mốc của streak đang có, các mốc lịch sử chỉ ghi nhận.
+        function sgSync() {
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return false;
+            let changed = false; const got = [];
+            (appData.students || []).forEach(st => {
+                const inf = tenStreakInfo(st.id);
+                if (!Array.isArray(st.sgAwarded)) { st.sgAwarded = []; changed = true; }
+                if (!Array.isArray(st.inventory)) st.inventory = [];
+                const done = new Set(st.sgAwarded), firstRun = !st.sgInit;
+                const live = new Set(inf.liveHits.map(h => h.tier + '@' + h.key));
+                inf.hits.forEach(h => {
+                    const id = h.tier + '@' + h.key;
+                    if (done.has(id)) return;
+                    st.sgAwarded.push(id); done.add(id); changed = true;
+                    if (firstRun && !live.has(id)) return;
+                    st.inventory.push({
+                        invId: 'inv_sg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+                        itemId: 'streak_ten_gift', name: 'Quà Streak ' + h.tier, itemName: 'Quà Streak ' + h.tier,
+                        isFixed: false, type: 'streak_ten', tier: h.tier, count: SG_REWARDS[h.tier],
+                        date: new Date().toISOString().split('T')[0]
+                    });
+                    got.push({ st, tier: h.tier, n: SG_REWARDS[h.tier] });
+                });
+                if (firstRun) { st.sgInit = true; changed = true; }
+            });
+            if (got.length) {
+                setTimeout(() => {
+                    if (got.length > 3) qsToast(qgT('sg_award_many', { n: new Set(got.map(x => x.st.id)).size }), 'success');
+                    else got.forEach(x => qsToast(qgT('sg_award', { student: getStudentDisplayName(x.st), tier: x.tier, n: x.n }), 'success'));
+                }, 500);
+            }
+            return changed;
+        }
+        // Kế hoạch dùng quà: ô trống (ngày học, trước hôm nay) trước; thiếu thì nâng các ô dưới 9 (thấp nhất trước) lên 10.
+        function sgPlan(studentId, gift) {
+            const total = parseInt(gift.count) || 0; if (total <= 0) return null;
+            const st = appData.students.find(x => x.id === studentId); if (!st) return null;
+            const sc = appData.scores || {}, dates = qsDateOptions().map(o => o.key);
+            const dms = k => { const p = k.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]).getTime(); };
+            const now = new Date(), t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            const sched = appData.classSchedules && appData.classSchedules[st.classId];
+            const hasSched = !!sched && Object.keys(sched).some(k => sched[k]);
+            const isClassDay = k => !hasSched || !!sched[new Date(dms(k)).getDay()];
+            const cells = [];
+            dates.filter(k => dms(k) < t0 && !qgHasValue(sc[`${studentId}_${k}`]) && isClassDay(k)).reverse()
+                .forEach(k => { if (cells.length < total) cells.push({ key: k, before: null }); });
+            const fills = cells.length;
+            if (cells.length < total) {
+                dates.map(k => ({ k, c: sc[`${studentId}_${k}`] }))
+                    .filter(x => qgHasValue(x.c) && !x.c.absent && !x.c.isExam && !x.c.sg && qgVal(x.c) < 9 - 1e-9)
+                    .map(x => ({ k: x.k, v: qgVal(x.c) }))
+                    .sort((a, b) => (a.v - b.v) || (dms(b.k) - dms(a.k)))
+                    .forEach(x => { if (cells.length < total) cells.push({ key: x.k, before: x.v }); });
+            }
+            if (!cells.length) return null;
+            return { cells, used: cells.length, fills, ups: cells.length - fills, left: total - cells.length, tier: sgTierKey(gift.tier) };
+        }
+        let sgBusy = false;
+        async function sgUseGift(studentId, invId) {
+            if (sgBusy) return; sgBusy = true;
+            const marked = [];
+            try {
+                const findGift = () => { const s0 = appData.students.find(x => x.id === studentId); return (s0 && Array.isArray(s0.inventory)) ? s0.inventory.find(i => i.invId === invId && i.type === 'streak_ten') : null; };
+                let student = appData.students.find(x => x.id === studentId), gift = findGift();
+                if (!student || !gift) { qsToast(qgT('qg_gift_missing'), 'warning'); try { qgRender(); } catch (e) {} return; }
+                let plan = sgPlan(studentId, gift);
+                if (!plan) { qsToast(qgT('sg_no_cell'), 'warning'); return; }
+                plan.cells.forEach(c => { const td = qsGetCell(studentId, c.key); if (td) { td.classList.add('ds-target'); marked.push(td); } });
+                const sName = getStudentDisplayName(student), gName = getRewardName(gift);
+                const detail = qgT('sg_confirm', { used: plan.used, student: sName, fills: plan.fills, ups: plan.ups }) + (plan.left > 0 ? qgT('sg_confirm_rest', { left: plan.left }) : '');
+                const ok = await showAppConfirm(`${qgT('confirm_use_quick_gift')} ${gName} — ${detail}`, qgT('quick_gift_title'));
+                marked.forEach(td => td.classList.remove('ds-target')); marked.length = 0;
+                if (!ok) return;
+                student = appData.students.find(x => x.id === studentId); gift = findGift();
+                if (!student || !gift) { qsToast(qgT('qg_gift_missing'), 'warning'); return; }
+                plan = sgPlan(studentId, gift);
+                if (!plan) { qsToast(qgT('sg_no_cell'), 'warning'); return; }
+                if (!appData.scores) appData.scores = {};
+                const prevGift = deepCopy(gift), prevCells = {};
+                const tier = sgTierKey(gift.tier);
+                plan.cells.forEach(c => {
+                    const key = `${studentId}_${c.key}`;
+                    prevCells[key] = appData.scores[key] !== undefined ? deepCopy(appData.scores[key]) : undefined;
+                    const cellNew = { score: 10, absent: false, sg: true, sgTier: tier };
+                    const po = prevCells[key];
+                    if (c.before !== null && po && !po.absent && !isNaN(parseFloat(po.score))) {
+                        cellNew.sgOrig = { v: parseFloat(po.score), ts: po.ts || null, keep: !!po.keep };
+                    }
+                    appData.scores[key] = cellNew;
+                });
+                if (plan.left > 0) gift.count = plan.left;
+                else student.inventory = student.inventory.filter(i => i.invId !== invId);
+                const saved = await saveData();
+                if (!saved) {
+                    Object.keys(prevCells).forEach(k => { if (prevCells[k] === undefined) delete appData.scores[k]; else appData.scores[k] = prevCells[k]; });
+                    const st2 = appData.students.find(x => x.id === studentId);
+                    if (st2) { if (!Array.isArray(st2.inventory)) st2.inventory = []; const ex = st2.inventory.findIndex(i => i.invId === invId); if (ex >= 0) st2.inventory[ex] = prevGift; else st2.inventory.push(prevGift); }
+                    qsToast(qgT('dsToastError'), 'error');
+                    try { renderCurrentView(); } catch (e) {}
+                    return;
+                }
+                qsToast(qgT('sg_done', { used: plan.used, student: sName }) + (plan.left > 0 ? qgT('sg_done_rest', { left: plan.left }) : ''), 'success');
+                try { qgRender(); } catch (e) {}
+            } finally { marked.forEach(td => td.classList.remove('ds-target')); sgBusy = false; }
         }
         function getTenStreak(studentId) { return tenStreakInfo(studentId).cur; }
         // Lưu kỷ lục vào dữ liệu học sinh mỗi lần lưu (chỉ tăng, không giảm).
@@ -6063,7 +6226,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                         
                         let cellClass = "grid-cell border-r border-b border-slate-200 text-[11px] font-semibold text-center cell-empty" + (d.realStr === mxTodayKey ? " mx-today" : "");
                         let cellText = "";
-                        let examTag = '';
+                        let examTag = '', sgFlame = '';
 
                         if (scoreItem) {
                             if (scoreItem.absent) {
@@ -6074,11 +6237,12 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                                 cellClass = cellClass.replace(" cell-empty", "") + " text-slate-800 font-bold bg-amber-50 cell-scored";
                                 if (scoreItem.isExam) { cellClass += " cell-exam font-black text-purple-900"; examTag = ' ' + uiTr('exam_tag'); }
                                 if (scoreItem.manual) { cellClass += " cell-manual"; examTag += ' ✎ ' + qsT('editTag'); }
+                                if (scoreItem.sg) { const sgk = sgTierKey(scoreItem.sgTier); cellClass += " cell-sg sg-t" + sgk; sgFlame = sgFlameHtml(sgk); examTag += ' 🔥 ' + qgT('sg_cell_tag', { tier: sgk }); }
                             }
                         }
 
                         html += `<td class="${cellClass}" data-sid="${student.id}" data-d="${d.dateStr}" onclick="qsCellClick(event, '${student.id}', '${d.dateStr}')" title="${getStudentDisplayName(student)} - ${lang === 'en' ? 'Date' : 'Ngày'} ${d.day}/${d.month}${examTag}">`;
-                        html += cellText;
+                        html += sgFlame + cellText;
                         html += `</td>`;
                     });
 
@@ -6109,6 +6273,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
 
             const key = `${studentId}_${dateStr}`;
             const existing = appData.scores[key];
+            if (existing && existing.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
 
             const absentCheckbox = document.getElementById('modalAbsentCheckbox');
             const scoreInput = document.getElementById('modalScoreInput');
@@ -6451,6 +6616,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const key = `${studentId}_${dateStr}`;
             const oldScoreItem = appData.scores[key];
 
+            if (oldScoreItem && oldScoreItem.sg) { qsToast(qsT('sgLocked'), 'warning'); closeScoreModal(); return; }
             // Chế độ Sửa điểm: sửa tay ô điểm → gỡ liên kết số lần phát biểu, giữ nguyên điểm dư trong túi quà
             const editDetach = qsEdit && !isAbsent && scoreVal !== '' && !isNaN(parseFloat(scoreVal)) &&
                 (!oldScoreItem || oldScoreItem.manual || parseFloat(scoreVal) !== parseFloat(oldScoreItem.score));
@@ -6520,6 +6686,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const student = appData.students.find(s => s.id === studentId);
             const oldScoreItem = appData.scores[key];
 
+            if (oldScoreItem && oldScoreItem.sg) { qsToast(qsT('sgLocked'), 'warning'); closeScoreModal(); return; }
             if (oldScoreItem && student) {
                 let oldExcess = 0;
                 if (oldScoreItem.speakingCount !== undefined) {
@@ -7130,7 +7297,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const shouldCopy=document.getElementById('copyPreviousCourseClasses')?.checked;let sourceCourse=null;if(shouldCopy&&c.startDate){sourceCourse=appData.courseManager.courses.filter(x=>x.id!==c.id&&x.startDate&&x.endDate&&x.endDate<c.startDate).sort((a,b)=>b.endDate.localeCompare(a.endDate))[0]||null;}const sourceSnapshot=sourceCourse?.snapshot;if(sourceSnapshot){appData.classes=deepCopy(sourceSnapshot.classes||appData.classes||[]);appData.students=deepCopy(sourceSnapshot.students||appData.students||[]);}
             appData.courseManager.courses.push(c);appData.courseManager.activeCourseId=c.id;
             appData.scores={};appData.finalExams={};appData.teachingPlans=appData.teachingPlans||{};appData.teachingPlans[c.id]=[];appData.studentNotes={};
-            appData.students=(appData.students||[]).map(st=>({...st,rewardPoints:0,inventory:[],violations:[],courseNotes:''}));
+            appData.students=(appData.students||[]).map(st=>({...st,rewardPoints:0,inventory:[],violations:[],courseNotes:'',sgAwarded:[]}));
             if(/^\d{4}-\d{2}-\d{2}/.test(c.startDate||'')){appData.year=parseInt(c.startDate.slice(0,4));appData.startMonth=parseInt(c.startDate.slice(5,7));if(/^\d{4}-\d{2}-\d{2}/.test(c.endDate||'')){const span=(parseInt(c.endDate.slice(0,4))*12+parseInt(c.endDate.slice(5,7)))-(appData.year*12+appData.startMonth)+1;if(span>=1&&span<=4)appData.monthCount=span;}appData.yearKeysFixed=true;try{const ms=document.getElementById('startMonthSelect'),mc=document.getElementById('monthCountSelect'),ys=document.getElementById('startYearSelect');if(ms)ms.value=appData.startMonth;if(mc)mc.value=appData.monthCount||3;if(ys){const yv=String(appData.year);if(![...ys.options].some(o=>o.value===yv))ys.add(new Option(yv,yv));ys.value=yv;}}catch(e){}}
             appData.courseManager.courses.forEach(x=>{if(x.id!==c.id&&x.status==='active')x.status='archived';});
           } catch(err){appData=backup;console.error(err);alert(appData.language==='en'?'Could not prepare the new course. No changes were saved.':'Không thể chuẩn bị khóa mới. Chưa có thay đổi nào được lưu.');return;}
