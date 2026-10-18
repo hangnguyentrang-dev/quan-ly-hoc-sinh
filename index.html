@@ -1496,6 +1496,9 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                             <option value="11" data-i18n="m11">Tháng 11</option>
                             <option value="12" data-i18n="m12">Tháng 12</option>
                         </select>
+                        <select id="startYearSelect" onchange="changeStartYear(this.value)" class="bg-transparent text-xs font-bold text-indigo-700 focus:outline-none" title="Năm bắt đầu / Start year">
+                            <option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option>
+                        </select>
                     </div>
                     <!-- Cấu hình Hệ số quy đổi -->
                     <div class="flex items-center space-x-2 bg-amber-50 px-3 py-1 rounded-lg border border-amber-200">
@@ -3416,12 +3419,37 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             qsEl('qsFabLbl').textContent = qsT('fab');
             const b = qsEl('qsFabBadge'); b.textContent = n; fab.classList.toggle('has-sel', n > 0);
         }
-        function qsDateOptions() {
-            const sm = appData.startMonth || 9, mc = appData.monthCount || 3, year = appData.year || 2026, out = [];
+        // Danh sách tháng hiển thị: năm thật của từng tháng (qua tháng 12 -> năm sau) và số ngày đúng (có năm nhuận).
+        window.mxSlots = function (obj) {
+            obj = obj || appData;
+            const sm = parseInt(obj.startMonth) || 9, mc = parseInt(obj.monthCount) || 3, by = parseInt(obj.year) || 2026, out = [];
             for (let i = 0; i < mc; i++) {
-                const m = ((sm - 1 + i) % 12) + 1, dim = (m === 9 || m === 11 || m === 4 || m === 6) ? 30 : 31;
-                for (let d = 1; d <= dim; d++) out.push({ key: `${year}-${m}-${d}`, label: `${d}/${m}` });
+                const idx = sm - 1 + i, m = (idx % 12) + 1, y = by + Math.floor(idx / 12);
+                out.push({ m, y, dim: new Date(y, m, 0).getDate() });
             }
+            return out;
+        };
+        // Sửa 1 lần khóa dữ liệu cũ: các tháng sau tháng 12 từng bị lưu nhầm vào năm bắt đầu -> chuyển sang năm sau.
+        window.mxMigrateYearKeys = function (obj) {
+            if (!obj || obj.yearKeysFixed) return false;
+            obj.yearKeysFixed = true;
+            const sm = parseInt(obj.startMonth) || 9, mc = parseInt(obj.monthCount) || 3, by = parseInt(obj.year) || 2026;
+            if (!obj.scores || sm - 1 + mc <= 12) return true;
+            const src = obj.scores, out = {};
+            Object.keys(src).forEach(k => {
+                const mt = k.match(/^(.*_)(\d{4})-(\d{1,2})-(\d{1,2})$/);
+                if (mt && +mt[2] === by && +mt[3] < sm) {
+                    const nk = `${mt[1]}${by + 1}-${mt[3]}-${mt[4]}`;
+                    if (!(nk in src) && !(nk in out)) { out[nk] = src[k]; return; }
+                }
+                out[k] = src[k];
+            });
+            obj.scores = out;
+            return true;
+        };
+        function qsDateOptions() {
+            const out = [];
+            window.mxSlots().forEach(sl => { for (let d = 1; d <= sl.dim; d++) out.push({ key: `${sl.y}-${sl.m}-${d}`, label: `${d}/${sl.m}` }); });
             return out;
         }
         const qsBulk = { target: 'day', amount: '1' };
@@ -3838,6 +3866,12 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                     if (!appData.courseManager) appData.courseManager = {activeCourseId:'course_initial',courses:[{id:'course_initial',name:'Khóa hiện tại',startDate:'',endDate:'',status:'active',createdAt:new Date().toISOString()}]};
                     if (!appData.teachingPlans) appData.teachingPlans = {};
                     if (!appData.studentNotes) appData.studentNotes = {};
+                    try {
+                        let fixedNow = !appData.yearKeysFixed;
+                        mxMigrateYearKeys(appData);
+                        ((appData.courseManager && appData.courseManager.courses) || []).forEach(c => { if (c.snapshot && !c.snapshot.yearKeysFixed) { mxMigrateYearKeys(c.snapshot); fixedNow = true; } });
+                        window.__mxYearFixPending = fixedNow;
+                    } catch (e) { console.warn('Year key migration skipped:', e); }
           if (!appData.classSchedules) appData.classSchedules = {};
           if (!appData.luckyWheel || typeof appData.luckyWheel !== 'object') appData.luckyWheel={prizes:[],history:[],transactions:{}};
           if (!Array.isArray(appData.luckyWheel.prizes)) appData.luckyWheel.prizes=[];
@@ -3886,6 +3920,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
 
                 document.getElementById('monthCountSelect').value = appData.monthCount || 3;
                 document.getElementById('startMonthSelect').value = appData.startMonth || 9;
+                (function () { const ys = document.getElementById('startYearSelect'), y = String(appData.year || 2026); if (ys) { if (![...ys.options].some(o => o.value === y)) ys.add(new Option(y, y)); ys.value = y; } })();
                 document.getElementById('maxSpeakingLimitSelect').value = appData.maxSpeakingLimit || 15;
 
                 if (!Array.isArray(appData.deletedStudents)) appData.deletedStudents = [];
@@ -3895,6 +3930,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 renderClassTabs();
                 renderCurrentView();
                 lastPersistedSnapshot = deepCopy(appData);
+                if (window.__mxYearFixPending) { window.__mxYearFixPending = false; try { saveData(); } catch (e) {} }
             });
         }
 
@@ -5369,6 +5405,11 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             saveData();
         };
 
+        window.changeStartYear = function(val) {
+            appData.year = parseInt(val);
+            saveData();
+        };
+
         window.switchClassTab = function(classId) {
             appData.activeClassId = classId;
             saveData();
@@ -5919,16 +5960,13 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             let daysHeader = [];
             let monthsHeader = [];
 
-            for (let i = 0; i < monthCount; i++) {
-                let m = ((startMonth - 1 + i) % 12) + 1;
-                let year = appData.year || 2026;
-                let daysInMonth = (m === 9 || m === 11 || m === 4 || m === 6) ? 30 : 31;
-
-                monthsHeader.push({ month: m, daysCount: daysInMonth });
+            window.mxSlots().forEach(sl => {
+                const m = sl.m, year = sl.y, daysInMonth = sl.dim;
+                monthsHeader.push({ month: m, year, daysCount: daysInMonth });
                 for (let d = 1; d <= daysInMonth; d++) {
-                    daysHeader.push({ month: m, day: d, dateStr: `${year}-${m}-${d}`, realStr: `${(parseInt(year) || 2026) + Math.floor((startMonth - 1 + i) / 12)}-${m}-${d}` });
+                    daysHeader.push({ month: m, day: d, dateStr: `${year}-${m}-${d}`, realStr: `${year}-${m}-${d}` });
                 }
-            }
+            });
 
             const mxNow = new Date(), mxTodayKey = `${mxNow.getFullYear()}-${mxNow.getMonth() + 1}-${mxNow.getDate()}`;
             const mxTodayD = daysHeader.find(x => x.realStr === mxTodayKey);
@@ -5940,7 +5978,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             html += `<th class="px-2 py-2 min-w-[55px] bg-indigo-950 border-r border-b border-slate-700 sticky-col-3 text-yellow-300">${lang === 'en' ? 'AVG' : 'ĐTB'}</th>`;
 
             monthsHeader.forEach(m => {
-                html += `<th colspan="${m.daysCount}" class="border-r border-b border-slate-600 py-1 font-bold bg-indigo-900">${lang === 'en' ? 'Month' : 'Tháng'} ${m.month}</th>`;
+                html += `<th colspan="${m.daysCount}" class="border-r border-b border-slate-600 py-1 font-bold bg-indigo-900">${lang === 'en' ? 'Month' : 'Tháng'} ${m.month}${(m.year !== (parseInt(appData.year) || 2026)) ? '/' + m.year : ''}</th>`;
             });
             html += `</tr>`;
 
@@ -7073,6 +7111,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             appData.courseManager.courses.push(c);appData.courseManager.activeCourseId=c.id;
             appData.scores={};appData.finalExams={};appData.teachingPlans=appData.teachingPlans||{};appData.teachingPlans[c.id]=[];appData.studentNotes={};
             appData.students=(appData.students||[]).map(st=>({...st,rewardPoints:0,inventory:[],violations:[],courseNotes:''}));
+            if(/^\d{4}-\d{2}-\d{2}/.test(c.startDate||'')){appData.year=parseInt(c.startDate.slice(0,4));appData.startMonth=parseInt(c.startDate.slice(5,7));if(/^\d{4}-\d{2}-\d{2}/.test(c.endDate||'')){const span=(parseInt(c.endDate.slice(0,4))*12+parseInt(c.endDate.slice(5,7)))-(appData.year*12+appData.startMonth)+1;if(span>=1&&span<=4)appData.monthCount=span;}appData.yearKeysFixed=true;try{const ms=document.getElementById('startMonthSelect'),mc=document.getElementById('monthCountSelect'),ys=document.getElementById('startYearSelect');if(ms)ms.value=appData.startMonth;if(mc)mc.value=appData.monthCount||3;if(ys){const yv=String(appData.year);if(![...ys.options].some(o=>o.value===yv))ys.add(new Option(yv,yv));ys.value=yv;}}catch(e){}}
             appData.courseManager.courses.forEach(x=>{if(x.id!==c.id&&x.status==='active')x.status='archived';});
           } catch(err){appData=backup;console.error(err);alert(appData.language==='en'?'Could not prepare the new course. No changes were saved.':'Không thể chuẩn bị khóa mới. Chưa có thay đổi nào được lưu.');return;}
           saveData().then(ok=>{if(!ok){appData=backup;renderClassTabs();renderCurrentView();renderCourseList();return;}renderClassTabs();renderCurrentView();renderCourseList();document.getElementById('currentCourseName').value=c.name;document.getElementById('currentCourseStart').value=c.startDate||'';document.getElementById('currentCourseEnd').value=c.endDate||'';document.getElementById('newCourseName').value='';document.getElementById('newCourseStart').value=c.endDate?datePlus(c.endDate,1):'';document.getElementById('newCourseEnd').value='';alert(appData.language==='en'?'The previous course was archived and the new course is now active.':'Đã lưu trữ khóa cũ và kích hoạt khóa mới.');});
