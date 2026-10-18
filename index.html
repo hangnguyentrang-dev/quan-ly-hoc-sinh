@@ -3159,6 +3159,8 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             if (!qsSelCell) return false;
             if (qsArchived()) { saveData(); return false; }
             const { sid, d } = qsSelCell;
+            const sgSids = mode === 'clear' ? (mxSel.length > 1 ? mxSel.map(c => c.sid) : [sid]) : null;
+            let sgBefore = null; if (sgSids) { try { sgBefore = sgSnap(sgSids); } catch (err) {} }
             if (mxSel.length > 1) {
                 mxBatch = [];
                 let any = false;
@@ -3166,11 +3168,13 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 const batch = mxBatch; mxBatch = null;
                 if (!any) return false;
                 mxPushUndo(batch);
+                if (sgBefore) { try { sgTrimChains(sgSids, sgBefore); } catch (err) {} }
                 qsFlashCell = { sid, d };
                 saveData().then(ok => { if (ok) qsStatus(); });
                 return true;
             }
             if (!qsWriteCell(sid, d, mode, val)) return false;
+            if (sgBefore) { try { sgTrimChains(sgSids, sgBefore); } catch (err) {} }
             qsFlashCell = { sid, d };
             saveData().then(ok => { if (ok) qsStatus(); });
             return true;
@@ -3210,6 +3214,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const from = redo ? mxRedoStack : mxUndoStack, to = redo ? mxUndoStack : mxRedoStack;
             const items = from.pop();
             if (!items) { qsToast(qsT(redo ? 'redoNone' : 'undoNone'), 'info'); return; }
+            let sgBefore = null; try { sgBefore = sgSnap(items.map(e => e.sid)); } catch (err) {}
             (redo ? items : items.slice().reverse()).forEach(e => {
                 const student = appData.students.find(s => s.id === e.sid);
                 if (!student) return;
@@ -3219,6 +3224,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 student.rewardPoints = Math.max(0, (student.rewardPoints || 0) + (redo ? e.dPts : -e.dPts));
             });
             to.push(items);
+            try { sgTrimChains(items.map(e => e.sid), sgBefore); } catch (err) { console.warn('sgTrimChains skipped:', err); }
             const last = items[items.length - 1];
             qsSelCell = { sid: last.sid, d: last.d }; qsBuf = ''; qsFlashCell = { sid: last.sid, d: last.d };
             renderCurrentView();
@@ -4093,12 +4099,13 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             // Spin transactions are audit records and must never be rolled back by generic Undo.
             const protectedWheel = deepCopy(appData.luckyWheel || {prizes:[],history:[],transactions:{}});
             const protectedSg = appData.sgLedger ? deepCopy(appData.sgLedger) : null;
+            let sgBeforeAll = null; try { sgBeforeAll = sgSnap(); } catch (e) {}
             suppressUndoCapture = true;
             appData = deepCopy(previous);
             appData.luckyWheel = protectedWheel;
             // Quà Streak (quà, ô điểm quà, trạng thái chuỗi) không bị hoàn tác
             if (protectedSg) appData.sgLedger = protectedSg;
-            try { sgEnforce(); } catch (e) { console.warn('sgEnforce skipped:', e); }
+            try { sgTrimChains(null, sgBeforeAll); sgEnforce(); } catch (e) { console.warn('sgEnforce skipped:', e); }
             if (sessionViewMode) appData.activeViewMode = sessionViewMode;
             renderClassTabs(); renderCurrentView();
             saveData().then(ok => {
@@ -5670,10 +5677,12 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 const prev = prevScores[key];
                 const changed = !prev || sig(prev) !== sig(cur);
                 if (changed) {
-                    if (!(cur.ts && (!prev || cur.ts !== prev.ts))) cur.ts = now;
+                    // Ô được khôi phục (Ctrl+Z / Ctrl+Y) mang theo ts cũ: giữ nguyên cờ miễn trừ của chính ô đó
+                    const restored = !!(cur.ts && (!prev || cur.ts !== prev.ts));
+                    if (!restored) cur.ts = now;
                     // Nút "Không trừ streak": điểm dưới 10 nhập lúc nút đang BẬT được đánh dấu miễn trừ vĩnh viễn
                     const curV = parseFloat(cur.score);
-                    if (appData.keepStreak && !cur.absent && !isNaN(curV) && curV < 10) cur.keep = true; else delete cur.keep;
+                    if (!restored) { if (appData.keepStreak && !cur.absent && !isNaN(curV) && curV < 10) cur.keep = true; else delete cur.keep; }
                     changedCount++; changedSids.add(String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, ''));
                     if (!cur.absent && !cur.sg && parseFloat(cur.score) >= 10) tenEvents.push(key);
                 } else if (!cur.ts) {
@@ -5715,29 +5724,36 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             return list;
         }
         // cur = streak hiện tại; best = kỷ lục (lớn nhất giữa lịch sử đã tính và giá trị đã lưu ở học sinh)
+        // Giới hạn số lần bị trừ (điểm dưới 9) theo mốc streak đang hiện hữu: quá giới hạn thì mất hết streak.
+        // Mốc 10: quá 3 lần · 15: quá 4 · 20: quá 5 · 30: quá 10 · 40: quá 15 · 50: quá 20.
+        const TEN_MISS_LIMIT = { 10: 3, 15: 4, 20: 5, 30: 10, 40: 15, 50: 20 };
+        function tenMissTier(n) { return n >= 50 ? 50 : n >= 40 ? 40 : n >= 30 ? 30 : n >= 20 ? 20 : n >= 15 ? 15 : n >= 10 ? 10 : 0; }
         function tenStreakInfo(studentId, scores) {
-            let run = 0, best = 0, miss = 0, live = [];
+            let run = 0, best = 0, miss = 0, tier = 0, peak = 0, live = [];
             const all = [];
+            // Đổi mốc (lên hay xuống) thì đếm lại số lần bị trừ từ đầu theo mốc mới, bỏ qua các lần trừ trước đó.
+            const retier = () => { const t = tenMissTier(run); if (t !== tier) { tier = t; miss = 0; } };
             tenSeries(studentId, scores).forEach(e => {
                 if (e.sg) return; // Điểm từ quà Streak: trung lập, không cộng cũng không làm đứt/trừ streak
                 if (e.v >= 10) {
-                    run++; if (run > best) best = run;
+                    run++; if (run > best) best = run; if (run > peak) peak = run;
+                    retier();
                     if (SG_REWARDS[run]) { const h = { tier: run, key: e.key }; all.push(h); live.push(h); }
                 }
-                else if (e.keep) { /* điểm nhập lúc bật 'Không trừ streak': giữ nguyên streak */ }
+                else if (e.keep) { /* điểm nhập lúc bật 'Không trừ streak': giữ nguyên streak, không tính lần trừ */ }
                 else if (run >= TEN_PROTECT_MIN) {
-                    // Từ streak 10 trở đi: điểm dưới 9 bị trừ dần thay vì mất ngay; 9 đến dưới 10 giữ nguyên streak.
-                    // Lần thứ k (k=1..5) trừ k streak; lần 6..10 trừ 5; quá 10 lần thì mất hết.
+                    // Từ streak 10 trở đi: mỗi điểm dưới 9 trừ 1 streak; 9 đến dưới 10 giữ nguyên.
+                    // Quá giới hạn của mốc đang hiện hữu thì mất hết.
                     if (e.v < 9) {
                         miss++;
-                        if (miss > 10) { run = 0; miss = 0; }
-                        else { run = Math.max(0, run - Math.min(miss, 5)); if (run === 0) miss = 0; }
+                        if (miss > (TEN_MISS_LIMIT[tier] || 3)) { run = 0; miss = 0; tier = 0; }
+                        else { run = Math.max(0, run - 1); retier(); }
                     }
-                } else { run = 0; miss = 0; }
-                if (run === 0) live = [];
+                } else if (e.v < 9) { run = 0; miss = 0; tier = 0; } /* dưới streak 10: cũng chỉ điểm dưới 9 mới đứt; 9 đến dưới 10 giữ nguyên như từ streak 10 */
+                if (run === 0) { live = []; peak = 0; }
             });
             const st = appData.students.find(x => x.id === studentId);
-            return { cur: run, best: Math.max(best, (st && st.bestTenStreak) || 0), hits: all, liveHits: live.filter(h => h.tier <= run) };
+            return { cur: run, peak, hist: best, best: Math.max(best, (st && st.bestTenStreak) || 0), hits: all, liveHits: live.filter(h => h.tier <= run) };
         }
         // ===== Quà thưởng Streak: đạt mốc streak -> nhận quà điểm 10 (số lượng theo mốc) =====
         function sgTierKey(n) { return n >= 50 ? 50 : n >= 40 ? 40 : n >= 30 ? 30 : n >= 20 ? 20 : n >= 15 ? 15 : n >= 10 ? 10 : 5; }
@@ -5789,6 +5805,43 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             });
             return changed;
         }
+        // Hoàn tác / xóa điểm (Ctrl+Z, phím Delete, nút "Xóa điểm"): nếu thao tác làm mốc streak không còn đạt được nữa
+        // thì mốc đó được tính lại để tặng quà lại khi đạt lại, quà mốc đó nếu CHƯA dùng thì thu hồi (tránh nhận đôi),
+        // và kỷ lục streak được hạ về đúng lịch sử còn lại. Quà đã dùng rồi thì giữ nguyên mốc, không tặng lại.
+        // snap = sgSnap(...) chụp TRƯỚC thao tác: chỉ mốc từng đạt trước đó mà nay không còn đạt mới bị thu hồi.
+        function sgSnap(sids) {
+            const m = {};
+            (sids ? Array.from(new Set(sids)) : (appData.students || []).map(s => s.id)).forEach(sid => { const i = tenStreakInfo(sid); m[sid] = { peak: i.peak, hist: i.hist }; });
+            return m;
+        }
+        function sgTrimChains(sids, snap) {
+            if (!snap) return false;
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return false;
+            const L = sgLedger(); let changed = false;
+            (sids ? Array.from(new Set(sids)) : Object.keys(snap)).forEach(sid => {
+                const sb = snap[sid]; if (!sb) return;
+                const inf = tenStreakInfo(sid), st0 = (appData.students || []).find(x => String(x.id) === String(sid));
+                // Kỷ lục: chỉ hạ khi kỷ lục đang lưu chính là do lịch sử vừa bị rút bớt tạo ra
+                if (st0 && inf.hist < sb.hist && (st0.bestTenStreak || 0) <= sb.hist) { st0.bestTenStreak = Math.min(st0.bestTenStreak || 0, inf.hist); changed = true; }
+                const ch = L.chains[sid]; if (!ch || !ch.on || !Array.isArray(ch.tiers) || !ch.tiers.length) return;
+                if (!ch.gifts || typeof ch.gifts !== 'object') ch.gifts = {};
+                const keepTiers = [];
+                ch.tiers.forEach(t => {
+                    if (!(t > inf.peak && t <= sb.peak)) { keepTiers.push(t); return; }
+                    const id = ch.gifts[t], e = id ? L.gifts[id] : null;
+                    if (!id) { keepTiers.push(t); return; } // dữ liệu cũ không biết quà nào của mốc nào: giữ nguyên
+                    if (e && (parseInt(e.left) || 0) < (parseInt(e.gift && e.gift.count) || 0)) { keepTiers.push(t); return; } // đã dùng
+                    if (e) {
+                        delete L.gifts[id];
+                        const st = (appData.students || []).find(x => String(x.id) === String(e.sid));
+                        if (st && Array.isArray(st.inventory)) st.inventory = st.inventory.filter(i => i.invId !== id);
+                    }
+                    delete ch.gifts[t]; changed = true;
+                });
+                if (keepTiers.length !== ch.tiers.length) { ch.tiers = keepTiers; changed = true; }
+            });
+            return changed;
+        }
         // Tặng quà theo CHUỖI: mỗi mốc chỉ tặng 1 lần cho tới khi streak về 0 (đứt hẳn). Streak bị trừ rồi lên lại không tặng lại.
         function sgSync() {
             if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return false;
@@ -5807,8 +5860,8 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                     changed = true;
                 }
                 if (!Array.isArray(ch.tiers)) ch.tiers = [];
-                if (cur === 0) { if (ch.on || ch.tiers.length) { ch.on = false; ch.tiers = []; changed = true; } return; }
-                if (!ch.on) { ch.on = true; ch.tiers = []; changed = true; }
+                if (cur === 0) { if (ch.on || ch.tiers.length) { ch.on = false; ch.tiers = []; ch.gifts = {}; changed = true; } return; }
+                if (!ch.on) { ch.on = true; ch.tiers = []; ch.gifts = {}; changed = true; }
                 if (!Array.isArray(st.inventory)) st.inventory = [];
                 tiers.forEach(t => {
                     if (t > cur || ch.tiers.indexOf(t) >= 0) return;
@@ -5821,6 +5874,8 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                     };
                     st.inventory.push(gift);
                     L.gifts[gift.invId] = { sid: st.id, gift: deepCopy(gift), left: gift.count };
+                    if (!ch.gifts || typeof ch.gifts !== 'object') ch.gifts = {};
+                    ch.gifts[t] = gift.invId;
                     got.push({ st, tier: t, n: SG_REWARDS[t] });
                 });
                 if (!st.sgInit) { st.sgInit = true; changed = true; }
@@ -5968,6 +6023,8 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 T('Mỗi mốc chỉ tặng một lần trong cùng một chuỗi. Chuỗi chỉ kết thúc khi streak về 0.', 'Each milestone is awarded once per chain. A chain only ends when the streak reaches 0.'),
                 T('Streak bị trừ rồi tăng lại không được tặng lại các mốc đã nhận.', 'If the streak is reduced and then climbs back, milestones already received are not awarded again.'),
                 T('Streak về 0 rồi xây lại từ đầu thì các mốc được tặng lại.', 'If the streak falls to 0 and is rebuilt, the milestones are awarded again.'),
+                T('Hoàn tác (Ctrl+Z), phím Delete hoặc nút Xóa điểm làm mất một mốc: quà mốc đó chưa dùng sẽ bị thu hồi, kỷ lục hạ theo, và mốc được tặng lại khi đạt lại.', 'Undo (Ctrl+Z), the Delete key or the Delete Score button that removes a milestone: its unused gift is withdrawn, the record drops accordingly, and the milestone is awarded again when reached again.'),
+                T('Dưới streak 10, điểm dưới 9 làm đứt streak (9 vẫn giữ). Từ streak 10, điểm dưới 9 bị trừ 1 streak; quá 3 lần (mốc 10), 4 (mốc 15), 5 (mốc 20), 10 (mốc 30), 15 (mốc 40), 20 (mốc 50) thì mất hết. Đổi mốc thì đếm lại từ đầu.', 'Below streak 10, a score under 9 ends the streak (a 9 keeps it). From streak 10, each score below 9 costs 1 streak; more than 3 (tier 10), 4 (15), 5 (20), 10 (30), 15 (40) or 20 (50) wipes it out. Changing tier restarts the count.'),
                 T('Quà đã nhận không bị thu hồi khi streak bị trừ hay đứt, và không bị ảnh hưởng bởi việc sửa điểm bằng tay.', 'Received gifts are never taken back when the streak drops or ends, and manual score edits do not affect them.'),
                 T('Điểm từ quà không cộng và không bị trừ streak; ô điểm quà bị khóa. Ô dưới 9 được nâng lên 10 vẫn tính streak theo điểm cũ.', 'Gift scores neither add to nor reduce the streak, and gift cells are locked. A cell below 9 raised to 10 still counts toward the streak as its old score.')
             ].map(x => `<p>${x}</p>`).join('');
@@ -6906,7 +6963,9 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                     oldExcess = Math.max(0, oldN - M);
                 }
                 if (!qsEdit) student.rewardPoints = Math.max(0, (student.rewardPoints || 0) - oldExcess);
+                let sgBefore = null; try { sgBefore = sgSnap([studentId]); } catch (err) {}
                 delete appData.scores[key];
+                try { sgTrimChains([studentId], sgBefore); } catch (err) {}
                 saveData();
             }
             closeScoreModal();
