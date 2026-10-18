@@ -613,6 +613,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 /* ===== XF: trend toggle ===== */
 .qs-toggle.qs-toggle-tpl.on{background:#c026d3;border-color:#c026d3;box-shadow:0 2px 8px rgba(192,38,211,.4)}
 .qs-toggle.qs-toggle-trend.on{background:#059669;border-color:#059669;box-shadow:0 2px 8px rgba(5,150,105,.4)}
+.qs-toggle.qs-toggle-keep.on{background:#ea580c;border-color:#ea580c;box-shadow:0 2px 8px rgba(234,88,12,.4)}
 /* ===== XF: birthday ===== */
 @keyframes xfBdayGlow{0%,100%{box-shadow:0 0 0 2px rgba(244,114,182,.35),0 10px 26px rgba(244,114,182,.22)}50%{box-shadow:0 0 0 3px rgba(250,204,21,.55),0 12px 30px rgba(244,114,182,.4)}}
 @keyframes xfRainbow{from{background-position:0 0}to{background-position:200% 0}}
@@ -2783,6 +2784,10 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 presFinal: c => `Bảng xếp hạng cuối kỳ · Lớp ${c}`,
                 rankUp: n => `Lên ${n} hạng`, rankDown: n => `Xuống ${n} hạng`,
                 trendLbl: 'Xu hướng điểm',
+                keepLbl: 'Không trừ streak',
+                keepHint: 'Khi BẬT, điểm dưới 10 nhập vào lúc này sẽ không trừ/đứt streak (điểm 10 vẫn cộng streak). Những điểm đó được miễn trừ vĩnh viễn, kể cả sau khi tắt nút. Điểm nhập khi TẮT vẫn tính streak bình thường.',
+                keepOn: 'Đã bật Không trừ streak: các điểm dưới 10 nhập từ bây giờ (vòng quay, quà đổi điểm 7-8-9...) sẽ không trừ streak; điểm 10 vẫn cộng streak bình thường.',
+                keepOff: 'Đã tắt Không trừ streak: điểm nhập từ giờ tính streak bình thường. Các điểm đã nhập lúc bật vẫn được miễn trừ.',
                 trendHint: 'Hiện mũi tên ▲▼ cạnh ĐTB: so sánh TB 5 điểm gần nhất với 5 điểm trước đó (luôn tắt khi mở trang).',
                 bdayLbl: 'Ngày sinh nhật (không bắt buộc):',
                 bdayHint: 'Đến ngày này hệ thống sẽ thông báo và thẻ học sinh có hiệu ứng sinh nhật.'
@@ -2838,6 +2843,10 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 presFinal: c => `Final Exam Leaderboard · Class ${c}`,
                 rankUp: n => `Up ${n} place${n === 1 ? '' : 's'}`, rankDown: n => `Down ${n} place${n === 1 ? '' : 's'}`,
                 trendLbl: 'Score trend',
+                keepLbl: 'No streak loss',
+                keepHint: 'When ON, scores below 10 entered now will not reduce or break the streak (a 10 still adds to it). Those scores stay exempt even after turning it off. Scores entered while OFF count normally.',
+                keepOn: 'No streak loss on: scores below 10 entered from now on (lucky wheel, gift-exchange points 7-8-9...) will not reduce streaks; a 10 still adds to the streak.',
+                keepOff: 'No streak loss off: new scores count toward streaks normally. Scores entered while it was on stay exempt.',
                 trendHint: 'Shows a ▲▼ arrow next to the average: last 5 scores vs the 5 before (always off when the page opens).',
                 bdayLbl: 'Birthday (optional):',
                 bdayHint: 'On this day the system will notify you and the student card gets a birthday effect.'
@@ -3356,6 +3365,13 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             renderCurrentView();
             if (qsTrend) qsToast(qsT('trendOn'), 'info');
         };
+        window.qsToggleKeep = function () {
+            appData.keepStreak = !appData.keepStreak;
+            try { saveData(); } catch (e) {}
+            qsToolbarSig = ''; qsRefreshToolbar();
+            renderCurrentView();
+            qsToast(qsT(appData.keepStreak ? 'keepOn' : 'keepOff'), 'info');
+        };
         window.qsToggleTpl = function () {
             qsTpl = !qsTpl;
             try { localStorage.setItem(QS_TPL_KEY, qsTpl ? '1' : '0'); } catch (e) {}
@@ -3365,11 +3381,11 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
         };
         function qsRefreshToolbar() {
             const tb = qsEl('qsToolbar'); if (!tb) return;
-            const sig = (appData.language || 'vi') + '|' + qsQuick + '|' + qsTest + '|' + qsEdit + '|' + qsTrend + '|' + qsTpl;
+            const sig = (appData.language || 'vi') + '|' + qsQuick + '|' + qsTest + '|' + qsEdit + '|' + qsTrend + '|' + !!appData.keepStreak + '|' + qsTpl;
             if (sig === qsToolbarSig) return;
             qsToolbarSig = sig;
             const collapsed = !!window.__qsToolbarCollapsed;
-            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i>${qsT('editLbl')}<b>${qsEdit ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i>${qsT('tplLbl')}<b>${qsTpl ? 'ON' : 'OFF'}</b></button><label class="mx-search"><i class="fa-solid fa-magnifying-glass"></i><input id="mxSearch" type="search" value="${mxAttr(mxSearchQ)}" placeholder="${qsT('searchPh')}" oninput="mxSearchInput(this.value)" onkeydown="mxSearchKey(event)" autocomplete="off"></label><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i>${qsT('todayLbl')}</button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsQuickHint">${qsEdit ? qsT('editHint') : (qsTest ? qsT('testHint') : (qsQuick ? qsT('quickHint') : qsT('quickHintOff')))}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
+            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i>${qsT('editLbl')}<b>${qsEdit ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-fire-flame-curved"></i>${qsT('keepLbl')}<b>${appData.keepStreak ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i>${qsT('tplLbl')}<b>${qsTpl ? 'ON' : 'OFF'}</b></button><label class="mx-search"><i class="fa-solid fa-magnifying-glass"></i><input id="mxSearch" type="search" value="${mxAttr(mxSearchQ)}" placeholder="${qsT('searchPh')}" oninput="mxSearchInput(this.value)" onkeydown="mxSearchKey(event)" autocomplete="off"></label><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i>${qsT('todayLbl')}</button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsQuickHint">${qsEdit ? qsT('editHint') : (qsTest ? qsT('testHint') : (qsQuick ? qsT('quickHint') : qsT('quickHintOff')))}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
             const mt = qsEl('scoreMatrix'); if (mt) { mt.classList.toggle('qs-edit-on', qsEdit); mt.classList.toggle('qs-test-on', qsTest); }
             mxUpdateTodayBadge(); mxUpdateMultiInfo();
@@ -5545,6 +5561,9 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 const changed = !prev || sig(prev) !== sig(cur);
                 if (changed) {
                     if (!(cur.ts && (!prev || cur.ts !== prev.ts))) cur.ts = now;
+                    // Nút "Không trừ streak": điểm dưới 10 nhập lúc nút đang BẬT được đánh dấu miễn trừ vĩnh viễn
+                    const curV = parseFloat(cur.score);
+                    if (appData.keepStreak && !cur.absent && !isNaN(curV) && curV < 10) cur.keep = true; else delete cur.keep;
                     changedCount++; changedSids.add(String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, ''));
                     if (!cur.absent && parseFloat(cur.score) >= 10) tenEvents.push(key);
                 } else if (!cur.ts) {
@@ -5574,7 +5593,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 if (it.score === null || it.score === undefined || it.score === '') return;
                 const v = parseFloat(it.score); if (isNaN(v)) return;
                 const dms = scoreKeyDateMs(key);
-                list.push({ v, ts: it.ts || Math.min(dms || now, now), dms });
+                list.push({ v, ts: it.ts || Math.min(dms || now, now), dms, keep: !!it.keep });
             });
             list.sort((a, b) => (a.ts - b.ts) || (a.dms - b.dms));
             return list;
@@ -5584,6 +5603,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             let run = 0, best = 0, miss = 0;
             tenSeries(studentId, scores).forEach(e => {
                 if (e.v >= 10) { run++; if (run > best) best = run; }
+                else if (e.keep) { /* điểm nhập lúc bật 'Không trừ streak': giữ nguyên streak */ }
                 else if (run >= TEN_PROTECT_MIN) {
                     // Từ streak 10 trở đi: điểm dưới 9 bị trừ dần thay vì mất ngay; 9 đến dưới 10 giữ nguyên streak.
                     // Lần thứ k (k=1..5) trừ k streak; lần 6..10 trừ 5; quá 10 lần thì mất hết.
