@@ -1073,6 +1073,17 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 #scoreMatrix th.mx-hx{background:#6366f1 !important;color:#fff !important;box-shadow:inset 0 -3px 0 #fbbf24}
 #scoreMatrix td.grid-cell.mx-today{box-shadow:inset 2px 0 0 #f59e0b,inset -2px 0 0 #f59e0b}
 #scoreMatrix td.grid-cell.mx-today.cell-empty{background-color:rgba(251,191,36,.10)}
+#scoreMatrix td.grid-cell{user-select:none;-webkit-user-select:none}
+#scoreMatrix td.grid-cell.mx-multi:not(.cell-absent){background-color:#e0e7ff !important;color:#1e1b4b !important;outline:2px solid #4f46e5;outline-offset:-2px}
+#scoreMatrix td.grid-cell.mx-multi.cell-absent{outline:2px solid #4f46e5;outline-offset:-2px}
+#scoreMatrix.qs-test-on td.grid-cell.mx-multi:not(.cell-absent){background-color:#fde68a !important;color:#3b0764 !important;outline-color:#6b21a8}
+.mx-today-btn{cursor:pointer}
+.mx-today-badge{font-size:10px;font-weight:800;border-radius:9999px;padding:.22rem .6rem;border:1px solid #fcd34d;background:#fef3c7;color:#92400e;cursor:pointer}
+.mx-today-badge.done{border-color:#86efac;background:#dcfce7;color:#166534;cursor:default}
+.mx-multi-info{font-size:10px;font-weight:800;color:#4338ca}
+html.mx-dark .mx-today-badge{background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.5);color:#fcd34d}
+html.mx-dark .mx-today-badge.done{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.5);color:#86efac}
+html.mx-dark .mx-multi-info{color:#a5b4fc}
 .mx-search{display:inline-flex;align-items:center;gap:.3rem;border:1px solid #cbd5e1;background:#fff;border-radius:9999px;padding:.12rem .5rem;font-size:10px;color:#64748b}
 .mx-search input{border:0;outline:0;background:transparent;font-size:11px;width:9.5rem;color:#1e293b}
 .mx-search:focus-within{border-color:#4f46e5;box-shadow:0 0 0 2px rgba(79,70,229,.2)}
@@ -2729,6 +2740,13 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 editHint: '<b>Chế độ Sửa điểm:</b> bấm ô điểm rồi gõ số mới → ô đó <b>thôi tính theo số lần phát biểu</b> (điểm dư đã quy đổi trong túi quà được giữ nguyên) · <kbd>Enter</kbd> xuống học sinh kế · <kbd>A</kbd> vắng · <kbd>Del</kbd> xóa',
                 editTitle: 'Bật để sửa tay điểm: ô được sửa sẽ gỡ liên kết với số lần phát biểu; điểm dư trong túi quà không đổi',
                 searchPh: 'Tìm học sinh…',
+                todayLbl: 'Hôm nay',
+                todayTitle: 'Cuộn tới cột ngày hôm nay',
+                todayNone: 'Hôm nay không nằm trong các tháng đang hiển thị.',
+                badgeMissing: 'Hôm nay còn {n} HS chưa có điểm',
+                badgeDone: 'Hôm nay: đã đủ điểm ✓',
+                badgeTitle: 'Nhấn để tới học sinh đầu tiên chưa có điểm hôm nay',
+                multiSel: '{n} ô đang chọn · gõ điểm · A = vắng · Del = xóa · Esc để bỏ chọn',
                 undoDone: 'Đã hoàn tác ô điểm vừa nhập.',
                 redoDone: 'Đã làm lại ô điểm.',
                 undoNone: 'Không còn thao tác nhập điểm nào để hoàn tác.',
@@ -2777,6 +2795,13 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 editHint: '<b>Edit-score mode:</b> click a score cell and type a new number → that cell is <b>detached from the speaking-count rule</b> (surplus points already converted into the gift bag stay unchanged) · <kbd>Enter</kbd> next student · <kbd>A</kbd> absent · <kbd>Del</kbd> clear',
                 editTitle: 'Turn on to hand-edit scores: edited cells are detached from the speaking count; gift-bag points stay unchanged',
                 searchPh: 'Find student…',
+                todayLbl: 'Today',
+                todayTitle: "Scroll to today's column",
+                todayNone: "Today isn't within the months shown.",
+                badgeMissing: '{n} students without a score today',
+                badgeDone: 'Today: all scored ✓',
+                badgeTitle: 'Click to jump to the first student without a score today',
+                multiSel: '{n} cells selected · type a score · A = absent · Del = clear · Esc to deselect',
                 undoDone: 'Last typed score undone.',
                 redoDone: 'Score redone.',
                 undoNone: 'No typed-score action left to undo.',
@@ -2954,11 +2979,13 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             td.textContent = qsBuf; td.classList.add('qs-typing');
         }
         function qsDeselect() {
+            mxClearMulti();
             qsBuf = ''; qsShowBuf();
             const td = qsCurCell(); if (td) td.classList.remove('qs-sel');
             qsSelCell = null;
         }
         function qsSelect(sid, d) {
+            mxClearMulti();
             const prev = qsCurCell();
             if (prev) { qsBuf = ''; qsShowBuf(); prev.classList.remove('qs-sel'); }
             qsBuf = ''; qsSelCell = { sid, d };
@@ -2980,6 +3007,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             return false;
         }
         window.qsCellClick = function (ev, sid, d) {
+            if (qsQuick && ev.shiftKey && qsSelCell) { mxExtendTo(sid, d); return; }
             if (qsQuick && ev.detail < 2) { qsSelect(sid, d); return; }
             openScoreModal(sid, d);
         };
@@ -3006,9 +3034,8 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             } else {
                 appData.scores[key] = { ...mfl(old), score: val, absent: false, speakingCount: (old && !old.absent && old.speakingCount !== undefined) ? old.speakingCount : 0, isExam: qsTest ? true : !!(old && !old.absent && old.isExam) };
             }
-            mxUndoStack.push({ sid, d, before: mxBefore, after: mxClone(appData.scores[key]), dPts: (student.rewardPoints || 0) - mxPtsBefore });
-            if (mxUndoStack.length > 60) mxUndoStack.shift();
-            mxRedoStack.length = 0;
+            const mxItem = { sid, d, before: mxBefore, after: mxClone(appData.scores[key]), dPts: (student.rewardPoints || 0) - mxPtsBefore };
+            if (mxBatch) mxBatch.push(mxItem); else mxPushUndo([mxItem]);
             return true;
         }
         let qsStatusTimer = null;
@@ -3021,6 +3048,17 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             if (!qsSelCell) return false;
             if (qsArchived()) { saveData(); return false; }
             const { sid, d } = qsSelCell;
+            if (mxSel.length > 1) {
+                mxBatch = [];
+                let any = false;
+                mxSel.forEach(c => { if (qsWriteCell(c.sid, c.d, mode, val)) any = true; });
+                const batch = mxBatch; mxBatch = null;
+                if (!any) return false;
+                mxPushUndo(batch);
+                qsFlashCell = { sid, d };
+                saveData().then(ok => { if (ok) qsStatus(); });
+                return true;
+            }
             if (!qsWriteCell(sid, d, mode, val)) return false;
             qsFlashCell = { sid, d };
             saveData().then(ok => { if (ok) qsStatus(); });
@@ -3049,18 +3087,28 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
         const mxUndoStack = [], mxRedoStack = [];
         const mxClone = o => (o === undefined ? undefined : JSON.parse(JSON.stringify(o)));
         function mxModalOpen() { return [...document.querySelectorAll('[id$="Modal"]')].some(m => getComputedStyle(m).display !== 'none'); }
+        let mxBatch = null;
+        function mxPushUndo(items) {
+            if (!items.length) return;
+            mxUndoStack.push(items);
+            if (mxUndoStack.length > 60) mxUndoStack.shift();
+            mxRedoStack.length = 0;
+        }
         function mxUndoRedo(redo) {
             if (qsArchived()) { saveData(); return; }
             const from = redo ? mxRedoStack : mxUndoStack, to = redo ? mxUndoStack : mxRedoStack;
-            const e = from.pop();
-            if (!e) { qsToast(qsT(redo ? 'redoNone' : 'undoNone'), 'info'); return; }
-            const student = appData.students.find(s => s.id === e.sid);
-            if (!student) return;
-            const key = `${e.sid}_${e.d}`, target = redo ? e.after : e.before;
-            if (target === undefined) delete appData.scores[key]; else appData.scores[key] = mxClone(target);
-            student.rewardPoints = Math.max(0, (student.rewardPoints || 0) + (redo ? e.dPts : -e.dPts));
-            to.push(e);
-            qsSelCell = { sid: e.sid, d: e.d }; qsBuf = ''; qsFlashCell = { sid: e.sid, d: e.d };
+            const items = from.pop();
+            if (!items) { qsToast(qsT(redo ? 'redoNone' : 'undoNone'), 'info'); return; }
+            (redo ? items : items.slice().reverse()).forEach(e => {
+                const student = appData.students.find(s => s.id === e.sid);
+                if (!student) return;
+                const key = `${e.sid}_${e.d}`, target = redo ? e.after : e.before;
+                if (target === undefined) delete appData.scores[key]; else appData.scores[key] = mxClone(target);
+                student.rewardPoints = Math.max(0, (student.rewardPoints || 0) + (redo ? e.dPts : -e.dPts));
+            });
+            to.push(items);
+            const last = items[items.length - 1];
+            qsSelCell = { sid: last.sid, d: last.d }; qsBuf = ''; qsFlashCell = { sid: last.sid, d: last.d };
             renderCurrentView();
             saveData().then(ok => { if (ok) qsStatus(); });
             qsToast(qsT(redo ? 'redoDone' : 'undoDone'), 'info');
@@ -3078,6 +3126,107 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             if (qsBuf) { qsBuf = ''; qsShowBuf(); return; }
             mxUndoRedo(isRedo);
         });
+
+
+        /* ===== MX: chọn nhiều ô (kéo chuột / Shift+click / Shift+mũi tên) rồi nhập chung ===== */
+        let mxSel = [], mxEnd = null;
+        const mxMultiActive = () => mxSel.length > 1;
+        const mxCellOf = t => (t && t.closest) ? t.closest('#scoreMatrix td.grid-cell') : null;
+        const mxRows = () => [...document.querySelectorAll('#scoreMatrix tbody .score-row')];
+        function mxUpdateMultiInfo() {
+            const el = qsEl('mxMultiInfo'); if (!el) return;
+            if (mxSel.length > 1) { el.textContent = qsT('multiSel').replace('{n}', mxSel.length); el.style.display = ''; }
+            else { el.textContent = ''; el.style.display = 'none'; }
+        }
+        function mxPaintMulti() {
+            document.querySelectorAll('#scoreMatrix td.mx-multi').forEach(t => t.classList.remove('mx-multi'));
+            if (mxSel.length > 1) mxSel.forEach(c => { const t = qsGetCell(c.sid, c.d); if (t) t.classList.add('mx-multi'); });
+            mxUpdateMultiInfo();
+        }
+        function mxClearMulti() { if (!mxSel.length && !mxEnd) return; mxSel = []; mxEnd = null; mxPaintMulti(); }
+        function mxReapplyMulti() { if (mxSel.length > 1) mxPaintMulti(); }
+        function mxExtendTo(sid, d) {
+            if (!qsSelCell) return;
+            const tdA = qsCurCell(), tdB = qsGetCell(sid, d); if (!tdA || !tdB) return;
+            if (tdA === tdB) { mxClearMulti(); return; }
+            const rows = mxRows(), rA = rows.indexOf(tdA.parentElement), rB = rows.indexOf(tdB.parentElement);
+            if (rA < 0 || rB < 0) return;
+            const r1 = Math.min(rA, rB), r2 = Math.max(rA, rB), c1 = Math.min(tdA.cellIndex, tdB.cellIndex), c2 = Math.max(tdA.cellIndex, tdB.cellIndex);
+            const list = [];
+            for (let r = r1; r <= r2; r++) for (let c = c1; c <= c2; c++) {
+                const t = rows[r].children[c];
+                if (t && t.dataset && t.dataset.sid) list.push({ sid: t.dataset.sid, d: t.dataset.d });
+            }
+            mxSel = list; mxEnd = { sid, d };
+            mxPaintMulti(); qsScrollTo(tdB);
+        }
+        function mxShiftArrow(k) {
+            const base = qsGetCell((mxEnd || qsSelCell).sid, (mxEnd || qsSelCell).d); if (!base) return;
+            const dr = k === 'ArrowDown' ? 1 : k === 'ArrowUp' ? -1 : 0, dc = k === 'ArrowRight' ? 1 : k === 'ArrowLeft' ? -1 : 0;
+            let target = null;
+            if (dr) {
+                let row = base.parentElement;
+                do { row = dr > 0 ? row.nextElementSibling : row.previousElementSibling; } while (row && !row.classList.contains('score-row'));
+                if (row) target = row.children[base.cellIndex];
+            } else {
+                const c = dc > 0 ? base.nextElementSibling : base.previousElementSibling;
+                if (c && c.classList.contains('grid-cell')) target = c;
+            }
+            if (target && target.dataset.sid) mxExtendTo(target.dataset.sid, target.dataset.d);
+        }
+        (function () {
+            let dragStart = null, moved = false;
+            document.addEventListener('mousedown', e => {
+                dragStart = null; moved = false;
+                if (e.button !== 0 || e.shiftKey || !qsQuick || !qsIsMatrix()) return;
+                const td = mxCellOf(e.target); if (td) dragStart = td;
+            });
+            document.addEventListener('mouseover', e => {
+                if (!dragStart) return;
+                if (e.buttons !== 1) { dragStart = null; return; }
+                const td = mxCellOf(e.target); if (!td) return;
+                if (!moved) {
+                    if (td === dragStart) return;
+                    moved = true; qsSelect(dragStart.dataset.sid, dragStart.dataset.d);
+                }
+                mxExtendTo(td.dataset.sid, td.dataset.d);
+            });
+            document.addEventListener('mouseup', () => { dragStart = null; });
+        })();
+
+        /* ===== MX: nút Hôm nay + cảnh báo ô trống hôm nay ===== */
+        function mxScrollToTh(th, smooth) {
+            const box = qsEl('tableScrollContainer'); if (!box || !th) return;
+            const stick = box.querySelector('th.sticky-col-3');
+            const leftEdge = stick ? stick.getBoundingClientRect().right : box.getBoundingClientRect().left;
+            const left = box.scrollLeft + th.getBoundingClientRect().left - leftEdge - 56;
+            box.scrollTo({ left: Math.max(0, left), behavior: smooth ? 'smooth' : 'auto' });
+        }
+        function mxMissingToday() {
+            const col = window.mxTodayCol; if (!col) return null;
+            return appData.students.filter(s => s.classId === appData.activeClassId).filter(s => {
+                const it = appData.scores[`${s.id}_${col}`];
+                return !it || (!it.absent && (it.score === null || it.score === undefined));
+            });
+        }
+        function mxUpdateTodayBadge() {
+            const el = qsEl('mxTodayBadge'); if (!el) return;
+            const miss = mxMissingToday();
+            if (!miss) { el.style.display = 'none'; return; }
+            el.style.display = '';
+            el.classList.toggle('done', miss.length === 0);
+            el.textContent = miss.length ? qsT('badgeMissing').replace('{n}', miss.length) : qsT('badgeDone');
+        }
+        window.mxGoToday = function (toMissing) {
+            const th = document.querySelector('#scoreMatrix thead th.mx-today-h');
+            if (!th) { qsToast(qsT('todayNone'), 'info'); return; }
+            mxScrollToTh(th, true);
+            if (!toMissing) return;
+            const miss = mxMissingToday();
+            if (!miss || !miss.length) return;
+            const td = qsGetCell(miss[0].id, window.mxTodayCol); if (!td) return;
+            if (qsQuick) qsSelect(miss[0].id, window.mxTodayCol); else qsScrollTo(td);
+        };
 
         /* ===== MX: ô tìm học sinh ===== */
         let mxSearchQ = '', mxSearchIdx = -1, mxFoundTimer = null;
@@ -3162,11 +3311,12 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 if (!/^\d{1,2}([.,]\d?)?$/.test(nb)) return;
                 if (parseFloat(nb.replace(',', '.')) > 10) { const td = qsCurCell(); if (td) { td.classList.remove('qs-bad'); void td.offsetWidth; td.classList.add('qs-bad'); } return; }
                 qsBuf = nb; qsShowBuf();
-                if (nb === '10') { qsCommit(); qsMove(1, 0); }
+                if (nb === '10') { const mm = mxMultiActive(); qsCommit(); if (!mm) qsMove(1, 0); }
                 return;
             }
+            if (e.shiftKey && /^Arrow/.test(k)) { e.preventDefault(); mxShiftArrow(k); return; }
             switch (k) {
-                case 'Enter': e.preventDefault(); qsCommit(); qsMove(e.shiftKey ? -1 : 1, 0); break;
+                case 'Enter': { e.preventDefault(); const mm = mxMultiActive(), had = qsBuf !== ''; qsCommit(); if (!(mm && had)) qsMove(e.shiftKey ? -1 : 1, 0); break; }
                 case 'ArrowDown': e.preventDefault(); qsCommit(); qsMove(1, 0); break;
                 case 'ArrowUp': e.preventDefault(); qsCommit(); qsMove(-1, 0); break;
                 case 'ArrowRight': e.preventDefault(); qsCommit(); qsMove(0, 1); break;
@@ -3174,8 +3324,8 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 case 'Tab': e.preventDefault(); qsCommit(); qsMove(0, e.shiftKey ? -1 : 1); break;
                 case 'Backspace': if (qsBuf) { e.preventDefault(); qsBuf = qsBuf.slice(0, -1); qsShowBuf(); } break;
                 case 'Delete': e.preventDefault(); if (qsBuf) { qsBuf = ''; qsShowBuf(); } else qsSave('clear'); break;
-                case 'a': case 'A': case 'v': case 'V': e.preventDefault(); qsBuf = ''; qsShowBuf(); qsSave('absent'); qsMove(1, 0); break;
-                case 'Escape': if (qsBuf) { qsBuf = ''; qsShowBuf(); } else qsDeselect(); break;
+                case 'a': case 'A': case 'v': case 'V': { e.preventDefault(); const mm = mxMultiActive(); qsBuf = ''; qsShowBuf(); qsSave('absent'); if (!mm) qsMove(1, 0); break; }
+                case 'Escape': if (qsBuf) { qsBuf = ''; qsShowBuf(); } else if (mxMultiActive()) mxClearMulti(); else qsDeselect(); break;
             }
         });
         window.qsToggleQuick = function () {
@@ -3216,9 +3366,10 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             if (sig === qsToolbarSig) return;
             qsToolbarSig = sig;
             const collapsed = !!window.__qsToolbarCollapsed;
-            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i>${qsT('editLbl')}<b>${qsEdit ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i>${qsT('tplLbl')}<b>${qsTpl ? 'ON' : 'OFF'}</b></button><label class="mx-search"><i class="fa-solid fa-magnifying-glass"></i><input id="mxSearch" type="search" value="${mxAttr(mxSearchQ)}" placeholder="${qsT('searchPh')}" oninput="mxSearchInput(this.value)" onkeydown="mxSearchKey(event)" autocomplete="off"></label><span id="qsQuickHint">${qsEdit ? qsT('editHint') : (qsTest ? qsT('testHint') : (qsQuick ? qsT('quickHint') : qsT('quickHintOff')))}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
+            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i>${qsT('editLbl')}<b>${qsEdit ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i>${qsT('tplLbl')}<b>${qsTpl ? 'ON' : 'OFF'}</b></button><label class="mx-search"><i class="fa-solid fa-magnifying-glass"></i><input id="mxSearch" type="search" value="${mxAttr(mxSearchQ)}" placeholder="${qsT('searchPh')}" oninput="mxSearchInput(this.value)" onkeydown="mxSearchKey(event)" autocomplete="off"></label><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i>${qsT('todayLbl')}</button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsQuickHint">${qsEdit ? qsT('editHint') : (qsTest ? qsT('testHint') : (qsQuick ? qsT('quickHint') : qsT('quickHintOff')))}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
             const mt = qsEl('scoreMatrix'); if (mt) { mt.classList.toggle('qs-edit-on', qsEdit); mt.classList.toggle('qs-test-on', qsTest); }
+            mxUpdateTodayBadge(); mxUpdateMultiInfo();
         }
 
         window.__qsToolbarCollapsed = !!window.__qsToolbarCollapsed;
@@ -3661,6 +3812,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 const td = qsCurCell();
                 if (td) { td.classList.add('qs-sel'); if (qsBuf) qsShowBuf(); }
             }
+            if (qsIsMatrix()) { mxReapplyMulti(); mxUpdateTodayBadge(); }
             if (qsFlashCell) {
                 const f = qsGetCell(qsFlashCell.sid, qsFlashCell.d);
                 if (f) { f.classList.remove('qs-flash'); void f.offsetWidth; f.classList.add('qs-flash'); qsFlashCell = null; }
@@ -5774,11 +5926,13 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
 
                 monthsHeader.push({ month: m, daysCount: daysInMonth });
                 for (let d = 1; d <= daysInMonth; d++) {
-                    daysHeader.push({ month: m, day: d, dateStr: `${year}-${m}-${d}` });
+                    daysHeader.push({ month: m, day: d, dateStr: `${year}-${m}-${d}`, realStr: `${(parseInt(year) || 2026) + Math.floor((startMonth - 1 + i) / 12)}-${m}-${d}` });
                 }
             }
 
             const mxNow = new Date(), mxTodayKey = `${mxNow.getFullYear()}-${mxNow.getMonth() + 1}-${mxNow.getDate()}`;
+            const mxTodayD = daysHeader.find(x => x.realStr === mxTodayKey);
+            window.mxTodayCol = mxTodayD ? mxTodayD.dateStr : null;
             let html = `<thead>`;
             html += `<tr class="bg-slate-800 text-white font-bold sticky-header" style="top: 0; z-index: 35;">`;
             html += `<th class="px-2 py-2 min-w-[45px] w-[45px] bg-slate-900 border-r border-b border-slate-700 sticky-col-1">${lang === 'en' ? 'Rank' : 'Hạng'}</th>`;
@@ -5796,7 +5950,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             html += `<th class="bg-indigo-900 border-r border-b border-slate-600 sticky-col-3"></th>`;
 
             daysHeader.forEach(d => {
-                html += `<th data-d="${d.dateStr}" class="w-7 min-w-[28px] max-w-[28px] py-1 border-r border-b border-slate-600 text-[10px]${d.dateStr === mxTodayKey ? ' mx-today-h' : ''}">${d.day}</th>`;
+                html += `<th data-d="${d.dateStr}" class="w-7 min-w-[28px] max-w-[28px] py-1 border-r border-b border-slate-600 text-[10px]${d.realStr === mxTodayKey ? ' mx-today-h' : ''}">${d.day}</th>`;
             });
             html += `</tr>`;
             html += `</thead>`;
@@ -5849,7 +6003,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                         const key = `${student.id}_${d.dateStr}`;
                         const scoreItem = appData.scores[key];
                         
-                        let cellClass = "grid-cell border-r border-b border-slate-200 text-[11px] font-semibold text-center cell-empty" + (d.dateStr === mxTodayKey ? " mx-today" : "");
+                        let cellClass = "grid-cell border-r border-b border-slate-200 text-[11px] font-semibold text-center cell-empty" + (d.realStr === mxTodayKey ? " mx-today" : "");
                         let cellText = "";
                         let examTag = '';
 
