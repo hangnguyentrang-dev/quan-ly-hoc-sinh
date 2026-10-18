@@ -2976,6 +2976,12 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
         let qsEdit = false; // chế độ Sửa điểm: sửa tay, gỡ liên kết số lần phát biểu (không lưu giữa các lần mở trang)
         function mfl(o) { return (o && o.manual) ? { manual: true } : {}; }
         // Áp quà cộng điểm: giữ nguyên mốc thời gian của bài gốc để streak tính đúng thứ tự (7 -> 10 vẫn nằm đúng chỗ cũ)
+        // Quà KHÔNG phải quà Test score (cộng điểm / đổi điểm) áp lên ô đã có điểm: nếu ô lên >= 10 thì streak coi ô đó trung lập
+        // (không cộng, không trừ; vẫn bắn pháo giấy) -> streak trở về như lúc chưa bị trừ. Quà Test score (plus_exam) thì KHÔNG đặt cờ: tính là 10 thật.
+        function giftNeutralFlag(cell, kind) {
+            const had = !!cell && (cell.absent === true || (cell.score !== undefined && cell.score !== null && cell.score !== ''));
+            return (had && kind !== 'add' && kind !== 'plus_exam') ? { giftNeutral: true } : {};
+        }
         function giftKeepTs(cell, key) {
             const t = (cell && cell.ts) || Math.min(scoreKeyDateMs(key) || Date.now(), Date.now());
             return { ts: t, keepTs: true };
@@ -3860,7 +3866,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 const prevCell = (key && appData.scores[key] !== undefined) ? deepCopy(appData.scores[key]) : undefined;
                 const cur = key ? appData.scores[key] : null;
                 if (plan && (plan.kind === 'plus' || plan.kind === 'change' || plan.kind === 'add' || plan.kind === 'plus_match' || plan.kind === 'plus_exam')) {
-                    appData.scores[key] = { ...mfl(cur), ...giftKeepTs(cur, key), score: plan.afterNum, absent: false, speakingCount: (cur && cur.speakingCount !== undefined) ? cur.speakingCount : 0, isExam: plan.kind === 'plus_exam' ? true : !!(cur && cur.isExam) };
+                    appData.scores[key] = { ...mfl(cur), ...giftKeepTs(cur, key), ...giftNeutralFlag(cur, plan.kind), score: plan.afterNum, absent: false, speakingCount: (cur && cur.speakingCount !== undefined) ? cur.speakingCount : 0, isExam: plan.kind === 'plus_exam' ? true : !!(cur && cur.isExam) };
                 } else if (plan && plan.kind === 'delete_score') {
                     student.rewardPoints = Math.max(0, prevPoints - qsOldExcess(cur));
                     delete appData.scores[key];
@@ -5749,7 +5755,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                     const ov = parseFloat(it.sgOrig.v);
                     if (!isNaN(ov)) { list.push({ v: ov, ts: it.sgOrig.ts || Math.min(dms || now, now), dms, keep: !!it.sgOrig.keep, sg: false, key }); return; }
                 }
-                list.push({ v, ts: it.ts || Math.min(dms || now, now), dms, keep: !!it.keep, sg: !!it.sg, key });
+                list.push({ v, ts: it.ts || Math.min(dms || now, now), dms, keep: !!it.keep, sg: !!it.sg, gn: !!it.giftNeutral, key });
             });
             list.sort((a, b) => (a.ts - b.ts) || (a.dms - b.dms));
             return list;
@@ -5766,6 +5772,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const retier = () => { const t = tenMissTier(run); if (t !== tier) { tier = t; miss = 0; } };
             tenSeries(studentId, scores).forEach(e => {
                 if (e.sg) return; // Điểm từ quà Streak: trung lập, không cộng cũng không làm đứt/trừ streak
+                if (e.gn && e.v >= 10) return; // Quà thường (không phải Test score) nâng lên 10: trung lập, streak về như chưa bị trừ
                 if (e.v >= 10) {
                     run++; if (run > best) best = run; if (run > peak) peak = run;
                     retier();
@@ -6829,7 +6836,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
 
             if (cell && cell.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
             const prevCell = deepCopy(cell), prevGift = deepCopy(owned);
-            appData.scores[key] = { ...mfl(cell), ...giftKeepTs(cell, key), score: after, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: !!cell.isExam };
+            appData.scores[key] = { ...mfl(cell), ...giftKeepTs(cell, key), ...giftNeutralFlag(cell, 'plus_match'), score: after, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: !!cell.isExam };
             student.inventory = student.inventory.filter(i => i.invId !== invItem.invId);
             saveData().then(ok => {
                 if (ok) { uiToast('toastGiftGiven', 'success'); return; }
@@ -6891,9 +6898,9 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             if (invItem.type === 'plus' && invItem.deltaScore !== undefined) {
                 let currentScore = (existing && existing.score !== undefined && existing.score !== null) ? parseFloat(existing.score) : 0;
                 let newScore = Math.min(10, currentScore + parseFloat(invItem.deltaScore));
-                appData.scores[key] = { ...mfl(existing), ...giftKeepTs(existing, key), score: newScore, absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
+                appData.scores[key] = { ...mfl(existing), ...giftKeepTs(existing, key), ...giftNeutralFlag(existing, 'plus'), score: newScore, absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
             } else if (invItem.targetScore !== null && invItem.targetScore !== undefined) {
-                appData.scores[key] = { ...mfl(existing), score: parseFloat(invItem.targetScore), absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
+                appData.scores[key] = { ...mfl(existing), ...(existing && existing.ts ? giftKeepTs(existing, key) : {}), ...giftNeutralFlag(existing, invItem.type), score: parseFloat(invItem.targetScore), absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
             }
 
             const student = appData.students.find(s => s.id === studentId);
