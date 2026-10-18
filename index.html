@@ -525,7 +525,12 @@
 #qsQuickHint{color:#64748b}
 .qs-toggle{display:inline-flex;align-items:center;gap:.4rem;border-radius:9999px;padding:.3rem .75rem;font-weight:800;border:1px solid #cbd5e1;background:#fff;color:#475569;transition:.15s}
 .qs-toggle.on{background:#4f46e5;border-color:#4f46e5;color:#fff;box-shadow:0 2px 8px rgba(79,70,229,.35)}
-.qs-toggle.qs-toggle-test.on{background:#7e22ce;border-color:#7e22ce;box-shadow:0 2px 8px rgba(126,34,206,.4)}
+.qs-toggle.qs-toggle-test.on{background:#fcd34d;border-color:#f59e0b;color:#3b0764;box-shadow:0 2px 8px rgba(245,158,11,.45)}
+/* Test score mode: đồng bộ màu ô điểm test (vàng + chữ tím) khi chọn / gõ / rê chuột */
+#scoreMatrix.qs-test-on td.grid-cell.qs-sel:not(.cell-absent){outline:3px solid #6b21a8 !important;outline-offset:-3px;background-color:#fcd34d !important;color:#3b0764 !important}
+#scoreMatrix.qs-test-on td.grid-cell.qs-typing:not(.cell-absent){background-color:#fde68a !important;color:#3b0764 !important}
+#scoreMatrix.qs-test-on td.grid-cell.qs-typing::after{background:#6b21a8}
+#scoreMatrix.qs-test-on .score-row > td.grid-cell:not(.cell-absent):not(.qs-sel):hover{background-color:#f59e0b !important;color:#2e1065 !important;outline:2px solid #6b21a8;outline-offset:-2px;font-weight:900}
 #qsQuickHint{color:#64748b}
 #qsQuickHint kbd,.qs-kbd{display:inline-block;border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:4px;background:#fff;padding:0 .35rem;font-size:10px;font-weight:800;color:#334155;font-family:inherit}
 #qsStatus{margin-left:auto;font-weight:800;color:#059669;opacity:0;transition:opacity .25s}
@@ -2588,6 +2593,9 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 editLbl: 'Sửa điểm',
                 editHint: '<b>Chế độ Sửa điểm:</b> bấm ô điểm rồi gõ số mới → ô đó <b>thôi tính theo số lần phát biểu</b> (điểm dư đã quy đổi trong túi quà được giữ nguyên) · <kbd>Enter</kbd> xuống học sinh kế · <kbd>A</kbd> vắng · <kbd>Del</kbd> xóa',
                 editTitle: 'Bật để sửa tay điểm: ô được sửa sẽ gỡ liên kết với số lần phát biểu; điểm dư trong túi quà không đổi',
+                quickOn: 'Đã bật Quick entry: chọn ô rồi gõ điểm bằng bàn phím, Enter để xuống học sinh kế.',
+                testOn: 'Đã bật Nhập Test score: mọi điểm gõ vào sẽ được đánh dấu là điểm Bài Kiểm Tra.',
+                trendOn: 'Đã bật Xu hướng điểm: hiện mũi tên ▲▼ cạnh ĐTB (TB 5 điểm gần nhất so với 5 điểm trước đó).',
                 editOn: 'Đã bật Sửa điểm: điểm sửa tay sẽ không còn tính theo số lần phát biểu, điểm dư trong túi quà giữ nguyên.',
                 editTag: 'Điểm sửa tay',
                 overMax: 'Điểm phải từ 0 đến 10.',
@@ -2625,6 +2633,9 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 editLbl: 'Edit score',
                 editHint: '<b>Edit-score mode:</b> click a score cell and type a new number → that cell is <b>detached from the speaking-count rule</b> (surplus points already converted into the gift bag stay unchanged) · <kbd>Enter</kbd> next student · <kbd>A</kbd> absent · <kbd>Del</kbd> clear',
                 editTitle: 'Turn on to hand-edit scores: edited cells are detached from the speaking count; gift-bag points stay unchanged',
+                quickOn: 'Quick entry on: select a cell and type scores with the keyboard, Enter moves to the next student.',
+                testOn: 'Test score entry on: every score you type will be marked as an Exam Score.',
+                trendOn: 'Score trend on: a ▲▼ arrow now shows next to the average (last 5 scores vs the 5 before).',
                 editOn: 'Edit-score mode on: hand-edited scores no longer follow the speaking count, and gift-bag points stay unchanged.',
                 editTag: 'Hand-edited score',
                 overMax: 'Score must be between 0 and 10.',
@@ -2911,11 +2922,13 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             try { localStorage.setItem(QS_PREF_KEY, qsQuick ? '1' : '0'); } catch (e) {}
             if (!qsQuick) { qsTest = false; qsEdit = false; qsDeselect(); }
             qsToolbarSig = ''; qsRefreshToolbar();
+            if (qsQuick) qsToast(qsT('quickOn'), 'info');
         };
         window.qsToggleTest = function () {
             qsTest = !qsTest;
             if (qsTest && !qsQuick) { qsQuick = true; try { localStorage.setItem(QS_PREF_KEY, '1'); } catch (e) {} }
             qsToolbarSig = ''; qsRefreshToolbar();
+            if (qsTest) qsToast(qsT('testOn'), 'info');
         };
         window.qsToggleEdit = function () {
             qsEdit = !qsEdit;
@@ -2927,6 +2940,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             qsTrend = !qsTrend;
             qsToolbarSig = ''; qsRefreshToolbar();
             renderCurrentView();
+            if (qsTrend) qsToast(qsT('trendOn'), 'info');
         };
         function qsRefreshToolbar() {
             const tb = qsEl('qsToolbar'); if (!tb) return;
@@ -2936,7 +2950,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             const collapsed = !!window.__qsToolbarCollapsed;
             tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i>${qsT('editLbl')}<b>${qsEdit ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><span id="qsQuickHint">${qsEdit ? qsT('editHint') : (qsTest ? qsT('testHint') : (qsQuick ? qsT('quickHint') : qsT('quickHintOff')))}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
-            const mt = qsEl('scoreMatrix'); if (mt) mt.classList.toggle('qs-edit-on', qsEdit);
+            const mt = qsEl('scoreMatrix'); if (mt) { mt.classList.toggle('qs-edit-on', qsEdit); mt.classList.toggle('qs-test-on', qsTest); }
         }
 
         window.__qsToolbarCollapsed = !!window.__qsToolbarCollapsed;
