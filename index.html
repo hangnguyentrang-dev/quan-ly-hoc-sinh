@@ -118,7 +118,7 @@
         /* 3. Score matrix hover helpers */
         .grid-cell { transition:background-color .12s; }
         .score-row:hover > td { background-color:#e0e7ff !important; }
-        .score-row:hover > td.sticky-col-2 { background-color:#c7d2fe !important; color:#312e81; }
+        .score-row:hover > td.sticky-col-2:not(.ct) { background-color:#c7d2fe !important; color:#312e81; }
         .score-row:hover > td.cell-absent { background-color:#dc2626 !important; }
         .score-row > td.grid-cell:hover { background-color:#a5b4fc !important; outline:2px solid #4f46e5; outline-offset:-2px; font-weight:900; color:#1e1b4b; position:relative; z-index:2; }
         .score-row > td.cell-absent.grid-cell:hover { background-color:#b91c1c !important; color:#fff !important; }
@@ -340,7 +340,7 @@
         #scoreMatrix .avg-pill { transition:transform .15s, box-shadow .15s; }
         #scoreMatrix td.sticky-col-2 > div { transition:transform .15s; transform-origin:left center; }
         #scoreMatrix .score-row:hover > td.sticky-col-2 > div { transform:scale(1.06); }
-        #scoreMatrix .score-row:hover > td.sticky-col-2 { background-color:#c7d2fe !important; color:#1e1b4b; }
+        #scoreMatrix .score-row:hover > td.sticky-col-2:not(.ct) { background-color:#c7d2fe !important; color:#1e1b4b; }
         #scoreMatrix .score-row:hover > td.sticky-col-3 { background-color:#c7d2fe !important; }
         #scoreMatrix .score-row:hover > td.sticky-col-3 .avg-pill { transform:scale(1.12); box-shadow:inset 0 0 0 1px rgba(15,23,42,.1), 0 0 0 2px #4f46e5, 0 2px 6px rgba(79,70,229,.35); }
         @media (prefers-reduced-motion: reduce) { #scoreMatrix .avg-pill, #scoreMatrix td.sticky-col-2 > div { transition:none; } #scoreMatrix .score-row:hover > td.sticky-col-3 .avg-pill, #scoreMatrix .score-row:hover > td.sticky-col-2 > div { transform:none; } }
@@ -548,7 +548,7 @@ td.grid-cell.qs-bad{animation:qsShake .35s}
 @keyframes qsFlash{0%{box-shadow:inset 0 0 0 40px rgba(16,185,129,.55)}100%{box-shadow:inset 0 0 0 40px rgba(16,185,129,0)}}
 @keyframes qsShake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 .qs-rowchk{width:14px;height:14px;accent-color:#4f46e5;cursor:pointer;flex:none}
-.score-row.qs-rowsel > td.sticky-col-2{background-color:#e0e7ff !important}
+.score-row.qs-rowsel > td.sticky-col-2:not(.ct){background-color:#e0e7ff !important}
 #qsFab{position:fixed;right:1.25rem;bottom:1.25rem;z-index:40;display:none;align-items:center;gap:.5rem;border-radius:9999px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-weight:900;font-size:14px;padding:.8rem 1.25rem;box-shadow:0 10px 28px rgba(79,70,229,.45);transition:transform .15s,box-shadow .15s}
 #qsFab:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(79,70,229,.55)}
 #qsFab .qs-badge{min-width:1.4rem;height:1.4rem;border-radius:9999px;background:#fbbf24;color:#78350f;font-size:11px;display:none;align-items:center;justify-content:center;padding:0 .35rem}
@@ -610,6 +610,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 </style>
 <style id="xf-style">
 /* ===== XF: trend toggle ===== */
+.qs-toggle.qs-toggle-tpl.on{background:#c026d3;border-color:#c026d3;box-shadow:0 2px 8px rgba(192,38,211,.4)}
 .qs-toggle.qs-toggle-trend.on{background:#059669;border-color:#059669;box-shadow:0 2px 8px rgba(5,150,105,.4)}
 /* ===== XF: birthday ===== */
 @keyframes xfBdayGlow{0%,100%{box-shadow:0 0 0 2px rgba(244,114,182,.35),0 10px 26px rgba(244,114,182,.22)}50%{box-shadow:0 0 0 3px rgba(250,204,21,.55),0 12px 30px rgba(244,114,182,.4)}}
@@ -1059,6 +1060,14 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 .ct-t50 .ct-fx>u{font-size:var(--z);transform-origin:50% 0;animation-name:ctSwing;animation-timing-function:ease-in-out}
 
 @media (prefers-reduced-motion:reduce){.ct-t30::after,.ct-t50::after{animation:none!important}}
+/* ===== MX: Score Matrix – cột Hạng / Họ & Tên / ĐTB cố định khi cuộn ngang + template ở ô tên ===== */
+#scoreMatrix td.sticky-col-2.ct{--h:38px;--w:160px;position:sticky;overflow:hidden}
+#scoreMatrix td.sticky-col-2.ct>div:not(.ct-fx){position:relative;z-index:1}
+#scoreMatrix td.sticky-col-2.ct .mx-nbox{background:rgba(255,255,255,.84);border-radius:9999px;padding:1px 8px 1px 4px;box-shadow:0 0 0 1px rgba(15,23,42,.1)}
+#scoreMatrix td.sticky-col-2.mx-bday{background:linear-gradient(135deg,#fff1f2,#fffbeb 55%,#fdf2f8)}
+#scoreMatrix .score-row:hover>td.sticky-col-2.ct{box-shadow:inset 0 0 0 2px #4f46e5}
+#scoreMatrix .score-row.qs-rowsel>td.sticky-col-2.ct{box-shadow:inset 0 0 0 2px #6366f1,inset 0 0 0 4px rgba(224,231,255,.95)}
+
 </style>
 
 
@@ -2593,6 +2602,9 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 editLbl: 'Sửa điểm',
                 editHint: '<b>Chế độ Sửa điểm:</b> bấm ô điểm rồi gõ số mới → ô đó <b>thôi tính theo số lần phát biểu</b> (điểm dư đã quy đổi trong túi quà được giữ nguyên) · <kbd>Enter</kbd> xuống học sinh kế · <kbd>A</kbd> vắng · <kbd>Del</kbd> xóa',
                 editTitle: 'Bật để sửa tay điểm: ô được sửa sẽ gỡ liên kết với số lần phát biểu; điểm dư trong túi quà không đổi',
+                tplLbl: 'Template tên',
+                tplHint: 'Hiện nền template của Class list ở cột Họ & Tên (bật/tắt, được nhớ cho lần mở sau).',
+                tplOn: 'Đã bật Template tên: cột Họ & Tên dùng nền template của từng học sinh.',
                 quickOn: 'Đã bật Quick entry: chọn ô rồi gõ điểm bằng bàn phím, Enter để xuống học sinh kế.',
                 testOn: 'Đã bật Nhập Test score: mọi điểm gõ vào sẽ được đánh dấu là điểm Bài Kiểm Tra.',
                 trendOn: 'Đã bật Xu hướng điểm: hiện mũi tên ▲▼ cạnh ĐTB (TB 5 điểm gần nhất so với 5 điểm trước đó).',
@@ -2633,6 +2645,9 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                 editLbl: 'Edit score',
                 editHint: '<b>Edit-score mode:</b> click a score cell and type a new number → that cell is <b>detached from the speaking-count rule</b> (surplus points already converted into the gift bag stay unchanged) · <kbd>Enter</kbd> next student · <kbd>A</kbd> absent · <kbd>Del</kbd> clear',
                 editTitle: 'Turn on to hand-edit scores: edited cells are detached from the speaking count; gift-bag points stay unchanged',
+                tplLbl: 'Name template',
+                tplHint: 'Show the Class list card template as the Student Full Name background (on/off, remembered next time).',
+                tplOn: 'Name template on: the Student Full Name column uses each student\'s card template.',
                 quickOn: 'Quick entry on: select a cell and type scores with the keyboard, Enter moves to the next student.',
                 testOn: 'Test score entry on: every score you type will be marked as an Exam Score.',
                 trendOn: 'Score trend on: a ▲▼ arrow now shows next to the average (last 5 scores vs the 5 before).',
@@ -2680,6 +2695,8 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
         let qsTrend = false; // Xu hướng điểm: luôn TẮT mỗi lần mở trang (không lưu)
         let qsEdit = false; // chế độ Sửa điểm: sửa tay, gỡ liên kết số lần phát biểu (không lưu giữa các lần mở trang)
         function mfl(o) { return (o && o.manual) ? { manual: true } : {}; }
+        const QS_TPL_KEY = 'qsNameTemplate';
+        let qsTpl = (() => { try { return localStorage.getItem(QS_TPL_KEY) !== '0'; } catch (e) { return true; } })();
         let qsTest = false; // chế độ nhập nhanh Test score (không lưu giữa các lần mở trang)
         const qsSel = {};
         const qsRank = { rk: {}, fe: {} };
@@ -2942,13 +2959,20 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
             renderCurrentView();
             if (qsTrend) qsToast(qsT('trendOn'), 'info');
         };
+        window.qsToggleTpl = function () {
+            qsTpl = !qsTpl;
+            try { localStorage.setItem(QS_TPL_KEY, qsTpl ? '1' : '0'); } catch (e) {}
+            qsToolbarSig = ''; qsRefreshToolbar();
+            renderCurrentView();
+            if (qsTpl) qsToast(qsT('tplOn'), 'info');
+        };
         function qsRefreshToolbar() {
             const tb = qsEl('qsToolbar'); if (!tb) return;
-            const sig = (appData.language || 'vi') + '|' + qsQuick + '|' + qsTest + '|' + qsEdit + '|' + qsTrend;
+            const sig = (appData.language || 'vi') + '|' + qsQuick + '|' + qsTest + '|' + qsEdit + '|' + qsTrend + '|' + qsTpl;
             if (sig === qsToolbarSig) return;
             qsToolbarSig = sig;
             const collapsed = !!window.__qsToolbarCollapsed;
-            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i>${qsT('editLbl')}<b>${qsEdit ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><span id="qsQuickHint">${qsEdit ? qsT('editHint') : (qsTest ? qsT('testHint') : (qsQuick ? qsT('quickHint') : qsT('quickHintOff')))}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
+            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle ${qsQuick ? 'on' : ''}" onclick="qsToggleQuick()" aria-pressed="${qsQuick}"><i class="fa-solid fa-keyboard"></i>${qsT('quickLbl')}<b>${qsQuick ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i>${qsT('editLbl')}<b>${qsEdit ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i>${qsT('tplLbl')}<b>${qsTpl ? 'ON' : 'OFF'}</b></button><span id="qsQuickHint">${qsEdit ? qsT('editHint') : (qsTest ? qsT('testHint') : (qsQuick ? qsT('quickHint') : qsT('quickHintOff')))}</span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
             const mt = qsEl('scoreMatrix'); if (mt) { mt.classList.toggle('qs-edit-on', qsEdit); mt.classList.toggle('qs-test-on', qsTest); }
         }
@@ -5552,9 +5576,12 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
                     html += `${rankIcon}`;
                     html += `</td>`;
 
-                    html += `<td class="font-bold text-slate-800 bg-slate-50 border-r border-slate-300 px-2 py-2 text-left sticky-col-2 whitespace-nowrap overflow-hidden text-ellipsis shadow-right group">`;
+                    const mxBday = (typeof xfBdayToday === 'function') && xfBdayToday(student);
+                    const mxTpl = (qsTpl && !mxBday && typeof ctGet === 'function') ? ctGet(student) : null;
+                    html += `<td class="font-bold text-slate-800 ${mxTpl ? ctCls(student) : ((qsTpl && mxBday) ? 'mx-bday' : 'bg-slate-50')} border-r border-slate-300 px-2 py-2 text-left sticky-col-2 whitespace-nowrap overflow-hidden text-ellipsis shadow-right group">`;
+                    if (mxTpl) html += ctFx(student, 3);
                     html += `<div class="flex items-center justify-between">`;
-                    html += `<div class="flex items-center space-x-1.5">`;
+                    html += `<div class="flex items-center space-x-1.5${mxTpl ? ' mx-nbox' : ''}">`;
                     html += `<span>${student.icon || '🎓'}</span>`;
                     const nfx = tfNameFx(student.id);
                     html += `<span class="tf-name-link${nfx.nm}" onclick="tfOpenProfile('${student.id}')" title="${lang === 'en' ? 'View profile' : 'Xem hồ sơ'}">${getStudentDisplayName(student)}</span>${nfx.flame}`;
@@ -7602,13 +7629,13 @@ window.openStudentProfile=function(studentId){
         function ctSeed(id) { let h = 0; String(id).split('').forEach(c => { h = (h * 31 + c.charCodeAt(0)) % 9973; }); return h; }
         function ctGet(st) { return (st && CT_MAP[st.cardTemplate]) || null; }
         function ctName(t) { return t ? L2(t.vi, t.en) : L2('Không dùng template', 'No template'); }
-        function ctBuild(t, seed) {
+        function ctBuild(t, seed, cap) {
             const D = { l: [3, 96], tp: [0, 0], d: [0, 8], t: [4, 8], z: [8, 14], x: [10, 26] };
             let h = '';
             for (let i = 0; i < (t.x || 0); i++) h += '<span class="ct-x ' + 'abc'[i] + '"></span>';
             t.L.forEach((s, li) => {
                 const o = Object.assign({}, D, s);
-                for (let i = 0; i < o.n; i++) {
+                for (let i = 0; i < (cap ? Math.min(o.n, cap) : o.n); i++) {
                     const r = k => ctRnd(t.i * 101 + li * 29 + i * 13 + seed, k + 1);
                     const pk = (a, k) => a[0] + (a[1] - a[0]) * r(k);
                     const c = o.c ? o.c[Math.floor(r(9) * o.c.length)] : '';
@@ -7620,7 +7647,7 @@ window.openStudentProfile=function(studentId){
         }
         // Gắn vào thẻ học sinh. Ngày sinh nhật (xf-bday) luôn ghi đè template nên ở ngày đó không trả về gì.
         function ctCls(st) { const t = ctGet(st); return t ? 'ct ct-' + t.id + (t.dark ? ' ct-dark' : '') : ''; }
-        function ctFx(st) { const t = ctGet(st); return t ? ctBuild(t, ctSeed(st.id)) : ''; }
+        function ctFx(st, cap) { const t = ctGet(st); return t ? ctBuild(t, ctSeed(st.id), cap) : ''; }
         function ctProfileSection(st, isArchived) {
             const id = xfEsc(st.id), t = ctGet(st);
             const btn = isArchived ? '' : `<button type="button" onclick="ctOpenPicker('${id}')" class="mt-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-3 py-2 text-xs font-bold">${L2('Chọn template', 'Choose template')}</button>`;
@@ -7657,6 +7684,7 @@ window.openStudentProfile=function(studentId){
                     if (!ok) { if (prev) st.cardTemplate = prev; else delete st.cardTemplate; return; }
                     ctClosePicker();
                     try { renderStudentRoster(); } catch (e) {}
+                    try { if (typeof renderCurrentView === 'function') renderCurrentView(); } catch (e) {}
                     try { if (window.studentProfileViewingId && document.getElementById('studentProfileContent')) renderStudentCourseProfile(); } catch (e) {}
                     if (window.showAppToast) window.showAppToast(L2('Đã đổi template thẻ.', 'Card template updated.'), 'success');
                 });
