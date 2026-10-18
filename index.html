@@ -674,6 +674,7 @@ td.grid-cell.cell-sg .sg-cf{position:absolute;top:-2px;left:-1px;transform:scale
 .sgb-node.got b,.sgb-node.nxt b{color:var(--sg-tx)}
 .sgb-node.got span.sgb-q,.sgb-node.nxt span.sgb-q{color:var(--sg-tx);opacity:.85}
 .sgb-node.zero b{font-size:10px;margin-top:0;color:#b5942f}
+.sgb-done{margin-top:4px;display:inline-block;white-space:nowrap;font-size:9px;font-weight:900;line-height:1;letter-spacing:.02em;text-transform:uppercase;color:#fff;background:linear-gradient(180deg,#22c55e,#16a34a);border:1px solid #15803d;border-radius:9999px;padding:3px 6px;box-shadow:0 0 0 2px #dcfce7,0 2px 6px rgba(22,163,74,.45)}
 .sgb-cur{position:absolute;top:0;transform:translateX(-50%);background:var(--sg-a);color:#fff;font-size:11px;font-weight:900;line-height:1;padding:3px 8px;border-radius:9999px;box-shadow:0 2px 6px rgba(15,23,42,.25);z-index:2}
 .sgb-cur::after{content:"";position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);border:4px solid transparent;border-bottom:0;border-top-color:var(--sg-a)}
 .sg-t50 .sgb-cur{background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e,#06b6d4,#6366f1,#d946ef)}
@@ -5775,6 +5776,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             if (!appData.sgLedger || typeof appData.sgLedger !== 'object') appData.sgLedger = {};
             const L = appData.sgLedger;
             if (!L.cells) L.cells = {}; if (!L.gifts) L.gifts = {}; if (!L.chains) L.chains = {};
+            if (!L.claim5 || typeof L.claim5 !== 'object') L.claim5 = {};
             return L;
         }
         const sgCellSig = c => c ? JSON.stringify([c.score, !!c.absent, !!c.sg, c.sgTier || 0, c.sgOrig ? [c.sgOrig.v, c.sgOrig.ts || 0, !!c.sgOrig.keep] : null]) : '';
@@ -5802,6 +5804,33 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 if (left <= 0) { if (idx >= 0) { st.inventory.splice(idx, 1); changed = true; } return; }
                 if (idx < 0) { st.inventory.push(Object.assign(deepCopy(e.gift), { count: left })); changed = true; }
                 else if ((parseInt(st.inventory[idx].count) || 0) !== left) { st.inventory[idx].count = left; changed = true; }
+            });
+            return changed;
+        }
+
+        // ===== Quà mốc streak 5: CHỈ nhận một lần duy nhất (lần đầu đạt streak 5) =====
+        // L.claim5[sid] = { invId, date } được ghi ngay khi quà đầu tiên xuất hiện trong túi quà và GIỮ NGUYÊN sau khi dùng quà,
+        // nên streak về 0 rồi lên 5 lại cũng không nhận thêm. Chỉ bị xóa khi quà đó bị thu hồi (hoàn tác/xóa điểm làm mất mốc 5 mà chưa dùng).
+        function sgHasClaim5(sid) { return !!sgLedger().claim5[sid]; }
+        function sgMigrateClaim5() {
+            const L = sgLedger(); let changed = false;
+            (appData.students || []).forEach(st => {
+                if (L.claim5[st.id]) return;
+                const sid = String(st.id), ids = [];
+                const ch = L.chains[st.id];
+                if (ch && ch.on && ch.gifts && ch.gifts[5]) ids.push(ch.gifts[5]);
+                Object.keys(L.gifts).forEach(id => { const e = L.gifts[id]; if (e && String(e.sid) === sid && e.gift && parseInt(e.gift.tier) === 5) ids.push(id); });
+                (st.inventory || []).forEach(g => { if (g && g.type === 'streak_ten' && parseInt(g.tier) === 5) ids.push(g.invId); });
+                const tsOf = id => parseInt(String(id).split('_')[2]) || 0;
+                ids.sort((a, b) => tsOf(a) - tsOf(b));
+                let found = ids.length > 0, invId = ids[0] || null, date = '';
+                if (found) { const e = L.gifts[invId]; date = (e && e.gift && e.gift.date) || ((st.inventory || []).find(g => g && g.invId === invId) || {}).date || ''; }
+                // Ô điểm quà đã dùng từ quà mốc 5 (quà đã dùng hết nên không còn trong túi)
+                if (!found) Object.keys(L.cells).forEach(k => { const c = L.cells[k]; if (c && c.sg && parseInt(c.sgTier) === 5 && k.indexOf(st.id + '_') === 0) found = true; });
+                // Dữ liệu rất cũ: mốc 5 đã ghi nhận trong chuỗi hiện tại / sgAwarded
+                if (!found && ch && ch.on && Array.isArray(ch.tiers) && ch.tiers.indexOf(5) >= 0) found = true;
+                if (!found && Array.isArray(st.sgAwarded) && st.sgAwarded.some(id => parseInt(id, 10) === 5)) found = true;
+                if (found) { L.claim5[st.id] = { invId: invId, date: date || new Date().toISOString().split('T')[0] }; changed = true; }
             });
             return changed;
         }
@@ -5833,6 +5862,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                     if (e && (parseInt(e.left) || 0) < (parseInt(e.gift && e.gift.count) || 0)) { keepTiers.push(t); return; } // đã dùng
                     if (e) {
                         delete L.gifts[id];
+                        if (t === 5 && L.claim5[sid] && L.claim5[sid].invId === id) delete L.claim5[sid]; // quà mốc 5 chưa dùng bị thu hồi: được nhận lại khi đạt lại
                         const st = (appData.students || []).find(x => String(x.id) === String(e.sid));
                         if (st && Array.isArray(st.inventory)) st.inventory = st.inventory.filter(i => i.invId !== id);
                     }
@@ -5843,9 +5873,11 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             return changed;
         }
         // Tặng quà theo CHUỖI: mỗi mốc chỉ tặng 1 lần cho tới khi streak về 0 (đứt hẳn). Streak bị trừ rồi lên lại không tặng lại.
+        // Riêng mốc 5: chỉ tặng đúng 1 lần duy nhất cho cả quá trình (xem L.claim5), kể cả khi streak về 0 rồi lên 5 lại.
         function sgSync() {
             if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return false;
             let changed = false; const got = [], L = sgLedger();
+            try { if (sgMigrateClaim5()) changed = true; } catch (e) { console.warn('sgMigrateClaim5 skipped:', e); }
             const tiers = Object.keys(SG_REWARDS).map(Number).sort((a, b) => a - b);
             (appData.students || []).forEach(st => {
                 const inf = tenStreakInfo(st.id), cur = inf.cur;
@@ -5865,6 +5897,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 if (!Array.isArray(st.inventory)) st.inventory = [];
                 tiers.forEach(t => {
                     if (t > cur || ch.tiers.indexOf(t) >= 0) return;
+                    if (t === 5 && L.claim5[st.id]) return; // mốc 5 đã nhận một lần duy nhất: không tặng lại ở các chuỗi sau
                     ch.tiers.push(t); changed = true;
                     const gift = {
                         invId: 'inv_sg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
@@ -5876,6 +5909,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                     L.gifts[gift.invId] = { sid: st.id, gift: deepCopy(gift), left: gift.count };
                     if (!ch.gifts || typeof ch.gifts !== 'object') ch.gifts = {};
                     ch.gifts[t] = gift.invId;
+                    if (t === 5) L.claim5[st.id] = { invId: gift.invId, date: gift.date };
                     got.push({ st, tier: t, n: SG_REWARDS[t] });
                 });
                 if (!st.sgInit) { st.sgInit = true; changed = true; }
@@ -5975,6 +6009,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             sgCloseBook();
             const T = L2, esc = escapeHtml, L = sgLedger();
             const inf = tenStreakInfo(st.id), cur = inf.cur, ch = L.chains[st.id], got = new Set((ch && ch.on && Array.isArray(ch.tiers)) ? ch.tiers : []);
+            const claimed5 = sgHasClaim5(st.id); if (claimed5) got.add(5); // mốc 5 đã nhận (một lần duy nhất) luôn hiện là đã nhận
             const cls = (appData.classes || []).find(c => c.id === st.classId);
             const k = cur >= 5 ? sgTierKey(cur) : 1;
             const TIERS = [5, 10, 15, 20, 30, 40, 50];
@@ -6000,7 +6035,8 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const GRAD = 'linear-gradient(90deg,#b5942f 0%,#f97316 14.29%,#10b981 28.57%,#f59e0b 42.86%,#6366f1 57.14%,#dc2626 71.43%,#c026d3 85.71%,#0ea5e9 100%)';
             const nodes = `<div class="sgb-node zero"><div class="sgb-dot"></div><b>${T('Bắt đầu', 'Start')}</b></div>` + TIERS.map(t => {
                 const state = got.has(t) ? 'got' : (t === next ? 'nxt' : '');
-                return `<div class="sgb-node sg-t${t} ${state}"><div class="sgb-fl">${sgFlameHtml(t)}</div><b>${t}</b><span class="sgb-q">×${SG_REWARDS[t]}</span></div>`;
+                const badge = (t === 5 && claimed5) ? `<span class="sgb-done">${T('Đã nhận', 'Received')}</span>` : '';
+                return `<div class="sgb-node sg-t${t} ${state}"><div class="sgb-fl">${sgFlameHtml(t)}</div><b>${t}</b><span class="sgb-q">×${SG_REWARDS[t]}</span>${badge}</div>`;
             }).join('');
             const ms = `<div class="sgb-line"><div class="sgb-rail"><div class="sgb-railfill" style="width:${pct}%;background-image:${GRAD};background-size:${(10000 / pct).toFixed(1)}% 100%"></div></div><div class="sgb-cur" style="left:calc(6.25% + 87.5% * ${(pos / 7).toFixed(4)})">${cur}</div><div class="sgb-nodes">${nodes}</div></div>`;
             const prog = next
@@ -6020,10 +6056,10 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 : `<p class="sgb-empty">${T('Chưa dùng quà vào ô điểm nào.', 'No gift has been applied to a cell yet.')}</p>`;
             const notes = [
                 T('Đạt mốc 5 / 10 / 15 / 20 / 30 / 40 / 50 nhận 1 / 2 / 3 / 4 / 5 / 10 / 20 quà. Mỗi quà tương ứng 1 điểm 10.', 'Reaching 5 / 10 / 15 / 20 / 30 / 40 / 50 earns 1 / 2 / 3 / 4 / 5 / 10 / 20 gifts. Each gift equals one score of 10.'),
-                T('Mỗi mốc chỉ tặng một lần trong cùng một chuỗi. Chuỗi chỉ kết thúc khi streak về 0.', 'Each milestone is awarded once per chain. A chain only ends when the streak reaches 0.'),
+                T('Quà mốc 5 chỉ nhận MỘT LẦN DUY NHẤT, ở lần đầu đạt streak 5 (hiện chữ Đã nhận). Streak về 0 rồi lên 5 lại không nhận thêm. Các mốc từ 10 trở lên chỉ tặng một lần trong cùng một chuỗi; chuỗi chỉ kết thúc khi streak về 0.', 'The milestone-5 gift can be received ONLY ONCE, the first time a student reaches streak 5 (shown as Received). Falling to 0 and climbing back to 5 earns nothing more. Milestones from 10 up are awarded once per chain; a chain only ends when the streak reaches 0.'),
                 T('Streak bị trừ rồi tăng lại không được tặng lại các mốc đã nhận.', 'If the streak is reduced and then climbs back, milestones already received are not awarded again.'),
-                T('Streak về 0 rồi xây lại từ đầu thì các mốc được tặng lại.', 'If the streak falls to 0 and is rebuilt, the milestones are awarded again.'),
-                T('Hoàn tác (Ctrl+Z), phím Delete hoặc nút Xóa điểm làm mất một mốc: quà mốc đó chưa dùng sẽ bị thu hồi, kỷ lục hạ theo, và mốc được tặng lại khi đạt lại.', 'Undo (Ctrl+Z), the Delete key or the Delete Score button that removes a milestone: its unused gift is withdrawn, the record drops accordingly, and the milestone is awarded again when reached again.'),
+                T('Streak về 0 rồi xây lại từ đầu thì các mốc từ 10 trở lên được tặng lại (mốc 5 thì không).', 'If the streak falls to 0 and is rebuilt, milestones from 10 up are awarded again (milestone 5 is not).'),
+                T('Hoàn tác (Ctrl+Z), phím Delete hoặc nút Xóa điểm làm mất một mốc: quà mốc đó chưa dùng sẽ bị thu hồi (mốc 5 cũng được tính là chưa nhận), kỷ lục hạ theo, và mốc được tặng lại khi đạt lại.', 'Undo (Ctrl+Z), the Delete key or the Delete Score button that removes a milestone: its unused gift is withdrawn (milestone 5 then counts as not received), the record drops accordingly, and the milestone is awarded again when reached again.'),
                 T('Dưới streak 10, điểm dưới 9 làm đứt streak (9 vẫn giữ). Từ streak 10, điểm dưới 9 bị trừ 1 streak; quá 3 lần (mốc 10), 4 (mốc 15), 5 (mốc 20), 10 (mốc 30), 15 (mốc 40), 20 (mốc 50) thì mất hết. Đổi mốc thì đếm lại từ đầu.', 'Below streak 10, a score under 9 ends the streak (a 9 keeps it). From streak 10, each score below 9 costs 1 streak; more than 3 (tier 10), 4 (15), 5 (20), 10 (30), 15 (40) or 20 (50) wipes it out. Changing tier restarts the count.'),
                 T('Quà đã nhận không bị thu hồi khi streak bị trừ hay đứt, và không bị ảnh hưởng bởi việc sửa điểm bằng tay.', 'Received gifts are never taken back when the streak drops or ends, and manual score edits do not affect them.'),
                 T('Điểm từ quà không cộng và không bị trừ streak; ô điểm quà bị khóa. Ô dưới 9 được nâng lên 10 vẫn tính streak theo điểm cũ.', 'Gift scores neither add to nor reduce the streak, and gift cells are locked. A cell below 9 raised to 10 still counts toward the streak as its old score.')
