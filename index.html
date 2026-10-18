@@ -2736,8 +2736,12 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             { id: 'fix_change_10', name: 'Đổi một điểm có sẵn thành 10', cost: 12, isFixed: true, targetScore: 10, type: 'change' },
             { id: 'fix_change_9',  name: 'Đổi một điểm có sẵn thành 9',  cost: 10, isFixed: true, targetScore: 9,  type: 'change' },
             { id: 'fix_change_8',  name: 'Đổi một điểm có sẵn thành 8',  cost: 8,  isFixed: true, targetScore: 8,  type: 'change' },
-            { id: 'fix_lucky_spin', name: '1 lượt quay may mắn', cost: 0, isFixed: true, type: 'lucky_spin' }
+            { id: 'fix_lucky_spin', name: '1 lượt quay may mắn', cost: 0, isFixed: true, type: 'lucky_spin' },
+            { id: 'fix_plus_exam_1', name: 'Cộng 1 điểm vào bài kiểm tra', nameEn: '+1 point to Test score', cost: 10, isFixed: true, type: 'plus_exam', deltaScore: 1 }
         ];
+        // Quà cố định cộng 1 điểm Test score: cho phép sửa tên (theo từng ngôn ngữ) và giá; luôn +1, luôn quét ô Test score thấp nhất
+        const EXAM_PLUS_ID = 'fix_plus_exam_1';
+        const EXAM_PLUS_DEFAULT = { vi: 'Cộng 1 điểm vào bài kiểm tra', en: '+1 point to Test score' };
 
         const FIXED_VIOLATION_NAMES = {
             vt_1: { vi: 'Không làm bài tập về nhà', en: 'Did not complete homework' },
@@ -2806,6 +2810,10 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
         function getRewardName(item) {
             if (item && item.type === 'streak_ten') return sgGiftName(item);
             const lang = appData.language || 'vi';
+            if (String(item.itemId || item.id || '') === EXAM_PLUS_ID) {
+                const live = (appData.globalShopItems || []).find(i => i.id === EXAM_PLUS_ID) || item;
+                return lang === 'en' ? (live.nameEn || EXAM_PLUS_DEFAULT.en) : (live.name || EXAM_PLUS_DEFAULT.vi);
+            }
             if (item.isFixed && FIXED_ITEM_NAMES[item.id]) {
                 return FIXED_ITEM_NAMES[item.id][lang] || item.name;
             }
@@ -2967,6 +2975,11 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
         let qsTrend = false; // Xu hướng điểm: luôn TẮT mỗi lần mở trang (không lưu)
         let qsEdit = false; // chế độ Sửa điểm: sửa tay, gỡ liên kết số lần phát biểu (không lưu giữa các lần mở trang)
         function mfl(o) { return (o && o.manual) ? { manual: true } : {}; }
+        // Áp quà cộng điểm: giữ nguyên mốc thời gian của bài gốc để streak tính đúng thứ tự (7 -> 10 vẫn nằm đúng chỗ cũ)
+        function giftKeepTs(cell, key) {
+            const t = (cell && cell.ts) || Math.min(scoreKeyDateMs(key) || Date.now(), Date.now());
+            return { ts: t, keepTs: true };
+        }
         const QS_TPL_KEY = 'qsNameTemplate';
         let qsTpl = (() => { try { return localStorage.getItem(QS_TPL_KEY) !== '0'; } catch (e) { return true; } })();
         let qsTest = false; // chế độ nhập nhanh Test score (không lưu giữa các lần mở trang)
@@ -3847,7 +3860,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 const prevCell = (key && appData.scores[key] !== undefined) ? deepCopy(appData.scores[key]) : undefined;
                 const cur = key ? appData.scores[key] : null;
                 if (plan && (plan.kind === 'plus' || plan.kind === 'change' || plan.kind === 'add' || plan.kind === 'plus_match' || plan.kind === 'plus_exam')) {
-                    appData.scores[key] = { ...mfl(cur), score: plan.afterNum, absent: false, speakingCount: (cur && cur.speakingCount !== undefined) ? cur.speakingCount : 0, isExam: plan.kind === 'plus_exam' ? true : !!(cur && cur.isExam) };
+                    appData.scores[key] = { ...mfl(cur), ...giftKeepTs(cur, key), score: plan.afterNum, absent: false, speakingCount: (cur && cur.speakingCount !== undefined) ? cur.speakingCount : 0, isExam: plan.kind === 'plus_exam' ? true : !!(cur && cur.isExam) };
                 } else if (plan && plan.kind === 'delete_score') {
                     student.rewardPoints = Math.max(0, prevPoints - qsOldExcess(cur));
                     delete appData.scores[key];
@@ -4020,7 +4033,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                         DEFAULT_FIXED_ITEMS.forEach(fix => {
                             const exists = appData.globalShopItems.find(i => i.id === fix.id);
                             if (!exists) {
-                                appData.globalShopItems.push(fix);
+                                appData.globalShopItems.push(JSON.parse(JSON.stringify(fix)));
                             } else {
                                 exists.isFixed = true;
                                 // The special Lucky Wheel gift has an editable cost; preserve it across reloads.
@@ -4028,6 +4041,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                                 exists.type = fix.type;
                                 if (fix.targetScore !== undefined) exists.targetScore = fix.targetScore;
                                 else delete exists.targetScore;
+                                if (fix.id === EXAM_PLUS_ID) { exists.deltaScore = fix.deltaScore; if (exists.nameEn === undefined) exists.nameEn = fix.nameEn; if (!exists.name) exists.name = fix.name; }
                                 exists.type = fix.type;
                             }
                         });
@@ -5359,10 +5373,11 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const typeSelect = document.getElementById('editItemType');
             const itemType = item.type || 'none';
             const isLuckySpinSpecial = String(item.id || '') === 'fix_lucky_spin' || String(item.type || '').toLowerCase() === 'lucky_spin';
+            const isExamPlusSpecial = String(item.id || '') === EXAM_PLUS_ID;
             const editTypeRow = document.getElementById('editGiftTypeRow');
             const editValueRow = document.getElementById('editGiftValueInputContainer');
-            if (editTypeRow) editTypeRow.classList.toggle('hidden', isLuckySpinSpecial);
-            if (editValueRow) editValueRow.classList.toggle('hidden', isLuckySpinSpecial);
+            if (editTypeRow) editTypeRow.classList.toggle('hidden', isLuckySpinSpecial || isExamPlusSpecial);
+            if (editValueRow) editValueRow.classList.toggle('hidden', isLuckySpinSpecial || isExamPlusSpecial);
             const costInput = document.getElementById('editItemCost');
             costInput.min = isLuckySpinSpecial ? '0' : '1';
             costInput.step = '1';
@@ -5385,9 +5400,13 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 valueInput.value = '';
                 if (editValueRow) editValueRow.classList.add('hidden');
             }
+            if (isExamPlusSpecial) {
+                valueInput.required = false;
+                if (editValueRow) editValueRow.classList.add('hidden');
+            }
 
             const nameInput = document.getElementById('editItemName');
-            if (item.isFixed) {
+            if (item.isFixed && !isExamPlusSpecial) {
                 nameInput.readOnly = true;
                 nameInput.classList.add('bg-slate-100', 'text-slate-500');
                 typeSelect.disabled = true;
@@ -5429,6 +5448,16 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                     item.cost = Math.max(0, cost);
                     delete item.targetScore;
                     delete item.deltaScore;
+                    saveData();
+                    closeEditItemModal();
+                    return;
+                }
+                if (String(item.id || '') === EXAM_PLUS_ID) {
+                    // Chỉ sửa tên (theo ngôn ngữ đang dùng) và giá; luôn +1 điểm, luôn quét ô Test score thấp nhất
+                    if (name) { if (appData.language === 'en') item.nameEn = name; else item.name = name; }
+                    item.cost = Math.max(1, cost);
+                    item.type = 'plus_exam';
+                    item.deltaScore = 1;
                     saveData();
                     closeEditItemModal();
                     return;
@@ -5680,7 +5709,8 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 if (changed) {
                     // Ô được khôi phục (Ctrl+Z / Ctrl+Y) mang theo ts cũ: giữ nguyên cờ miễn trừ của chính ô đó
                     const restored = !!(cur.ts && (!prev || cur.ts !== prev.ts));
-                    if (!restored) cur.ts = now;
+                    if (!restored && !cur.keepTs) cur.ts = now;
+                    delete cur.keepTs; // cờ một lần: ô áp quà giữ ts gốc
                     // Nút "Không trừ streak": điểm dưới 10 nhập lúc nút đang BẬT được đánh dấu miễn trừ vĩnh viễn
                     const curV = parseFloat(cur.score);
                     if (!restored) { if (appData.keepStreak && !cur.absent && !isNaN(curV) && curV < 10) cur.keep = true; else delete cur.keep; }
@@ -6799,7 +6829,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
 
             if (cell && cell.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
             const prevCell = deepCopy(cell), prevGift = deepCopy(owned);
-            appData.scores[key] = { ...mfl(cell), score: after, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: !!cell.isExam };
+            appData.scores[key] = { ...mfl(cell), ...giftKeepTs(cell, key), score: after, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: !!cell.isExam };
             student.inventory = student.inventory.filter(i => i.invId !== invItem.invId);
             saveData().then(ok => {
                 if (ok) { uiToast('toastGiftGiven', 'success'); return; }
@@ -6833,7 +6863,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const key = `${studentId}_${plan.key}`, cell = appData.scores[key];
             if (cell && cell.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
             const prevCell = deepCopy(cell), prevGift = deepCopy(own2);
-            appData.scores[key] = { ...mfl(cell), score: plan.afterNum, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: true };
+            appData.scores[key] = { ...mfl(cell), ...giftKeepTs(cell, key), score: plan.afterNum, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: true };
             st.inventory = st.inventory.filter(i => i.invId !== invItem.invId);
             closeScoreModal();
             saveData().then(ok => {
@@ -6861,7 +6891,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             if (invItem.type === 'plus' && invItem.deltaScore !== undefined) {
                 let currentScore = (existing && existing.score !== undefined && existing.score !== null) ? parseFloat(existing.score) : 0;
                 let newScore = Math.min(10, currentScore + parseFloat(invItem.deltaScore));
-                appData.scores[key] = { ...mfl(existing), score: newScore, absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
+                appData.scores[key] = { ...mfl(existing), ...giftKeepTs(existing, key), score: newScore, absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
             } else if (invItem.targetScore !== null && invItem.targetScore !== undefined) {
                 appData.scores[key] = { ...mfl(existing), score: parseFloat(invItem.targetScore), absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
             }
