@@ -3971,7 +3971,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 if (!Array.isArray(appData.deletedItems)) appData.deletedItems = [];
                 ensureNewModules();
                 applyLanguageUI();
-                let sgBootChanged = false; try { sgBootChanged = sgSync(); } catch (e) { console.warn('sgSync skipped:', e); }
+                let sgBootChanged = false; try { const sgE = sgEnforce(); sgBootChanged = sgSync() || sgE; } catch (e) { console.warn('sgSync skipped:', e); }
                 renderClassTabs();
                 renderCurrentView();
                 lastPersistedSnapshot = deepCopy(appData);
@@ -3985,7 +3985,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 alert(appData.language === 'en' ? 'Archived course is read-only. Return to the active course to make changes.' : 'Khóa đã lưu trữ chỉ được xem. Hãy quay lại khóa hiện tại để chỉnh sửa.');
                 return Promise.resolve(false);
             }
-            try { stampScoreTimes(); updateTenRecords(); sgSync(); } catch (e) { console.warn('stampScoreTimes skipped:', e); }
+            try { sgEnforce(); stampScoreTimes(); updateTenRecords(); sgSync(); } catch (e) { console.warn('stampScoreTimes skipped:', e); }
             // Ghi lại trạng thái đã lưu gần nhất trước khi thay đổi, để có thể hoàn tác.
             if (!suppressUndoCapture && lastPersistedSnapshot && JSON.stringify(lastPersistedSnapshot) !== JSON.stringify(appData)) {
                 undoHistory.push(deepCopy(lastPersistedSnapshot));
@@ -4018,9 +4018,13 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const previous = undoHistory.pop();
             // Spin transactions are audit records and must never be rolled back by generic Undo.
             const protectedWheel = deepCopy(appData.luckyWheel || {prizes:[],history:[],transactions:{}});
+            const protectedSg = appData.sgLedger ? deepCopy(appData.sgLedger) : null;
             suppressUndoCapture = true;
             appData = deepCopy(previous);
             appData.luckyWheel = protectedWheel;
+            // Quà Streak (quà, ô điểm quà, trạng thái chuỗi) không bị hoàn tác
+            if (protectedSg) appData.sgLedger = protectedSg;
+            try { sgEnforce(); } catch (e) { console.warn('sgEnforce skipped:', e); }
             if (sessionViewMode) appData.activeViewMode = sessionViewMode;
             renderClassTabs(); renderCurrentView();
             saveData().then(ok => {
@@ -5675,30 +5679,77 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const tier = sgTierKey(g.tier), n = parseInt(g.count) || 1;
             return `<span class="sg-chip sg-t${tier}" title="${escapeHtml(qgT('sg_type_desc', { n }))}">🔥 ${escapeHtml(sgGiftName(g))} <span class="sg-x10">10 ×${n}</span><button type="button" class="sg-chip-use" onclick="qgUse('${sid}','${g.invId}')">${qgT('qg_use_btn')}</button></span>`;
         }
-        // Tặng quà cho mọi mốc mới đạt. Lần đầu (chưa có sgInit): chỉ tặng các mốc của streak đang có, các mốc lịch sử chỉ ghi nhận.
+        // ===== Sổ quà Streak (appData.sgLedger): nguồn chuẩn cho quà, ô điểm quà và trạng thái chuỗi =====
+        // Mọi cách sửa tay (nhập nhanh, hộp điểm, hàng loạt, xóa, quà khác, Ctrl+Z...) đều không tác động được tới quà này.
+        function sgLedger() {
+            if (!appData.sgLedger || typeof appData.sgLedger !== 'object') appData.sgLedger = {};
+            const L = appData.sgLedger;
+            if (!L.cells) L.cells = {}; if (!L.gifts) L.gifts = {}; if (!L.chains) L.chains = {};
+            return L;
+        }
+        const sgCellSig = c => c ? JSON.stringify([c.score, !!c.absent, !!c.sg, c.sgTier || 0, c.sgOrig ? [c.sgOrig.v, c.sgOrig.ts || 0, !!c.sgOrig.keep] : null]) : '';
+        function sgEnforce() {
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return false;
+            const L = sgLedger(), sc = appData.scores || (appData.scores = {}), students = appData.students || [];
+            let changed = false;
+            // Nhận vào sổ các quà/ô quà đã có từ trước (bản cũ)
+            Object.keys(sc).forEach(k => { const c = sc[k]; if (c && c.sg && !L.cells[k]) { L.cells[k] = deepCopy(c); changed = true; } });
+            students.forEach(st => (st.inventory || []).forEach(g => {
+                if (g && g.type === 'streak_ten' && !L.gifts[g.invId]) { L.gifts[g.invId] = { sid: st.id, gift: deepCopy(g), left: parseInt(g.count) || 0 }; changed = true; }
+            }));
+            const sids = new Set(students.map(s => String(s.id)));
+            // Ô điểm quà: luôn trở lại đúng như lúc tạo
+            Object.keys(L.cells).forEach(k => {
+                const sid = k.replace(/_\d{4}-\d{1,2}-\d{1,2}$/, '');
+                if (!sids.has(sid)) return;
+                if (sgCellSig(sc[k]) !== sgCellSig(L.cells[k])) { sc[k] = deepCopy(L.cells[k]); changed = true; }
+            });
+            // Quà trong túi: không mất, không tự tăng/giảm số lượng
+            Object.keys(L.gifts).forEach(id => {
+                const e = L.gifts[id], st = students.find(s => String(s.id) === String(e.sid)); if (!st) return;
+                if (!Array.isArray(st.inventory)) st.inventory = [];
+                const idx = st.inventory.findIndex(i => i.invId === id), left = parseInt(e.left) || 0;
+                if (left <= 0) { if (idx >= 0) { st.inventory.splice(idx, 1); changed = true; } return; }
+                if (idx < 0) { st.inventory.push(Object.assign(deepCopy(e.gift), { count: left })); changed = true; }
+                else if ((parseInt(st.inventory[idx].count) || 0) !== left) { st.inventory[idx].count = left; changed = true; }
+            });
+            return changed;
+        }
+        // Tặng quà theo CHUỖI: mỗi mốc chỉ tặng 1 lần cho tới khi streak về 0 (đứt hẳn). Streak bị trừ rồi lên lại không tặng lại.
         function sgSync() {
             if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return false;
-            let changed = false; const got = [];
+            let changed = false; const got = [], L = sgLedger();
+            const tiers = Object.keys(SG_REWARDS).map(Number).sort((a, b) => a - b);
             (appData.students || []).forEach(st => {
-                const inf = tenStreakInfo(st.id);
-                if (!Array.isArray(st.sgAwarded)) { st.sgAwarded = []; changed = true; }
+                const inf = tenStreakInfo(st.id), cur = inf.cur;
+                let ch = L.chains[st.id];
+                if (!ch) {
+                    // Chuyển từ bản cũ (sgAwarded theo mốc@ô): các mốc đã nhận của chuỗi đang có
+                    ch = L.chains[st.id] = { on: cur > 0, tiers: [] };
+                    if (cur > 0 && st.sgInit && Array.isArray(st.sgAwarded)) {
+                        const live = new Set(inf.liveHits.map(h => h.tier + '@' + h.key));
+                        st.sgAwarded.forEach(id => { if (live.has(id)) { const t = parseInt(id, 10); if (ch.tiers.indexOf(t) < 0) ch.tiers.push(t); } });
+                    }
+                    changed = true;
+                }
+                if (!Array.isArray(ch.tiers)) ch.tiers = [];
+                if (cur === 0) { if (ch.on || ch.tiers.length) { ch.on = false; ch.tiers = []; changed = true; } return; }
+                if (!ch.on) { ch.on = true; ch.tiers = []; changed = true; }
                 if (!Array.isArray(st.inventory)) st.inventory = [];
-                const done = new Set(st.sgAwarded), firstRun = !st.sgInit;
-                const live = new Set(inf.liveHits.map(h => h.tier + '@' + h.key));
-                inf.hits.forEach(h => {
-                    const id = h.tier + '@' + h.key;
-                    if (done.has(id)) return;
-                    st.sgAwarded.push(id); done.add(id); changed = true;
-                    if (firstRun && !live.has(id)) return;
-                    st.inventory.push({
+                tiers.forEach(t => {
+                    if (t > cur || ch.tiers.indexOf(t) >= 0) return;
+                    ch.tiers.push(t); changed = true;
+                    const gift = {
                         invId: 'inv_sg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
-                        itemId: 'streak_ten_gift', name: 'Quà Streak ' + h.tier, itemName: 'Quà Streak ' + h.tier,
-                        isFixed: false, type: 'streak_ten', tier: h.tier, count: SG_REWARDS[h.tier],
+                        itemId: 'streak_ten_gift', name: 'Quà Streak ' + t, itemName: 'Quà Streak ' + t,
+                        isFixed: false, type: 'streak_ten', tier: t, count: SG_REWARDS[t],
                         date: new Date().toISOString().split('T')[0]
-                    });
-                    got.push({ st, tier: h.tier, n: SG_REWARDS[h.tier] });
+                    };
+                    st.inventory.push(gift);
+                    L.gifts[gift.invId] = { sid: st.id, gift: deepCopy(gift), left: gift.count };
+                    got.push({ st, tier: t, n: SG_REWARDS[t] });
                 });
-                if (firstRun) { st.sgInit = true; changed = true; }
+                if (!st.sgInit) { st.sgInit = true; changed = true; }
             });
             if (got.length) {
                 setTimeout(() => {
@@ -5753,8 +5804,8 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 plan = sgPlan(studentId, gift);
                 if (!plan) { qsToast(qgT('sg_no_cell'), 'warning'); return; }
                 if (!appData.scores) appData.scores = {};
-                const prevGift = deepCopy(gift), prevCells = {};
-                const tier = sgTierKey(gift.tier);
+                const prevGift = deepCopy(gift), prevCells = {}, prevLedger = deepCopy(sgLedger());
+                const tier = sgTierKey(gift.tier), L = sgLedger();
                 plan.cells.forEach(c => {
                     const key = `${studentId}_${c.key}`;
                     prevCells[key] = appData.scores[key] !== undefined ? deepCopy(appData.scores[key]) : undefined;
@@ -5764,12 +5815,16 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                         cellNew.sgOrig = { v: parseFloat(po.score), ts: po.ts || null, keep: !!po.keep };
                     }
                     appData.scores[key] = cellNew;
+                    L.cells[key] = deepCopy(cellNew);
                 });
                 if (plan.left > 0) gift.count = plan.left;
                 else student.inventory = student.inventory.filter(i => i.invId !== invId);
+                if (!L.gifts[invId]) L.gifts[invId] = { sid: studentId, gift: deepCopy(prevGift), left: parseInt(prevGift.count) || 0 };
+                L.gifts[invId].left = plan.left;
                 const saved = await saveData();
                 if (!saved) {
                     Object.keys(prevCells).forEach(k => { if (prevCells[k] === undefined) delete appData.scores[k]; else appData.scores[k] = prevCells[k]; });
+                    appData.sgLedger = prevLedger;
                     const st2 = appData.students.find(x => x.id === studentId);
                     if (st2) { if (!Array.isArray(st2.inventory)) st2.inventory = []; const ex = st2.inventory.findIndex(i => i.invId === invId); if (ex >= 0) st2.inventory[ex] = prevGift; else st2.inventory.push(prevGift); }
                     qsToast(qgT('dsToastError'), 'error');
@@ -6444,6 +6499,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
                 const cur = appData.scores[key];
                 if (!st || !gift) { uiToast('dsToastNoGift', 'warning'); return; }
                 if (!hasValue(cur)) { uiToast('dsToastNoValid', 'warning'); return; }
+                if (cur.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
 
                 const prevCell = deepCopy(cur);
                 const prevGift = deepCopy(gift);
@@ -6496,6 +6552,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const after = Math.min(10, Math.max(0, Math.round((cur + delta) * 10) / 10));
             if (isNaN(cur) || isNaN(delta) || !matchGiftCond(invItem, cur) || after === cur) { uiToast('no_valid_cell_for_gift', 'warning'); return; }
 
+            if (cell && cell.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
             const prevCell = deepCopy(cell), prevGift = deepCopy(owned);
             appData.scores[key] = { ...mfl(cell), score: after, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: !!cell.isExam };
             student.inventory = student.inventory.filter(i => i.invId !== invItem.invId);
@@ -6529,6 +6586,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             plan = qgPlan(studentId, own2);
             if (!plan) { uiToast('no_exam_cell_for_gift', 'warning'); return; }
             const key = `${studentId}_${plan.key}`, cell = appData.scores[key];
+            if (cell && cell.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
             const prevCell = deepCopy(cell), prevGift = deepCopy(own2);
             appData.scores[key] = { ...mfl(cell), score: plan.afterNum, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: true };
             st.inventory = st.inventory.filter(i => i.invId !== invItem.invId);
@@ -6552,6 +6610,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const dateStr = document.getElementById('modalDateStr').value;
             const key = `${studentId}_${dateStr}`;
             const existing = appData.scores[key];
+            if (existing && existing.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
             if (existing && existing.isExam) { uiToast('gift_skip_exam', 'warning'); return; }
 
             if (invItem.type === 'plus' && invItem.deltaScore !== undefined) {
@@ -7297,7 +7356,7 @@ html.mx-dark .roster-card:not(.ct):not(.xf-bday){background:#111827}
             const shouldCopy=document.getElementById('copyPreviousCourseClasses')?.checked;let sourceCourse=null;if(shouldCopy&&c.startDate){sourceCourse=appData.courseManager.courses.filter(x=>x.id!==c.id&&x.startDate&&x.endDate&&x.endDate<c.startDate).sort((a,b)=>b.endDate.localeCompare(a.endDate))[0]||null;}const sourceSnapshot=sourceCourse?.snapshot;if(sourceSnapshot){appData.classes=deepCopy(sourceSnapshot.classes||appData.classes||[]);appData.students=deepCopy(sourceSnapshot.students||appData.students||[]);}
             appData.courseManager.courses.push(c);appData.courseManager.activeCourseId=c.id;
             appData.scores={};appData.finalExams={};appData.teachingPlans=appData.teachingPlans||{};appData.teachingPlans[c.id]=[];appData.studentNotes={};
-            appData.students=(appData.students||[]).map(st=>({...st,rewardPoints:0,inventory:[],violations:[],courseNotes:'',sgAwarded:[]}));
+            appData.students=(appData.students||[]).map(st=>({...st,rewardPoints:0,inventory:[],violations:[],courseNotes:'',sgAwarded:[]}));appData.sgLedger={cells:{},gifts:{},chains:{}};
             if(/^\d{4}-\d{2}-\d{2}/.test(c.startDate||'')){appData.year=parseInt(c.startDate.slice(0,4));appData.startMonth=parseInt(c.startDate.slice(5,7));if(/^\d{4}-\d{2}-\d{2}/.test(c.endDate||'')){const span=(parseInt(c.endDate.slice(0,4))*12+parseInt(c.endDate.slice(5,7)))-(appData.year*12+appData.startMonth)+1;if(span>=1&&span<=4)appData.monthCount=span;}appData.yearKeysFixed=true;try{const ms=document.getElementById('startMonthSelect'),mc=document.getElementById('monthCountSelect'),ys=document.getElementById('startYearSelect');if(ms)ms.value=appData.startMonth;if(mc)mc.value=appData.monthCount||3;if(ys){const yv=String(appData.year);if(![...ys.options].some(o=>o.value===yv))ys.add(new Option(yv,yv));ys.value=yv;}}catch(e){}}
             appData.courseManager.courses.forEach(x=>{if(x.id!==c.id&&x.status==='active')x.status='archived';});
           } catch(err){appData=backup;console.error(err);alert(appData.language==='en'?'Could not prepare the new course. No changes were saved.':'Không thể chuẩn bị khóa mới. Chưa có thay đổi nào được lưu.');return;}
