@@ -1746,6 +1746,26 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 #seatingPlan .seat-card:hover,#seatingPlan .seat-item:hover,#seatingPlan [class*="seat"]:hover,#seatingPlan [class*="desk"]:hover,#seatingPlan [class*="table"]:hover { transform:translateY(-2px); box-shadow:0 7px 16px rgba(15,23,42,.16); border-color:#38bdf8; }
 @media (max-width:420px) { #randomPickerModal .rp-mode-btn { flex-basis:0 !important; flex-grow:1 !important; padding:.42rem .35rem !important; font-size:.72rem !important; } }
 </style>
+
+<style id="patch-2026-10-19-random-wheel-gap">
+/* Gọi random: thẻ nhỏ (arena) tĩnh sau khi chọn xong; thẻ lớn phía trên nhấp nhô nổi bật */
+.rp-chip.won{animation:none !important;transform:scale(1.35)}
+#randomDisplayArea.winner{animation:rpCardPulse 1.4s ease-in-out .7s infinite}
+#randomDisplayArea.winner #randomStudentIcon{animation:rpPop .7s cubic-bezier(.2,1.6,.4,1) both,rpIconBounce 1s ease-in-out .7s infinite}
+#randomDisplayArea.winner #randomStudentName{animation:rpPop .7s .1s cubic-bezier(.2,1.6,.4,1) both,rpNameBeat 1.1s ease-in-out .8s infinite}
+@keyframes rpCardPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(245,158,11,.55),0 6px 18px rgba(245,158,11,.25)}50%{transform:scale(1.025);box-shadow:0 0 0 10px rgba(245,158,11,0),0 12px 30px rgba(239,68,68,.4)}}
+@keyframes rpIconBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.12)}}
+@keyframes rpNameBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){#randomDisplayArea.winner,#randomDisplayArea.winner #randomStudentIcon,#randomDisplayArea.winner #randomStudentName{animation:none !important}}
+/* Vòng quay may mắn: to hơn một chút, bỏ khung vuông focus, nút QUAY nhỏ lại và tách khỏi vòng */
+.wheel-frame{max-width:min(100%,clamp(300px,calc(100vh - 320px),640px)) !important;margin-top:1.1rem;margin-bottom:.35rem}
+#wheelCanvas,.wheel-frame canvas{outline:none !important;border-radius:9999px;-webkit-tap-highlight-color:transparent}
+#wheelCanvas:focus,#wheelCanvas:focus-visible{outline:none !important}
+#wheelCanvas:focus-visible{box-shadow:0 0 0 3px rgba(99,102,241,.55)}
+.wheel-spin-btn{font-size:1.1rem !important;padding:.5rem 2.3rem !important;margin-top:1.1rem !important}
+/* Đồng bộ khoảng cách phía trên của tab Kiểm tra cuối kỳ / Xếp hạng với các tab khác */
+#viewFinalExamContainer>.qs-pres-bar+*,#viewRankingContainer>.qs-pres-bar+*{margin-top:0 !important}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 
@@ -2195,7 +2215,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
     <div id="viewTeachingContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3">
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap items-center justify-between gap-3 mb-3"><div><h2 id="teachingHeading" class="font-black text-lg text-slate-800" data-i18n="tabTeaching">Nội dung giảng dạy</h2><p class="text-xs text-slate-500" data-i18n="teachingSubtitle">Kế hoạch theo tuần, nhiều lớp, lưu theo khóa học.</p></div><div class="flex flex-wrap gap-2 items-center"><select id="teachingYear" onchange="renderTeachingView()" class="border rounded-lg px-2 py-2 text-sm"></select><select id="teachingClassFilter" onchange="renderTeachingView()" class="border rounded-lg px-2 py-2 text-sm"></select><input id="teachingSearch" oninput="renderTeachingView()" class="border rounded-lg px-3 py-2 text-sm" placeholder="Tìm nội dung..."><button onclick="openClassSchedule()" class="rounded-lg bg-emerald-600 text-white px-3 py-2 text-xs font-bold" data-i18n="classScheduleBtn">Lịch học</button><button onclick="addTeachingWeek()" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-xs font-bold" data-i18n="addWeekBtn">+ Thêm tuần</button></div></div><div id="teachingWeeks" class="space-y-3"></div></section>
     </div>
-    <div id="viewWheelContainer" class="hidden flex-1 min-h-0 overflow-y-auto p-3 md:p-5 space-y-4">
+    <div id="viewWheelContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3">
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
         <div class="flex flex-wrap items-start justify-between gap-3"><div><h2 id="wheelTitle" class="text-xl font-black text-slate-800">Vòng Quay May Mắn</h2></div><button id="wheelManageToggle" onclick="toggleWheelManager()" class="rounded-lg border px-3 py-2 text-sm font-bold">Quản lý phần thưởng</button></div>
         <div id="wheelManager" class="hidden mt-4 rounded-xl bg-slate-50 border p-4 space-y-3"><div class="grid grid-cols-1 sm:grid-cols-3 gap-2"><input id="wheelPrizeName" class="border rounded-lg px-3 py-2" placeholder="Tên phần thưởng"><input id="wheelPrizeWeight" type="number" min="0.1" max="100" step="0.1" value="1" class="border rounded-lg px-3 py-2" placeholder="Trọng số"><button onclick="addWheelPrize()" class="rounded-lg bg-indigo-600 text-white font-bold px-3 py-2">Thêm vào vòng quay</button></div><div id="wheelPrizeList" class="space-y-2"></div><span id="wheelWeightHelp" class="block text-xs text-slate-500">Trọng số là tỷ lệ tương đối; xác suất được chuẩn hóa.</span><div class="rounded-xl border bg-white p-3"><div class="flex flex-wrap items-center justify-between gap-3"><div class="flex items-center gap-2"><button id="wheelProbabilityToggle" type="button" onclick="toggleWheelProbabilities()" class="fx-lift rounded-lg border px-3 py-1.5 text-xs font-bold bg-white">Hiện xác suất</button></div><button onclick="clearWheelPrizes()" class="fx-lift ml-auto sm:ml-24 rounded-lg border border-rose-300 text-rose-700 bg-white px-3 py-2 text-sm font-bold">Xóa toàn bộ cấu hình</button></div><div id="wheelProbabilities" class="space-y-2 hidden mt-3"></div></div></div>
@@ -7776,6 +7796,14 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         let rpCallMode = 'save';
         let rpRemovedStudentIds = [];
         let rpLastRemovedId = null;
+        let rpPendingRemoveId = null; // người vừa được gọi ở chế độ 'Gọi và xoá': vẫn hiện, chỉ bị xoá khi quay lần kế tiếp
+        function rpCommitPending() {
+            if (rpPendingRemoveId) {
+                if (!rpRemovedStudentIds.includes(rpPendingRemoveId)) rpRemovedStudentIds.push(rpPendingRemoveId);
+                rpLastRemovedId = rpPendingRemoveId;
+                rpPendingRemoveId = null;
+            }
+        }
         function rpStudents() {
             const activeClass = appData.classes.find(c => c.id === appData.activeClassId);
             const students = activeClass ? appData.students.filter(s => s.classId === activeClass.id) : [];
@@ -7790,7 +7818,9 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             if (actions) actions.classList.toggle('hidden', !remove);
         }
         window.setRandomCallMode = function(mode) {
-            rpCallMode = mode === 'remove' ? 'remove' : 'save';
+            const nextMode = mode === 'remove' ? 'remove' : 'save';
+            if (nextMode !== rpCallMode) rpCommitPending();
+            rpCallMode = nextMode;
             rpUpdateModeUI();
             if (!spinTimer) {
                 const list = rpStudents();
@@ -7802,6 +7832,15 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             }
         };
         window.undoRandomRemoved = function() {
+            if (rpPendingRemoveId) {
+                rpPendingRemoveId = null;
+                rpRenderArena(rpStudents());
+                const a = document.getElementById('randomDisplayArea');
+                if (a) a.classList.remove('winner', 'spinning');
+                document.getElementById('randomStudentIcon').innerText = '🎲';
+                document.getElementById('randomStudentName').innerText = translations[appData.language || 'vi'].randomPrompt;
+                return;
+            }
             if (!rpLastRemovedId) { alert(translations[appData.language || 'vi'].rpNoRemoved); return; }
             rpRemovedStudentIds = rpRemovedStudentIds.filter(id => id !== rpLastRemovedId);
             rpLastRemovedId = null;
@@ -7810,6 +7849,9 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         window.resetRandomRemoved = function() {
             rpRemovedStudentIds = [];
             rpLastRemovedId = null;
+            rpPendingRemoveId = null;
+            const area0 = document.getElementById('randomDisplayArea');
+            if (area0) area0.classList.remove('winner', 'spinning');
             rpRenderArena(rpStudents());
             document.getElementById('randomStudentIcon').innerText = '🎲';
             document.getElementById('randomStudentName').innerText = translations[appData.language || 'vi'].randomPrompt;
@@ -7850,12 +7892,14 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         };
 
         window.closeRandomPickerModal = function() {
+            rpCommitPending();
             if (spinTimer) { clearTimeout(spinTimer); clearInterval(spinTimer); spinTimer = null; }
             document.getElementById('randomPickerModal').classList.add('hidden');
             document.getElementById('randomPickerModal').classList.remove('flex');
         };
 
         window.spinRandomStudent = function() {
+            if (rpCallMode === 'remove') rpCommitPending(); // bấm quay lần nữa mới xoá người đã gọi trước đó
             const list = rpStudents();
             if (list.length === 0) {
                 alert(appData.language === 'en' ? "Current class has no students!" : "Lớp hiện tại chưa có học sinh!");
@@ -7890,10 +7934,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                         area.classList.add('winner');
                         rpConfetti();
                         if (rpCallMode === 'remove') {
-                            const winnerId = String(list[winnerIdx].id);
-                            if (!rpRemovedStudentIds.includes(winnerId)) rpRemovedStudentIds.push(winnerId);
-                            rpLastRemovedId = winnerId;
-                            rpRenderArena(rpStudents());
+                            // Giữ thẻ học sinh hiện trên đấu trường; chỉ đánh dấu chờ xoá ở lần quay kế tiếp
+                            rpPendingRemoveId = String(list[winnerIdx].id);
                         }
                         spinTimer = null;
                         return;
@@ -8661,6 +8703,8 @@ window.openStudentProfile=function(studentId){
         window.closeWheelResultModal=function(){const m=document.getElementById('wheelResultModal');if(m){m.classList.add('hidden');m.classList.remove('flex');}};
          document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.getElementById('wheelResultModal');if(m&&!m.classList.contains('hidden'))window.closeWheelResultModal();}});
          const wheelCanvasEl=document.getElementById('wheelCanvas');if(wheelCanvasEl){wheelCanvasEl.addEventListener('click',()=>window.spinLuckyWheel());wheelCanvasEl.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();window.spinLuckyWheel();}});}
+        function wheelPrizeColor(prize){const ps=wheelPrizes().filter(p=>p.enabled!==false);let i=ps.findIndex(p=>prize&&(p===prize||(p.id!==undefined&&p.id===prize.id)));if(i<0)i=0;return (prize&&prize.color)||(ps[i]&&ps[i].color)||WHEEL_COLORS[i%WHEEL_COLORS.length];}
+        function wheelApplyPrizeColor(prize){const c=wheelPrizeColor(prize);const q=id=>document.getElementById(id);const r=q('wheelResult');if(r){r.style.color=c;}const mp=q('wheelResultModalPrize');if(mp)mp.style.color=c;const mh=q('wheelResultModalTitle')&&q('wheelResultModalTitle').parentElement;if(mh)mh.style.background='linear-gradient(135deg,'+c+',color-mix(in srgb,'+c+' 70%,#000))';const cb=q('wheelResultModalClose');if(cb)cb.style.background='linear-gradient(135deg,'+c+',color-mix(in srgb,'+c+' 70%,#000))';}
         function showWheelResultModal(prize,studentName){const en=appData.language==='en';document.getElementById('wheelResultModalTitle').textContent=en?'Congratulations!':'Chúc mừng!';document.getElementById('wheelResultModalMessage').textContent=en?(studentName?studentName+' won:':'You won:'):(studentName?studentName+' đã trúng:':'Bạn đã trúng:');document.getElementById('wheelResultModalPrize').textContent=prize;document.getElementById('wheelResultModalClose').textContent=en?'Close':'Đóng';const m=document.getElementById('wheelResultModal');m.classList.remove('hidden');m.classList.add('flex');}
 
         function ensureWheelData(){
@@ -8705,7 +8749,7 @@ window.openStudentProfile=function(studentId){
         window.clearWheelPrizes=async function(){if(wheelBusy)return;if(!await showAppConfirm(wheelText('Xóa toàn bộ cấu hình vòng quay? Lịch sử sẽ được giữ nguyên.','Clear all wheel configuration? History will be preserved.')))return;const old=deepCopy(wheelPrizes());appData.luckyWheel.prizes=[];const ok=await saveData();if(!ok){appData.luckyWheel.prizes=old;alert(wheelText('Không thể lưu thay đổi.','Could not save changes.'));}renderWheelView();};
         function selectWeightedPrize(){const ps=wheelEnabled(),total=ps.reduce((n,p)=>n+Number(p.weight),0);if(!ps.length||!Number.isFinite(total)||total<=0)return null;if(ps.length===1)return ps[0];let n=Math.random()*total;for(const p of ps){n-=Number(p.weight);if(n<0)return p;}return ps[ps.length-1];}
         function animateWheelToPrize(prize){return new Promise(resolve=>{const ps=wheelPrizes().filter(p=>p.enabled!==false),index=ps.findIndex(p=>p.id===prize.id);if(index<0){resolve(false);return;}const step=Math.PI*2/ps.length;const desired=(-(index*step+step/2))%(Math.PI*2);const start=wheelAngle;const end=desired+Math.PI*2*6;const t0=performance.now(),duration=4200,token=++wheelAnimationToken;const frame=now=>{if(token!==wheelAnimationToken){resolve(false);return;}const t=Math.min(1,(now-t0)/duration),ease=1-Math.pow(1-t,4);wheelAngle=start+(end-start)*ease;drawWheel();if(t<1)requestAnimationFrame(frame);else{wheelAngle=((desired%(Math.PI*2))+Math.PI*2)%(Math.PI*2);drawWheel();resolve(true);}};requestAnimationFrame(frame);});}
-        window.spinLuckyWheel=async function(){if(wheelBusy)return;if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(wheelText('Khóa đã lưu trữ chỉ được xem.','Archived course is read-only.'));return;}ensureWheelData();const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';const studentId=document.getElementById('wheelStudentPicker').value;const student=(appData.students||[]).find(x=>String(x.id)===String(studentId));if(mode==='student'&&(!student||!wheelInventory(student).length)){alert(wheelText('Học sinh này không có quà lượt quay may mắn.','This student has no Lucky Wheel turn gift.'));return;}const prize=selectWeightedPrize();if(!prize){alert(wheelText('Không có phần thưởng đang bật với trọng số hợp lệ.','No enabled prize has a valid weight.'));return;}const teacherAtStart=currentTeacherId||LEGACY_TEACHER_ID,courseId=appData.courseManager?.activeCourseId||null,spinId='spin_'+Date.now()+'_'+Math.random().toString(36).slice(2,10),studentName=student?.name||'',className=(appData.classes||[]).find(c=>String(c.id)===String(student?.classId))?.name||'';const record={spinId,teacherId:teacherAtStart,courseId,studentId:mode==='student'?student.id:null,studentName:mode==='student'?studentName:null,className:mode==='student'?className:null,mode,prizeId:prize.id,prizeName:prize.name,prizeColor:prize.color,prizeWeight:Number(prize.weight),prizeSnapshot:deepCopy(prize),status:'completed',at:new Date().toISOString()};wheelBusy=true;document.getElementById('wheelSpinBtn').disabled=true;try{const path=`appDataMultiTeacher/teacherData/${teacherAtStart}`;const result=await runTransaction(ref(db,path),current=>{if(!current||typeof current!=='object')return;current.luckyWheel=current.luckyWheel&&typeof current.luckyWheel==='object'?current.luckyWheel:{prizes:[],history:[],transactions:{}};current.luckyWheel.history=Array.isArray(current.luckyWheel.history)?current.luckyWheel.history:[];current.luckyWheel.transactions=current.luckyWheel.transactions||{};if(current.luckyWheel.transactions[spinId])return current;if(mode==='student'){const st=(current.students||[]).find(x=>String(x.id)===String(student.id));if(!st||!Array.isArray(st.inventory))return;const inv=st.inventory.findIndex(i=>isLuckyWheelGift(i));if(inv<0)return;const consumed=st.inventory.splice(inv,1)[0];record.giftInventoryId=consumed.invId||consumed.id||null;record.consumedGiftItemId=consumed.itemId||consumed.id||LUCKY_GIFT_ID;record.turnsBefore=st.inventory.length+1;record.turnsAfter=st.inventory.length;}current.luckyWheel.transactions[spinId]={spinId,status:'completed',at:record.at,studentId:record.studentId,giftInventoryId:record.giftInventoryId||null,prizeId:record.prizeId};current.luckyWheel.history.push(record);return current;},{applyLocally:false});if(!result.committed){throw new Error('transaction_not_committed');}const committed=result.snapshot.val();if(!committed?.luckyWheel?.transactions?.[spinId]){throw new Error('transaction_not_confirmed');}if(currentTeacherId!==teacherAtStart){return;}appData=committed;if(sessionViewMode)appData.activeViewMode=sessionViewMode;else appData.activeViewMode='wheel';ensureWheelData();lastPersistedSnapshot=deepCopy(appData);renderClassTabs();renderCurrentView();const animated=await animateWheelToPrize(prize);document.getElementById('wheelResult').textContent=prize.name;document.getElementById('wheelStatus').textContent=wheelText('Sẵn sàng','Ready');showWheelResultModal(prize.name,mode==='student'?studentName:'');renderWheelView();}catch(err){console.error('Lucky Wheel transaction failed or uncertain:',err);document.getElementById('wheelStatus').textContent=wheelText('Chưa xác nhận được lượt quay. Hãy tải lại dữ liệu/kiểm tra Firebase trước khi thử lại.','Spin status could not be confirmed. Refresh/check Firebase before retrying.');alert(wheelText('Không thể xác nhận giao dịch. Không tự động thử lại để tránh dùng lượt hai lần. Hãy kiểm tra lịch sử sau khi kết nối ổn định.','Could not confirm the transaction. It will not retry automatically to avoid using a turn twice. Check history when the connection is stable.'));}finally{wheelBusy=false;const b=document.getElementById('wheelSpinBtn');if(b)b.disabled=false;renderWheelView();}};
+        window.spinLuckyWheel=async function(){if(wheelBusy)return;if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(wheelText('Khóa đã lưu trữ chỉ được xem.','Archived course is read-only.'));return;}ensureWheelData();const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';const studentId=document.getElementById('wheelStudentPicker').value;const student=(appData.students||[]).find(x=>String(x.id)===String(studentId));if(mode==='student'&&(!student||!wheelInventory(student).length)){alert(wheelText('Học sinh này không có quà lượt quay may mắn.','This student has no Lucky Wheel turn gift.'));return;}const prize=selectWeightedPrize();if(!prize){alert(wheelText('Không có phần thưởng đang bật với trọng số hợp lệ.','No enabled prize has a valid weight.'));return;}const teacherAtStart=currentTeacherId||LEGACY_TEACHER_ID,courseId=appData.courseManager?.activeCourseId||null,spinId='spin_'+Date.now()+'_'+Math.random().toString(36).slice(2,10),studentName=student?.name||'',className=(appData.classes||[]).find(c=>String(c.id)===String(student?.classId))?.name||'';const record={spinId,teacherId:teacherAtStart,courseId,studentId:mode==='student'?student.id:null,studentName:mode==='student'?studentName:null,className:mode==='student'?className:null,mode,prizeId:prize.id,prizeName:prize.name,prizeColor:prize.color,prizeWeight:Number(prize.weight),prizeSnapshot:deepCopy(prize),status:'completed',at:new Date().toISOString()};wheelBusy=true;document.getElementById('wheelSpinBtn').disabled=true;try{const path=`appDataMultiTeacher/teacherData/${teacherAtStart}`;const result=await runTransaction(ref(db,path),current=>{if(!current||typeof current!=='object')return;current.luckyWheel=current.luckyWheel&&typeof current.luckyWheel==='object'?current.luckyWheel:{prizes:[],history:[],transactions:{}};current.luckyWheel.history=Array.isArray(current.luckyWheel.history)?current.luckyWheel.history:[];current.luckyWheel.transactions=current.luckyWheel.transactions||{};if(current.luckyWheel.transactions[spinId])return current;if(mode==='student'){const st=(current.students||[]).find(x=>String(x.id)===String(student.id));if(!st||!Array.isArray(st.inventory))return;const inv=st.inventory.findIndex(i=>isLuckyWheelGift(i));if(inv<0)return;const consumed=st.inventory.splice(inv,1)[0];record.giftInventoryId=consumed.invId||consumed.id||null;record.consumedGiftItemId=consumed.itemId||consumed.id||LUCKY_GIFT_ID;record.turnsBefore=st.inventory.length+1;record.turnsAfter=st.inventory.length;}current.luckyWheel.transactions[spinId]={spinId,status:'completed',at:record.at,studentId:record.studentId,giftInventoryId:record.giftInventoryId||null,prizeId:record.prizeId};current.luckyWheel.history.push(record);return current;},{applyLocally:false});if(!result.committed){throw new Error('transaction_not_committed');}const committed=result.snapshot.val();if(!committed?.luckyWheel?.transactions?.[spinId]){throw new Error('transaction_not_confirmed');}if(currentTeacherId!==teacherAtStart){return;}appData=committed;if(sessionViewMode)appData.activeViewMode=sessionViewMode;else appData.activeViewMode='wheel';ensureWheelData();lastPersistedSnapshot=deepCopy(appData);renderClassTabs();renderCurrentView();const animated=await animateWheelToPrize(prize);document.getElementById('wheelResult').textContent=prize.name;wheelApplyPrizeColor(prize);document.getElementById('wheelStatus').textContent=wheelText('Sẵn sàng','Ready');showWheelResultModal(prize.name,mode==='student'?studentName:'');wheelApplyPrizeColor(prize);renderWheelView();}catch(err){console.error('Lucky Wheel transaction failed or uncertain:',err);document.getElementById('wheelStatus').textContent=wheelText('Chưa xác nhận được lượt quay. Hãy tải lại dữ liệu/kiểm tra Firebase trước khi thử lại.','Spin status could not be confirmed. Refresh/check Firebase before retrying.');alert(wheelText('Không thể xác nhận giao dịch. Không tự động thử lại để tránh dùng lượt hai lần. Hãy kiểm tra lịch sử sau khi kết nối ổn định.','Could not confirm the transaction. It will not retry automatically to avoid using a turn twice. Check history when the connection is stable.'));}finally{wheelBusy=false;const b=document.getElementById('wheelSpinBtn');if(b)b.disabled=false;renderWheelView();}};
         window.clearWheelHistoryView=async function(){if(wheelBusy)return;const en=appData.language==='en';const message=wheelText('Xóa lịch sử quay đang hiển thị? Các bản ghi giao dịch vẫn được giữ lại để ngăn sử dụng một lượt quay nhiều lần.','Clear the visible spin history? Transaction records will be retained to prevent the same turn from being used more than once.');if(!await showAppConfirm(message,wheelText('Xóa lịch sử hiển thị','Clear visible history')))return;const old=deepCopy(appData.luckyWheel.history);appData.luckyWheel.history=[];const ok=await saveData();if(!ok){appData.luckyWheel.history=old;await showAppNotice(wheelText('Không thể xóa lịch sử.','Could not clear history.'),wheelText('Lỗi lưu dữ liệu','Save error'));}renderWheelView();};
 
         // Multi-teacher routing on the existing Firebase Realtime Database.
