@@ -92,6 +92,11 @@
         .menu-item { display:flex; align-items:center; gap:.7rem; width:100%; padding:.55rem .7rem; border-radius:.85rem; font-size:.75rem; font-weight:700; text-align:left; color:#334155; transition:background .15s, color .15s; cursor:pointer; }
         .menu-item:hover, .menu-item:focus-visible { background:#eef2ff; color:#3730a3; outline:none; }
         .menu-item .menu-ico { display:flex; align-items:center; justify-content:center; width:2rem; height:2rem; border-radius:.7rem; font-size:.85rem; flex:0 0 auto; }
+        #utilityMenu .menu-item, #classMenu .menu-item { transition:background .15s, color .15s, transform .15s ease, box-shadow .15s ease; }
+        #utilityMenu .menu-item:hover, #classMenu .menu-item:hover { transform:translateX(4px); box-shadow:0 4px 12px rgba(79,70,229,.18); }
+        #utilityMenu .menu-item:active, #classMenu .menu-item:active { transform:translateX(2px) scale(.985); }
+        #utilityMenu .menu-item .menu-ico, #classMenu .menu-item .menu-ico { transition:transform .2s cubic-bezier(.2,.9,.3,1.4), box-shadow .2s ease; }
+        #utilityMenu .menu-item:hover .menu-ico, #classMenu .menu-item:hover .menu-ico { transform:scale(1.15) rotate(-6deg); box-shadow:0 3px 8px rgba(15,23,42,.2); }
         .menu-item-danger { color:#be123c; }
         .menu-item-danger:hover, .menu-item-danger:focus-visible { background:#fff1f2; color:#9f1239; }
         .menu-sep { height:1px; background:#e2e8f0; margin:.35rem .5rem; }
@@ -491,6 +496,25 @@
         @media (prefers-reduced-motion: reduce) { .tf-trend { animation:none !important; } }
         /* Đồng hồ 10 giây cuối, hồ sơ, cấp độ, khói */
         .tf-timer-warn { color:#ef4444 !important; animation:tfPulse 1s ease-in-out infinite; }
+        #timerMini { position:fixed; top:10px; left:10px; z-index:8000; display:flex; align-items:stretch; border-radius:9999px; background:#0f172a; border:2px solid #fbbf24; box-shadow:0 8px 22px rgba(15,23,42,.4); overflow:hidden; animation:tmIn .25s ease-out; }
+        #timerMini.hidden { display:none; }
+        #timerMini .tm-body { display:flex; align-items:center; gap:.45rem; padding:.35rem .6rem .35rem .8rem; color:#fbbf24; font-weight:900; font-size:1rem; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; letter-spacing:.04em; cursor:pointer; }
+        #timerMini .tm-body:hover { background:rgba(251,191,36,.14); }
+        #timerMini .tm-body i { font-size:.85rem; }
+        #timerMini .tm-off { padding:0 .8rem 0 .7rem; color:#fff; background:#e11d48; cursor:pointer; transition:filter .15s ease; }
+        #timerMini .tm-off:hover { filter:brightness(1.2); }
+        .tm-ibtn { width:2.1rem; height:2.1rem; display:inline-flex; align-items:center; justify-content:center; border-radius:.6rem; color:#fff; font-size:.95rem; box-shadow:0 2px 6px rgba(15,23,42,.25); transition:transform .15s ease, box-shadow .15s ease, filter .15s ease; cursor:pointer; }
+        .tm-ibtn-min { background:#4f46e5; }
+        .tm-ibtn-off { background:#e11d48; }
+        .tm-ibtn:hover { transform:translateY(-2px) scale(1.08); box-shadow:0 6px 14px rgba(15,23,42,.35); filter:brightness(1.1); }
+        .tm-ibtn:active { transform:scale(.95); }
+        #timerMini.tm-paused .tm-body { opacity:.65; }
+        #timerMini.tm-done { border-color:#ef4444; animation:tmDone 1s ease-in-out infinite; }
+        #timerMini.tm-done .tm-body { color:#fca5a5; }
+        #timerMini .tm-body span.tf-timer-warn { color:#ef4444 !important; }
+        @keyframes tmIn { from { opacity:0; transform:translateY(-12px) scale(.9); } to { opacity:1; transform:none; } }
+        @keyframes tmDone { 0%,100% { box-shadow:0 0 0 0 rgba(239,68,68,.6),0 8px 22px rgba(15,23,42,.4); } 50% { box-shadow:0 0 0 8px rgba(239,68,68,0),0 8px 22px rgba(15,23,42,.4); } }
+        @media (prefers-reduced-motion: reduce) { #timerMini, #timerMini.tm-done { animation:none; } }
         @keyframes tfPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.14)} }
         .tf-name-link { cursor:pointer; } .tf-name-link:hover { text-decoration:underline; text-underline-offset:2px; }
         .tf-lv { display:inline-flex; align-items:center; gap:.25rem; margin-left:.45rem; vertical-align:middle; font-size:10px; font-weight:900; color:#4338ca; }
@@ -709,6 +733,12 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 /* ===== XF: trend toggle ===== */
 .qs-toggle.qs-toggle-tpl.on{background:#c026d3;border-color:#c026d3;box-shadow:0 2px 8px rgba(192,38,211,.4)}
 .qs-toggle.qs-toggle-trend.on{background:#059669;border-color:#059669;box-shadow:0 2px 8px rgba(5,150,105,.4)}
+.qs-toggle.qs-toggle-ten.on{background:#0891b2;border-color:#0891b2;box-shadow:0 2px 8px rgba(8,145,178,.45)}
+/* Chế độ Hiện điểm 10: điểm dưới 10 mờ đi, điểm 10 nhô nhẹ lên */
+#scoreMatrix td.grid-cell{transition:opacity .25s ease,transform .25s cubic-bezier(.2,.9,.3,1.3),box-shadow .25s ease,filter .25s ease}
+#scoreMatrix.qs-ten-on td.cell-scored:not(.cell-ten),#scoreMatrix.qs-ten-on td.cell-absent{opacity:.2;filter:grayscale(.7)}
+#scoreMatrix.qs-ten-on td.cell-ten{position:relative;z-index:3;transform:translateY(-2px) scale(1.14);box-shadow:0 5px 12px rgba(8,145,178,.5),inset 0 0 0 2px #06b6d4;border-radius:6px;font-weight:900}
+@media (prefers-reduced-motion:reduce){#scoreMatrix td.grid-cell{transition:none}}
 .qs-toggle.qs-toggle-keep.on{background:#ea580c;border-color:#ea580c;box-shadow:0 2px 8px rgba(234,88,12,.4)}
 /* ===== Quà thưởng Streak (điểm 10): màu theo mốc streak ===== */
 .sg-t5{--sg-a:#f97316;--sg-bg:#ffedd5;--sg-tx:#9a3412;--sg-bd:#fdba74}
@@ -855,6 +885,11 @@ td.grid-cell.cell-sg .sg-cf{position:absolute;top:-2px;left:-1px;transform:scale
 .opened .xf-gitem{animation:xfGItem .9s cubic-bezier(.3,1.4,.5,1) both}
 .xf-gbox{position:relative;width:150px;height:150px;margin:0 auto;animation:xfGDrop .6s cubic-bezier(.3,1.5,.5,1) both}
 .xf-gbox.shake{animation:xfGShake .9s ease-in-out both}
+.xf-gbox.open{animation:none}
+@keyframes xfFade{from{opacity:0}to{opacity:1}}
+/* Mọi phần tử trong màn hình mở quà không nhận chuột (tránh hiệu ứng rê chuột chung làm lệch hộp quà/tên quà); chỉ nút "Tuyệt vời!" nhận chuột */
+.xf-gift .xf-gstage,.xf-gift .xf-gstage *{pointer-events:none}
+.xf-gift .xf-gok{pointer-events:auto}
 .xf-gbody{position:absolute;left:10px;right:10px;bottom:0;height:92px;border-radius:0 0 12px 12px;background:linear-gradient(135deg,#ef4444,#be123c);box-shadow:inset 0 -10px 0 rgba(0,0,0,.14)}
 .xf-gbody::after,.xf-glid::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:26px;margin-left:-13px;background:linear-gradient(90deg,#fde68a,#fbbf24)}
 .xf-glid{position:absolute;left:0;right:0;bottom:84px;height:40px;border-radius:10px;background:linear-gradient(135deg,#f43f5e,#be123c);box-shadow:0 4px 0 rgba(0,0,0,.14);transform-origin:left bottom;transition:transform .7s cubic-bezier(.3,1.4,.5,1),opacity .7s .1s}
@@ -1269,10 +1304,10 @@ td.grid-cell.cell-sg .sg-cf{position:absolute;top:-2px;left:-1px;transform:scale
 #scoreMatrix td.grid-cell.mx-multi.cell-absent{outline:2px solid #4f46e5;outline-offset:-2px}
 #scoreMatrix.qs-test-on td.grid-cell.mx-multi:not(.cell-absent){background-color:#fde68a !important;color:#3b0764 !important;outline-color:#6b21a8}
 .mx-today-btn{cursor:pointer;transition:transform .16s ease,filter .16s ease,box-shadow .16s ease,background-color .16s ease}.mx-today-btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 5px 12px rgba(99,102,241,.22)}.mx-today-btn:active:not(:disabled){transform:translateY(0) scale(.98)}
-.mx-today-badge{font-size:10px;font-weight:800;border-radius:9999px;padding:.22rem .6rem;border:1px solid #fcd34d;background:#fef3c7;color:#92400e;cursor:pointer}
+.mx-today-badge{font-size:10px;font-weight:800;border-radius:9999px;padding:.22rem .6rem;border:1px solid #f87171;background:#fee2e2;color:#dc2626;cursor:pointer}
 .mx-today-badge.done{border-color:#86efac;background:#dcfce7;color:#166534;cursor:default}
 .mx-multi-info{font-size:10px;font-weight:800;color:#4338ca}
-html.mx-dark .mx-today-badge{background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.5);color:#fcd34d}
+html.mx-dark .mx-today-badge{background:rgba(239,68,68,.2);border-color:rgba(248,113,113,.6);color:#fca5a5}
 html.mx-dark .mx-today-badge.done{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.5);color:#86efac}
 html.mx-dark .mx-multi-info{color:#a5b4fc}
 .mx-search{display:inline-flex;align-items:center;gap:.3rem;border:1px solid #cbd5e1;background:#fff;border-radius:9999px;padding:.12rem .5rem;font-size:10px;color:#64748b}
@@ -1568,11 +1603,89 @@ html.mx-dark .wheel-mode-card{background:linear-gradient(#111c33,#111c33) paddin
 .teaching-week-card input,.teaching-week-card textarea{transition:border-color .15s ease,background-color .15s ease}
 .teaching-week-card input:not(:focus):hover,.teaching-week-card textarea:not(:focus):hover{border-color:#818cf8 !important;background-color:#eef2ff}
 html.mx-dark .teaching-day-grid:hover{background-color:rgba(99,102,241,.16)}
+/* ===== Nút X (đóng) toàn trang: xoay nhẹ khi rê chuột ===== */
+.fa-xmark,.fa-times,.fa-circle-xmark{display:inline-block;transition:transform .2s ease}
+:is(button,a,[role=button],[onclick]):hover :is(.fa-xmark,.fa-times,.fa-circle-xmark){transform:rotate(90deg) scale(1.15)}
+button.x-glyph{transition:transform .2s ease,background-color .15s ease,color .15s ease !important}
+button.x-glyph:hover{transform:rotate(90deg) scale(1.15) !important}
+@media (prefers-reduced-motion:reduce){.fa-xmark,.fa-times,.fa-circle-xmark,button.x-glyph{transition:none !important}:is(button,a,[role=button],[onclick]):hover :is(.fa-xmark,.fa-times,.fa-circle-xmark),button.x-glyph:hover{transform:none !important}}
+button:has(> :is(.fa-xmark,.fa-times,.fa-circle-xmark)):not(.tm-off):hover,button.x-glyph:hover{box-shadow:none !important;filter:none !important}
+button:has(> :is(.fa-xmark,.fa-times):only-child):not([class*="rounded"]):not([class*="bg-"]):not(.tm-off),button.x-glyph:not([class*="rounded"]):not([class*="bg-"]){display:inline-flex;align-items:center;justify-content:center;min-width:1.9rem;min-height:1.9rem;border-radius:9999px !important}
+button:has(> :is(.fa-xmark,.fa-times):only-child):not([class*="rounded"]):not([class*="bg-"]):not(.tm-off):hover,button.x-glyph:not([class*="rounded"]):not([class*="bg-"]):hover{background-color:rgba(100,116,139,.16)}
+/* ===== Leaderboard: ô điểm trung bình nổi bật (màu trung tính đậm, khác mọi màu xếp loại) ===== */
+.rk-avgpill{display:inline-block;min-width:3.2rem;padding:.22rem .7rem;border-radius:.8rem;background:#f8fafc;border:2px solid #334155;color:#0f172a;font-weight:900;box-shadow:0 0 0 3px rgba(51,65,85,.12)}
+html.mx-dark .rk-avgpill{background:#1e293b;border-color:#94a3b8;color:#f1f5f9;box-shadow:0 0 0 3px rgba(148,163,184,.15)}
+/* ===== Huy hiệu xếp loại (animation nhẹ, mỗi loại một kiểu) ===== */
+.gb-wrap{display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem}
+.gb{overflow:visible;transform-origin:50% 90%}
+.gb-ex{animation:gbGlow 2.6s ease-in-out infinite;transform-origin:50% 50%}
+.gb-ex .gb-spark{transform-box:fill-box;transform-origin:center;animation:gbTwinkle 2.6s ease-in-out infinite}
+.gb-leg{animation:gbGlowGold 2.2s ease-in-out infinite;transform-origin:50% 50%}
+.gb-leg .gb-spark{transform-box:fill-box;transform-origin:center;animation:gbTwinkle 2.2s ease-in-out infinite}
+.gb-vg{animation:gbFloat 2.8s ease-in-out infinite}
+.gb-good{animation:gbSway 3s ease-in-out infinite;transform-origin:50% 85%}
+.gb-pass{animation:gbBob 3s ease-in-out infinite}
+.gb-pass .gb-spark{transform-box:fill-box;transform-origin:center;animation:gbTwinkle 2.4s ease-in-out infinite}
+.gb-try{animation:gbBob 2.6s ease-in-out infinite}
+.gb-try .gb-up{animation:gbArrow 1.6s ease-in-out infinite}
+.gb-poor{animation:gbBob 3.6s ease-in-out infinite}
+@keyframes gbGlowGold{0%,100%{filter:drop-shadow(0 0 0 rgba(234,179,8,0))}50%{filter:drop-shadow(0 0 6px rgba(234,179,8,.95))}}
+@keyframes gbBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes gbArrow{0%,100%{transform:translateY(1px);opacity:.55}50%{transform:translateY(-2px);opacity:1}}
+@keyframes gbBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes gbShake{0%,86%,100%{transform:rotate(0)}90%{transform:rotate(-6deg)}94%{transform:rotate(6deg)}98%{transform:rotate(-3deg)}}
+/* ===== Màu xếp loại thi đua (7 bậc) – dùng cho pill ở Bảng xếp loại, cột ĐTB Ma trận điểm và chú thích ===== */
+.gr-legend{background:linear-gradient(110deg,#fef3c7 0%,#fcd34d 40%,#f59e0b 60%,#fef3c7 100%);background-size:220% 100%;animation:grShine 3.2s linear infinite;color:#78350f;box-shadow:inset 0 0 0 1px rgba(161,98,7,.5),0 0 8px rgba(245,158,11,.45)}
+@keyframes grShine{0%{background-position:120% 0}100%{background-position:-100% 0}}
+.gr-ex{background:#d1fae5;color:#065f46}
+.gr-vg{background:#dbeafe;color:#1e40af}
+.gr-good{background:#fef08a;color:#854d0e}
+.gr-pass{background:#ede9fe;color:#5b21b6}
+.gr-try{background:#fee2e2;color:#991b1b}
+.gr-poor{background:#e2e8f0;color:#475569}
+html.mx-dark .gr-legend{background:linear-gradient(110deg,#78350f 0%,#b45309 40%,#f59e0b 60%,#78350f 100%);background-size:220% 100%;color:#fef3c7}
+html.mx-dark .gr-ex{background:rgba(16,185,129,.22);color:#6ee7b7}
+html.mx-dark .gr-vg{background:rgba(59,130,246,.24);color:#93c5fd}
+html.mx-dark .gr-good{background:rgba(250,204,21,.22);color:#fde047}
+html.mx-dark .gr-pass{background:rgba(139,92,246,.28);color:#c4b5fd}
+html.mx-dark .gr-try{background:rgba(239,68,68,.24);color:#fca5a5}
+html.mx-dark .gr-poor{background:rgba(148,163,184,.24);color:#cbd5e1}
+#gradeLegend{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 1rem}
+.gr-leg-title{font-size:.72rem;font-weight:800;color:#64748b;margin-right:.25rem;text-transform:uppercase;letter-spacing:.03em}
+html.mx-dark .gr-leg-title{color:#94a3b8}
+.gr-chip{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .65rem;border-radius:9999px;font-size:.72rem;font-weight:800;cursor:default}
+.gr-chip b{font-weight:900}
+@media (prefers-reduced-motion:reduce){.gr-legend{animation:none !important}}
+@keyframes gbGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(16,185,129,0))}50%{filter:drop-shadow(0 0 5px rgba(16,185,129,.75))}}
+@keyframes gbTwinkle{0%,100%{opacity:.2;transform:scale(.6) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(45deg)}}
+@keyframes gbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes gbSway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes gbGrow{0%,100%{transform:scale(.92)}50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.gb,.gb .gb-spark,.gb .gb-up{animation:none !important}}
+/* ===== Cửa sổ Cập nhật điểm học sinh: hiệu ứng rê chuột ===== */
+#scoreModal button,#scoreModal label.mx-tgl,#scoreModal input[type=number],#scoreModal #modalSpeakingBox,#scoreModal #inventoryGiftList > *,#scoreModal .bg-indigo-50{transition:transform .15s ease,box-shadow .15s ease,filter .15s ease,border-color .15s ease,background-color .15s ease}
+#scoreModal button:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(15,23,42,.2);filter:brightness(1.04)}
+#scoreModal button:not(:disabled):active{transform:translateY(0) scale(.97)}
+#scoreModal button[onclick*="setQuickScore"]:hover{transform:translateY(-3px) scale(1.06)}
+#scoreModal button[aria-label]:hover{transform:none;box-shadow:none;filter:none}
+#scoreModal label.mx-tgl:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(15,23,42,.18);filter:brightness(1.03);cursor:pointer}
+#scoreModal input[type=number]:not(:focus):hover{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.18);background-color:#eef2ff}
+#scoreModal #modalSpeakingBox:hover{box-shadow:0 6px 16px rgba(245,158,11,.28);transform:translateY(-1px)}
+#scoreModal #inventoryGiftList > *:hover{transform:translateX(3px);box-shadow:0 4px 12px rgba(245,158,11,.3);filter:brightness(1.03)}
+#scoreModal .bg-indigo-50:hover{box-shadow:0 4px 12px rgba(79,70,229,.18)}
+@media (prefers-reduced-motion:reduce){#scoreModal *,#utilityMenu *,#classMenu *{transition:none !important}}
+/* Lớp học tiếp theo trong ngày hôm nay: highlight sẵn chỗ nhập */
+@keyframes tnPulse{0%,100%{box-shadow:inset 0 0 0 2px var(--tn-c),0 0 4px 0 var(--tn-g)}50%{box-shadow:inset 0 0 0 2px var(--tn-c),0 0 14px 3px var(--tn-g)}}
+.teaching-day-grid.teaching-next-row,.teaching-day-grid.teaching-next-row:hover{background-color:var(--tn-bg);border-radius:8px;animation:tnPulse 1.8s ease-in-out infinite}
+.teaching-next-row .teaching-grid-input{border-color:var(--tn-c) !important;background-color:#fff}
+.teaching-next-badge{display:inline-block;margin-left:.35rem;padding:0 .4rem;border-radius:9999px;background:var(--tn-c);color:#fff;font-size:9px;font-weight:900;line-height:1.5;vertical-align:middle}
+.teaching-today-tag{display:inline-block;padding:0 .4rem;border-radius:9999px;background:#4f46e5;color:#fff;font-size:9px;font-weight:900;line-height:1.6}
+@media (prefers-reduced-motion:reduce){.teaching-day-grid.teaching-next-row{animation:none}}
 /* ===== Matrix: khung gom Hôm nay + học sinh chưa có điểm ===== */
 .mx-today-group{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .35rem .2rem .2rem;border-radius:9999px;background:#fde68a;border:1.5px solid #f59e0b;box-shadow:0 1px 4px rgba(217,119,6,.25)}
 .mx-today-group .qs-toggle{background:#fffbeb;border-color:#f59e0b;color:#92400e}
 .mx-today-group .qs-toggle:hover{background:#fff;color:#78350f}
-.mx-today-group .mx-today-badge{background:#fff7ed}
+.mx-today-group .mx-today-badge{background:#fee2e2}
 .mx-today-group .mx-today-badge.done{background:#dcfce7}
 html.mx-dark .mx-today-group{background:rgba(245,158,11,.28);border-color:#b45309}
 html.mx-dark .mx-today-group .qs-toggle{background:rgba(15,23,42,.7);border-color:#b45309;color:#fcd34d}
@@ -1765,6 +1878,37 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 .wheel-spin-btn{font-size:1.1rem !important;padding:.5rem 2.3rem !important;margin-top:1.1rem !important}
 /* Đồng bộ khoảng cách phía trên của tab Kiểm tra cuối kỳ / Xếp hạng với các tab khác */
 #viewFinalExamContainer>.qs-pres-bar+*,#viewRankingContainer>.qs-pres-bar+*{margin-top:0 !important}
+</style>
+<style id="mx-score-redesign">
+/* ===== Ngăn kéo: trượt ngang từ mép phải màn hình ===== */
+@keyframes mxDrIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes mxDrOut{from{transform:translateX(0)}to{transform:translateX(100%)}}
+@keyframes mxDrFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes mxDrFadeOut{from{opacity:1}to{opacity:0}}
+.mx-dr-enter{animation:mxDrFadeIn .28s ease both}
+.mx-dr-enter>*{animation:mxDrIn .32s cubic-bezier(.22,.85,.3,1) both}
+.mx-dr-leave{animation:mxDrFadeOut .24s ease forwards;pointer-events:none}
+.mx-dr-leave>*{animation:mxDrOut .24s cubic-bezier(.4,0,1,1) forwards}
+@media (prefers-reduced-motion:reduce){.mx-dr-enter,.mx-dr-enter>*,.mx-dr-leave,.mx-dr-leave>*{animation-duration:.01ms !important}}
+
+/* ===== Cửa sổ Cập nhật điểm: hình chữ nhật, chia hai nửa ===== */
+#scoreModal .mx-sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:stretch}
+#scoreModal .mx-sc-col{display:flex;flex-direction:column;gap:.75rem;min-width:0}
+@media (max-width:639px){#scoreModal .mx-sc-grid{grid-template-columns:1fr}}
+#scoreModal .mx-sc-left #inventoryGiftSelectContainer{flex:1;display:flex;flex-direction:column;min-height:0}
+#scoreModal .mx-sc-left #inventoryGiftList{flex:1;max-height:13rem;min-height:5rem}
+#scoreModal .mx-gift-empty{font-size:11px;font-style:italic;color:#b45309;text-align:center;padding:1.1rem .5rem}
+#scoreModal .mx-tgl-row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+#scoreModal .mx-tgl{position:relative;display:flex;align-items:center;justify-content:center;gap:.4rem;text-align:center;min-height:3.1rem;padding:.45rem .55rem;border:1.5px solid;border-radius:.75rem;font-weight:800;font-size:.72rem;line-height:1.2;cursor:pointer;user-select:none;transition:background .15s ease,color .15s ease,border-color .15s ease,box-shadow .15s ease}
+#scoreModal .mx-tgl input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+#scoreModal .mx-tgl:has(input:focus-visible){outline:2px solid #6366f1;outline-offset:2px}
+#scoreModal .mx-tgl-absent{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
+#scoreModal .mx-tgl-absent:hover{background:#fee2e2}
+#scoreModal .mx-tgl-absent:has(input:checked){background:#dc2626;border-color:#b91c1c;color:#fff;box-shadow:0 4px 12px rgba(220,38,38,.35)}
+#scoreModal .mx-tgl-exam{background:#faf5ff;border-color:#e9d5ff;color:#6b21a8}
+#scoreModal .mx-tgl-exam:hover{background:#f3e8ff}
+#scoreModal .mx-tgl-exam:has(input:checked){background:#7c3aed;border-color:#6d28d9;color:#fff;box-shadow:0 4px 12px rgba(124,58,237,.35)}
+#scoreModal .mx-tgl-off{opacity:.4;pointer-events:none}
 </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
@@ -2093,6 +2237,9 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                     </div>
                 </div>
 
+                <!-- Grade legend -->
+                <div id="gradeLegend" class="qs-pres-hide"></div>
+
                 <!-- Ranking Table -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left border-collapse">
@@ -2100,7 +2247,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                             <tr class="text-xs font-bold uppercase text-slate-400 border-b border-slate-100">
                                 <th class="py-3 px-4 w-20 text-center" data-i18n="thRank">HẠNG</th>
                                 <th class="py-3 px-4" data-i18n="thName">HỌ VÀ TÊN HỌC SINH</th>
-                                <th class="py-3 px-4 text-center" data-i18n="thBag">TÚI QUÀ (PTS)</th>
+                                <th class="py-3 px-2 w-14 text-center" aria-hidden="true"></th>
                                 <th class="py-3 px-4 text-center" data-i18n="thAttended">SỐ ĐIỂM NHẬN ĐƯỢC</th>
                                 <th class="py-3 px-4 text-center" data-i18n="thTotal">TỔNG ĐIỂM</th>
                                 <th class="py-3 px-4 text-center" data-i18n="thAvg">ĐIỂM TRUNG BÌNH</th>
@@ -2228,13 +2375,21 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
     </main>
 
     <!-- Modal: Đồng Hồ Đếm Ngược Timer -->
+    <!-- Đồng hồ đếm ngược thu nhỏ (góc trên trái) -->
+    <div id="timerMini" class="hidden" role="timer" aria-live="off">
+        <button type="button" class="tm-body" onclick="openTimerModal()" data-i18n-title="timerMiniTip" title="Bấm để mở lại đồng hồ"><i class="fa-solid fa-stopwatch"></i><span id="timerMiniDisplay">00:00:00</span></button>
+        <button type="button" class="tm-off" onclick="closeTimerModal()" data-i18n-title="btnTimerOffTip" title="Tắt hẳn đồng hồ"><i class="fa-solid fa-xmark"></i></button>
+    </div>
     <div id="timerModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
         <div class="bg-white rounded-2xl shadow-2xl w-96 p-6 text-center">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
                 <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
                     <i class="fa-solid fa-stopwatch text-violet-600"></i> <span data-i18n="modalTimerTitle">Đồng Hồ Đếm Ngược</span>
                 </h3>
-                <button onclick="closeTimerModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <div class="flex items-center gap-1.5">
+                    <button type="button" id="btnTimerMinimize" onclick="minimizeTimerModal()" data-i18n-title="btnTimerMinimizeTip" data-i18n-aria="btnTimerMinimizeTip" title="Đóng cửa sổ, đồng hồ vẫn chạy ở góc trên trái" aria-label="Đóng" class="tm-ibtn tm-ibtn-min"><i class="fa-solid fa-compress"></i></button>
+                    <button type="button" id="btnTimerOff" onclick="closeTimerModal()" data-i18n-title="btnTimerOffTip" title="Tắt hẳn đồng hồ" aria-label="Tắt" class="tm-ibtn tm-ibtn-off"><i class="fa-solid fa-power-off"></i></button>
+                </div>
             </div>
 
             <!-- Timer Digital Display -->
@@ -2273,78 +2428,82 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         </div>
     </div>
 
-    <!-- Modal: Nhập / Sửa Điểm & Dùng Quà -->
-    <div id="scoreModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-2xl w-96 p-6 transition-all">
+    <!-- Modal: Nhập / Sửa Điểm & Dùng Quà (hình chữ nhật, hai nửa; không tự đóng) -->
+    <div id="scoreModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl p-6 transition-all max-h-[94vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
                 <h3 class="text-base font-bold text-slate-800" data-i18n="modalScoreTitle">Cập Nhật Điểm Học Sinh</h3>
-                <button onclick="closeScoreModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <button type="button" onclick="closeScoreModal()" class="text-slate-400 hover:text-slate-600" aria-label="Đóng"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            
+
             <form id="scoreForm" onsubmit="saveScore(event)">
                 <input type="hidden" id="modalStudentId">
                 <input type="hidden" id="modalDateStr">
 
-                <div class="mb-4 bg-indigo-50 p-3 rounded-lg border border-indigo-100">
+                <div class="mb-4 bg-indigo-50 p-3 rounded-lg border border-indigo-100 flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5">
                     <p class="text-sm font-bold text-indigo-900" id="modalStudentName">Học sinh: --</p>
                     <p class="text-xs text-indigo-600 font-medium" id="modalDateLabel">Ngày: --</p>
                 </div>
 
-                <div id="modalSpeakingBox" class="mb-4 bg-amber-50 p-3 rounded-lg border border-amber-200">
-                    <label class="block text-xs font-bold text-amber-900 mb-1 flex items-center gap-1">
-                        <i class="fa-solid fa-comments text-amber-600"></i> <span data-i18n="lblSpeakingInput">Nhập số lần phát biểu (N):</span>
-                    </label>
-                    <input type="number" id="modalSpeakingCountInput" min="0" max="100" placeholder="..." oninput="onSpeakingCountChange()" class="w-full border border-amber-300 rounded-lg px-3 py-1.5 text-sm font-bold text-amber-900 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500">
-                    <p id="modalRealtimeCalculationText" class="text-[11px] font-bold text-amber-800 mt-1.5">
-                        --
-                    </p>
-                </div>
+                <div class="mx-sc-grid">
+                    <!-- Nửa trái: số lần phát biểu + quà từ Túi đồ -->
+                    <div class="mx-sc-col mx-sc-left">
+                        <div id="modalSpeakingBox" class="bg-amber-50 p-3 rounded-lg border border-amber-200">
+                            <label class="block text-xs font-bold text-amber-900 mb-1 flex items-center gap-1">
+                                <i class="fa-solid fa-comments text-amber-600"></i> <span data-i18n="lblSpeakingInput">Nhập số lần phát biểu (N):</span>
+                            </label>
+                            <input type="number" id="modalSpeakingCountInput" min="0" max="100" placeholder="..." oninput="onSpeakingCountChange()" class="w-full border border-amber-300 rounded-lg px-3 py-1.5 text-sm font-bold text-amber-900 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <p id="modalRealtimeCalculationText" class="text-[11px] font-bold text-amber-800 mt-1.5">--</p>
+                        </div>
 
-                <div id="inventoryGiftSelectContainer" class="mb-4 hidden">
-                    <label class="block text-xs font-bold text-amber-700 mb-1 flex items-center gap-1">
-                        <i class="fa-solid fa-gift text-amber-500"></i> <span data-i18n="lblUseGift">Sử dụng quà từ Túi đồ:</span>
-                    </label>
-                    <div id="inventoryGiftList" class="space-y-1.5 max-h-36 overflow-y-auto p-1 border border-amber-200 bg-amber-50/50 rounded-lg">
-                        <!-- Dynamic Inventory Gifts -->
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <label class="flex items-center p-3 border rounded-lg cursor-pointer bg-red-50 hover:bg-red-100 border-red-200 transition">
-                        <input type="checkbox" id="modalAbsentCheckbox" onchange="toggleAbsentMode(this.checked)" class="w-4 h-4 text-red-600 rounded focus:ring-red-500">
-                        <span class="ml-2 font-bold text-red-700 text-sm" data-i18n="chkAbsent">Vắng học hôm nay (Tính 0.0đ)</span>
-                    </label>
-                </div>
-
-                <div id="scoreInputContainer" class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5" data-i18n="lblQuickScore">Chọn nhanh điểm:</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button type="button" onclick="setQuickScore(10)" class="py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-black rounded-lg border border-emerald-300 transition text-sm flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-star text-amber-500"></i> 10
-                            </button>
-                            <button type="button" onclick="setQuickScore(5)" class="py-2 bg-amber-100 hover:bg-amber-200 text-amber-800 font-black rounded-lg border border-amber-300 transition text-sm flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-circle-half-stroke text-amber-600"></i> 5
-                            </button>
-                            <button type="button" onclick="setQuickScore(0)" class="py-2 bg-rose-100 hover:bg-rose-200 text-rose-800 font-black rounded-lg border border-rose-300 transition text-sm flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-circle-minus text-rose-600"></i> 0
-                            </button>
+                        <div id="inventoryGiftSelectContainer">
+                            <label class="block text-xs font-bold text-amber-700 mb-1 flex items-center gap-1">
+                                <i class="fa-solid fa-gift text-amber-500"></i> <span data-i18n="lblUseGift">Sử dụng quà từ Túi đồ:</span>
+                            </label>
+                            <div id="inventoryGiftList" class="space-y-1.5 overflow-y-auto p-1 border border-amber-200 bg-amber-50/50 rounded-lg">
+                                <!-- Dynamic Inventory Gifts -->
+                            </div>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblCustomScore">Hoặc nhập điểm lẻ (0 - 10):</label>
-                        <input type="number" step="0.1" min="0" max="10" id="modalScoreInput" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm font-bold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
-                    </div>
+                    <!-- Nửa phải: vắng học / bài kiểm tra (cùng một hàng) + chọn nhanh + điểm lẻ -->
+                    <div class="mx-sc-col mx-sc-right">
+                        <div class="mx-tgl-row">
+                            <label class="mx-tgl mx-tgl-absent">
+                                <input type="checkbox" id="modalAbsentCheckbox" onchange="toggleAbsentMode(this.checked)">
+                                <i class="fa-solid fa-user-slash"></i><span data-i18n="chkAbsent">Vắng học hôm nay (Tính 0.0đ)</span>
+                            </label>
+                            <label class="mx-tgl mx-tgl-exam" id="modalExamToggle">
+                                <input type="checkbox" id="modalIsExamCheckbox">
+                                <i class="fa-solid fa-file-pen"></i><span data-i18n="chkIsExam">Đánh dấu đây là bài Kiểm Tra</span>
+                            </label>
+                        </div>
 
-                    <label class="flex items-center p-2.5 border rounded-lg cursor-pointer bg-purple-50 hover:bg-purple-100 border-purple-200 transition">
-                        <input type="checkbox" id="modalIsExamCheckbox" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500">
-                        <span class="ml-2 font-bold text-purple-800 text-xs" data-i18n="chkIsExam">☑️ Đánh dấu đây là điểm Bài Kiểm Tra</span>
-                    </label>
+                        <div id="scoreInputContainer" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5" data-i18n="lblQuickScore">Chọn nhanh điểm:</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button type="button" onclick="setQuickScore(10)" class="py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-black rounded-lg border border-emerald-300 transition text-sm flex items-center justify-center gap-1">
+                                        <i class="fa-solid fa-star text-amber-500"></i> 10
+                                    </button>
+                                    <button type="button" onclick="setQuickScore(5)" class="py-2 bg-amber-100 hover:bg-amber-200 text-amber-800 font-black rounded-lg border border-amber-300 transition text-sm flex items-center justify-center gap-1">
+                                        <i class="fa-solid fa-circle-half-stroke text-amber-600"></i> 5
+                                    </button>
+                                    <button type="button" onclick="setQuickScore(0)" class="py-2 bg-rose-100 hover:bg-rose-200 text-rose-800 font-black rounded-lg border border-rose-300 transition text-sm flex items-center justify-center gap-1">
+                                        <i class="fa-solid fa-circle-minus text-rose-600"></i> 0
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblCustomScore">Hoặc nhập điểm lẻ (0 - 10):</label>
+                                <input type="number" step="0.1" min="0" max="10" id="modalScoreInput" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm font-bold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mt-6 flex justify-end space-x-2">
-                    <button type="button" onclick="closeScoreModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold" data-i18n="btnCancel">Hủy</button>
+                <div class="mt-5 flex justify-end space-x-2">
+                    <button type="button" onclick="closeScoreModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold" data-i18n="btnCloseScore">Đóng</button>
                     <button type="button" onclick="clearScore()" class="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded-lg text-xs font-semibold" data-i18n="btnClear">Xóa Điểm</button>
                     <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold" data-i18n="btnSave">Lưu Cập Nhật</button>
                 </div>
@@ -2824,6 +2983,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 lblSeconds: "Giây",
                 btnStart: "Bắt Đầu",
                 btnPause: "Tạm Dừng",
+                btnTimerMinimize: "Đóng", btnTimerOff: "Tắt",
+                btnTimerMinimizeTip: "Đóng cửa sổ, đồng hồ vẫn chạy ở góc trên trái", btnTimerOffTip: "Tắt hẳn đồng hồ", timerMiniTip: "Bấm để mở lại đồng hồ",
                 modalScoreTitle: "Cập Nhật Điểm Học Sinh",
                 lblSpeakingInput: "Nhập số lần phát biểu (N):",
                 lblUseGift: "Sử dụng quà từ Túi đồ:",
@@ -2831,6 +2992,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 lblQuickScore: "Chọn nhanh điểm:",
                 lblCustomScore: "Hoặc nhập điểm lẻ (0 - 10):",
                 btnCancel: "Hủy",
+                btnCloseScore: "Đóng",
+                scGiftNone: "Chưa có quà phù hợp với ô điểm này",
                 btnClear: "Xóa Điểm",
                 btnSave: "Lưu Cập Nhật",
                 modalRandomTitle: "Gọi Học Sinh Ngẫu Nhiên",
@@ -2978,6 +3141,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 lblSeconds: "Seconds",
                 btnStart: "Start",
                 btnPause: "Pause",
+                btnTimerMinimize: "Close", btnTimerOff: "Off",
+                btnTimerMinimizeTip: "Close this window; the timer keeps running in the top-left corner", btnTimerOffTip: "Turn the timer off completely", timerMiniTip: "Click to reopen the timer",
                 modalScoreTitle: "Update Student Score",
                 lblSpeakingInput: "Enter Speaking Count (N):",
                 lblUseGift: "Use reward item from inventory:",
@@ -2985,6 +3150,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 lblQuickScore: "Quick score select:",
                 lblCustomScore: "Or enter custom score (0 - 10):",
                 btnCancel: "Cancel",
+                btnCloseScore: "Close",
+                scGiftNone: "No gift applicable to this cell",
                 btnClear: "Clear Score",
                 btnSave: "Save Changes",
                 modalRandomTitle: "Random Student Picker",
@@ -3106,7 +3273,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         Object.assign(translations.en, {"optTypePlusMatch": "Add points to a cell with a specified score (e.g. +1 to a cell of 7 or lower)", "lblMatchCond": "Specified cell score to receive points (condition & score):", "optMatchLte": "This score or lower (≤)", "optMatchEq": "Exactly this score (=)", "optMatchGte": "This score or higher (≥)", "phMatchScore": "e.g. 7", "qg_type_plus_match": "Add Points to Specified Cell", "pm_desc": "Cell score {op} {score} → +{delta}", "qg_plus_match_done": "Added {delta} pts to cell {date} ({before} → {after} pts)!"});
 
         Object.assign(translations.vi, {
-            chkIsExam: "☑️ Đánh dấu đây là điểm Bài Kiểm Tra",
+            chkIsExam: "Đánh dấu đây là bài Kiểm Tra",
             optTypePlusExam: "Cộng dồn điểm vào Bài Kiểm Tra (+0.5đ, +1đ...)",
             qg_type_plus_exam: "Cộng điểm Bài Kiểm Tra",
             no_exam_cell_for_gift: "Không tìm thấy Bài Kiểm Tra phù hợp để áp dụng quà này!",
@@ -3116,7 +3283,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             qg_exam_done: "Đã cộng +{delta}đ vào Bài Kiểm Tra ngày {date}: {before}đ ➔ {after}đ."
         });
         Object.assign(translations.en, {
-            chkIsExam: "☑️ Mark as Exam / Test Score",
+            chkIsExam: "Mark as Exam / Test Score",
             optTypePlusExam: "Add bonus points to Exam Score (+0.5, +1...)",
             qg_type_plus_exam: "Exam Score Bonus",
             no_exam_cell_for_gift: "No eligible Exam Score found to apply this gift!",
@@ -3277,6 +3444,9 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 redoDone: 'Đã làm lại ô điểm.',
                 undoNone: 'Không còn thao tác nhập điểm nào để hoàn tác.',
                 redoNone: 'Không còn thao tác nào để làm lại.',
+                tenLbl: 'Hiện điểm 10',
+                tenHint: 'Làm mờ các điểm dưới 10 và nhô các điểm 10 lên cho dễ thấy (luôn tắt khi mở trang).',
+                tenOn: 'Đã bật Hiện điểm 10: điểm dưới 10 mờ đi, điểm 10 nổi bật.',
                 tplLbl: 'Template tên',
                 tplHint: 'Hiện nền template của Class list ở cột Họ & Tên (bật/tắt, được nhớ cho lần mở sau).',
                 tplOn: 'Đã bật Template tên: cột Họ & Tên dùng nền template của từng học sinh.',
@@ -3346,6 +3516,9 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 redoDone: 'Score redone.',
                 undoNone: 'No typed-score action left to undo.',
                 redoNone: 'Nothing left to redo.',
+                tenLbl: 'Show 10s',
+                tenHint: 'Fades scores below 10 and lifts the 10s so they stand out (always off when the page opens).',
+                tenOn: 'Show 10s on: scores below 10 are faded, 10s stand out.',
                 tplLbl: 'Name template',
                 tplHint: 'Show the Class list card template as the Student Full Name background (on/off, remembered next time).',
                 tplOn: 'Name template on: the Student Full Name column uses each student\'s card template.',
@@ -3393,6 +3566,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         const QS_TTL = 60000;
         const qsQuick = true; // Nhập nhanh bằng bàn phím: luôn bật cố định
         let qsSelCell = null, qsBuf = '', qsFlashCell = null, qsToolbarSig = '', qsPresKind = null;
+        let qsTen = false; // Hiện điểm 10: luôn TẮT mỗi lần mở trang (không lưu)
         let qsTrend = false; // Xu hướng điểm: luôn TẮT mỗi lần mở trang (không lưu)
         let qsEdit = false; // chế độ Sửa điểm: sửa tay, gỡ liên kết số lần phát biểu (không lưu giữa các lần mở trang)
         function mfl(o) { return (o && o.manual) ? { manual: true } : {}; }
@@ -3889,8 +4063,24 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             nf.classList.toggle('has-notes', n > 0);
             if (!show) { const d = qsEl('mxNotesDrawer'); if (d && d.classList.contains('open')) mxNotesClose(); }
         }
-        window.mxNotesOpen = function () { const d = qsEl('mxNotesDrawer'); if (!d) return; d.classList.add('open'); mxNotesRender(); setTimeout(() => { const t = qsEl('mxNoteNew'); if (t) t.focus(); }, 30); };
-        window.mxNotesClose = function () { const d = qsEl('mxNotesDrawer'); if (d) { d.classList.remove('open'); d.innerHTML = ''; } };
+        /* Ngăn kéo trượt ngang từ mép phải: mở = trượt vào, đóng = trượt ra rồi mới gỡ nội dung */
+        window.mxDrOpen = function (d) {
+            if (!d) return;
+            clearTimeout(d._drT);
+            d.classList.remove('mx-dr-leave');
+            const was = d.classList.contains('open');
+            d.classList.add('open');
+            if (!was) { d.classList.add('mx-dr-enter'); d._drT = setTimeout(() => d.classList.remove('mx-dr-enter'), 360); }
+        };
+        window.mxDrClose = function (d) {
+            if (!d || !d.classList.contains('open') || d.classList.contains('mx-dr-leave')) return;
+            clearTimeout(d._drT);
+            d.classList.remove('mx-dr-enter');
+            d.classList.add('mx-dr-leave');
+            d._drT = setTimeout(() => { d.classList.remove('open', 'mx-dr-leave'); d.innerHTML = ''; }, 250);
+        };
+        window.mxNotesOpen = function () { const d = qsEl('mxNotesDrawer'); if (!d) return; window.mxDrOpen(d); mxNotesRender(); setTimeout(() => { const t = qsEl('mxNoteNew'); if (t) t.focus(); }, 30); };
+        window.mxNotesClose = function () { window.mxDrClose(qsEl('mxNotesDrawer')); };
         window.mxNoteAdd = function () {
             const t = qsEl('mxNoteNew'); if (!t) return;
             const v = t.value.trim(); if (!v) { t.focus(); return; }
@@ -3907,7 +4097,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             list.splice(i, 1); saveData(); mxNotesRender(); mxBubbleUpdate();
         };
         function mxNotesRender() {
-            const dr = qsEl('mxNotesDrawer'); if (!dr || !dr.classList.contains('open')) return;
+            const dr = qsEl('mxNotesDrawer'); if (!dr || !dr.classList.contains('open') || dr.classList.contains('mx-dr-leave')) return;
             const cls = appData.classes.find(c => c.id === appData.activeClassId);
             if (!cls || !qsIsMatrix() || qsArchived()) { mxNotesClose(); return; }
             const old = qsEl('mxNoteNew'), draft = old ? old.value : '';
@@ -3960,7 +4150,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 
         /* ===== Tách riêng dữ liệu/cơ chế theo từng giáo viên: mỗi lần đổi không gian giáo viên đều đặt lại trạng thái Bảng điểm ===== */
         function qsTeacherSwitch(id) {
-            qsTest = false; qsEdit = false; qsSpeak = false; qsTrend = false;
+            qsTest = false; qsEdit = false; qsSpeak = false; qsTrend = false; qsTen = false;
             try { qsTpl = id ? localStorage.getItem(QS_TPL_KEY + ':' + id) !== '0' : true; } catch (e) { qsTpl = true; }
             qsSelCell = null; qsBuf = ''; qsFlashCell = null; qsToolbarSig = '';
             mxSel = []; mxEnd = null; mxBatch = null;
@@ -4056,6 +4246,11 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             renderCurrentView();
             if (qsTrend) qsToast(qsT('trendOn'), 'info');
         };
+        window.qsToggleTen = function () {
+            qsTen = !qsTen;
+            qsToolbarSig = ''; qsRefreshToolbar();
+            if (qsTen) qsToast(qsT('tenOn'), 'info');
+        };
         window.qsToggleKeep = function () {
             appData.keepStreak = !appData.keepStreak;
             try { saveData(); } catch (e) {}
@@ -4072,13 +4267,13 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         };
         function qsRefreshToolbar() {
             const tb = qsEl('qsToolbar'); if (!tb) return;
-            const sig = (appData.language || 'vi') + '|' + qsSpeak + '|' + qsTest + '|' + qsEdit + '|' + qsTrend + '|' + !!appData.keepStreak + '|' + qsTpl;
+            const sig = (appData.language || 'vi') + '|' + qsSpeak + '|' + qsTest + '|' + qsEdit + '|' + qsTrend + '|' + !!appData.keepStreak + '|' + qsTpl + '|' + qsTen;
             if (sig === qsToolbarSig) return;
             qsToolbarSig = sig;
             const collapsed = !!window.__qsToolbarCollapsed;
-            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle qs-toggle-speak ${qsSpeak ? 'on' : ''}" onclick="qsToggleSpeak()" aria-pressed="${qsSpeak}" title="${qsT('speakTitle')}"><i class="fa-solid fa-comments"></i>${qsT('speakLbl')}<b>${qsSpeak ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i>${qsT('editLbl')}<b>${qsEdit ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-fire-flame-curved"></i>${qsT('keepLbl')}<b>${appData.keepStreak ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i>${qsT('tplLbl')}<b>${qsTpl ? 'ON' : 'OFF'}</b></button><span class="mx-today-group" role="group"><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i>${qsT('todayLbl')}</button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button></span><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsSpeakPrev" class="qs-speak-prev" style="display:none"></span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span><div class="qs-legend" role="group"><span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>${qsT('legAbsent')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>${qsT('legScored')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>${qsT('legExam')}</span><span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>${qsT('legManual')}</span><span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>${qsT('legStreak')}</span></div></div>`;
+            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle qs-toggle-speak ${qsSpeak ? 'on' : ''}" onclick="qsToggleSpeak()" aria-pressed="${qsSpeak}" title="${qsT('speakTitle')}"><i class="fa-solid fa-comments"></i>${qsT('speakLbl')}<b>${qsSpeak ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i>${qsT('editLbl')}<b>${qsEdit ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-fire-flame-curved"></i>${qsT('keepLbl')}<b>${appData.keepStreak ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i>${qsT('tplLbl')}<b>${qsTpl ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-ten ${qsTen ? 'on' : ''}" onclick="qsToggleTen()" aria-pressed="${qsTen}" title="${qsT('tenHint')}"><i class="fa-solid fa-star"></i>${qsT('tenLbl')}<b>${qsTen ? 'ON' : 'OFF'}</b></button><span class="mx-today-group" role="group"><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i>${qsT('todayLbl')}</button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button></span><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsSpeakPrev" class="qs-speak-prev" style="display:none"></span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span><div class="qs-legend" role="group"><span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>${qsT('legAbsent')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>${qsT('legScored')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>${qsT('legExam')}</span><span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>${qsT('legManual')}</span><span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>${qsT('legStreak')}</span></div></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
-            const mt = qsEl('scoreMatrix'); if (mt) { mt.classList.toggle('qs-edit-on', qsEdit); mt.classList.toggle('qs-test-on', qsTest); mt.classList.toggle('qs-speak-on', qsSpeak); }
+            const mt = qsEl('scoreMatrix'); if (mt) { mt.classList.toggle('qs-edit-on', qsEdit); mt.classList.toggle('qs-test-on', qsTest); mt.classList.toggle('qs-speak-on', qsSpeak); mt.classList.toggle('qs-ten-on', qsTen); }
             mxUpdateTodayBadge(); mxUpdateMultiInfo(); qsSpeakPreview();
         }
 
@@ -4195,12 +4390,12 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 <div class="qs-foot px-5 py-3 flex justify-end gap-2"><button type="button" onclick="qsCloseBulk()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200">${qsT('cancel')}</button><button type="button" onclick="qsApplyBulk()" class="px-5 py-2 rounded-xl text-xs font-black text-white bg-indigo-600 hover:bg-indigo-700 shadow">${qsT('apply')}</button></div>
             </div>`;
             m.onclick = ev => { if (ev.target === m) qsCloseBulk(); };
-            m.classList.add('open');
+            window.mxDrOpen(m);
             qsSetTarget(qsBulk.target); qsRenderBulkList();
             setTimeout(() => { const a = qsEl('qsBulkAmount'); if (a) { a.focus(); a.select(); } }, 30);
         };
         window.qsSetAmount = function (v) { const a = qsEl('qsBulkAmount'); if (a) { a.value = v; qsBulkPreview(); } };
-        window.qsCloseBulk = function () { const m = qsEl('qsBulkModal'); if (m) { m.classList.remove('open'); m.innerHTML = ''; } };
+        window.qsCloseBulk = function () { window.mxDrClose(qsEl('qsBulkModal')); };
         window.qsRenderBulkList = function () {
             const list = qsEl('qsBulkList'); if (!list) return;
             const cid = appData.activeClassId, set = qsSet(cid), students = appData.students.filter(s => s.classId === cid);
@@ -4248,9 +4443,9 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 msg = qsT('doneDay', n, skip);
             }
             qsSet(appData.activeClassId).clear();
-            qsCloseBulk();
             saveData().then(ok => { if (ok) qsToast(msg, 'success'); });
             qsUpdateSelUI(true);
+            qsRenderBulkList(); // giữ cửa sổ mở, chỉ làm mới danh sách chọn
         };
 
         /* ---- Túi quà (Pts): cửa sổ cộng điểm riêng ---- */
@@ -4279,12 +4474,12 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 <div class="qs-foot px-5 py-3 flex justify-end gap-2"><button type="button" onclick="qsCloseBag()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200">${qsT('cancel')}</button><button type="button" onclick="qsApplyBag()" class="px-5 py-2 rounded-xl text-xs font-black text-white bg-pink-600 hover:bg-pink-700 shadow">${qsT('apply')}</button></div>
             </div>`;
             m.onclick = ev => { if (ev.target === m) qsCloseBag(); };
-            m.classList.add('open');
+            window.mxDrOpen(m);
             qsRenderBagList();
             setTimeout(() => { const a = qsEl('qsBagAmount'); if (a) { a.focus(); a.select(); } }, 30);
         };
         window.qsBagSetAmount = function (v) { const a = qsEl('qsBagAmount'); if (a) { a.value = v; qsBagPreview(); } };
-        window.qsCloseBag = function () { const m = qsEl('qsBagModal'); if (m) { m.classList.remove('open'); m.innerHTML = ''; } };
+        window.qsCloseBag = function () { window.mxDrClose(qsEl('qsBagModal')); };
         window.qsRenderBagList = function () {
             const list = qsEl('qsBagList'); if (!list) return;
             const cid = appData.activeClassId, set = qsSet(cid), students = appData.students.filter(s => s.classId === cid);
@@ -4309,9 +4504,9 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             ids.forEach(id => { const s = appData.students.find(x => x.id === id); if (s) s.rewardPoints = Math.max(0, (s.rewardPoints || 0) + amt); });
             const msg = qsT('doneBag', ids.length, amt);
             qsSet(appData.activeClassId).clear();
-            qsCloseBag();
             saveData().then(ok => { if (ok) qsToast(msg, 'success'); });
             qsUpdateSelUI(true);
+            qsRenderBagList(); // giữ cửa sổ mở, cập nhật điểm Pts hiển thị ngay
         };
 
         /* ---- presentation mode (TV) ---- */
@@ -4540,11 +4735,11 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             mxBubbleUpdate();
             const n = qgGiftTotal(), b = qsEl('qgFabBadge'); b.textContent = n; fab.classList.toggle('has-gifts', n > 0);
         }
-        window.qgOpen = function () { const d = qsEl('qgDrawer'); if (!d) return; d.classList.add('open'); qgRender(); };
-        window.qgClose = function () { const d = qsEl('qgDrawer'); if (d) { d.classList.remove('open'); d.innerHTML = ''; } };
+        window.qgOpen = function () { const d = qsEl('qgDrawer'); if (!d) return; window.mxDrOpen(d); qgRender(); };
+        window.qgClose = function () { window.mxDrClose(qsEl('qgDrawer')); };
         window.qgToggleOnly = function (on) { qgOnly = !!on; qgRender(); };
         function qgRender() {
-            const dr = qsEl('qgDrawer'); if (!dr || !dr.classList.contains('open')) return;
+            const dr = qsEl('qgDrawer'); if (!dr || !dr.classList.contains('open') || dr.classList.contains('mx-dr-leave')) return;
             const cls = appData.classes.find(c => c.id === appData.activeClassId);
             if (!cls || !qsIsMatrix() || qsArchived()) { qgClose(); return; }
             const oldBody = qsEl('qgBody'), scrollTop = oldBody ? oldBody.scrollTop : 0;
@@ -4971,14 +5166,37 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         extraLanguageObserver.observe(document.body, {subtree:true, childList:true, characterData:true});
 
         /* --- TÍNH NĂNG ĐỒNG HỒ ĐẾM NGƯỢC TIMER --- */
+        let timerDone = false, timerMiniOn = false;
+        // Đồng bộ đồng hồ thu nhỏ (góc trên trái) với đồng hồ chính
+        function timerSyncMini() {
+            const m = document.getElementById('timerMini'); if (!m) return;
+            const disp = document.getElementById('timerDisplay'), md = document.getElementById('timerMiniDisplay');
+            if (disp && md) { md.textContent = disp.innerText; md.classList.toggle('tf-timer-warn', disp.classList.contains('tf-timer-warn')); }
+            m.classList.toggle('hidden', !timerMiniOn);
+            m.classList.toggle('tm-done', timerDone);
+            m.classList.toggle('tm-paused', !timerDone && !timerInterval);
+        }
         window.openTimerModal = function() {
+            timerMiniOn = false; timerSyncMini();
             document.getElementById('timerModal').classList.remove('hidden');
             document.getElementById('timerModal').classList.add('flex');
         };
 
-        window.closeTimerModal = function() {
+        // "Đóng": ẩn cửa sổ nhưng đồng hồ vẫn chạy, thu nhỏ ở góc trên trái
+        window.minimizeTimerModal = function() {
             document.getElementById('timerModal').classList.add('hidden');
             document.getElementById('timerModal').classList.remove('flex');
+            timerMiniOn = !!(timerInterval || timerRemainingSeconds > 0 || timerDone);
+            timerSyncMini();
+        };
+
+        // "Tắt": dừng hẳn đồng hồ, đưa về giá trị đã nhập và xoá đồng hồ thu nhỏ
+        window.closeTimerModal = function() {
+            timerDone = false; timerMiniOn = false;
+            resetTimer();
+            document.getElementById('timerModal').classList.add('hidden');
+            document.getElementById('timerModal').classList.remove('flex');
+            timerSyncMini();
         };
 
         window.startTimer = function() {
@@ -4991,6 +5209,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             }
 
             if (timerRemainingSeconds <= 0) return;
+            timerDone = false;
 
             document.getElementById('btnStartTimer').classList.add('hidden');
             document.getElementById('btnPauseTimer').classList.remove('hidden');
@@ -5001,6 +5220,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 updateTimerDisplay();
                 const tdsp = document.getElementById('timerDisplay'), warn = timerRemainingSeconds > 0 && timerRemainingSeconds <= 10;
                 if (tdsp) tdsp.classList.toggle('tf-timer-warn', warn);
+                timerSyncMini();
                 if (warn) tfBeep(880, 0.09, 0.18);
 
                 if (timerRemainingSeconds <= 0) {
@@ -5008,6 +5228,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                     timerInterval = null;
                     document.getElementById('btnStartTimer').classList.remove('hidden');
                     document.getElementById('btnPauseTimer').classList.add('hidden');
+                    timerDone = true; timerSyncMini();
                     tfAlarm();
                     setTimeout(() => alert(appData.language === 'en' ? "Time is up!" : "Đã hết giờ!"), 80);
                 }
@@ -5020,11 +5241,12 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             timerInterval = null;
             document.getElementById('btnStartTimer').classList.remove('hidden');
             document.getElementById('btnPauseTimer').classList.add('hidden');
+            timerSyncMini();
         };
 
         window.resetTimer = function() {
             pauseTimer();
-            timerRemainingSeconds = 0;
+            timerRemainingSeconds = 0; timerDone = false;
             const h = parseInt(document.getElementById('timerHours').value) || 0;
             const m = parseInt(document.getElementById('timerMinutes').value) || 0;
             const s = parseInt(document.getElementById('timerSeconds').value) || 0;
@@ -5034,6 +5256,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             const minutes = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
             const seconds = String(total % 60).padStart(2, '0');
             document.getElementById('timerDisplay').innerText = `${hours}:${minutes}:${seconds}`;
+            timerSyncMini();
         };
 
         function updateTimerDisplay() {
@@ -5041,6 +5264,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             const minutes = String(Math.floor((timerRemainingSeconds % 3600) / 60)).padStart(2, '0');
             const seconds = String(timerRemainingSeconds % 60).padStart(2, '0');
             document.getElementById('timerDisplay').innerText = `${hours}:${minutes}:${seconds}`;
+            timerSyncMini();
         }
 
         // Tab đang xem là trạng thái giao diện cục bộ. Không để dữ liệu Firebase (có thể chứa
@@ -5055,6 +5279,42 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             appData.activeViewMode = mode;
             renderCurrentView();
         };
+
+        // Nút X dạng ký tự (×, ✕, ✖): gắn class để xoay nhẹ khi rê chuột
+        document.addEventListener('mouseover', function (e) {
+            const b = e.target && e.target.closest ? e.target.closest('button') : null;
+            if (!b || b.classList.contains('x-glyph')) return;
+            if (/^[×✕✖✗xX]$/.test((b.textContent || '').trim())) b.classList.add('x-glyph');
+        }, true);
+
+        // Chuyển tab: khung giao diện đang hiện lướt ra theo hướng tab được chọn, khung mới lướt vào từ hướng đó
+        (function () {
+            const ORDER = ['matrix', 'ranking', 'finalExam', 'students', 'teaching', 'violation', 'shop', 'wheel'];
+            const IDS = { matrix: 'viewMatrixContainer', ranking: 'viewRankingContainer', finalExam: 'viewFinalExamContainer', students: 'viewStudentsContainer', teaching: 'viewTeachingContainer', violation: 'viewViolationContainer', shop: 'viewShopContainer', wheel: 'viewWheelContainer' };
+            const raw = window.switchViewMode; let busy = false;
+            window.switchViewMode = function (mode) {
+                const curRaw = appData.activeViewMode, cur = ORDER.includes(curRaw) ? curRaw : 'matrix';
+                const oldEl = document.getElementById(IDS[cur]);
+                const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (busy || reduce || !ORDER.includes(mode) || cur === mode || !oldEl || oldEl.classList.contains('hidden') || !oldEl.animate) return raw(mode);
+                const dir = ORDER.indexOf(mode) > ORDER.indexOf(cur) ? 1 : -1, dist = Math.min(90, window.innerWidth * 0.12);
+                busy = true;
+                const root = document.documentElement, prevOX = root.style.overflowX; root.style.overflowX = 'hidden';
+                const finish = () => { busy = false; root.style.overflowX = prevOX; };
+                let swapped = false;
+                const swap = () => {
+                    if (swapped) return; swapped = true;
+                    raw(mode);
+                    const nextEl = document.getElementById(IDS[mode]);
+                    if (!nextEl || !nextEl.animate) return finish();
+                    const a = nextEl.animate([{ transform: `translateX(${dir * dist}px)`, opacity: 0 }, { transform: 'translateX(0)', opacity: 1 }], { duration: 280, easing: 'cubic-bezier(.2,.9,.3,1)' });
+                    a.onfinish = a.oncancel = finish;
+                };
+                const out = oldEl.animate([{ transform: 'translateX(0)', opacity: 1 }, { transform: `translateX(${-dir * dist}px)`, opacity: 0 }], { duration: 150, easing: 'ease-in', fill: 'forwards' });
+                out.onfinish = () => { swap(); try { out.cancel(); } catch (e) {} };
+                setTimeout(() => { swap(); try { out.cancel(); } catch (e) {} }, 400);
+            };
+        })();
 
         function renderCurrentView() {
             const btnMatrix = document.getElementById('btnViewMatrix');
@@ -6363,12 +6623,64 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             };
         }
 
+        // Thang xếp loại thi đua (7 bậc) – nguồn duy nhất cho nhãn, màu, huy hiệu và chú thích.
+        const GRADE_TIERS = [
+            { key: 'leg',  min: 10,   range: '10',        vi: 'Huyền Thoại',  en: 'Legendary',    cls: 'gr-legend' },
+            { key: 'ex',   min: 9,    range: '9.0 – 9.9', vi: 'Xuất Sắc',     en: 'Excellent',    cls: 'gr-ex' },
+            { key: 'vg',   min: 8,    range: '8.0 – 8.9', vi: 'Giỏi',         en: 'Very Good',    cls: 'gr-vg' },
+            { key: 'good', min: 6.5,  range: '6.5 – 7.9', vi: 'Khá',          en: 'Good',         cls: 'gr-good' },
+            { key: 'pass', min: 5,    range: '5.0 – 6.4', vi: 'Trung Bình',   en: 'Pass',         cls: 'gr-pass' },
+            { key: 'try',  min: 3.5,  range: '3.5 – 4.9', vi: 'Cần Cố Gắng',  en: 'Needs Effort', cls: 'gr-try' },
+            { key: 'poor', min: -Infinity, range: '0.0 – 3.4', vi: 'Kém',     en: 'Poor / Fail',  cls: 'gr-poor',
+              descVi: 'Kiến thức hổng nhiều, không đạt', descEn: 'Major knowledge gaps, not passing' }
+        ];
+        function gradeTierOf(avg) {
+            const a = Number(avg) || 0;
+            return GRADE_TIERS.find(t => a >= t.min) || GRADE_TIERS[GRADE_TIERS.length - 1];
+        }
+        function gradeTierLabel(t) { return appData.language === 'en' ? t.en : t.vi; }
+
+        // Huy hiệu SVG riêng cho từng xếp loại, mỗi loại một kiểu animation nhẹ
+        function gradeBadgeSvg(avg, hasData) {
+            const wrap = (cls, inner, label) => `<span class="gb-wrap" role="img" aria-label="${label}"><svg class="gb ${cls}" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">${inner}</svg></span>`;
+            if (!hasData) return wrap('gb-none', '<circle cx="16" cy="16" r="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="3 3"/><path d="M12 16h8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>', 'no data');
+            const t = gradeTierOf(avg);
+            const label = t.en;
+            // Thường dân (nón rơm) – Kém: xám, Cần cố gắng: đỏ (thêm mũi tên đi lên)
+            const commoner = (cls, hat, brim, stroke, extra) => wrap(cls, `<ellipse cx="16" cy="22" rx="13" ry="4.5" fill="${brim}" stroke="${stroke}" stroke-width="1.6"/><path d="M8 21c0-8 4-14 8-14s8 6 8 14z" fill="${hat}" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.6 17.5h14.8" stroke="${stroke}" stroke-width="1.8"/><path d="M12 12c1-2 2.4-3.4 4-3.8" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>${extra || ''}`, label);
+            switch (t.key) {
+                // Vua – vương miện lớn có thánh giá, vàng kim
+                case 'leg': return wrap('gb-leg', '<path d="M16 .8v5.2M13.6 3h4.8" stroke="#a16207" stroke-width="1.8" stroke-linecap="round"/><path d="M4 25L3 11l7 6 6-11 6 11 7-6-1 14z" fill="#fbbf24" stroke="#a16207" stroke-width="1.6" stroke-linejoin="round"/><rect x="4" y="25" width="24" height="4" rx="1.5" fill="#f59e0b" stroke="#a16207" stroke-width="1.4"/><circle cx="16" cy="19" r="2" fill="#ef4444" stroke="#7f1d1d" stroke-width=".8"/><circle cx="9" cy="21" r="1.2" fill="#38bdf8"/><circle cx="23" cy="21" r="1.2" fill="#34d399"/><path d="M8 15l2 2" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".85"/><path class="gb-spark" d="M28 4v5M25.5 6.5h5" stroke="#fde047" stroke-width="1.6" stroke-linecap="round"/>', label);
+                // Công tước – vành miện lá dâu, xanh lá
+                case 'ex': return wrap('gb-ex', '<path d="M16 6c3 3 4 7 4 15h-8c0-8 1-12 4-15z" fill="#6ee7b7" stroke="#047857" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 11c3 2 5 6 5 10H5c0-4 0-7 2-10z" fill="#6ee7b7" stroke="#047857" stroke-width="1.5" stroke-linejoin="round"/><path d="M25 11c-3 2-5 6-5 10h7c0-4 0-7-2-10z" fill="#6ee7b7" stroke="#047857" stroke-width="1.5" stroke-linejoin="round"/><rect x="4" y="21" width="24" height="6" rx="1.8" fill="#10b981" stroke="#047857" stroke-width="1.5"/><circle cx="16" cy="24" r="1.8" fill="#fff" stroke="#047857" stroke-width=".8"/><circle cx="16" cy="5.2" r="1.3" fill="#fff" stroke="#047857" stroke-width=".8"/><circle cx="7" cy="10" r="1.3" fill="#fff" stroke="#047857" stroke-width=".8"/><circle cx="25" cy="10" r="1.3" fill="#fff" stroke="#047857" stroke-width=".8"/><path class="gb-spark" d="M28 2v5M25.5 4.5h5" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round"/>', label);
+                // Quý tộc – huy hiệu gia tộc, xanh dương
+                case 'vg': return wrap('gb-vg', '<path d="M16 3l11 4v8c0 7-5 11-11 14C10 26 5 22 5 15V7z" fill="#60a5fa" stroke="#1d4ed8" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 9.5l1.9 3.9 4.3.6-3.1 3 .8 4.2-3.9-2-3.9 2 .8-4.2-3.1-3 4.3-.6z" fill="#fde047" stroke="#a16207" stroke-width=".9" stroke-linejoin="round"/>', label);
+                // Thượng lưu – mũ chóp cao, vàng
+                case 'good': return wrap('gb-good', '<ellipse cx="16" cy="24" rx="13" ry="3.6" fill="#eab308" stroke="#a16207" stroke-width="1.6"/><path d="M9 24V8c0-1.8 3-3.2 7-3.2s7 1.4 7 3.2v16z" fill="#facc15" stroke="#a16207" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 19h14" stroke="#a16207" stroke-width="3.2"/><rect x="14" y="17.2" width="4" height="3.6" rx=".8" fill="#fef9c3" stroke="#a16207" stroke-width=".9"/><path d="M12.5 9.5v6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>', label);
+                // Tiểu thương – túi tiền có đồng xu, tím
+                case 'pass': return wrap('gb-pass', '<path d="M11 4.5h10l-2.5 4.5h-5z" fill="#a78bfa" stroke="#6d28d9" stroke-width="1.5" stroke-linejoin="round"/><path d="M13.5 9C7 12 4.5 17 4.5 22c0 4 4.5 6 11.5 6s11.5-2 11.5-6c0-5-2.5-10-9-13z" fill="#c4b5fd" stroke="#6d28d9" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 9.4h6" stroke="#6d28d9" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="20" r="4.6" fill="#fde047" stroke="#a16207" stroke-width="1.2"/><path d="M16 17.4v5.2" stroke="#a16207" stroke-width="1.4" stroke-linecap="round"/><path class="gb-spark" d="M27 3v5M24.5 5.5h5" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round"/>', label);
+                // Thường dân (cần cố gắng) – đỏ, có mũi tên đi lên
+                case 'try': return commoner('gb-try', '#fca5a5', '#f87171', '#b91c1c', '<g class="gb-up"><path d="M27 10V3M24.2 5.6L27 2.8l2.8 2.8" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>');
+                // Thường dân (kém) – xám
+                default: return commoner('gb-poor', '#cbd5e1', '#94a3b8', '#475569');
+            }
+        }
+
         function getGradeRankBadge(avg, hasData) {
             if (!hasData) return { label: (appData.language === 'en' ? 'No Data' : 'Chưa học'), color: 'bg-slate-100 text-slate-500' };
-            if (avg >= 8.5) return { label: (appData.language === 'en' ? 'Excellent' : 'Xuất Sắc'), color: 'bg-emerald-100 text-emerald-800' };
-            if (avg >= 7.0) return { label: (appData.language === 'en' ? 'Good' : 'Giỏi'), color: 'bg-blue-100 text-blue-800' };
-            if (avg >= 5.0) return { label: (appData.language === 'en' ? 'Fair' : 'Khá'), color: 'bg-amber-100 text-amber-800' };
-            return { label: (appData.language === 'en' ? 'Needs Effort' : 'Cần Cố Gắng'), color: 'bg-rose-100 text-rose-800' };
+            const t = gradeTierOf(avg);
+            return { label: gradeTierLabel(t), color: t.cls };
+        }
+
+        // Chú thích thang xếp loại (hiển thị ở tab Bảng xếp loại, đồng bộ Việt/Anh)
+        function renderGradeLegend() {
+            const box = document.getElementById('gradeLegend');
+            if (!box) return;
+            const en = appData.language === 'en';
+            box.innerHTML = `<span class="gr-leg-title">${en ? 'Grade scale' : 'Thang xếp loại'}:</span>` + GRADE_TIERS.map(t => {
+                const tip = t.descVi ? ` title="${en ? t.descEn : t.descVi}"` : '';
+                return `<span class="gr-chip ${t.cls}"${tip}><b>${t.range}</b><span>${gradeTierLabel(t)}</span></span>`;
+            }).join('');
         }
 
         // Shared, deterministic ranking logic for accumulated scores (Ranking + Score Matrix).
@@ -7084,6 +7396,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         function renderRankingView() {
             const activeClass = appData.classes.find(c => c.id === appData.activeClassId);
             if (!activeClass) return;
+            renderGradeLegend();
 
             // Also track here for direct leaderboard refreshes; qsTrack preserves recent deltas
             // when the order has not changed, so this is safe after renderCurrentView tracking.
@@ -7158,10 +7471,10 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                             <td class="py-3.5 px-4 font-bold text-slate-800">
                                 <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> <span class="tf-name-link" onclick="tfOpenProfile('${s.id}')" title="${lang === 'en' ? 'View profile' : 'Xem hồ sơ'}">${getStudentDisplayName(s)}</span>${levelPillHtml(s.id)}${(() => { const f = tenStreakHtml(s.id); return f ? `<span class="sg-open" role="button" tabindex="0" onclick="sgOpenBook('${s.id}')" onkeydown="if(event.key==='Enter')sgOpenBook('${s.id}')" title="${lang === 'en' ? 'Open Streak Gift Book' : 'Mở Sổ quà Streak'}">${f}</span>` : ''; })()} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span>
                             </td>
-                            <td class="py-3.5 px-4 text-center font-black text-amber-600"><span data-cu="rkt:${s.id}:p" data-to="${s.rewardPoints || 0}" data-dec="0">${s.rewardPoints || 0}</span> Pts</td>
+                            <td class="py-2 px-2 text-center">${gradeBadgeSvg(st.avg, st.hasData)}</td>
                             <td class="py-3.5 px-4 text-center font-semibold text-slate-600"><span data-cu="rkt:${s.id}:n" data-to="${st.attendedCount}" data-dec="0">${st.attendedCount}</span></td>
                             <td class="py-3.5 px-4 text-center font-bold text-indigo-600"><span data-cu="rkt:${s.id}:t" data-to="${st.total}" data-dec="1" data-final="${st.total}">${st.total}</span></td>
-                            <td class="py-3.5 px-4 text-center font-black text-slate-800"><span data-cu="rkt:${s.id}:a" data-to="${st.avg}" data-dec="1" data-final="${st.avg}">${st.avg}</span></td>
+                            <td class="py-3.5 px-4 text-center"><span class="rk-avgpill"><span data-cu="rkt:${s.id}:a" data-to="${st.avg}" data-dec="1" data-final="${st.avg}">${st.avg}</span></span></td>
                             <td class="py-3.5 px-4 text-center">
                                 <span class="px-3 py-1 rounded-full text-xs font-bold ${badge.color}">${badge.label}</span>
                             </td>
@@ -7306,6 +7619,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                             } else if (scoreItem.score !== null && scoreItem.score !== undefined) {
                                 cellText = parseFloat(scoreItem.score).toFixed(1);
                                 cellClass = cellClass.replace(" cell-empty", "") + " text-slate-800 font-bold bg-amber-50 cell-scored";
+                                if (parseFloat(scoreItem.score) >= 10) cellClass += " cell-ten";
                                 if (scoreItem.isExam) { cellClass += " cell-exam font-black text-purple-900"; examTag = ' ' + uiTr('exam_tag'); }
                                 if (scoreItem.manual) { cellClass += " cell-manual"; examTag += ' ✎ ' + qsT('editTag'); }
                                 if (scoreItem.sg) { const sgk = sgTierKey(scoreItem.sgTier); cellClass += " cell-sg sg-t" + sgk; sgFlame = sgFlameHtml(sgk); examTag += ' 🔥 ' + qgT('sg_cell_tag', { tier: sgk }); }
@@ -7364,6 +7678,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             }
 
             updateRealtimeCalculationDisplay();
+            if (existing && !existing.absent && existing.score !== undefined && existing.score !== null) scoreInput.value = existing.score;
             renderInventoryGiftsForModal(student, existing);
 
             toggleAbsentMode(absentCheckbox.checked);
@@ -7428,14 +7743,13 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 
             const isCellEmpty = !existingScoreItem || existingScoreItem.score === undefined || existingScoreItem.score === null;
 
-            if (!student.inventory || student.inventory.length === 0) {
-                container.classList.add('hidden');
-                return;
-            }
-
-            let validGiftsCount = 0;
+            container.classList.remove('hidden');
             const lang = appData.language || 'vi';
             const t = translations[lang];
+            const emptyHint = () => { giftList.innerHTML = `<p class="mx-gift-empty">${t.scGiftNone || ''}</p>`; };
+            if (!student.inventory || student.inventory.length === 0) { emptyHint(); return; }
+
+            let validGiftsCount = 0;
 
             student.inventory.forEach(invItem => {
                 let isApplicable = false;
@@ -7454,6 +7768,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 
                 const openCell = appData.scores[`${student.id}_${document.getElementById('modalDateStr').value}`];
                 if (openCell && openCell.isExam && ['plus', 'change', 'delete_score', 'plus_match'].includes(invItem.type)) isApplicable = false;
+                // Quà cộng điểm Bài Kiểm Tra: chỉ dùng được ngay trên ô đang mở nếu ô đó là ô Bài Kiểm Tra đã có điểm
+                if (invItem.type === 'plus_exam' && !(openCell && openCell.isExam && !openCell.absent && openCell.score !== undefined && openCell.score !== null)) isApplicable = false;
 
                 if (isApplicable) {
                     validGiftsCount++;
@@ -7470,11 +7786,30 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 }
             });
 
-            if (validGiftsCount > 0) {
-                container.classList.remove('hidden');
-            } else {
-                container.classList.add('hidden');
-            }
+            if (validGiftsCount === 0) emptyHint();
+        }
+
+        /* --- Nạp lại cửa sổ "Cập nhật điểm" từ dữ liệu đã lưu (cửa sổ KHÔNG tự đóng sau khi dùng quà / lưu / xóa) --- */
+        function refreshScoreModalData() {
+            const sm = document.getElementById('scoreModal');
+            if (!sm || sm.classList.contains('hidden')) return;
+            const studentId = document.getElementById('modalStudentId').value;
+            const dateStr = document.getElementById('modalDateStr').value;
+            const student = appData.students.find(x => x.id === studentId);
+            if (!student) return;
+            const existing = appData.scores[`${studentId}_${dateStr}`];
+            const absentCheckbox = document.getElementById('modalAbsentCheckbox');
+            const scoreInput = document.getElementById('modalScoreInput');
+            const speakingInput = document.getElementById('modalSpeakingCountInput');
+            const examChk = document.getElementById('modalIsExamCheckbox');
+            absentCheckbox.checked = !!(existing && existing.absent);
+            scoreInput.value = (existing && existing.score !== undefined && existing.score !== null) ? existing.score : '';
+            speakingInput.value = (existing && existing.speakingCount !== undefined) ? existing.speakingCount : '';
+            if (examChk) examChk.checked = !!(existing && existing.isExam && !existing.absent);
+            updateRealtimeCalculationDisplay();
+            if (existing && !existing.absent && existing.score !== undefined && existing.score !== null) scoreInput.value = existing.score;
+            renderInventoryGiftsForModal(student, existing);
+            toggleAbsentMode(absentCheckbox.checked);
         }
 
         /* --- QUÀ XÓA ĐIỂM (delete_score): xóa đúng 1 ô điểm của đúng học sinh, chỉ tiêu thụ quà khi lưu thành công --- */
@@ -7553,7 +7888,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                     try { renderCurrentView(); } catch (e) {}
                     return;
                 }
-                closeScoreModal();
+                refreshScoreModalData();
                 uiToast('dsToastSuccess', 'success');
             } finally {
                 dsBusy = false;
@@ -7588,32 +7923,28 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 }
                 uiToast('dsToastError', 'error');
                 try { renderCurrentView(); } catch (e) {}
+                refreshScoreModalData();
             });
-            closeScoreModal();
+            refreshScoreModalData();
         }
 
-        /* --- Quà cộng điểm Bài Kiểm Tra (plus_exam): tự quét ô isExam thấp nhất của học sinh --- */
-        async function applyExamGift(studentId, invItem) {
+        /* --- Quà cộng điểm Bài Kiểm Tra (plus_exam): áp dụng NGAY trên ô đang mở (không quét như Nhập quà nhanh) --- */
+        function applyExamGiftToCell(studentId, invItem) {
             if (qsArchived()) { saveData(); return; }
+            const dateStr = document.getElementById('modalDateStr').value;
+            const key = `${studentId}_${dateStr}`;
             const student = appData.students.find(s => s.id === studentId);
             const owned = student && Array.isArray(student.inventory) && student.inventory.find(i => i.invId === invItem.invId);
             if (!owned) { uiToast('qg_gift_missing', 'warning'); return; }
-            let plan = qgPlan(studentId, owned);
-            if (!plan) { uiToast('no_exam_cell_for_gift', 'warning'); return; }
-            const detail = qgT('qg_detail_exam', { student: getStudentDisplayName(student), date: qgDateLabel(plan.key), before: plan.before, after: plan.after });
-            const okConfirm = await showAppConfirm(`${qgT('confirm_use_quick_gift')} ${getRewardName(owned)} — ${detail}`, qgT('quick_gift_title'));
-            if (!okConfirm) return;
-            const st = appData.students.find(s => s.id === studentId);
-            const own2 = st && Array.isArray(st.inventory) && st.inventory.find(i => i.invId === invItem.invId);
-            if (!own2) { uiToast('qg_gift_missing', 'warning'); return; }
-            plan = qgPlan(studentId, own2);
-            if (!plan) { uiToast('no_exam_cell_for_gift', 'warning'); return; }
-            const key = `${studentId}_${plan.key}`, cell = appData.scores[key];
+            const cell = appData.scores[key];
             if (cell && cell.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
-            const prevCell = deepCopy(cell), prevGift = deepCopy(own2);
-            appData.scores[key] = { ...mfl(cell), ...giftKeepTs(cell, key), score: plan.afterNum, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: true };
-            st.inventory = st.inventory.filter(i => i.invId !== invItem.invId);
-            closeScoreModal();
+            const delta = parseFloat(owned.deltaScore);
+            const cur = (cell && !cell.absent && cell.score !== undefined && cell.score !== null) ? parseFloat(cell.score) : NaN;
+            if (!cell || !cell.isExam || isNaN(cur) || isNaN(delta) || delta <= 0 || qgClamp(cur + delta) === qgClamp(cur)) { uiToast('no_exam_cell_for_gift', 'warning'); return; }
+            const after = qgClamp(cur + delta);
+            const prevCell = deepCopy(cell), prevGift = deepCopy(owned);
+            appData.scores[key] = { ...mfl(cell), ...giftKeepTs(cell, key), score: after, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: true };
+            student.inventory = student.inventory.filter(i => i.invId !== invItem.invId);
             saveData().then(ok => {
                 if (ok) { uiToast('toastGiftGiven', 'success'); return; }
                 const st2 = appData.students.find(s => s.id === studentId);
@@ -7623,11 +7954,14 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 }
                 uiToast('dsToastError', 'error');
                 try { renderCurrentView(); } catch (e) {}
+                refreshScoreModalData();
             });
+            refreshScoreModalData();
         }
 
         function applyGiftToCell(studentId, invItem) {
-            if (invItem && invItem.type === 'plus_exam') { applyExamGift(studentId, invItem); return; }
+            if (qsArchived()) { saveData(); return; }
+            if (invItem && invItem.type === 'plus_exam') { applyExamGiftToCell(studentId, invItem); return; }
             if (invItem && invItem.type === 'delete_score') { applyDeleteScoreGift(studentId, invItem); return; }
             if (invItem && invItem.type === 'plus_match') { applyPlusMatchGift(studentId, invItem); return; }
             const dateStr = document.getElementById('modalDateStr').value;
@@ -7649,8 +7983,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 student.inventory = student.inventory.filter(i => i.invId !== invItem.invId);
             }
 
-            saveData();
-            closeScoreModal();
+            saveData().then(ok => { if (ok) uiToast('toastGiftGiven', 'success'); });
+            refreshScoreModalData();
         }
 
         window.setQuickScore = function(val) {
@@ -7669,13 +8003,16 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             const container = document.getElementById('scoreInputContainer');
             const scoreInput = document.getElementById('modalScoreInput');
             const speakingInput = document.getElementById('modalSpeakingCountInput');
+            const examTgl = document.getElementById('modalExamToggle'), examChk = document.getElementById('modalIsExamCheckbox');
             if (isAbsent) {
                 container.classList.add('opacity-40', 'pointer-events-none');
                 scoreInput.value = 0;
                 speakingInput.value = 0;
+                if (examChk) examChk.checked = false;
             } else {
                 container.classList.remove('opacity-40', 'pointer-events-none');
             }
+            if (examTgl) examTgl.classList.toggle('mx-tgl-off', !!isAbsent);
         };
 
         window.closeScoreModal = function() {
@@ -7716,7 +8053,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                     isExam: !!(document.getElementById('modalIsExamCheckbox') || {}).checked
                 };
                 saveData().then(ok => { if (ok) { uiToast('toastScoreSaved', 'success'); if (fromKey) qsMoveAfterModal(); } });
-                closeScoreModal();
+                if (fromKey) closeScoreModal(); else refreshScoreModalData();
                 return;
             }
 
@@ -7763,7 +8100,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             }
 
             saveData().then(ok => { if (ok) { uiToast('toastScoreSaved', 'success'); if (fromKey) qsMoveAfterModal(); } });
-            closeScoreModal();
+            if (fromKey) closeScoreModal(); else refreshScoreModalData();
         };
 
         window.clearScore = function() {
@@ -7788,7 +8125,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 try { sgTrimChains([studentId], sgBefore); } catch (err) {}
                 saveData();
             }
-            closeScoreModal();
+            refreshScoreModalData();
         };
 
         /* --- QUAY NGẪU NHIÊN --- */
@@ -8593,6 +8930,7 @@ window.openStudentProfile=function(studentId){
         window.closeClassSchedule=function(){hideModuleModal('classScheduleModal');};
         window.saveClassSchedule=function(){const next={...(appData.classSchedules||{})};appData.classes.forEach(c=>{const cfg={};document.querySelectorAll('[data-sched-class]').forEach(ch=>{if(String(ch.dataset.schedClass)!==String(c.id))return;const day=ch.dataset.schedDay;const ti=Array.from(document.querySelectorAll('[data-sched-time-class]')).find(el=>String(el.dataset.schedTimeClass)===String(c.id)&&String(el.dataset.schedTimeDay)===String(day));if(ch.checked)cfg[day]=ti?.value||'09:00';});next[c.id]=cfg;});const backup=deepCopy(appData.classSchedules||{});appData.classSchedules=next;renderTeachingView();saveData().then(ok=>{if(ok){closeClassSchedule();renderTeachingView();}else{appData.classSchedules=backup;renderTeachingView();}});};
         function classColorHex(color){const name=String(color||'').match(/bg-([a-z]+)-(\d+)/);const palette={emerald:'#10b981',amber:'#f59e0b',purple:'#9333ea',indigo:'#6366f1',sky:'#0ea5e9',blue:'#3b82f6',rose:'#f43f5e',red:'#ef4444',orange:'#f97316',teal:'#14b8a6',cyan:'#06b6d4',pink:'#ec4899',lime:'#84cc16',slate:'#64748b',green:'#22c55e',yellow:'#eab308'};return name?(palette[name[1]]||'#6366f1'):'#6366f1';}
+        function tnRgba(hex,a){const m=String(hex).replace('#','');const n=parseInt(m.length===3?m.split('').map(x=>x+x).join(''):m,16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
         function renderTeachingView(){
           ensureNewModules();
           const course=activeCourse();
@@ -8605,7 +8943,24 @@ window.openStudentProfile=function(studentId){
           const years=[2026,2027,2028,2029,2030];
           ys.innerHTML=years.map(y=>`<option value="${y}">${y}</option>`).join('');
           const courseYear=course?.startDate?Number(course.startDate.slice(0,4)):new Date().getFullYear();
-          const desired=courseChanged&&years.includes(courseYear)?courseYear:(years.includes(Number(old))?Number(old):(years.includes(courseYear)?courseYear:2026));
+          let desired=courseChanged&&years.includes(courseYear)?courseYear:(years.includes(Number(old))?Number(old):(years.includes(courseYear)?courseYear:2026));
+          // Tự động mở tuần chứa ngày hôm nay (mỗi ngày/mỗi khóa một lần) và đánh dấu để focus vào lớp học tiếp theo
+          let autoFocusWeek=null;
+          try{
+            const nd=new Date(); const todayIso=`${nd.getFullYear()}-${String(nd.getMonth()+1).padStart(2,'0')}-${String(nd.getDate()).padStart(2,'0')}`;
+            const autoKey=`${appData.courseManager.activeCourseId}|${todayIso}`;
+            if(window.__teachingAutoKey!==autoKey){
+              const curPlans=(appData.teachingPlans&&appData.teachingPlans[appData.courseManager.activeCourseId])||[];
+              const hit=curPlans.find(w=>{const st=mondayOfDate(w.startDate||course?.startDate||'');return st&&todayIso>=st&&todayIso<=datePlus(st,6);});
+              if(hit){
+                window.__teachingAutoKey=autoKey;
+                teachingExpandedWeeks.add(hit.id); teachingCollapsedDays.delete(`${hit.id}_${todayIso}`);
+                const hy=Number(hit.year||String(hit.startDate||todayIso).slice(0,4));
+                if(years.includes(hy))desired=hy;
+                autoFocusWeek=hit.id;
+              }
+            }
+          }catch(e){console.warn('Teaching auto-open skipped:',e);}
           ys.value=String(desired);
           const cf=document.getElementById('teachingClassFilter'); const oldC=cf.value;
           cf.innerHTML=`<option value="all">${moduleText('allClasses')}</option>`+appData.classes.map(c=>`<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join('');
@@ -8639,8 +8994,14 @@ window.openStudentProfile=function(studentId){
               ${expanded?`<div class="p-2">${weekScheduleHtml(w,weekLessons,filter,q)}</div>`:''}
             </section>`;
           }).join('')||`<div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center"><p class="text-sm text-slate-600">${moduleText('noWeeks')}</p><button type="button" onclick="addTeachingWeek()" class="mt-3 rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-bold">${moduleText('addWeekBtn')}</button></div>`;
+          if(autoFocusWeek)setTimeout(teachingFocusNext,120);
         }
         window.renderTeachingView=renderTeachingView;
+        function teachingFocusNext(){
+          const row=document.querySelector('#teachingWeeks .teaching-next-row'); if(!row)return;
+          try{row.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}
+          const inp=row.querySelector('input.teaching-grid-input'); if(inp){try{inp.focus({preventScroll:true});}catch(e){inp.focus();}}
+        }
         function weekScheduleHtml(w,lessons,filter='all',query=''){
           const course=activeCourse();
           const start=mondayOfDate(w.startDate||(course?.startDate)||`${Number(w.year)||2026}-01-01`);
@@ -8651,19 +9012,29 @@ window.openStudentProfile=function(studentId){
             const scheduled=appData.classes.filter(c=>filterScheduleClass(c.id)&&(appData.classSchedules?.[c.id]?.[d.key]!==undefined && appData.classSchedules?.[c.id]?.[d.key]!=='' )).sort((a,b)=>{const ta=String(appData.classSchedules?.[a.id]?.[d.key]||'').trim();const tb=String(appData.classSchedules?.[b.id]?.[d.key]||'').trim();return ta.localeCompare(tb,undefined,{numeric:true})||String(a.name||'').localeCompare(String(b.name||''),'vi');});
             const dayKey=`${w.id}_${date}`;
             const dayCollapsed=teachingCollapsedDays.has(dayKey);
+            const nowD=new Date(); const todayIso=`${nowD.getFullYear()}-${String(nowD.getMonth()+1).padStart(2,'0')}-${String(nowD.getDate()).padStart(2,'0')}`;
+            const isToday=date===todayIso; let nextId=null;
+            if(isToday&&scheduled.length){
+              const nm=nowD.getHours()*60+nowD.getMinutes();
+              const withT=scheduled.map(c=>{const m=String(appData.classSchedules?.[c.id]?.[d.key]||'').match(/(\d{1,2})\s*[:h.]\s*(\d{2})/);return {c,t:m?Number(m[1])*60+Number(m[2]):null};}).filter(x=>x.t!==null);
+              // Lớp sắp tới theo giờ hiện tại (lớp vừa bắt đầu trong vòng 60 phút vẫn tính là lớp hiện tại); hết lớp thì lấy lớp cuối ngày
+              const pick=withT.length?(withT.find(x=>x.t>=nm-60)||withT[withT.length-1]).c:scheduled[0];
+              nextId=String(pick.id);
+            }
             const rows=scheduled.map(c=>{
+              const isNext=String(c.id)===nextId;
               let lesson=(lessons||[]).find(l=>String(l.classId)===String(c.id)&&(l.date===date||l.makeupDate===date));
               if(!lesson) lesson=(lessons||[]).find(l=>String(l.classId)===String(c.id)&&!l.date&&!l.makeupDate&&Number(l.weekday)===Number(d.key));
               const textForSearch=`${c.name} ${lesson?.content||''} ${lesson?.detail||''}`.toLocaleLowerCase();
               if(query&&!textForSearch.includes(query))return '';
-              return `<div class="teaching-day-grid px-1 py-1" style="border-bottom:1px solid #f1f5f9">
-                <div class="teaching-grid-cell gap-1" style="border-left:3px solid ${classColorHex(c.color)}"><div class="min-w-0"><div class="text-xs font-extrabold text-slate-900" style="font-weight:800;overflow-wrap:anywhere">${escapeHtml(c.name)}</div><div class="text-[10px] font-semibold text-slate-500">${escapeHtml(appData.classSchedules?.[c.id]?.[d.key]||'')}</div></div></div>
+              return `<div class="teaching-day-grid px-1 py-1${isNext?' teaching-next-row':''}" style="border-bottom:1px solid #f1f5f9${isNext?`;--tn-c:${classColorHex(c.color)};--tn-bg:${tnRgba(classColorHex(c.color),.16)};--tn-g:${tnRgba(classColorHex(c.color),.65)}`:''}">
+                <div class="teaching-grid-cell gap-1" style="border-left:3px solid ${classColorHex(c.color)}"><div class="min-w-0"><div class="text-xs font-extrabold text-slate-900" style="font-weight:800;overflow-wrap:anywhere">${escapeHtml(c.name)}${isNext?`<span class="teaching-next-badge">${appData.language==='en'?'Next':'Tiếp theo'}</span>`:''}</div><div class="text-[10px] font-semibold text-slate-500">${escapeHtml(appData.classSchedules?.[c.id]?.[d.key]||'')}</div></div></div>
                 <div class="teaching-grid-cell"><input type="text" class="teaching-grid-input" value="${escapeHtml(lesson?.content||'')}" placeholder="${appData.language==='en'?'Enter teaching content':'Nhập nội dung giảng dạy'}" onblur="updateScheduledLesson('${w.id}','${c.id}','${date}','content',this.value)"></div>
                 <div class="teaching-grid-cell"><textarea class="teaching-grid-input" rows="1" placeholder="${appData.language==='en'?'Enter lesson details':'Nhập chi tiết buổi học'}" onblur="updateScheduledLesson('${w.id}','${c.id}','${date}','detail',this.value)">${escapeHtml(lesson?.detail||'')}</textarea></div>
               </div>`;
             }).filter(Boolean).join('');
             const noClass=`<div class="px-2 py-2 text-[10px] text-slate-400">${moduleText('noScheduledClasses')}</div>`;
-            return `<section class="teaching-day-card rounded-lg overflow-hidden bg-white" style="border:1px solid #94a3b8"><button type="button" onclick="toggleTeachingDay('${w.id}','${date}')" class="w-full px-2 py-1.5 flex items-center gap-2 text-left hover:brightness-95" style="background:#e2e8f0;border-bottom:1px solid #94a3b8"><span class="text-xs font-black text-slate-900" style="width:12px">${dayCollapsed?'▸':'▾'}</span><b class="text-xs font-black text-slate-900" style="letter-spacing:.02em;font-weight:900">${days[i]||''}</b><span class="text-[11px] font-extrabold text-slate-800">${date}</span><span class="ml-auto text-[10px] font-semibold text-slate-500">${dayCollapsed?(appData.language==='en'?'Expand day':'Mở ngày'):(appData.language==='en'?'Collapse day':'Thu gọn ngày')}</span></button>${dayCollapsed?'':`<div class="teaching-day-table-scroll">${rows||noClass}</div>`}</section>`;
+            return `<section class="teaching-day-card rounded-lg overflow-hidden bg-white" style="border:1px solid #94a3b8"><button type="button" onclick="toggleTeachingDay('${w.id}','${date}')" class="w-full px-2 py-1.5 flex items-center gap-2 text-left hover:brightness-95" style="background:#e2e8f0;border-bottom:1px solid #94a3b8"><span class="text-xs font-black text-slate-900" style="width:12px">${dayCollapsed?'▸':'▾'}</span><b class="text-xs font-black text-slate-900" style="letter-spacing:.02em;font-weight:900">${days[i]||''}</b><span class="text-[11px] font-extrabold text-slate-800">${date}</span>${isToday?`<span class="teaching-today-tag">${appData.language==='en'?'Today':'Hôm nay'}</span>`:''}<span class="ml-auto text-[10px] font-semibold text-slate-500">${dayCollapsed?(appData.language==='en'?'Expand day':'Mở ngày'):(appData.language==='en'?'Collapse day':'Thu gọn ngày')}</span></button>${dayCollapsed?'':`<div class="teaching-day-table-scroll">${rows||noClass}</div>`}</section>`;
           }).join('')}</div>`;
         }
         function filterScheduleClass(classId){const f=document.getElementById('teachingClassFilter')?.value||'all';return f==='all'||String(classId)===f;}
@@ -9835,12 +10206,20 @@ window.openStudentProfile=function(studentId){
         var el = t.closest(SEL);
         if (!el) {
             var a = t, n = 0;
-            while (a && a !== document.body && n < 4) { if (getComputedStyle(a).cursor === 'pointer') { el = a; break; } a = a.parentElement; n++; }
+            while (a && a !== document.body && n < 4) {
+                var cs = getComputedStyle(a), pa = a.parentElement;
+                // Chỉ nhận phần tử TỰ khai báo cursor:pointer, bỏ qua phần tử chỉ thừa hưởng con trỏ từ lớp phủ/khối cha
+                if (cs.cursor === 'pointer' && !(pa && getComputedStyle(pa).cursor === 'pointer')) { el = a; break; }
+                a = pa; n++;
+            }
         }
         if (!el || el === document.body || el === document.documentElement) return;
         if (el.disabled || el.hasAttribute('data-no-hover') || el.closest('.mx-bub')) return;
         if (el.tagName === 'LABEL' && !el.control) return;
         if (el.type === 'file' || el.type === 'hidden') return;
+        // Không đụng vào lớp phủ hiệu ứng (mở quà, popup) hay phần tử đang chạy animation: tránh ghi đè transform/transition của chúng
+        if (el.closest('.xf-gift,.xf-pop-card .xf-pop-cake,.ct-fx')) return;
+        try { if (el.getAnimations && el.getAnimations().length) return; } catch (e) {}
         var c = cache.get(el), cls = el.className;
         if (c && c.cls === cls) return;
         if (Date.now() - lastBuild > 4000 || !rules.length) build();
