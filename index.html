@@ -1627,7 +1627,6 @@ html.mx-dark .rk-avgpill{background:#1e293b;border-color:#94a3b8;color:#f1f5f9;b
 .gb-pass{animation:gbBob 3s ease-in-out infinite}
 .gb-pass .gb-spark{transform-box:fill-box;transform-origin:center;animation:gbTwinkle 2.4s ease-in-out infinite}
 .gb-try{animation:gbBob 2.6s ease-in-out infinite}
-.gb-try .gb-up{animation:gbArrow 1.6s ease-in-out infinite}
 .gb-poor{animation:gbBob 3.6s ease-in-out infinite}
 @keyframes gbGlowGold{0%,100%{filter:drop-shadow(0 0 0 rgba(234,179,8,0))}50%{filter:drop-shadow(0 0 6px rgba(234,179,8,.95))}}
 @keyframes gbBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
@@ -6659,10 +6658,10 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 case 'good': return wrap('gb-good', '<ellipse cx="16" cy="24" rx="13" ry="3.6" fill="#eab308" stroke="#a16207" stroke-width="1.6"/><path d="M9 24V8c0-1.8 3-3.2 7-3.2s7 1.4 7 3.2v16z" fill="#facc15" stroke="#a16207" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 19h14" stroke="#a16207" stroke-width="3.2"/><rect x="14" y="17.2" width="4" height="3.6" rx=".8" fill="#fef9c3" stroke="#a16207" stroke-width=".9"/><path d="M12.5 9.5v6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>', label);
                 // Tiểu thương – túi tiền có đồng xu, tím
                 case 'pass': return wrap('gb-pass', '<path d="M11 4.5h10l-2.5 4.5h-5z" fill="#a78bfa" stroke="#6d28d9" stroke-width="1.5" stroke-linejoin="round"/><path d="M13.5 9C7 12 4.5 17 4.5 22c0 4 4.5 6 11.5 6s11.5-2 11.5-6c0-5-2.5-10-9-13z" fill="#c4b5fd" stroke="#6d28d9" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 9.4h6" stroke="#6d28d9" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="20" r="4.6" fill="#fde047" stroke="#a16207" stroke-width="1.2"/><path d="M16 17.4v5.2" stroke="#a16207" stroke-width="1.4" stroke-linecap="round"/><path class="gb-spark" d="M27 3v5M24.5 5.5h5" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round"/>', label);
-                // Thường dân (cần cố gắng) – đỏ, có mũi tên đi lên
-                case 'try': return commoner('gb-try', '#fca5a5', '#f87171', '#b91c1c', '<g class="gb-up"><path d="M27 10V3M24.2 5.6L27 2.8l2.8 2.8" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>');
-                // Thường dân (kém) – xám
-                default: return commoner('gb-poor', '#cbd5e1', '#94a3b8', '#475569');
+                // Thường dân (cần cố gắng) – nón rơm đỏ
+                case 'try': return commoner('gb-try', '#fca5a5', '#f87171', '#b91c1c');
+                // Ăn xin (kém) – bát xin ăn sứt mẻ với một đồng xu lẻ, xám
+                default: return wrap('gb-poor', '<circle cx="16" cy="9.5" r="4.2" fill="#e2e8f0" stroke="#475569" stroke-width="1.3"/><path d="M16 7.4v4.2" stroke="#475569" stroke-width="1.3" stroke-linecap="round"/><path d="M3.5 15.5h25c0 7.5-5.2 12.5-12.5 12.5S3.5 23 3.5 15.5z" fill="#cbd5e1" stroke="#475569" stroke-width="1.7" stroke-linejoin="round"/><ellipse cx="16" cy="15.5" rx="12.5" ry="2.6" fill="#94a3b8" stroke="#475569" stroke-width="1.5"/><path d="M11 21l2.2 2.2-1.6 2M21.5 20.5l-1.6 3" fill="none" stroke="#475569" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 17.6c.8 3 2.4 5 4.6 6.4" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity=".6"/>', label);
             }
         }
 
