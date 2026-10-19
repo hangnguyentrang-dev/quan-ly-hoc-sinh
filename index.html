@@ -1602,6 +1602,25 @@ html.mx-dark .qg-stu:hover{background:#1e293b;border-color:#fb923c}
 #qsBagModal #qsBagAmount:focus{outline:2px solid #f9a8d4;border-color:#ec4899}
 html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 </style>
+<style id="mx-drawer-theme">
+/* Thống nhất màu hover theo từng cửa sổ công cụ bên trái/phải màn hình */
+/* Cộng điểm (tông tím chàm) */
+#qsBulkModal .qs-stu{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background .15s ease}
+#qsBulkModal .qs-stu:hover{transform:translateY(-1px);border-color:#818cf8;background:#eef2ff;box-shadow:0 4px 10px rgba(79,70,229,.2)}
+#qsBulkModal .qs-stu.on{background:#e0e7ff;border-color:#6366f1;color:#3730a3}
+#qsBulkModal #qsBulkAmount{background:#eef2ff;border-color:#c7d2fe;color:#4338ca;transition:none}
+#qsBulkModal #qsBulkAmount:hover{background:#eef2ff;border-color:#c7d2fe;box-shadow:none;transform:none;filter:none}
+#qsBulkModal #qsBulkAmount:focus,#qsBulkModal #qsBulkAmount:focus-visible{outline:0 !important;border-color:#4338ca;box-shadow:0 0 0 2px rgba(67,56,202,.35)}
+#qsBulkModal select:focus,#qsBulkModal select:focus-visible{outline:0 !important;border-color:#4338ca;box-shadow:0 0 0 2px rgba(67,56,202,.35)}
+#qsBagModal #qsBagAmount:focus,#qsBagModal #qsBagAmount:focus-visible{outline:0 !important;border-color:#be185d;box-shadow:0 0 0 2px rgba(190,24,93,.3)}
+/* Cộng điểm quà nhanh (tông hồng): ô số điểm cùng màu, không hiệu ứng */
+#qsBagModal #qsBagAmount{background:#fdf2f8;border-color:#fbcfe8;color:#be185d;transition:none}
+#qsBagModal #qsBagAmount:hover{background:#fdf2f8;border-color:#fbcfe8;box-shadow:none;transform:none;filter:none}
+/* Ghi chú (tông xanh lá): hiệu ứng khi rê chuột vào từng ghi chú */
+#mxNotesDrawer .mxn-item{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background .15s ease}
+#mxNotesDrawer .mxn-item:hover{transform:translateY(-2px);border-color:#34d399;background:#ecfdf5;box-shadow:0 8px 18px rgba(5,150,105,.16),0 0 0 2px rgba(52,211,153,.25)}
+@media (prefers-reduced-motion:reduce){#qsBulkModal .qs-stu,#qsBagModal .qs-stu,#mxNotesDrawer .mxn-item{transition:none}#mxNotesDrawer .mxn-item:hover,#qsBulkModal .qs-stu:hover{transform:none}}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 
