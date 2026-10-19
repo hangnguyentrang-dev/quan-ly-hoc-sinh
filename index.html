@@ -15,6 +15,14 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
+        .rp-mode-btn,.rp-action-btn{width:100%;border-radius:12px;padding:10px 8px;font-size:12px;font-weight:900;transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;border:1px solid transparent;cursor:pointer}
+        .rp-mode-btn:hover,.rp-action-btn:hover{transform:translateY(-2px);filter:brightness(1.04);box-shadow:0 7px 16px rgba(15,23,42,.16)}
+        .rp-mode-btn:active,.rp-action-btn:active{transform:translateY(0) scale(.98)}
+        .rp-mode-remove{background:linear-gradient(135deg,#f97316,#e11d48);color:white;border-color:#fb7185}
+        .rp-mode-save{background:linear-gradient(135deg,#0ea5e9,#4f46e5);color:white;border-color:#818cf8}
+        .rp-mode-btn.is-active{outline:3px solid rgba(250,204,21,.9);outline-offset:2px;box-shadow:0 0 0 5px rgba(250,204,21,.18),0 8px 18px rgba(15,23,42,.2);transform:translateY(-1px)}
+        .rp-undo{background:#dcfce7;color:#166534;border-color:#86efac}.rp-reset{background:#fef3c7;color:#92400e;border-color:#fcd34d}
+
         body { font-family: 'Roboto', sans-serif; background-color: #f1f5f9; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #e2e8f0; }
@@ -1260,7 +1268,7 @@ td.grid-cell.cell-sg .sg-cf{position:absolute;top:-2px;left:-1px;transform:scale
 #scoreMatrix td.grid-cell.mx-multi:not(.cell-absent){background-color:#e0e7ff !important;color:#1e1b4b !important;outline:2px solid #4f46e5;outline-offset:-2px}
 #scoreMatrix td.grid-cell.mx-multi.cell-absent{outline:2px solid #4f46e5;outline-offset:-2px}
 #scoreMatrix.qs-test-on td.grid-cell.mx-multi:not(.cell-absent){background-color:#fde68a !important;color:#3b0764 !important;outline-color:#6b21a8}
-.mx-today-btn{cursor:pointer}
+.mx-today-btn{cursor:pointer;transition:transform .16s ease,filter .16s ease,box-shadow .16s ease,background-color .16s ease}.mx-today-btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 5px 12px rgba(99,102,241,.22)}.mx-today-btn:active:not(:disabled){transform:translateY(0) scale(.98)}
 .mx-today-badge{font-size:10px;font-weight:800;border-radius:9999px;padding:.22rem .6rem;border:1px solid #fcd34d;background:#fef3c7;color:#92400e;cursor:pointer}
 .mx-today-badge.done{border-color:#86efac;background:#dcfce7;color:#166534;cursor:default}
 .mx-multi-info{font-size:10px;font-weight:800;color:#4338ca}
@@ -1509,6 +1517,48 @@ html.mx-dark .fe-card input[type="number"]:not(:focus):hover{background-color:rg
 /* ===== Nội dung giảng dạy ===== */
 #teachingSearch,#teachingYear,#teachingClassFilter{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background-color .15s ease}
 #teachingSearch:hover,#teachingYear:hover,#teachingClassFilter:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(15,23,42,.15);border-color:#818cf8;background-color:#eef2ff}
+
+/* ===== Teaching week card: click anywhere on header + stronger hover ===== */
+.teaching-week-card{transition:box-shadow .2s ease,transform .2s ease,filter .2s ease !important}
+.teaching-week-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(15,23,42,.22) !important;filter:brightness(1.03) saturate(1.08)}
+.teaching-week-head{transition:filter .18s ease,box-shadow .18s ease,padding-left .18s ease;user-select:none}
+.teaching-week-head:hover{filter:brightness(.95) saturate(1.25);box-shadow:inset 6px 0 0 var(--wk-c)}
+.teaching-week-head:active{filter:brightness(.9)}
+.teaching-week-head > div:first-child button:first-child{pointer-events:auto}
+
+/* ===== Wider layout for selected tabs ===== */
+main:has(#viewMatrixContainer:not(.hidden)),
+main:has(#viewRankingContainer:not(.hidden)),
+main:has(#viewFinalExamContainer:not(.hidden)),
+main:has(#viewStudentsContainer:not(.hidden)),
+main:has(#viewViolationContainer:not(.hidden)),
+main:has(#viewShopContainer:not(.hidden)),
+main:has(#viewWheelContainer:not(.hidden)){max-width:min(1500px,100%) !important;padding-left:clamp(12px,2.2vw,36px);padding-right:clamp(12px,2.2vw,36px)}
+.stage-row{max-width:min(72rem,100%)}
+
+/* ===== Lucky wheel emphasis ===== */ #wheelManageToggle{background:linear-gradient(135deg,#7c3aed,#db2777 58%,#f59e0b)!important;color:#fff!important;border:1px solid rgba(255,255,255,.65)!important;box-shadow:0 5px 16px rgba(147,51,234,.28);transition:transform .18s,filter .18s,box-shadow .18s}#wheelManageToggle:hover{transform:translateY(-2px);filter:brightness(1.1) saturate(1.15);box-shadow:0 9px 22px rgba(219,39,119,.35)}
+.wheel-frame{max-width:min(100%,clamp(260px,calc(100vh - 430px),500px)) !important;margin-top:.9rem;border-radius:9999px}
+.wheel-frame::before{content:"";position:absolute;inset:-14px;border-radius:9999px;z-index:-1;background:conic-gradient(from 0deg,#f43f5e,#f59e0b,#fde047,#22c55e,#06b6d4,#6366f1,#d946ef,#f43f5e);filter:blur(.5px);box-shadow:0 0 28px rgba(99,102,241,.45),0 0 60px rgba(236,72,153,.25);animation:wheelRing 8s linear infinite}
+.wheel-frame::after{content:"";position:absolute;inset:-5px;border-radius:9999px;z-index:-1;background:#fff}
+html.mx-dark .wheel-frame::after{background:#0f172a}
+.wheel-frame canvas{filter:drop-shadow(0 10px 18px rgba(15,23,42,.35));cursor:pointer;touch-action:manipulation;transition:filter .2s,transform .2s}.wheel-frame canvas:hover{filter:drop-shadow(0 12px 22px rgba(99,102,241,.5)) brightness(1.025)} .wheel-frame canvas:active{transform:scale(.99)}
+@keyframes wheelRing{to{transform:rotate(360deg)}}
+.wheel-spin-btn{position:relative;overflow:hidden;margin-top:.6rem;background:linear-gradient(135deg,#6366f1,#d946ef 55%,#f59e0b) !important;font-size:1.3rem !important;padding:.65rem 3rem !important;border-radius:9999px !important;letter-spacing:.2em !important;box-shadow:0 0 0 4px rgba(255,255,255,.9),0 10px 28px rgba(139,92,246,.55);transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;animation:wheelBtnPulse 2s ease-in-out infinite}
+.wheel-spin-btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:wheelBtnShine 2.8s ease-in-out infinite}
+.wheel-spin-btn:hover:not(:disabled){transform:translateY(-3px) scale(1.07);filter:brightness(1.1);box-shadow:0 0 0 4px #fff,0 16px 36px rgba(217,70,239,.65)}
+.wheel-spin-btn:active:not(:disabled){transform:scale(.97)}
+.wheel-spin-btn:disabled{animation:none;filter:grayscale(.4)}
+.wheel-spin-btn:disabled::after{display:none}
+@keyframes wheelBtnPulse{0%,100%{box-shadow:0 0 0 4px rgba(255,255,255,.9),0 10px 28px rgba(139,92,246,.5)}50%{box-shadow:0 0 0 7px rgba(255,255,255,.7),0 12px 38px rgba(217,70,239,.8)}}
+@keyframes wheelBtnShine{0%,55%{left:-60%}100%{left:130%}}
+.wheel-mode-card{position:relative;border:2px solid transparent !important;border-radius:1rem !important;padding:1.25rem !important;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#6366f1,#d946ef,#f59e0b) border-box !important;box-shadow:0 10px 30px rgba(99,102,241,.22),0 0 0 4px rgba(99,102,241,.07);transition:box-shadow .2s ease,transform .2s ease}
+.wheel-mode-card:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(99,102,241,.32),0 0 0 5px rgba(217,70,239,.12)}
+.wheel-mode-card h3{font-size:1.25rem;background:linear-gradient(90deg,#4f46e5,#d946ef);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wheel-mode-card label:has(input[type=radio]){padding:.45rem .8rem;border:1px solid #c7d2fe;border-radius:.75rem;background:#eef2ff;cursor:pointer;font-weight:700;transition:all .15s ease}
+.wheel-mode-card label:has(input[type=radio]):hover{background:#e0e7ff;border-color:#6366f1}
+.wheel-mode-card label:has(input[type=radio]:checked){background:linear-gradient(135deg,#6366f1,#8b5cf6);border-color:transparent;color:#fff;box-shadow:0 4px 12px rgba(99,102,241,.4)}
+html.mx-dark .wheel-mode-card{background:linear-gradient(#111c33,#111c33) padding-box,linear-gradient(135deg,#6366f1,#d946ef,#f59e0b) border-box !important}
+@media (prefers-reduced-motion:reduce){.wheel-spin-btn,.wheel-spin-btn::after,.wheel-frame::before{animation:none}}
 .teaching-week-card{transition:box-shadow .18s ease,filter .18s ease}
 .teaching-week-card:hover{box-shadow:0 8px 22px rgba(15,23,42,.18) !important;filter:brightness(1.015)}
 .teaching-day-card{transition:border-color .15s ease,box-shadow .15s ease}
@@ -1620,6 +1670,81 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 #mxNotesDrawer .mxn-item{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background .15s ease}
 #mxNotesDrawer .mxn-item:hover{transform:translateY(-2px);border-color:#34d399;background:#ecfdf5;box-shadow:0 8px 18px rgba(5,150,105,.16),0 0 0 2px rgba(52,211,153,.25)}
 @media (prefers-reduced-motion:reduce){#qsBulkModal .qs-stu,#qsBagModal .qs-stu,#mxNotesDrawer .mxn-item{transition:none}#mxNotesDrawer .mxn-item:hover,#qsBulkModal .qs-stu:hover{transform:none}}
+</style>
+<style id="ui-hover-polish-20261019">
+/* Shared, restrained hover language matching the existing app */
+#randomPickerModal .rp-mode-btn,
+#randomPickerModal #btnSpin,
+#randomPickerModal button[data-rp-action],
+#randomPickerModal .rp-controls button,
+#btnStartTimer,#btnPauseTimer,
+#timerSeconds + button,
+#seatingModal button[onclick*="randomizeSeating"],
+#seatingModal .seat-card,#seatingModal .seat-item,
+#automaticGroupingModal button,
+#groupingModal button,
+#deletedStudentsModal button {
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease,
+             box-shadow .18s ease, transform .18s ease;
+}
+#randomPickerModal .rp-mode-btn { padding: .42rem .72rem !important; font-size: .78rem !important; line-height: 1.2 !important; }
+#randomPickerModal .rp-mode-btn:hover,
+#randomPickerModal #btnSpin:hover,
+#randomPickerModal button[data-rp-action]:hover,
+#randomPickerModal .rp-controls button:hover,
+#btnStartTimer:hover,#btnPauseTimer:hover,
+#seatingModal button[onclick*="randomizeSeating"]:hover,
+#automaticGroupingModal button:hover,#groupingModal button:hover,
+#deletedStudentsModal button:hover {
+  filter: brightness(.96); box-shadow: 0 5px 14px rgba(15,23,42,.14); transform: translateY(-1px);
+}
+#randomPickerModal .rp-mode-btn:active,#randomPickerModal #btnSpin:active,
+#btnStartTimer:active,#btnPauseTimer:active,
+#seatingModal button[onclick*="randomizeSeating"]:active,
+#automaticGroupingModal button:active,#groupingModal button:active,
+#deletedStudentsModal button:active { transform: translateY(0) scale(.98); }
+/* Timer reset button */
+#btnStartTimer ~ button[onclick*="resetTimer"]:hover { background-color:#cbd5e1 !important; box-shadow:0 5px 14px rgba(15,23,42,.14); transform:translateY(-1px); }
+/* Seating dimension labels are informational; only their form controls respond to hover/focus. */
+#seatRows, #seatCols, #seatColumns { transition:border-color .18s ease, box-shadow .18s ease; }
+#seatRows:focus,#seatCols:focus,#seatColumns:focus { outline:none; border-color:#0ea5e9; box-shadow:0 0 0 3px rgba(14,165,233,.15); }
+#seatingModal label { transition:none !important; }
+#seatingModal label:hover { background:transparent !important; box-shadow:none !important; transform:none !important; }
+#seatingPlan button, #seatingPlan [role="button"] { transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease; }
+#seatingPlan button:hover, #seatingPlan [role="button"]:hover { transform:translateY(-1px); box-shadow:0 5px 14px rgba(15,23,42,.14); }
+/* Course manager: no hover animation on static text; keep feedback on editable fields and controls. */
+#courseManagerModal p,#courseManagerModal h1,#courseManagerModal h2,#courseManagerModal h3,
+#courseManagerModal label,#courseManagerModal span:not(.course-status):not(.badge) { transition:none !important; }
+#courseManagerModal p:hover,#courseManagerModal h1:hover,#courseManagerModal h2:hover,
+#courseManagerModal h3:hover,#courseManagerModal label:hover,#courseManagerModal span:hover {
+  transform:none !important; box-shadow:none !important; filter:none !important;
+}
+#courseManagerModal input:hover,#courseManagerModal select:hover,#courseManagerModal textarea:hover,
+#courseManagerModal input:focus,#courseManagerModal select:focus,#courseManagerModal textarea:focus {
+  border-color:#8b5cf6; transition:border-color .18s ease,box-shadow .18s ease;
+}
+/* Restore/trash actions stay compact and icon-led. Preserve accessible labels via title/aria-label. */
+#deletedStudentsModal #deletedStudentsList button { transition:background-color .18s ease,box-shadow .18s ease,transform .18s ease; }
+#deletedStudentsModal #deletedStudentsList button:hover { filter:brightness(.95); box-shadow:0 4px 12px rgba(15,23,42,.13); transform:translateY(-1px); }
+@media (prefers-reduced-motion: reduce) { #randomPickerModal button,#btnStartTimer,#btnPauseTimer,#seatPlanModal button,#automaticGroupingModal button,#groupingModal button,#deletedStudentsModal button { transition:none !important; transform:none !important; } }
+/* Random Student Picker: compact, neutral inactive modes; selected mode lights up. */
+#randomPickerModal .rp-mode-panel > .grid.grid-cols-2:not(#rpRemoveActions) { display:flex !important; justify-content:center; align-items:center; gap:.55rem !important; }
+#randomPickerModal #rpRemoveActions.hidden { display:none !important; }
+#randomPickerModal #rpRemoveActions:not(.hidden) { display:grid; }
+#randomPickerModal .rp-mode-btn {
+  width:auto !important; min-width:0 !important; flex:0 1 145px !important;
+  padding:.42rem .6rem !important; border:1px solid #d1d5db !important;
+  border-radius:10px !important; background:#fff !important; color:#334155 !important;
+  box-shadow:0 1px 2px rgba(15,23,42,.05) !important; transform:none;
+}
+#randomPickerModal .rp-mode-btn:hover { background:#f1f5f9 !important; border-color:#94a3b8 !important; color:#0f172a !important; filter:none !important; transform:translateY(-1px) !important; box-shadow:0 4px 10px rgba(15,23,42,.10) !important; }
+#randomPickerModal .rp-mode-btn.is-active { background:linear-gradient(135deg,#fbbf24,#f97316) !important; color:#fff !important; border-color:#f59e0b !important; outline:2px solid rgba(245,158,11,.25) !important; outline-offset:1px; box-shadow:0 0 0 3px rgba(251,191,36,.16),0 5px 12px rgba(217,119,6,.22) !important; }
+#randomPickerModal #rpModeSaveBtn.is-active { background:linear-gradient(135deg,#38bdf8,#6366f1) !important; border-color:#6366f1 !important; box-shadow:0 0 0 3px rgba(99,102,241,.15),0 5px 12px rgba(79,70,229,.20) !important; }
+#randomPickerModal .rp-mode-btn.is-active:hover { filter:brightness(1.07) !important; }
+/* Seating plan desk/table tiles should visibly respond when hovered. */
+#seatingPlan .seat-card,#seatingPlan .seat-item,#seatingPlan [class*="seat"],#seatingPlan [class*="desk"],#seatingPlan [class*="table"] { transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background-color .18s ease; }
+#seatingPlan .seat-card:hover,#seatingPlan .seat-item:hover,#seatingPlan [class*="seat"]:hover,#seatingPlan [class*="desk"]:hover,#seatingPlan [class*="table"]:hover { transform:translateY(-2px); box-shadow:0 7px 16px rgba(15,23,42,.16); border-color:#38bdf8; }
+@media (max-width:420px) { #randomPickerModal .rp-mode-btn { flex-basis:0 !important; flex-grow:1 !important; padding:.42rem .35rem !important; font-size:.72rem !important; } }
 </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
@@ -2074,8 +2199,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
         <div class="flex flex-wrap items-start justify-between gap-3"><div><h2 id="wheelTitle" class="text-xl font-black text-slate-800">Vòng Quay May Mắn</h2></div><button id="wheelManageToggle" onclick="toggleWheelManager()" class="rounded-lg border px-3 py-2 text-sm font-bold">Quản lý phần thưởng</button></div>
         <div id="wheelManager" class="hidden mt-4 rounded-xl bg-slate-50 border p-4 space-y-3"><div class="grid grid-cols-1 sm:grid-cols-3 gap-2"><input id="wheelPrizeName" class="border rounded-lg px-3 py-2" placeholder="Tên phần thưởng"><input id="wheelPrizeWeight" type="number" min="0.1" max="100" step="0.1" value="1" class="border rounded-lg px-3 py-2" placeholder="Trọng số"><button onclick="addWheelPrize()" class="rounded-lg bg-indigo-600 text-white font-bold px-3 py-2">Thêm vào vòng quay</button></div><div id="wheelPrizeList" class="space-y-2"></div><span id="wheelWeightHelp" class="block text-xs text-slate-500">Trọng số là tỷ lệ tương đối; xác suất được chuẩn hóa.</span><div class="rounded-xl border bg-white p-3"><div class="flex flex-wrap items-center justify-between gap-3"><div class="flex items-center gap-2"><button id="wheelProbabilityToggle" type="button" onclick="toggleWheelProbabilities()" class="fx-lift rounded-lg border px-3 py-1.5 text-xs font-bold bg-white">Hiện xác suất</button></div><button onclick="clearWheelPrizes()" class="fx-lift ml-auto sm:ml-24 rounded-lg border border-rose-300 text-rose-700 bg-white px-3 py-2 text-sm font-bold">Xóa toàn bộ cấu hình</button></div><div id="wheelProbabilities" class="space-y-2 hidden mt-3"></div></div></div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center mt-5"><div class="flex flex-col items-center gap-3"><div class="relative w-full max-w-[420px] aspect-square"><canvas id="wheelCanvas" width="700" height="700" class="w-full h-full"></canvas><div class="absolute top-0 left-1/2 -translate-x-1/2 z-10 text-rose-600 text-4xl drop-shadow">▼</div></div><button id="wheelSpinBtn" onclick="spinLuckyWheel()" class="rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-black tracking-wide text-lg px-10 py-3 shadow-lg">QUAY</button><p id="wheelStatus" aria-live="polite" class="text-sm text-center text-slate-600">Sẵn sàng</p><div id="wheelResult" class="text-center text-xl font-black text-indigo-700 min-h-7"></div></div>
-        <div class="space-y-4"><div class="rounded-xl border p-4 space-y-3"><h3 id="wheelModeTitle" class="font-black">Chế độ quay</h3><div class="flex flex-wrap gap-3"><label class="flex items-center gap-2 text-sm"><input type="radio" name="wheelMode" value="free" checked onchange="renderWheelView()"> <span id="wheelFreeLabel">Quay tự do</span></label><label class="flex items-center gap-2 text-sm"><input type="radio" name="wheelMode" value="student" onchange="renderWheelView()"> <span id="wheelStudentLabel">Quay cho học sinh (dùng 1 lượt)</span></label></div><label id="wheelStudentPickerLabel" class="block text-sm font-semibold">Học sinh</label><select id="wheelStudentPicker" onchange="renderWheelView()" class="w-full border rounded-lg px-3 py-2"></select><label id="wheelClassFilterLabel" class="block text-sm font-semibold">Lọc theo lớp</label><select id="wheelClassFilter" onchange="renderWheelView()" class="w-full border rounded-lg px-3 py-2"></select><div id="wheelTurns" class="text-sm font-bold text-emerald-700"></div></div></div></div>
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.25fr)_minmax(320px,1fr)] gap-8 items-center mt-5"><div class="flex flex-col items-center gap-3"><div class="wheel-frame relative w-full max-w-[640px] aspect-square"><canvas id="wheelCanvas" width="700" height="700" class="w-full h-full" role="button" tabindex="0" aria-label="Spin the lucky wheel" title="Click the wheel to spin"></canvas><div class="absolute -top-3 left-1/2 -translate-x-1/2 z-10 text-rose-600 text-5xl drop-shadow-lg">▼</div></div><button id="wheelSpinBtn" onclick="spinLuckyWheel()" class="wheel-spin-btn disabled:opacity-50 text-white font-black tracking-wide text-lg px-10 py-3 shadow-lg">QUAY</button><p id="wheelStatus" aria-live="polite" class="text-sm text-center text-slate-600">Sẵn sàng</p><div id="wheelResult" class="text-center text-xl font-black text-indigo-700 min-h-7"></div></div>
+        <div class="space-y-4"><div class="wheel-mode-card rounded-xl border p-4 space-y-3"><h3 id="wheelModeTitle" class="font-black">Chế độ quay</h3><div class="flex flex-wrap gap-3"><label class="flex items-center gap-2 text-sm"><input type="radio" name="wheelMode" value="free" checked onchange="renderWheelView()"> <span id="wheelFreeLabel">Quay tự do</span></label><label class="flex items-center gap-2 text-sm"><input type="radio" name="wheelMode" value="student" onchange="renderWheelView()"> <span id="wheelStudentLabel">Quay cho học sinh (dùng 1 lượt)</span></label></div><label id="wheelStudentPickerLabel" class="block text-sm font-semibold">Học sinh</label><select id="wheelStudentPicker" onchange="renderWheelView()" class="w-full border rounded-lg px-3 py-2"></select><label id="wheelClassFilterLabel" class="block text-sm font-semibold">Lọc theo lớp</label><select id="wheelClassFilter" onchange="renderWheelView()" class="w-full border rounded-lg px-3 py-2"></select><div id="wheelTurns" class="text-sm font-bold text-emerald-700"></div></div></div></div>
       </section>
       <div id="wheelResultModal" class="fixed inset-0 z-[13000] hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4" onclick="if(event.target===this)closeWheelResultModal()"><div class="w-full max-w-md overflow-hidden rounded-3xl border border-white/70 bg-white shadow-2xl text-center"><div class="bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 px-6 py-5 text-white"><div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 text-3xl shadow-inner">🎉</div><h2 id="wheelResultModalTitle" class="text-2xl font-black">Chúc mừng!</h2></div><div class="px-6 py-5"><p id="wheelResultModalMessage" class="text-slate-600 mb-2">Bạn đã trúng</p><div id="wheelResultModalPrize" class="text-2xl font-black text-indigo-700 py-3"></div><button onclick="closeWheelResultModal()" id="wheelResultModalClose" class="mt-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg">Đóng</button></div></div></div>
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap justify-between gap-2 items-center mb-3"><h3 id="wheelHistoryTitle" class="font-black text-lg">Lịch sử quay</h3><button onclick="clearWheelHistoryView()" class="rounded-lg border px-3 py-2 text-xs font-bold">Xóa lịch sử hiển thị</button></div><div id="wheelHistory" class="space-y-2"></div></section>
@@ -2222,6 +2347,18 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 <div id="randomStudentName" class="text-xl font-black text-indigo-900" data-i18n="randomPrompt">Bấm nút để gọi!</div>
             </div>
             <div id="randomArena" class="rp-arena"></div>
+
+            <div class="rp-mode-panel mt-4 mb-3 text-left">
+                <div class="text-xs font-extrabold uppercase tracking-wide text-slate-500 mb-2" data-i18n="rpModeLabel">Chế độ gọi học sinh</div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" id="rpModeRemoveBtn" onclick="setRandomCallMode('remove')" class="rp-mode-btn rp-mode-remove" data-i18n="rpModeRemove">Gọi và xoá</button>
+                    <button type="button" id="rpModeSaveBtn" onclick="setRandomCallMode('save')" class="rp-mode-btn rp-mode-save" data-i18n="rpModeSave">Gọi và lưu</button>
+                </div>
+                <div id="rpRemoveActions" class="grid grid-cols-2 gap-2 mt-2 hidden">
+                    <button type="button" onclick="undoRandomRemoved()" class="rp-action-btn rp-undo" data-i18n="rpUndo">↩ Hoàn tác</button>
+                    <button type="button" onclick="resetRandomRemoved()" class="rp-action-btn rp-reset" data-i18n="rpReset">⟲ Đặt lại từ đầu</button>
+                </div>
+            </div>
 
             <div class="flex gap-2">
                 <button type="button" onclick="spinRandomStudent()" class="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-white font-black rounded-xl shadow transition text-sm flex items-center justify-center gap-2">
@@ -2679,6 +2816,12 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 modalRandomTitle: "Gọi Học Sinh Ngẫu Nhiên",
                 randomPrompt: "Bấm nút để gọi!",
                 btnSpin: "Quay Ngẫu Nhiên",
+                rpModeLabel: "Chế độ gọi học sinh",
+                rpModeRemove: "Gọi và xoá",
+                rpModeSave: "Gọi và lưu",
+                rpUndo: "↩ Hoàn tác",
+                rpReset: "⟲ Đặt lại từ đầu",
+                rpNoRemoved: "Không có học sinh nào cần hoàn tác.",
                 modalGroupTitle: "Tự Động Chia Nhóm",
                 lblGroupSize: "Số lượng học sinh mỗi nhóm:",
                 groupPrompt: "Vui lòng chọn kích thước nhóm ở trên để tiến hành chia nhóm.",
@@ -2754,7 +2897,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 lblNoSystemViolations: "Chưa có vi phạm nào trong danh mục đồng bộ.",
                 lblGroupTitlePrefix: "NHÓM",
                 lblStudentsSuffix: "học sinh",
-                btnUtilities: "Tiện ích", utilitiesTitle: "Tiện ích & Dữ liệu", menuRestoreStudents: "Khôi phục học sinh đã xóa", menuDangerZone: "Vùng nguy hiểm",
+                btnUtilities: "Tiện ích", utilitiesTitle: "Tiện ích & Dữ liệu", menuRestoreStudents: "Khôi phục", menuDangerZone: "Vùng nguy hiểm",
                 grpScores: "Sư phạm & Điểm số", grpClass: "Quản lý lớp", grpReward: "Tương tác & Thưởng",
                 classMenuTitle: "Tùy chọn lớp", classMenuEdit: "Sửa tên / Đổi màu lớp", classMenuAdd: "Thêm lớp mới", classMenuDelete: "Xóa lớp này", classOptionsTitle: "Tùy chọn lớp",
                 courseBadgeCurrent: "Khóa hiện tại:", courseBadgeArchived: "Đang xem khóa đã lưu trữ:", courseBadgeReadOnly: "Chỉ xem",
@@ -2827,6 +2970,12 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 modalRandomTitle: "Random Student Picker",
                 randomPrompt: "Click to pick a student!",
                 btnSpin: "Pick Randomly",
+                rpModeLabel: "Student calling mode",
+                rpModeRemove: "Call & Remove",
+                rpModeSave: "Call & Keep",
+                rpUndo: "↩ Undo",
+                rpReset: "⟲ Reset list",
+                rpNoRemoved: "There is no removed student to undo.",
                 modalGroupTitle: "Automatic Grouping",
                 lblGroupSize: "Students per group:",
                 groupPrompt: "Please select group size above to start grouping.",
@@ -2902,7 +3051,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 lblNoSystemViolations: "No system violations available.",
                 lblGroupTitlePrefix: "GROUP",
                 lblStudentsSuffix: "students",
-                btnUtilities: "Utilities", utilitiesTitle: "Utilities & Data", menuRestoreStudents: "Restore deleted students", menuDangerZone: "Danger zone",
+                btnUtilities: "Utilities", utilitiesTitle: "Utilities & Data", menuRestoreStudents: "Restore", menuDangerZone: "Danger zone",
                 grpScores: "Teaching & Scores", grpClass: "Class Management", grpReward: "Engagement & Rewards",
                 classMenuTitle: "Class options", classMenuEdit: "Rename / Recolor class", classMenuAdd: "Add new class", classMenuDelete: "Delete this class", classOptionsTitle: "Class options",
                 courseBadgeCurrent: "Current course:", courseBadgeArchived: "Viewing archived course:", courseBadgeReadOnly: "Read-only",
@@ -7624,10 +7773,47 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 
         /* --- QUAY NGẪU NHIÊN --- */
         let spinTimer = null;
+        let rpCallMode = 'save';
+        let rpRemovedStudentIds = [];
+        let rpLastRemovedId = null;
         function rpStudents() {
             const activeClass = appData.classes.find(c => c.id === appData.activeClassId);
-            return activeClass ? appData.students.filter(s => s.classId === activeClass.id) : [];
+            const students = activeClass ? appData.students.filter(s => s.classId === activeClass.id) : [];
+            return rpCallMode === 'remove' ? students.filter(s => !rpRemovedStudentIds.includes(String(s.id))) : students;
         }
+        function rpUpdateModeUI() {
+            const remove = rpCallMode === 'remove';
+            const rb = document.getElementById('rpModeRemoveBtn'), sb = document.getElementById('rpModeSaveBtn');
+            if (rb) rb.classList.toggle('is-active', remove);
+            if (sb) sb.classList.toggle('is-active', !remove);
+            const actions = document.getElementById('rpRemoveActions');
+            if (actions) actions.classList.toggle('hidden', !remove);
+        }
+        window.setRandomCallMode = function(mode) {
+            rpCallMode = mode === 'remove' ? 'remove' : 'save';
+            rpUpdateModeUI();
+            if (!spinTimer) {
+                const list = rpStudents();
+                rpRenderArena(list);
+                if (!list.length) {
+                    document.getElementById('randomStudentIcon').innerText = '🎉';
+                    document.getElementById('randomStudentName').innerText = appData.language === 'en' ? 'All students have been called!' : 'Đã gọi hết học sinh trong danh sách!';
+                }
+            }
+        };
+        window.undoRandomRemoved = function() {
+            if (!rpLastRemovedId) { alert(translations[appData.language || 'vi'].rpNoRemoved); return; }
+            rpRemovedStudentIds = rpRemovedStudentIds.filter(id => id !== rpLastRemovedId);
+            rpLastRemovedId = null;
+            rpRenderArena(rpStudents());
+        };
+        window.resetRandomRemoved = function() {
+            rpRemovedStudentIds = [];
+            rpLastRemovedId = null;
+            rpRenderArena(rpStudents());
+            document.getElementById('randomStudentIcon').innerText = '🎲';
+            document.getElementById('randomStudentName').innerText = translations[appData.language || 'vi'].randomPrompt;
+        };
         function rpRenderArena(list) {
             const arena = document.getElementById('randomArena');
             arena.classList.remove('done');
@@ -7657,6 +7843,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             area.classList.remove('spinning', 'winner');
             document.getElementById('randomStudentIcon').innerText = '🎲';
             document.getElementById('randomStudentName').innerText = translations[lang].randomPrompt;
+            rpUpdateModeUI();
             rpRenderArena(rpStudents());
             document.getElementById('randomPickerModal').classList.remove('hidden');
             document.getElementById('randomPickerModal').classList.add('flex');
@@ -7702,6 +7889,12 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                         arena.classList.add('done');
                         area.classList.add('winner');
                         rpConfetti();
+                        if (rpCallMode === 'remove') {
+                            const winnerId = String(list[winnerIdx].id);
+                            if (!rpRemovedStudentIds.includes(winnerId)) rpRemovedStudentIds.push(winnerId);
+                            rpLastRemovedId = winnerId;
+                            rpRenderArena(rpStudents());
+                        }
                         spinTimer = null;
                         return;
                     }
@@ -8389,7 +8582,7 @@ window.openStudentProfile=function(studentId){
             const expanded=teachingExpandedWeeks.has(w.id);
             const weekTone=weekPalette[((Math.max(1,Number(w.week)||weekIndex+1)-1)%weekPalette.length)];
             return `<section class="teaching-week-card rounded-xl overflow-hidden bg-white shadow-sm" style="border:2px solid ${weekTone[0]};${expanded?`box-shadow:0 0 0 2px ${weekTone[1]},0 3px 10px rgba(15,23,42,.08);`:''}">
-              <div class="border-b px-3 py-2.5 flex flex-wrap items-center justify-between gap-3" style="background:${weekTone[1]};border-color:${weekTone[0]}55">
+              <div class="teaching-week-head border-b px-3 py-2.5 flex flex-wrap items-center justify-between gap-3" onclick="teachingWeekHeadClick(event,'${w.id}')" style="background:${weekTone[1]};border-color:${weekTone[0]}55;cursor:pointer;--wk-c:${weekTone[0]};--wk-bg:${weekTone[1]}">
                 <div class="flex flex-wrap items-center gap-2 min-w-0">
                   <button type="button" onclick="toggleTeachingWeek('${w.id}')" class="font-black text-sm" style="color:${weekTone[2]}">${expanded?'▾':'▸'} ${moduleText('weekLabel')}</button>
                   <label data-no-hover class="text-xs text-slate-600">${moduleText('weekNumberLabel')} <input type="number" min="1" max="60" class="border rounded-md px-2 py-1 text-sm w-16" value="${Number(w.week)||1}" onchange="updateTeachingWeek('${w.id}','week',this.value)"></label>
@@ -8439,6 +8632,7 @@ window.openStudentProfile=function(studentId){
           if(l[key]===value)return; l[key]=value;
           saveData().then(ok=>{if(!ok)console.warn('Teaching content was not synced to Firebase.');});
         };
+        window.teachingWeekHeadClick=function(ev,id){if(ev.target.closest('button,input,textarea,select,label,a,[data-no-hover]'))return;toggleTeachingWeek(id);};
         window.toggleTeachingWeek=function(id){if(teachingExpandedWeeks.has(id))teachingExpandedWeeks.delete(id);else teachingExpandedWeeks.add(id);renderTeachingView();};
         window.toggleTeachingDay=function(weekId,date){const key=`${weekId}_${date}`;if(teachingCollapsedDays.has(key))teachingCollapsedDays.delete(key);else teachingCollapsedDays.add(key);renderTeachingView();};
         window.updateTeachingWeek=function(id,key,value){const plans=appData.teachingPlans[appData.courseManager.activeCourseId]||[];const w=plans.find(x=>x.id===id);if(!w)return;const backup=deepCopy(w);if(key==='week'){const n=Math.max(1,Math.min(60,parseInt(value)||1));const conflict=plans.find(x=>x.id!==id&&Number(x.year||w.year)===Number(w.year)&&Number(x.week)===n);if(conflict){alert(appData.language==='en'?'That week number is already in use for this year.':'Số tuần này đã được dùng trong năm đó.');renderTeachingView();return;}w.week=n;}else if(key==='startDate'){if(!value)return;w.startDate=mondayOfDate(value);w.endDate=datePlus(w.startDate,6);w.year=Number(w.startDate.slice(0,4));document.getElementById('teachingYear').value=String(w.year);}else w[key]=value;renderTeachingView();saveData().then(ok=>{if(!ok){Object.assign(w,backup);renderTeachingView();}});};
@@ -8465,6 +8659,8 @@ window.openStudentProfile=function(studentId){
         let wheelProbabilitiesVisible = false;
         window.toggleWheelProbabilities=function(){wheelProbabilitiesVisible=!wheelProbabilitiesVisible;const box=document.getElementById('wheelProbabilities'),btn=document.getElementById('wheelProbabilityToggle');if(box)box.classList.toggle('hidden',!wheelProbabilitiesVisible);if(btn)btn.textContent=wheelText(wheelProbabilitiesVisible?'Ẩn xác suất':'Hiện xác suất',wheelProbabilitiesVisible?'Hide probabilities':'Show probabilities');};
         window.closeWheelResultModal=function(){const m=document.getElementById('wheelResultModal');if(m){m.classList.add('hidden');m.classList.remove('flex');}};
+         document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.getElementById('wheelResultModal');if(m&&!m.classList.contains('hidden'))window.closeWheelResultModal();}});
+         const wheelCanvasEl=document.getElementById('wheelCanvas');if(wheelCanvasEl){wheelCanvasEl.addEventListener('click',()=>window.spinLuckyWheel());wheelCanvasEl.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();window.spinLuckyWheel();}});}
         function showWheelResultModal(prize,studentName){const en=appData.language==='en';document.getElementById('wheelResultModalTitle').textContent=en?'Congratulations!':'Chúc mừng!';document.getElementById('wheelResultModalMessage').textContent=en?(studentName?studentName+' won:':'You won:'):(studentName?studentName+' đã trúng:':'Bạn đã trúng:');document.getElementById('wheelResultModalPrize').textContent=prize;document.getElementById('wheelResultModalClose').textContent=en?'Close':'Đóng';const m=document.getElementById('wheelResultModal');m.classList.remove('hidden');m.classList.add('flex');}
 
         function ensureWheelData(){
@@ -8944,8 +9140,11 @@ window.openStudentProfile=function(studentId){
                 if (e.ctrlKey) return; // giữ nguyên zoom
                 const unit = e.deltaMode === 1 ? 32 : (e.deltaMode === 2 ? box.clientHeight : 1);
                 let dx = e.deltaX * unit, dy = e.deltaY * unit;
-                if (e.shiftKey && !dx) { dx = dy; dy = 0; }
                 const canY = box.scrollHeight > box.clientHeight, canX = box.scrollWidth > box.clientWidth;
+                // Over the score grid, ordinary mouse-wheel motion moves the wide table horizontally.
+                if (!e.shiftKey && !dx && canX) { dx = dy; dy = 0; }
+                if (e.shiftKey && !dx) { dx = dy; dy = 0; }
+                if (!canX) dy = e.deltaY * unit;
                 if (!canX && !canY) return;
                 box.scrollTop += dy; box.scrollLeft += dx;
                 e.preventDefault();
