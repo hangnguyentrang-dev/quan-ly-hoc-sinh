@@ -717,6 +717,11 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 .qs-namewrap > .rk-name,.qs-namewrap > .stage-name{min-width:0;margin-top:0}
 .qs-pres-btn{display:inline-flex;align-items:center;gap:.4rem;border-radius:.75rem;background:#0f172a;color:#fff;font-size:12px;font-weight:800;padding:.5rem 1rem;box-shadow:0 2px 8px rgba(15,23,42,.25)}
 .qs-pres-btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,23,42,.35);filter:brightness(1.18)}
+.gr-toggle-btn{display:inline-flex;align-items:center;gap:.4rem;border-radius:.75rem;background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;font-size:12px;font-weight:800;padding:.5rem 1rem;box-shadow:0 2px 8px rgba(249,115,22,.35);transition:transform .15s ease,box-shadow .15s ease,filter .15s ease}
+.gr-toggle-btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(249,115,22,.45);filter:brightness(1.1)}
+.gr-toggle-btn .gr-chev{font-size:10px;transition:transform .25s ease}
+.gr-toggle-btn.open{box-shadow:0 0 0 3px rgba(249,115,22,.3),0 4px 12px rgba(249,115,22,.4)}
+.gr-toggle-btn.open .gr-chev{transform:rotate(180deg)}
 .qs-pres-bar{display:none}
 #viewRankingContainer.qs-pres,#viewFinalExamContainer.qs-pres{position:fixed;inset:0;z-index:90;overflow:auto;padding:1rem 2rem 2rem;background:radial-gradient(ellipse at 10% 0%,rgba(129,140,248,.25),transparent 40%),radial-gradient(ellipse at 95% 10%,rgba(244,114,182,.18),transparent 35%),linear-gradient(135deg,#eef2ff,#f8fafc 55%,#fdf2f8)}
 .qs-pres .qs-pres-hide{display:none !important}
@@ -1612,22 +1617,43 @@ button.x-glyph:hover{transform:rotate(90deg) scale(1.15) !important}
 button:has(> :is(.fa-xmark,.fa-times,.fa-circle-xmark)):not(.tm-off):hover,button.x-glyph:hover{box-shadow:none !important;filter:none !important}
 button:has(> :is(.fa-xmark,.fa-times):only-child):not([class*="rounded"]):not([class*="bg-"]):not(.tm-off),button.x-glyph:not([class*="rounded"]):not([class*="bg-"]){display:inline-flex;align-items:center;justify-content:center;min-width:1.9rem;min-height:1.9rem;border-radius:9999px !important}
 button:has(> :is(.fa-xmark,.fa-times):only-child):not([class*="rounded"]):not([class*="bg-"]):not(.tm-off):hover,button.x-glyph:not([class*="rounded"]):not([class*="bg-"]):hover{background-color:rgba(100,116,139,.16)}
-/* ===== Leaderboard: ô điểm trung bình nổi bật (màu trung tính đậm, khác mọi màu xếp loại) ===== */
-.rk-avgpill{display:inline-block;min-width:3.2rem;padding:.22rem .7rem;border-radius:.8rem;background:#f8fafc;border:2px solid #334155;color:#0f172a;font-weight:900;box-shadow:0 0 0 3px rgba(51,65,85,.12)}
-html.mx-dark .rk-avgpill{background:#1e293b;border-color:#94a3b8;color:#f1f5f9;box-shadow:0 0 0 3px rgba(148,163,184,.15)}
+/* ===== Leaderboard: ô điểm trung bình theo màu xếp loại (viền + nền + hiệu ứng nhịp sáng và vệt sáng quét) ===== */
+.rk-avgpill{--c:100,116,139;--cd:71,85,105;position:relative;overflow:hidden;display:inline-block;min-width:3.4rem;padding:.24rem .8rem;border-radius:.85rem;font-weight:900;background:rgba(var(--c),.14);border:2px solid rgb(var(--c));color:rgb(var(--cd));animation:rkPillPulse 2.4s ease-in-out infinite}
+.rk-avgpill::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.7) 50%,transparent 65%);transform:translateX(-130%);animation:rkPillShine 3.4s ease-in-out infinite;pointer-events:none}
+@keyframes rkPillPulse{0%,100%{box-shadow:0 0 0 0 rgba(var(--c),.45)}50%{box-shadow:0 0 0 5px rgba(var(--c),0),0 0 12px 1px rgba(var(--c),.4)}}
+@keyframes rkPillShine{0%,55%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
+.rk-t-leg{--c:245,158,11;--cd:120,53,15;background:linear-gradient(110deg,#fef3c7,#fcd34d 55%,#f59e0b)}
+.rk-t-ex{--c:16,185,129;--cd:6,95,70}
+.rk-t-vg{--c:59,130,246;--cd:30,64,175}
+.rk-t-good{--c:234,179,8;--cd:133,77,14}
+.rk-t-pass{--c:139,92,246;--cd:91,33,182}
+.rk-t-try{--c:239,68,68;--cd:153,27,27}
+.rk-t-poor{--c:100,116,139;--cd:71,85,105}
+.rk-avgpill.rk-t-none{animation:none;background:transparent;border-style:dashed;border-color:#cbd5e1;color:#94a3b8}
+.rk-avgpill.rk-t-none::after{display:none}
+html.mx-dark .rk-avgpill{background:rgba(var(--c),.28);color:#f8fafc}
+html.mx-dark .rk-t-leg{background:linear-gradient(110deg,#78350f,#b45309 55%,#f59e0b);color:#fef3c7}
+html.mx-dark .rk-avgpill.rk-t-none{background:transparent;border-color:#475569;color:#64748b}
+@media (prefers-reduced-motion:reduce){.rk-avgpill,.rk-avgpill::after{animation:none !important}}
 /* ===== Huy hiệu xếp loại (animation nhẹ, mỗi loại một kiểu) ===== */
-.gb-wrap{display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem}
+.gb-wrap{display:inline-flex;align-items:center;justify-content:center;width:2.9rem;height:2.9rem}
 .gb{overflow:visible;transform-origin:50% 90%}
-.gb-ex{animation:gbGlow 2.6s ease-in-out infinite;transform-origin:50% 50%}
-.gb-ex .gb-spark{transform-box:fill-box;transform-origin:center;animation:gbTwinkle 2.6s ease-in-out infinite}
-.gb-leg{animation:gbGlowGold 2.2s ease-in-out infinite;transform-origin:50% 50%}
-.gb-leg .gb-spark{transform-box:fill-box;transform-origin:center;animation:gbTwinkle 2.2s ease-in-out infinite}
-.gb-vg{animation:gbFloat 2.8s ease-in-out infinite}
-.gb-good{animation:gbSway 3s ease-in-out infinite;transform-origin:50% 85%}
-.gb-pass{animation:gbBob 3s ease-in-out infinite}
-.gb-pass .gb-spark{transform-box:fill-box;transform-origin:center;animation:gbTwinkle 2.4s ease-in-out infinite}
-.gb-try{animation:gbBob 2.6s ease-in-out infinite}
-.gb-poor{animation:gbBob 3.6s ease-in-out infinite}
+/* ===== Sticker tài sản cấp 1–10 theo điểm trung bình tích lũy (animation nhẹ) ===== */
+.gb-stk.gb-anim .gb-spark{transform-box:fill-box;transform-origin:center;animation:gbTwinkle 2.4s ease-in-out infinite}
+.gb-l1{animation:gbBob 3.8s ease-in-out infinite}
+.gb-l2{animation:gbSway 3.4s ease-in-out infinite;transform-origin:50% 90%}
+.gb-l3{animation:gbBob 3.2s ease-in-out infinite}
+.gb-l4{animation:gbFloat 3s ease-in-out infinite}
+.gb-l5{animation:gbBob 2.8s ease-in-out infinite}
+.gb-l6{animation:gbFloat 2.8s ease-in-out infinite}
+.gb-l7{animation:gbFloat 2.6s ease-in-out infinite}
+.gb-l8{animation:gbGlowGold 2.6s ease-in-out infinite;transform-origin:50% 50%}
+.gb-l9{animation:gbSway 3.2s ease-in-out infinite;transform-origin:50% 90%}
+.gb-l10{animation:gbGlowGold 2.2s ease-in-out infinite;transform-origin:50% 50%}
+.gr-leg-break{flex-basis:100%;height:0}
+.gr-stk{display:inline-flex;flex-direction:column;align-items:center;gap:.05rem;cursor:default}
+.gr-stk small{font-size:.62rem;font-weight:800;color:#64748b;white-space:nowrap}
+html.mx-dark .gr-stk small{color:#94a3b8}
 @keyframes gbGlowGold{0%,100%{filter:drop-shadow(0 0 0 rgba(234,179,8,0))}50%{filter:drop-shadow(0 0 6px rgba(234,179,8,.95))}}
 @keyframes gbBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 @keyframes gbArrow{0%,100%{transform:translateY(1px);opacity:.55}50%{transform:translateY(-2px);opacity:1}}
@@ -1649,7 +1675,10 @@ html.mx-dark .gr-good{background:rgba(250,204,21,.22);color:#fde047}
 html.mx-dark .gr-pass{background:rgba(139,92,246,.28);color:#c4b5fd}
 html.mx-dark .gr-try{background:rgba(239,68,68,.24);color:#fca5a5}
 html.mx-dark .gr-poor{background:rgba(148,163,184,.24);color:#cbd5e1}
-#gradeLegend{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 1rem}
+#gradeLegend{display:none}
+#gradeLegend.open{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 1rem;padding:.75rem .9rem;border:1px solid #e2e8f0;border-radius:.9rem;background:#f8fafc;animation:grDrop .25s ease}
+html.mx-dark #gradeLegend.open{background:rgba(30,41,59,.6);border-color:#334155}
+@keyframes grDrop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .gr-leg-title{font-size:.72rem;font-weight:800;color:#64748b;margin-right:.25rem;text-transform:uppercase;letter-spacing:.03em}
 html.mx-dark .gr-leg-title{color:#94a3b8}
 .gr-chip{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .65rem;border-radius:9999px;font-size:.72rem;font-weight:800;cursor:default}
@@ -1911,6 +1940,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
 
     <div id="teacherGate" data-no-extra-i18n class="teacher-gate-background fixed inset-0 z-[10000] overflow-y-auto p-4 md:p-8">
       <div class="tg-deco" aria-hidden="true">
@@ -2232,6 +2262,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                         </p>
                     </div>
                     <div class="flex items-center gap-2 flex-wrap qs-pres-hide">
+                        <button type="button" id="gradeLegendToggle" onclick="toggleGradeLegend()" class="gr-toggle-btn" aria-expanded="false" aria-controls="gradeLegend"><i class="fa-solid fa-medal"></i><span data-i18n="gradeLegendBtn">Xếp Loại</span><i class="fa-solid fa-chevron-down gr-chev"></i></button>
                         <button type="button" onclick="qsPresent('ranking')" class="qs-pres-btn"><i class="fa-solid fa-display"></i><span data-qs="present">Trình chiếu</span></button>
                     </div>
                 </div>
@@ -2957,7 +2988,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 btnDeleteClass: "Xóa Lớp",
                 btnAddStudent: "Thêm Học Sinh",
                 rankingHeader: "Bảng Xếp Loại Thi Đua Tự Động",
-                rankingSub: "Điểm trung bình được cập nhật liên tục = (Tổng điểm tích lũy) / (Số buổi đã tổ chức)",
+                rankingSub: "Điểm trung bình được cập nhật liên tục = (Tổng điểm tích lũy) / (Số buổi đã tổ chức) — chỉ tính khi có từ 2 điểm trở lên",
+                gradeLegendBtn: "Xếp Loại",
                 thRank: "HẠNG",
                 thName: "HỌ VÀ TÊN HỌC SINH",
                 thBag: "TÚI QUÀ (PTS)",
@@ -3115,7 +3147,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 btnDeleteClass: "Delete Class",
                 btnAddStudent: "Add Student",
                 rankingHeader: "Automatic Student Leaderboard",
-                rankingSub: "Average Score = (Total Accumulated Score) / (Total Classes Held)",
+                rankingSub: "Average Score = (Total Accumulated Score) / (Total Classes Held) — calculated only once a student has 2 or more scores",
+                gradeLegendBtn: "Grades",
                 thRank: "RANK",
                 thName: "STUDENT FULL NAME",
                 thBag: "GIFT BAG (PTS)",
@@ -5350,6 +5383,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             violationContainer.classList.add('hidden');
             finalExamContainer.classList.add('hidden');
             studentsContainer.classList.add('hidden'); teachingContainer.classList.add('hidden'); wheelContainer.classList.add('hidden');
+            if (appData.activeViewMode !== 'ranking') grLegendSet(false);
 
             if (appData.activeViewMode === 'shop') {
                 btnShop.className = "px-3 py-1 rounded-md transition bg-white text-indigo-700 shadow";
@@ -6611,14 +6645,17 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 }
             }
 
-            const avg = count === 0 ? 0 : parseFloat((total / count).toFixed(1));
+            // Chỉ tính điểm trung bình khi đã có từ 2 điểm trở lên (học sinh mới / mới có 1 điểm chưa tính ĐTB)
+            const MIN_SCORES_FOR_AVG = 2;
+            const enough = count >= MIN_SCORES_FOR_AVG;
+            const avg = enough ? parseFloat((total / count).toFixed(1)) : 0;
             return { 
                 total: parseFloat(total.toFixed(1)), 
                 avg: avg, 
                 count: count, 
                 attendedCount: attendedCount, 
                 absentCount: absentCount, 
-                hasData: count > 0 
+                hasData: enough 
             };
         }
 
@@ -6639,37 +6676,61 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         }
         function gradeTierLabel(t) { return appData.language === 'en' ? t.en : t.vi; }
 
-        // Huy hiệu SVG riêng cho từng xếp loại, mỗi loại một kiểu animation nhẹ
+        // Sticker tài sản cấp 1–10 (không chữ/số): 1 bát sứt · 2 túi vải thủng · 3 hộp tiết kiệm · 4 ví da · 5 rương gỗ · 6 rương tím đá quý · 7 rương hoàng gia · 8 núi vàng · 9 ngai vàng · 10 cung điện vàng
+        const GRADE_STICKERS = [
+            null,
+            "<path d=\"M8 30h48c0 14-9 25-24 25S8 44 8 30z\" fill=\"#d1d5db\" stroke=\"#4b5563\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><ellipse cx=\"32\" cy=\"30\" rx=\"24\" ry=\"6.5\" fill=\"#9ca3af\" stroke=\"#4b5563\" stroke-width=\"1.6\"/><ellipse cx=\"32\" cy=\"29\" rx=\"5.6\" ry=\"4.9\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1.3\"/><ellipse cx=\"32\" cy=\"29\" rx=\"3.1\" ry=\"2.7\" fill=\"none\" stroke=\"#6b3b1d\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M21 36l5 6-3 5 4 6\" fill=\"none\" stroke=\"#4b5563\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M12 35c1 6 4 10 8 13\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.6\" stroke-linecap=\"round\" opacity=\".6\"/><path d=\"M5 56l9-3 2 5-8 2z\" fill=\"#d1d5db\" stroke=\"#4b5563\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><path d=\"M45 59l10-3 2 4-9 3z\" fill=\"#d1d5db\" stroke=\"#4b5563\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><path d=\"M37 59l4-1 1 3z\" fill=\"#d1d5db\" stroke=\"#4b5563\" stroke-width=\"1.1\" stroke-linejoin=\"round\"/>",
+            "<path d=\"M23 20C15 26 8 38 8 48c0 8 9 11 24 11s24-3 24-11c0-10-7-22-15-28z\" fill=\"#9a7650\" stroke=\"#4a3320\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M23 20l-4-10 8 4 5-7 5 7 8-4-4 10z\" fill=\"#9a7650\" stroke=\"#4a3320\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M21 21q11 6 22 0\" fill=\"none\" stroke=\"#e5c999\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><path d=\"M30 25l-4 8M34 25l4 7\" fill=\"none\" stroke=\"#e5c999\" stroke-width=\"2.2\" stroke-linecap=\"round\"/><ellipse cx=\"25\" cy=\"44\" rx=\"5\" ry=\"6.5\" fill=\"#2f2012\"/><path d=\"M18 40l3 1M18 47l3-1M32 40l-3 1M31 48l-3-1\" stroke=\"#e5c999\" stroke-width=\"1.3\" stroke-linecap=\"round\"/><rect x=\"37\" y=\"36\" width=\"10\" height=\"8\" rx=\"1\" fill=\"#6b4a2b\" stroke=\"#e5c999\" stroke-width=\"1\" stroke-dasharray=\"2 1.6\"/><ellipse cx=\"27\" cy=\"57\" rx=\"4.4\" ry=\"3.9\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1.3\"/><ellipse cx=\"27\" cy=\"57\" rx=\"2.4\" ry=\"2.1\" fill=\"none\" stroke=\"#6b3b1d\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"47\" cy=\"57\" rx=\"4.8\" ry=\"4.2\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1.3\"/><ellipse cx=\"47\" cy=\"57\" rx=\"2.6\" ry=\"2.3\" fill=\"none\" stroke=\"#6b3b1d\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"56\" cy=\"52\" rx=\"4.4\" ry=\"3.9\" fill=\"#e5e7eb\" stroke=\"#6b7280\" stroke-width=\"1.3\"/><ellipse cx=\"56\" cy=\"52\" rx=\"2.4\" ry=\"2.1\" fill=\"none\" stroke=\"#6b7280\" stroke-width=\".8\" opacity=\".6\"/>",
+            "<path d=\"M14 22l3-13h30l3 13z\" fill=\"#c8924f\" stroke=\"#5a3a1a\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><rect x=\"26\" y=\"13\" width=\"12\" height=\"3\" rx=\"1.5\" fill=\"#5a3a1a\"/><path d=\"M12 22h40l4 8H8z\" fill=\"#6e4521\" stroke=\"#5a3a1a\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><ellipse cx=\"20\" cy=\"26\" rx=\"4.6\" ry=\"4.0\" fill=\"#e5e7eb\" stroke=\"#6b7280\" stroke-width=\"1.3\"/><ellipse cx=\"20\" cy=\"26\" rx=\"2.5\" ry=\"2.2\" fill=\"none\" stroke=\"#6b7280\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"30\" cy=\"25\" rx=\"4.4\" ry=\"3.9\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1.3\"/><ellipse cx=\"30\" cy=\"25\" rx=\"2.4\" ry=\"2.1\" fill=\"none\" stroke=\"#6b3b1d\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"40\" cy=\"26\" rx=\"4.6\" ry=\"4.0\" fill=\"#e5e7eb\" stroke=\"#6b7280\" stroke-width=\"1.3\"/><ellipse cx=\"40\" cy=\"26\" rx=\"2.5\" ry=\"2.2\" fill=\"none\" stroke=\"#6b7280\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"48\" cy=\"27\" rx=\"3.6\" ry=\"3.2\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1.3\"/><ellipse cx=\"48\" cy=\"27\" rx=\"2.0\" ry=\"1.7\" fill=\"none\" stroke=\"#6b3b1d\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M8 30h48v25H8z\" fill=\"#b9824a\" stroke=\"#5a3a1a\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M8 38.5h48M8 47h48\" stroke=\"#8a5a2b\" stroke-width=\"1.4\"/><rect x=\"28\" y=\"35\" width=\"8\" height=\"10\" rx=\"1.6\" fill=\"#9ca3af\" stroke=\"#4b5563\" stroke-width=\"1.3\"/><circle cx=\"32\" cy=\"39\" r=\"1.4\" fill=\"#374151\"/><circle cx=\"12\" cy=\"34\" r=\"1\" fill=\"#5a3a1a\"/><circle cx=\"52\" cy=\"34\" r=\"1\" fill=\"#5a3a1a\"/>",
+            "<rect x=\"27\" y=\"5\" width=\"24\" height=\"9\" rx=\"1.5\" fill=\"#86c474\" stroke=\"#3b6b2b\" stroke-width=\"1.3\"/><rect x=\"24\" y=\"10\" width=\"30\" height=\"32\" rx=\"4\" fill=\"#a8562e\" stroke=\"#4a2410\" stroke-width=\"1.6\"/><path d=\"M24 22h30v16q0 4-4 4H28q-4 0-4-4z\" fill=\"#8e4521\" stroke=\"#4a2410\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><path d=\"M28 15h22\" stroke=\"#e0a070\" stroke-width=\"1.2\" stroke-dasharray=\"2 2\"/><circle cx=\"49\" cy=\"30\" r=\"2.8\" fill=\"#f2c94c\" stroke=\"#8a6414\" stroke-width=\"1.2\"/><rect x=\"5\" y=\"53.4\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#d1d5db\" stroke=\"#6b7280\" stroke-width=\"1\"/><rect x=\"5\" y=\"49.8\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#d1d5db\" stroke=\"#6b7280\" stroke-width=\"1\"/><rect x=\"5\" y=\"46.2\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#d1d5db\" stroke=\"#6b7280\" stroke-width=\"1\"/><rect x=\"5\" y=\"42.6\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#d1d5db\" stroke=\"#6b7280\" stroke-width=\"1\"/><rect x=\"15\" y=\"53.4\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#f5c542\" stroke=\"#a16207\" stroke-width=\"1\"/><rect x=\"15\" y=\"49.8\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#f5c542\" stroke=\"#a16207\" stroke-width=\"1\"/><rect x=\"15\" y=\"46.2\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#f5c542\" stroke=\"#a16207\" stroke-width=\"1\"/><rect x=\"15\" y=\"42.6\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#f5c542\" stroke=\"#a16207\" stroke-width=\"1\"/><rect x=\"15\" y=\"39\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#f5c542\" stroke=\"#a16207\" stroke-width=\"1\"/><rect x=\"15\" y=\"35.4\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#f5c542\" stroke=\"#a16207\" stroke-width=\"1\"/><rect x=\"25\" y=\"53.4\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1\"/><rect x=\"25\" y=\"49.8\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1\"/><rect x=\"25\" y=\"46.2\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1\"/><path d=\"M33 68l4 -10h16l4 10z\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/>",
+            "<path d=\"M9 30V20C9 11 18 7 32 7s23 4 23 13v10z\" fill=\"#7a4a1f\" stroke=\"#3b2410\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M13 29V21c0-6 8-9 19-9s19 3 19 9v8z\" fill=\"#5a3512\"/><path d=\"M10 33c1-10 8-14 22-14s21 4 22 14z\" fill=\"#fbbf24\" stroke=\"#b45309\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><ellipse cx=\"16\" cy=\"29\" rx=\"3.2\" ry=\"2.8\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"16\" cy=\"29\" rx=\"1.8\" ry=\"1.5\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"24\" cy=\"26\" rx=\"3.2\" ry=\"2.8\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"24\" cy=\"26\" rx=\"1.8\" ry=\"1.5\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"40\" cy=\"26\" rx=\"3.2\" ry=\"2.8\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"40\" cy=\"26\" rx=\"1.8\" ry=\"1.5\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"48\" cy=\"29\" rx=\"3.2\" ry=\"2.8\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"48\" cy=\"29\" rx=\"1.8\" ry=\"1.5\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"32\" cy=\"23\" rx=\"3.2\" ry=\"2.8\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"32\" cy=\"23\" rx=\"1.8\" ry=\"1.5\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M26 33l3.6 -9h12.8l3.6 9z\" fill=\"#fcd34d\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M13 36l2.4000000000000004 -6h10.2l2.4000000000000004 6z\" fill=\"#fde68a\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><rect x=\"8\" y=\"30\" width=\"48\" height=\"25\" rx=\"3\" fill=\"#8b5a2b\" stroke=\"#3b2410\" stroke-width=\"1.6\"/><path d=\"M8 42h48\" stroke=\"#3b2410\" stroke-width=\"1.2\" opacity=\".5\"/><rect x=\"12\" y=\"30\" width=\"6\" height=\"25\" fill=\"#9ca3af\" stroke=\"#4b5563\" stroke-width=\"1.2\"/><rect x=\"46\" y=\"30\" width=\"6\" height=\"25\" fill=\"#9ca3af\" stroke=\"#4b5563\" stroke-width=\"1.2\"/><rect x=\"27\" y=\"36\" width=\"10\" height=\"11\" rx=\"2\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\"1.3\"/><circle cx=\"32\" cy=\"40\" r=\"1.7\" fill=\"#78350f\"/><rect x=\"31.2\" y=\"40.5\" width=\"1.6\" height=\"4.5\" fill=\"#78350f\"/><ellipse cx=\"10\" cy=\"59\" rx=\"3.6\" ry=\"3.2\" fill=\"#fbbf24\" stroke=\"#b45309\" stroke-width=\"1.3\"/><ellipse cx=\"10\" cy=\"59\" rx=\"2.0\" ry=\"1.7\" fill=\"none\" stroke=\"#b45309\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"55\" cy=\"59\" rx=\"3.6\" ry=\"3.2\" fill=\"#fbbf24\" stroke=\"#b45309\" stroke-width=\"1.3\"/><ellipse cx=\"55\" cy=\"59\" rx=\"2.0\" ry=\"1.7\" fill=\"none\" stroke=\"#b45309\" stroke-width=\".8\" opacity=\".6\"/>",
+            "<path d=\"M9 30V20C9 11 18 7 32 7s23 4 23 13v10z\" fill=\"#5b21b6\" stroke=\"#2e1065\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M13 29V21c0-6 8-9 19-9s19 3 19 9v8z\" fill=\"#3b0f86\"/><path d=\"M10 33c1-10 8-14 22-14s21 4 22 14z\" fill=\"#fbbf24\" stroke=\"#b45309\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><path d=\"M25 33l3.6 -9h14.8l3.6 9z\" fill=\"#fcd34d\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M13 37l2.8000000000000003 -7h10.399999999999999l2.8000000000000003 7z\" fill=\"#e5e7eb\" stroke=\"#6b7280\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M40 37l2.8000000000000003 -7h8.399999999999999l2.8000000000000003 7z\" fill=\"#e5e7eb\" stroke=\"#6b7280\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M9 30V20C9 11 18 7 32 7s23 4 23 13\" fill=\"none\" stroke=\"#f59e0b\" stroke-width=\"2.2\"/><rect x=\"8\" y=\"30\" width=\"48\" height=\"25\" rx=\"3\" fill=\"#6d28d9\" stroke=\"#2e1065\" stroke-width=\"1.6\"/><path d=\"M8 42h48\" stroke=\"#2e1065\" stroke-width=\"1.2\" opacity=\".5\"/><rect x=\"12\" y=\"30\" width=\"6\" height=\"25\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.2\"/><rect x=\"46\" y=\"30\" width=\"6\" height=\"25\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.2\"/><rect x=\"27\" y=\"36\" width=\"10\" height=\"11\" rx=\"2\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\"1.3\"/><circle cx=\"32\" cy=\"40\" r=\"1.7\" fill=\"#78350f\"/><rect x=\"31.2\" y=\"40.5\" width=\"1.6\" height=\"4.5\" fill=\"#78350f\"/><path d=\"M6.6 55.46l2.2 -2.8600000000000003h4.4l2.2 2.8600000000000003-4.4 5.940000000000001z\" fill=\"#38bdf8\" stroke=\"#0369a1\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M6.6 55.46h8.8\" stroke=\"#fff\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M18.4 57.74l1.8 -2.3400000000000003h3.6l1.8 2.3400000000000003-3.6 4.86z\" fill=\"#ef4444\" stroke=\"#7f1d1d\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M18.4 57.74h7.2\" stroke=\"#fff\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M48.6 55.46l2.2 -2.8600000000000003h4.4l2.2 2.8600000000000003-4.4 5.940000000000001z\" fill=\"#22c55e\" stroke=\"#166534\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M48.6 55.46h8.8\" stroke=\"#fff\" stroke-width=\".8\" opacity=\".6\"/>",
+            "<path d=\"M3 36h12c0 8-3 11-6 11v7h5v3H4v-3h5v-7c-3 0-6-3-6-11z\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><path d=\"M5.5 38c0 4 1 6 2.5 7\" stroke=\"#fff\" stroke-width=\"1.2\" opacity=\".7\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M49 36h12c0 8-3 11-6 11v7h5v3H50v-3h5v-7c-3 0-6-3-6-11z\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><path d=\"M51.5 38c0 4 1 6 2.5 7\" stroke=\"#fff\" stroke-width=\"1.2\" opacity=\".7\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M15 34V29c0-8 7-12 17-12s17 4 17 12v5z\" fill=\"#be123c\" stroke=\"#4c0519\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><rect x=\"15\" y=\"33\" width=\"34\" height=\"20\" rx=\"2.5\" fill=\"#9f1239\" stroke=\"#4c0519\" stroke-width=\"1.6\"/><rect x=\"19\" y=\"21\" width=\"5\" height=\"32\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.1\"/><rect x=\"40\" y=\"21\" width=\"5\" height=\"32\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.1\"/><rect x=\"15\" y=\"31\" width=\"34\" height=\"4\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\"1.1\"/><rect x=\"28.5\" y=\"31\" width=\"7\" height=\"9\" rx=\"1.2\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.2\"/><circle cx=\"32\" cy=\"35.5\" r=\"1.8\" fill=\"#ef4444\"/><path d=\"M26.4 19l-1.68 -7.699999999999999 4.76 3.36 2.52 -6.16 2.52 6.16 4.76 -3.36 -1.68 7.699999999999999z\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><circle cx=\"27\" cy=\"14\" r=\"1.2\" fill=\"#38bdf8\"/><circle cx=\"32\" cy=\"11\" r=\"1.3\" fill=\"#ef4444\"/><circle cx=\"37\" cy=\"14\" r=\"1.2\" fill=\"#22c55e\"/><circle cx=\"16.0\" cy=\"54.0\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"20.0\" cy=\"56.8\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"24.0\" cy=\"58.9\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"28.0\" cy=\"60.1\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"32.0\" cy=\"60.5\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"36.0\" cy=\"60.1\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"40.0\" cy=\"58.9\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"44.0\" cy=\"56.8\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"48.0\" cy=\"54.0\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><path class=\"gb-spark\" d=\"M57 6v8M53 10h8\" stroke=\"#fde047\" stroke-width=\"1.8\" stroke-linecap=\"round\"/>",
+            "<path d=\"M3 58C8 44 17 38 24 33c3-8 5-13 8-16 3 3 5 8 8 16 7 5 16 11 21 25z\" fill=\"#fbbf24\" stroke=\"#b45309\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><ellipse cx=\"32\" cy=\"28\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"32\" cy=\"28\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"26\" cy=\"37\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"26\" cy=\"37\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"38\" cy=\"36\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"38\" cy=\"36\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"20\" cy=\"45\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"20\" cy=\"45\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"32\" cy=\"43\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"32\" cy=\"43\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"44\" cy=\"45\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"44\" cy=\"45\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"14\" cy=\"53\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"14\" cy=\"53\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"26\" cy=\"52\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"26\" cy=\"52\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"40\" cy=\"52\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"40\" cy=\"52\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"50\" cy=\"53\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"50\" cy=\"53\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><rect x=\"5\" y=\"45\" width=\"17\" height=\"11\" rx=\"1.5\" fill=\"#6b7280\" stroke=\"#374151\" stroke-width=\"1.4\"/><path d=\"M5 45v-3c0-3 3-5 8.5-5s8.5 2 8.5 5v3z\" fill=\"#9ca3af\" stroke=\"#374151\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><rect x=\"11\" y=\"46\" width=\"4\" height=\"5\" rx=\"1\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\".9\"/><rect x=\"42\" y=\"40\" width=\"17\" height=\"13\" rx=\"1.5\" fill=\"#8b5a2b\" stroke=\"#3b2410\" stroke-width=\"1.4\"/><path d=\"M42 40v-3c0-3 3-5 8.5-5s8.5 2 8.5 5v3z\" fill=\"#a9743a\" stroke=\"#3b2410\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><rect x=\"48\" y=\"41\" width=\"5\" height=\"6\" rx=\"1\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\".9\"/><path d=\"M22 67l2.8000000000000003 -7h10.399999999999999l2.8000000000000003 7z\" fill=\"#fcd34d\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M36 67l2.8000000000000003 -7h10.399999999999999l2.8000000000000003 7z\" fill=\"#fcd34d\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M28 59l2.4000000000000004 -6h9.2l2.4000000000000004 6z\" fill=\"#fde68a\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M25 5h14l5 6-12 11-12-11z\" fill=\"#67e8f9\" stroke=\"#0e7490\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><path d=\"M20 11h24M25 5l3 6 4 11 4-11 3-6M28 11h8\" fill=\"none\" stroke=\"#e0f2fe\" stroke-width=\"1\" opacity=\".85\" stroke-linejoin=\"round\"/><path class=\"gb-spark\" d=\"M53 5v8M49 9h8\" stroke=\"#fbbf24\" stroke-width=\"1.8\" stroke-linecap=\"round\"/>",
+            "<path d=\"M19 46V17C19 9 24 5 32 5s13 4 13 12v29z\" fill=\"#dc2626\" stroke=\"#7f1d1d\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M23 44V18c0-5 3.5-8 9-8s9 3 9 8v26\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"2\"/><circle cx=\"32\" cy=\"4.5\" r=\"2.6\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\"1.2\"/><rect x=\"15\" y=\"41\" width=\"34\" height=\"10\" rx=\"3\" fill=\"#b91c1c\" stroke=\"#7f1d1d\" stroke-width=\"1.5\"/><rect x=\"9\" y=\"34\" width=\"9\" height=\"20\" rx=\"3\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.5\"/><rect x=\"46\" y=\"34\" width=\"9\" height=\"20\" rx=\"3\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.5\"/><rect x=\"12\" y=\"53\" width=\"6\" height=\"7\" rx=\"1.2\" fill=\"#d97706\" stroke=\"#92400e\" stroke-width=\"1.2\"/><rect x=\"46\" y=\"53\" width=\"6\" height=\"7\" rx=\"1.2\" fill=\"#d97706\" stroke=\"#92400e\" stroke-width=\"1.2\"/><path d=\"M25.2 42l-2.04 -9.35 5.779999999999999 4.08 3.06 -7.48 3.06 7.48 5.779999999999999 -4.08 -2.04 9.35z\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><circle cx=\"32\" cy=\"36.6\" r=\"1.4\" fill=\"#ef4444\"/><path d=\"M59 24v35\" stroke=\"#d97706\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><ellipse cx=\"59\" cy=\"26\" rx=\"3.8\" ry=\"1.7\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\"1\"/><circle cx=\"59\" cy=\"19\" r=\"4.4\" fill=\"#ef4444\" stroke=\"#7f1d1d\" stroke-width=\"1.3\"/><circle cx=\"57.6\" cy=\"17.6\" r=\"1.2\" fill=\"#fff\" opacity=\".7\"/><ellipse cx=\"5\" cy=\"59\" rx=\"3.6\" ry=\"3.2\" fill=\"#fbbf24\" stroke=\"#b45309\" stroke-width=\"1.3\"/><ellipse cx=\"5\" cy=\"59\" rx=\"2.0\" ry=\"1.7\" fill=\"none\" stroke=\"#b45309\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M9 58.95l1.5 -1.9500000000000002h3l1.5 1.9500000000000002-3 4.050000000000001z\" fill=\"#38bdf8\" stroke=\"#0369a1\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M9 58.95h6\" stroke=\"#fff\" stroke-width=\".8\" opacity=\".6\"/><path class=\"gb-spark\" d=\"M6 8v8M2 12h8\" stroke=\"#fde047\" stroke-width=\"1.8\" stroke-linecap=\"round\"/>",
+            "<ellipse cx=\"32\" cy=\"38\" rx=\"30\" ry=\"24\" fill=\"#fde047\" opacity=\".28\"/><ellipse cx=\"32\" cy=\"38\" rx=\"30\" ry=\"24\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"1.6\" opacity=\".8\"/><rect x=\"9\" y=\"38\" width=\"10\" height=\"20\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.4\"/><path d=\"M7 39l7-14 7 14z\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><rect x=\"45\" y=\"38\" width=\"10\" height=\"20\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.4\"/><path d=\"M43 39l7-14 7 14z\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><rect x=\"17\" y=\"40\" width=\"30\" height=\"18\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.4\"/><rect x=\"26\" y=\"24\" width=\"12\" height=\"17\" fill=\"#fde68a\" stroke=\"#92400e\" stroke-width=\"1.4\"/><path d=\"M24 25l8-14 8 14z\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><path d=\"M27.6 11l-1.32 -6.050000000000001 3.74 2.64 1.9800000000000002 -4.840000000000001 1.9800000000000002 4.840000000000001 3.74 -2.64 -1.32 6.050000000000001z\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><path d=\"M27 58V50a5 5 0 0 1 10 0v8z\" fill=\"#92400e\"/><rect x=\"12\" y=\"44\" width=\"4\" height=\"7\" rx=\"2\" fill=\"#92400e\"/><rect x=\"48\" y=\"44\" width=\"4\" height=\"7\" rx=\"2\" fill=\"#92400e\"/><rect x=\"29.5\" y=\"29\" width=\"5\" height=\"7\" rx=\"2.5\" fill=\"#92400e\"/><path d=\"M18.8 46.88l1.6 -2.08h3.2l1.6 2.08-3.2 4.32z\" fill=\"#67e8f9\" stroke=\"#0e7490\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M18.8 46.88h6.4\" stroke=\"#fff\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M38.8 46.88l1.6 -2.08h3.2l1.6 2.08-3.2 4.32z\" fill=\"#67e8f9\" stroke=\"#0e7490\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M38.8 46.88h6.4\" stroke=\"#fff\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M1 68l2.8000000000000003 -7h9.399999999999999l2.8000000000000003 7z\" fill=\"#fcd34d\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M48 68l2.8000000000000003 -7h9.399999999999999l2.8000000000000003 7z\" fill=\"#fcd34d\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M23 61l2-3h14l2 3z\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path class=\"gb-spark\" d=\"M8 8v8M4 12h8\" stroke=\"#fde047\" stroke-width=\"1.8\" stroke-linecap=\"round\"/><path class=\"gb-spark\" d=\"M57 12v8M53 16h8\" stroke=\"#fde047\" stroke-width=\"1.8\" stroke-linecap=\"round\"/>"
+        ];
+        // Cấp sticker = phần nguyên của điểm trung bình tích lũy (0.x → chưa có sticker, 10.0 → cấp 10)
+        function gradeStickerLevel(avg) {
+            const a = Number(avg) || 0;
+            return Math.max(0, Math.min(10, Math.floor(a + 1e-9)));
+        }
+        function gradeStickerSvg(level, animate, size) {
+            const px = size || 44;
+            const cls = 'gb gb-stk' + (animate ? ' gb-anim gb-l' + level : '');
+            return `<svg class="${cls}" viewBox="-6 -6 76 76" width="${px}" height="${px}" aria-hidden="true"><g filter="url(#stkOutline)">${GRADE_STICKERS[level]}</g></svg>`;
+        }
         function gradeBadgeSvg(avg, hasData) {
-            const wrap = (cls, inner, label) => `<span class="gb-wrap" role="img" aria-label="${label}"><svg class="gb ${cls}" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">${inner}</svg></span>`;
-            if (!hasData) return wrap('gb-none', '<circle cx="16" cy="16" r="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="3 3"/><path d="M12 16h8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>', 'no data');
-            const t = gradeTierOf(avg);
-            const label = t.en;
-            // Thường dân (nón rơm) – Kém: xám, Cần cố gắng: đỏ (thêm mũi tên đi lên)
-            const commoner = (cls, hat, brim, stroke, extra) => wrap(cls, `<ellipse cx="16" cy="22" rx="13" ry="4.5" fill="${brim}" stroke="${stroke}" stroke-width="1.6"/><path d="M8 21c0-8 4-14 8-14s8 6 8 14z" fill="${hat}" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.6 17.5h14.8" stroke="${stroke}" stroke-width="1.8"/><path d="M12 12c1-2 2.4-3.4 4-3.8" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>${extra || ''}`, label);
-            switch (t.key) {
-                // Vua – vương miện lớn có thánh giá, vàng kim
-                case 'leg': return wrap('gb-leg', '<path d="M16 .8v5.2M13.6 3h4.8" stroke="#a16207" stroke-width="1.8" stroke-linecap="round"/><path d="M4 25L3 11l7 6 6-11 6 11 7-6-1 14z" fill="#fbbf24" stroke="#a16207" stroke-width="1.6" stroke-linejoin="round"/><rect x="4" y="25" width="24" height="4" rx="1.5" fill="#f59e0b" stroke="#a16207" stroke-width="1.4"/><circle cx="16" cy="19" r="2" fill="#ef4444" stroke="#7f1d1d" stroke-width=".8"/><circle cx="9" cy="21" r="1.2" fill="#38bdf8"/><circle cx="23" cy="21" r="1.2" fill="#34d399"/><path d="M8 15l2 2" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".85"/><path class="gb-spark" d="M28 4v5M25.5 6.5h5" stroke="#fde047" stroke-width="1.6" stroke-linecap="round"/>', label);
-                // Công tước – vành miện lá dâu, xanh lá
-                case 'ex': return wrap('gb-ex', '<path d="M16 6c3 3 4 7 4 15h-8c0-8 1-12 4-15z" fill="#6ee7b7" stroke="#047857" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 11c3 2 5 6 5 10H5c0-4 0-7 2-10z" fill="#6ee7b7" stroke="#047857" stroke-width="1.5" stroke-linejoin="round"/><path d="M25 11c-3 2-5 6-5 10h7c0-4 0-7-2-10z" fill="#6ee7b7" stroke="#047857" stroke-width="1.5" stroke-linejoin="round"/><rect x="4" y="21" width="24" height="6" rx="1.8" fill="#10b981" stroke="#047857" stroke-width="1.5"/><circle cx="16" cy="24" r="1.8" fill="#fff" stroke="#047857" stroke-width=".8"/><circle cx="16" cy="5.2" r="1.3" fill="#fff" stroke="#047857" stroke-width=".8"/><circle cx="7" cy="10" r="1.3" fill="#fff" stroke="#047857" stroke-width=".8"/><circle cx="25" cy="10" r="1.3" fill="#fff" stroke="#047857" stroke-width=".8"/><path class="gb-spark" d="M28 2v5M25.5 4.5h5" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round"/>', label);
-                // Quý tộc – huy hiệu gia tộc, xanh dương
-                case 'vg': return wrap('gb-vg', '<path d="M16 3l11 4v8c0 7-5 11-11 14C10 26 5 22 5 15V7z" fill="#60a5fa" stroke="#1d4ed8" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 9.5l1.9 3.9 4.3.6-3.1 3 .8 4.2-3.9-2-3.9 2 .8-4.2-3.1-3 4.3-.6z" fill="#fde047" stroke="#a16207" stroke-width=".9" stroke-linejoin="round"/>', label);
-                // Thượng lưu – mũ chóp cao, vàng
-                case 'good': return wrap('gb-good', '<ellipse cx="16" cy="24" rx="13" ry="3.6" fill="#eab308" stroke="#a16207" stroke-width="1.6"/><path d="M9 24V8c0-1.8 3-3.2 7-3.2s7 1.4 7 3.2v16z" fill="#facc15" stroke="#a16207" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 19h14" stroke="#a16207" stroke-width="3.2"/><rect x="14" y="17.2" width="4" height="3.6" rx=".8" fill="#fef9c3" stroke="#a16207" stroke-width=".9"/><path d="M12.5 9.5v6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>', label);
-                // Tiểu thương – túi tiền có đồng xu, tím
-                case 'pass': return wrap('gb-pass', '<path d="M11 4.5h10l-2.5 4.5h-5z" fill="#a78bfa" stroke="#6d28d9" stroke-width="1.5" stroke-linejoin="round"/><path d="M13.5 9C7 12 4.5 17 4.5 22c0 4 4.5 6 11.5 6s11.5-2 11.5-6c0-5-2.5-10-9-13z" fill="#c4b5fd" stroke="#6d28d9" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 9.4h6" stroke="#6d28d9" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="20" r="4.6" fill="#fde047" stroke="#a16207" stroke-width="1.2"/><path d="M16 17.4v5.2" stroke="#a16207" stroke-width="1.4" stroke-linecap="round"/><path class="gb-spark" d="M27 3v5M24.5 5.5h5" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round"/>', label);
-                // Thường dân (cần cố gắng) – nón rơm đỏ
-                case 'try': return commoner('gb-try', '#fca5a5', '#f87171', '#b91c1c');
-                // Ăn xin (kém) – bát xin ăn sứt mẻ với một đồng xu lẻ, xám
-                default: return wrap('gb-poor', '<circle cx="16" cy="9.5" r="4.2" fill="#e2e8f0" stroke="#475569" stroke-width="1.3"/><path d="M16 7.4v4.2" stroke="#475569" stroke-width="1.3" stroke-linecap="round"/><path d="M3.5 15.5h25c0 7.5-5.2 12.5-12.5 12.5S3.5 23 3.5 15.5z" fill="#cbd5e1" stroke="#475569" stroke-width="1.7" stroke-linejoin="round"/><ellipse cx="16" cy="15.5" rx="12.5" ry="2.6" fill="#94a3b8" stroke="#475569" stroke-width="1.5"/><path d="M11 21l2.2 2.2-1.6 2M21.5 20.5l-1.6 3" fill="none" stroke="#475569" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 17.6c.8 3 2.4 5 4.6 6.4" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity=".6"/>', label);
-            }
+            const en = appData.language === 'en';
+            const lv = hasData ? gradeStickerLevel(avg) : 0;
+            if (lv < 1) return '<span class="gb-wrap" aria-hidden="true"></span>';
+            return `<span class="gb-wrap" role="img" aria-label="${en ? 'Level' : 'Cấp'} ${lv}">${gradeStickerSvg(lv, true)}</span>`;
         }
 
         function getGradeRankBadge(avg, hasData) {
-            if (!hasData) return { label: (appData.language === 'en' ? 'No Data' : 'Chưa học'), color: 'bg-slate-100 text-slate-500' };
+            if (!hasData) return { label: (appData.language === 'en' ? 'Not enough scores' : 'Chưa đủ điểm'), color: 'bg-slate-100 text-slate-500' };
             const t = gradeTierOf(avg);
             return { label: gradeTierLabel(t), color: t.cls };
         }
+
+        // Ô điểm trung bình ở Bảng xếp loại: màu + hiệu ứng theo bậc xếp loại ("--" khi chưa đủ 2 điểm)
+        function rankAvgPillHtml(id, st) {
+            if (!st.hasData) return '<span class="rk-avgpill rk-t-none">--</span>';
+            const t = gradeTierOf(st.avg);
+            return `<span class="rk-avgpill rk-t-${t.key}"><span data-cu="rkt:${id}:a" data-to="${st.avg}" data-dec="1" data-final="${st.avg}">${st.avg}</span></span>`;
+        }
+
+        // Nút "Xếp Loại": mở/đóng khung thang xếp loại + cấp sticker (luôn đóng mặc định)
+        function grLegendSet(open) {
+            const box = document.getElementById('gradeLegend'), btn = document.getElementById('gradeLegendToggle');
+            if (box) box.classList.toggle('open', !!open);
+            if (btn) { btn.classList.toggle('open', !!open); btn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+        }
+        function toggleGradeLegend() {
+            const box = document.getElementById('gradeLegend');
+            grLegendSet(!(box && box.classList.contains('open')));
+        }
+        window.toggleGradeLegend = toggleGradeLegend;
 
         // Chú thích thang xếp loại (hiển thị ở tab Bảng xếp loại, đồng bộ Việt/Anh)
         function renderGradeLegend() {
@@ -6679,7 +6740,13 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             box.innerHTML = `<span class="gr-leg-title">${en ? 'Grade scale' : 'Thang xếp loại'}:</span>` + GRADE_TIERS.map(t => {
                 const tip = t.descVi ? ` title="${en ? t.descEn : t.descVi}"` : '';
                 return `<span class="gr-chip ${t.cls}"${tip}><b>${t.range}</b><span>${gradeTierLabel(t)}</span></span>`;
-            }).join('');
+            }).join('') + '<span class="gr-leg-break"></span>' +
+                `<span class="gr-leg-title">${en ? 'Sticker level' : 'Cấp sticker'}:</span>` +
+                Array.from({ length: 10 }, (_, i) => {
+                    const lv = i + 1;
+                    const range = lv === 10 ? '10' : `${lv}.0–${lv}.9`;
+                    return `<span class="gr-stk" title="${en ? 'Level' : 'Cấp'} ${lv}: ${range}">${gradeStickerSvg(lv, false, 38)}<small>${range}</small></span>`;
+                }).join('');
         }
 
         // Shared, deterministic ranking logic for accumulated scores (Ranking + Score Matrix).
@@ -6698,6 +6765,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         function compareAccumulatedStudents(a, b) {
             const sa = a.stats || calculateStudentStats(a.student.id);
             const sb = b.stats || calculateStudentStats(b.student.id);
+            if (!!sa.hasData !== !!sb.hasData) return sa.hasData ? -1 : 1; // chưa đủ 2 điểm xếp sau
             const avgDiff = Number(sb.avg || 0) - Number(sa.avg || 0);
             if (avgDiff) return avgDiff;
             const ea = accumulatedScoreEntries(a.student.id), eb = accumulatedScoreEntries(b.student.id);
@@ -7411,9 +7479,10 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             const top3Container = document.getElementById('top3PodiumContainer');
             let top3Html = '';
 
-            const top1 = studentStatsList[0];
-            const top2 = studentStatsList[1];
-            const top3 = studentStatsList[2];
+            const ratedList = studentStatsList.filter(x => x.stats.hasData);
+            const top1 = ratedList[0];
+            const top2 = ratedList[1];
+            const top3 = ratedList[2];
 
             const sigNow = activeClass.id + '|' + [top1, top2, top3].map(x => x ? (x.student.id + ':' + x.stats.avg + ':' + x.stats.total) : '-').join(',');
             const animate = window.__rankSig !== sigNow;
@@ -7454,7 +7523,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 tableHtml = `<tr><td colspan="7" class="py-8 text-center text-slate-400 font-medium">${t.lblNoStudentInClass}</td></tr>`;
             } else {
                 studentStatsList.forEach((item, index) => {
-                    const rank = item.rank;
+                    const rated = item.stats.hasData;
+                    const rank = rated ? item.rank : 0;
                     const s = item.student;
                     const st = item.stats;
                     const badge = getGradeRankBadge(st.avg, st.hasData);
@@ -7463,6 +7533,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                     if (rank === 1) rankBadge = `<span class="w-8 h-8 inline-flex items-center justify-center rounded-full bg-amber-500 text-white text-sm font-black shadow"><i class="fa-solid fa-crown"></i></span>`;
                     else if (rank === 2) rankBadge = `<span class="w-8 h-8 inline-flex items-center justify-center rounded-full bg-slate-400 text-white text-xs font-bold shadow">${rank}</span>`;
                     else if (rank === 3) rankBadge = `<span class="w-8 h-8 inline-flex items-center justify-center rounded-full bg-amber-700 text-white text-xs font-bold shadow">${rank}</span>`;
+                    if (!rated) rankBadge = `<span class="w-7 h-7 inline-flex items-center justify-center rounded-full bg-slate-50 text-slate-300 text-xs font-bold">--</span>`;
 
                     tableHtml += `
                         <tr class="hl-row ${rank===1?'hl-r1':rank===2?'hl-r2':rank===3?'hl-r3':''} ${qsRowFlash('rk', activeClass.id, s.id, st.hasData)}">
@@ -7473,7 +7544,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                             <td class="py-2 px-2 text-center">${gradeBadgeSvg(st.avg, st.hasData)}</td>
                             <td class="py-3.5 px-4 text-center font-semibold text-slate-600"><span data-cu="rkt:${s.id}:n" data-to="${st.attendedCount}" data-dec="0">${st.attendedCount}</span></td>
                             <td class="py-3.5 px-4 text-center font-bold text-indigo-600"><span data-cu="rkt:${s.id}:t" data-to="${st.total}" data-dec="1" data-final="${st.total}">${st.total}</span></td>
-                            <td class="py-3.5 px-4 text-center"><span class="rk-avgpill"><span data-cu="rkt:${s.id}:a" data-to="${st.avg}" data-dec="1" data-final="${st.avg}">${st.avg}</span></span></td>
+                            <td class="py-3.5 px-4 text-center">${rankAvgPillHtml(s.id, st)}</td>
                             <td class="py-3.5 px-4 text-center">
                                 <span class="px-3 py-1 rounded-full text-xs font-bold ${badge.color}">${badge.label}</span>
                             </td>
