@@ -340,7 +340,7 @@
         /* ===== Row / card highlight on hover (final exam table + leaderboard tab) ===== */
         .hl-row { position:relative; transition:transform .22s cubic-bezier(.2,.9,.3,1.3), box-shadow .22s, filter .22s; cursor:default; }
         .hl-row > td { transition:background-color .2s, color .2s; }
-        .hl-row:hover { transform:scale(1.015); z-index:4; filter:drop-shadow(0 8px 12px rgba(79,70,229,.25)); }
+        .hl-row:hover { transform:scale(1.015); z-index:4; filter:none; }
         .hl-row:hover > td { background-color:#eef2ff !important; }
         .hl-row:hover > td:first-child { box-shadow:inset 5px 0 0 #6366f1; border-radius:.75rem 0 0 .75rem; }
         .hl-row:hover > td:last-child { border-radius:0 .75rem .75rem 0; }
@@ -1938,6 +1938,61 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 #scoreModal .mx-tgl-exam:has(input:checked){background:#7c3aed;border-color:#6d28d9;color:#fff;box-shadow:0 4px 12px rgba(124,58,237,.35)}
 #scoreModal .mx-tgl-off{opacity:.4;pointer-events:none}
 </style>
+<style id="patch-css">
+/* Sticker + ĐTB ở Leaderboard: cô lập lớp vẽ để không lộ khung vuông khi hàng được phóng to */
+.hl-row .gb-wrap,.hl-row .rk-avgpill{isolation:isolate;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(0)}
+.hl-row .gb-wrap{overflow:visible}
+.hl-row .gb-wrap svg{overflow:visible;background:transparent !important}
+/* Cửa hàng quà: chuyển chế độ xem + kéo thả */
+.shop-view-switch{display:inline-flex;border:1px solid #cbd5e1;border-radius:9999px;background:#fff;padding:2px}
+.shop-view-switch button{display:inline-flex;align-items:center;gap:.35rem;border-radius:9999px;padding:.3rem .7rem;font-size:.75rem;font-weight:800;color:#64748b;transition:background .2s,color .2s}
+.shop-view-switch button:hover{background:#eef2ff;color:#4338ca}
+.shop-view-switch button.on{background:linear-gradient(90deg,#4338ca,#7c3aed);color:#fff}
+.gift-handle{position:absolute;top:.5rem;left:.4rem;width:1.5rem;height:1.5rem;display:flex;align-items:center;justify-content:center;border-radius:.4rem;color:#94a3b8;cursor:grab;touch-action:none;z-index:2;font-size:.85rem;transition:background .15s,color .15s}
+.gift-handle:hover{background:#eef2ff;color:#4f46e5}
+.gift-handle:active{cursor:grabbing}
+.gift-actions{position:absolute;top:.5rem;right:.5rem;display:flex;align-items:center;gap:.25rem;z-index:2}
+.gift-card:not(.as-list) .gift-body{margin-top:.5rem}
+.gift-card:not(.as-list) .gift-info{padding:0 .5rem}
+.gift-card:not(.as-list) .gift-desc{display:none}
+.gift-card .gift-cost{color:#d97706;font-weight:800;font-size:.75rem}
+.gift-card:not(.as-list) .gift-cost{display:block;margin-bottom:.75rem}
+.gift-card.as-list{display:flex;flex-direction:row;align-items:center;text-align:left;gap:.75rem;padding:.6rem .9rem .6rem 2.2rem}
+.gift-card.as-list .gift-handle{top:50%;transform:translateY(-50%);left:.5rem}
+.gift-card.as-list .gift-body{order:1;display:flex;align-items:center;gap:.75rem;flex:1;min-width:0}
+.gift-card.as-list .gift-emoji-wrap{font-size:1.5rem;line-height:1}
+.gift-card.as-list .gift-info{min-width:0;flex:1}
+.gift-card.as-list .gift-name{margin:0}
+.gift-card.as-list .gift-desc{display:block;font-size:.7rem;color:#64748b;margin-top:.1rem}
+.gift-card.as-list .gift-stats{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.gift-card.as-list{height:100%}
+.gift-card.as-list .gift-cost{background:#fffbeb;border:1px solid #fde68a;border-radius:9999px;padding:.15rem .6rem}
+.gift-card.as-list .gift-actions{position:static;order:2}
+.gift-card.as-list .gift-redeem{order:3;width:auto !important;white-space:nowrap;flex-shrink:0}
+.gift-card.as-list:hover{transform:translateY(-2px) scale(1.01)}
+.gift-card.gift-placeholder{opacity:.35;border:2px dashed #6366f1 !important;transform:none !important;box-shadow:none !important}
+.gift-card.gift-ghost{position:fixed !important;z-index:9999;pointer-events:none;opacity:.93;margin:0;transform:scale(1.03) rotate(1deg) !important;transition:none !important;box-shadow:0 18px 36px rgba(79,70,229,.35) !important}
+body.gift-dragging{user-select:none;-webkit-user-select:none;cursor:grabbing}
+body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
+@media (max-width:640px){.gift-card.as-list{flex-wrap:wrap}.gift-card.as-list .gift-stats{order:4}}
+/* Huy hiệu số buổi học chưa điền nội dung (tab Nội dung giảng dạy) */
+.tp-badge{position:absolute;top:-6px;right:-4px;min-width:1.2rem;height:1.2rem;padding:0 .3rem;border-radius:9999px;background:#dc2626;color:#fff;font-size:.68rem;font-weight:900;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff;z-index:5;animation:tpBlink 1s ease-in-out infinite}
+.tp-badge.hidden{display:none}
+@keyframes tpBlink{0%,100%{opacity:1;box-shadow:0 0 0 2px #fff,0 0 0 2px rgba(220,38,38,.6)}50%{opacity:.45;box-shadow:0 0 0 2px #fff,0 0 0 6px rgba(220,38,38,0)}}
+.teaching-day-grid.tp-row-pending{background:#fef2f2}
+@media (prefers-reduced-motion:reduce){.tp-badge{animation:none}}
+.scb{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:.45rem;padding:.4rem .85rem;border-radius:9999px;font-size:.75rem;font-weight:800;color:#fff;background:linear-gradient(110deg,#059669,#4f46e5 60%,#7c3aed);box-shadow:0 0 0 0 rgba(79,70,229,.5);animation:scbPulse 2.4s ease-in-out infinite;transition:transform .2s cubic-bezier(.2,.9,.3,1.5),filter .2s;cursor:default}
+.scb:hover{transform:translateY(-2px) scale(1.06);filter:brightness(1.1)}
+.scb::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%);transform:translateX(-130%);animation:scbShine 3.2s ease-in-out infinite;pointer-events:none}
+.scb i{animation:scbIco 2.4s ease-in-out infinite}
+.scb-num{min-width:1.6rem;padding:0 .4rem;border-radius:9999px;background:#fff;color:#4338ca;font-size:.85rem;font-weight:900;text-align:center;line-height:1.5rem;display:inline-block}
+.scb-num.scb-pop{animation:scbPop .5s cubic-bezier(.2,.9,.3,1.6)}
+@keyframes scbPulse{0%,100%{box-shadow:0 0 0 0 rgba(79,70,229,.45)}50%{box-shadow:0 0 0 6px rgba(79,70,229,0),0 0 14px 2px rgba(124,58,237,.45)}}
+@keyframes scbShine{0%,55%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
+@keyframes scbIco{0%,100%{transform:scale(1)}50%{transform:scale(1.2) rotate(-8deg)}}
+@keyframes scbPop{0%{transform:scale(.5)}60%{transform:scale(1.35)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.scb,.scb::after,.scb i,.scb-num.scb-pop{animation:none}}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -2071,7 +2126,6 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 </div>
                 <div>
                     <h1 class="text-xl font-black tracking-wide" data-i18n="appTitle">QUẢN LÝ LỚP HỌC</h1>
-                    <p class="text-xs text-indigo-200" data-i18n="appSubtitle">Tự động cập nhật xếp loại, bảng điểm tổng kết realtime</p>
                 </div>
             </div>
             <div id="appHeaderActions" class="flex items-center gap-2 flex-wrap">
@@ -2200,7 +2254,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                         <span class="tab-group-label" data-i18n="grpClass">Quản lý lớp</span>
                         <div class="tab-pills">
                             <button id="btnViewStudents" onclick="switchViewMode('students')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-address-card mr-1"></i><span data-i18n="tabStudents">Danh sách lớp</span></button>
-                            <button id="btnViewTeaching" onclick="switchViewMode('teaching')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-book-open mr-1"></i><span data-i18n="tabTeaching">Nội dung giảng dạy</span></button>
+                            <button id="btnViewTeaching" style="position:relative" onclick="switchViewMode('teaching')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-book-open mr-1"></i><span data-i18n="tabTeaching">Nội dung giảng dạy</span><span id="teachingPendingBadge" class="tp-badge hidden" role="status" onclick="window.__tpJump=true"></span></button>
                             <button id="btnViewViolation" onclick="switchViewMode('violation')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-triangle-exclamation mr-1"></i> <span data-i18n="tabViolation">Vi Phạm</span></button>
                         </div>
                     </div>
@@ -2257,9 +2311,6 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                         <h2 class="text-lg font-black text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-list-ol text-indigo-600"></i> <span data-i18n="rankingHeader">Bảng Xếp Loại Thi Đua Tự Động</span>
                         </h2>
-                        <p class="text-xs text-slate-500 mt-0.5">
-                            <i data-i18n="rankingSub">Điểm trung bình được cập nhật liên tục = (Tổng điểm tích lũy) / (Số buổi đã tổ chức)</i>
-                        </p>
                     </div>
                     <div class="flex items-center gap-2 flex-wrap qs-pres-hide">
                         <button type="button" id="gradeLegendToggle" onclick="toggleGradeLegend()" class="gr-toggle-btn" aria-expanded="false" aria-controls="gradeLegend"><i class="fa-solid fa-medal"></i><span data-i18n="gradeLegendBtn">Xếp Loại</span><i class="fa-solid fa-chevron-down gr-chev"></i></button>
@@ -2303,6 +2354,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                         </h2>
                     </div>
                     <div class="flex items-center space-x-2">
+                        <div id="shopViewSwitch" class="shop-view-switch" role="group"><button type="button" data-mode="grid" onclick="setShopView('grid')"><i class="fa-solid fa-table-cells-large"></i><span data-i18n="shopViewGrid">Lưới</span></button><button type="button" data-mode="list" onclick="setShopView('list')"><i class="fa-solid fa-list"></i><span data-i18n="shopViewList">Danh sách</span></button></div>
                         <button type="button" id="shopFxToggle" role="switch" aria-checked="true" onclick="toggleShopFx()" class="shop-fx-switch on"><span class="shop-fx-track"><span class="shop-fx-knob"></span></span><span data-i18n="shopFxLabel">Hiệu ứng nhỏ</span></button>
                         <button onclick="resetAllStudentsUnusedPoints()" class="fx-lift bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow flex items-center gap-1.5">
                             <i class="fa-solid fa-trash-arrow-up"></i> <span data-i18n="btnResetPoints">Reset Toàn Bộ Điểm Dư Phát Biểu</span>
@@ -2325,7 +2377,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 
                 <!-- Inventory Table -->
                 <div>
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3" data-i18n="inventorySub">Túi Đồ & Quà Đang Sở Hữu Của Học Sinh (Lớp Hiện Tại)</h3>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3" data-i18n="inventorySub">Quà Đang Sở Hữu Của Học Sinh</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left border-collapse">
                             <thead>
@@ -2353,9 +2405,6 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                         <h2 class="text-lg font-black text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-triangle-exclamation text-rose-600"></i> <span data-i18n="violationHeader">Quản Lý & Lưu Trữ Vi Phạm</span>
                         </h2>
-                        <p class="text-xs text-slate-500 mt-0.5" data-i18n="violationSub">
-                            Ghi nhận danh sách vi phạm cá nhân để lưu trữ (Không trừ điểm thi đua)
-                        </p>
                     </div>
                     <button onclick="openManageViolationTypesModal()" class="fx-lift bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold shadow flex items-center gap-2">
                         <i class="fa-solid fa-circle-plus"></i> <span data-i18n="btnManageViolations">Tạo vi phạm</span>
@@ -2373,8 +2422,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         <div id="viewFinalExamContainer" class="hidden flex-1 overflow-y-auto space-y-6">
             <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-5 qs-pres-hide">
                 <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
-                    <div><h2 class="text-lg font-black text-slate-800"><i class="fa-solid fa-file-circle-check text-indigo-600 mr-2"></i><span data-i18n="finalExamTitle">Kiểm Tra Cuối Kỳ</span></h2>
-                    <p class="text-xs text-slate-500 mt-1" data-i18n="finalExamSubtitle">Điểm tích lũy được lấy từ điểm trung bình trong Ma Trận Điểm. Chọn môn cần cộng điểm tích lũy.</p></div>
+                    <div><h2 class="text-lg font-black text-slate-800"><i class="fa-solid fa-file-circle-check text-indigo-600 mr-2"></i><span data-i18n="finalExamTitle">Kiểm Tra Cuối Kỳ</span></h2></div>
                     <div class="flex items-center gap-2 flex-wrap"><span id="finalExamClassLabel" class="rounded-lg bg-indigo-50 text-indigo-700 px-3 py-2 text-xs font-bold"></span><button type="button" onclick="qsPresent('finalExam')" class="qs-pres-btn"><i class="fa-solid fa-display"></i><span data-qs="present">Trình chiếu</span></button></div>
                 </div>
                 <div id="finalExamStudentGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
@@ -2387,10 +2435,10 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         </div>
     <!-- COURSE / STUDENT / TEACHING WORKSPACES -->
     <div id="viewStudentsContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3">
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap items-center justify-between gap-3 mb-4"><h2 class="font-black text-lg text-slate-800" data-i18n="studentsTitle">Danh sách lớp & hồ sơ học sinh</h2><p class="text-xs text-slate-500" data-i18n="studentsSubtitle">Dữ liệu học sinh đồng bộ với khóa học hiện tại.</p><button onclick="openStudentModal()" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-xs font-bold" data-i18n="btnAddStudent">Thêm Học Sinh</button></div><div id="studentRosterGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start"></div></section>
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap items-center justify-between gap-3 mb-4"><h2 class="font-black text-lg text-slate-800" data-i18n="studentsTitle">Danh sách lớp & hồ sơ học sinh</h2><div class="flex items-center gap-2"><span id="studentCountBadge" class="scb" role="status"><i class="fa-solid fa-users"></i><span class="scb-lbl">Số lượng học sinh</span><b class="scb-num">0</b></span><button onclick="openStudentModal()" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-xs font-bold" data-i18n="btnAddStudent">Thêm Học Sinh</button></div></div><div id="studentRosterGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start"></div></section>
     </div>
     <div id="viewTeachingContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3">
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap items-center justify-between gap-3 mb-3"><div><h2 id="teachingHeading" class="font-black text-lg text-slate-800" data-i18n="tabTeaching">Nội dung giảng dạy</h2><p class="text-xs text-slate-500" data-i18n="teachingSubtitle">Kế hoạch theo tuần, nhiều lớp, lưu theo khóa học.</p></div><div class="flex flex-wrap gap-2 items-center"><select id="teachingYear" onchange="renderTeachingView()" class="border rounded-lg px-2 py-2 text-sm"></select><select id="teachingClassFilter" onchange="renderTeachingView()" class="border rounded-lg px-2 py-2 text-sm"></select><input id="teachingSearch" oninput="renderTeachingView()" class="border rounded-lg px-3 py-2 text-sm" placeholder="Tìm nội dung..."><button onclick="openClassSchedule()" class="rounded-lg bg-emerald-600 text-white px-3 py-2 text-xs font-bold" data-i18n="classScheduleBtn">Lịch học</button><button onclick="addTeachingWeek()" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-xs font-bold" data-i18n="addWeekBtn">+ Thêm tuần</button></div></div><div id="teachingWeeks" class="space-y-3"></div></section>
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap items-center justify-between gap-3 mb-3"><div><h2 id="teachingHeading" class="font-black text-lg text-slate-800" data-i18n="tabTeaching">Nội dung giảng dạy</h2></div><div class="flex flex-wrap gap-2 items-center"><select id="teachingYear" onchange="renderTeachingView()" class="border rounded-lg px-2 py-2 text-sm"></select><select id="teachingClassFilter" onchange="renderTeachingView()" class="border rounded-lg px-2 py-2 text-sm"></select><input id="teachingSearch" oninput="renderTeachingView()" class="border rounded-lg px-3 py-2 text-sm" placeholder="Tìm nội dung..."><button onclick="openClassSchedule()" class="rounded-lg bg-emerald-600 text-white px-3 py-2 text-xs font-bold" data-i18n="classScheduleBtn">Lịch học</button><button onclick="addTeachingWeek()" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-xs font-bold" data-i18n="addWeekBtn">+ Thêm tuần</button></div></div><div id="teachingWeeks" class="space-y-3"></div></section>
     </div>
     <div id="viewWheelContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3">
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
@@ -2961,12 +3009,10 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         const translations = {
             vi: {
                 finalExamTitle: "Kiểm Tra Cuối Kỳ",
-                finalExamSubtitle: "Điểm tích lũy được lấy từ điểm trung bình trong Ma Trận Điểm. Chọn môn cần cộng điểm tích lũy.",
                 finalExamRanking: "Bảng xếp hạng cuối kỳ",
                 finalExamRank: "Hạng", finalExamStudent: "Học sinh", finalExamListening: "Nghe", finalExamSpeaking: "Nói", finalExamReading: "Đọc", finalExamWriting: "Viết", finalExamGrammar: "Ngữ pháp", finalExamVocabulary: "Từ vựng", finalExamGrammarVocabulary: "TB Ngữ pháp + Từ vựng", finalExamTotal: "TB tổng",
                 appTitle: "QUẢN LÝ & BẢNG THI ĐUA HỌC SINH",
                 teacherSwitch: "Đổi giáo viên",
-                appSubtitle: "Tự động cập nhật xếp loại, bảng điểm tổng kết realtime",
                 btnTimer: "Đếm Ngược",
                 btnSeating: "Đổi Chỗ Ngồi", tabFinalExam: "Kiểm Tra Cuối Kỳ",
                 btnRandom: "Gọi Random",
@@ -2988,7 +3034,6 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 btnDeleteClass: "Xóa Lớp",
                 btnAddStudent: "Thêm Học Sinh",
                 rankingHeader: "Bảng Xếp Loại Thi Đua Tự Động",
-                rankingSub: "Điểm trung bình được cập nhật liên tục = (Tổng điểm tích lũy) / (Số buổi đã tổ chức) — chỉ tính khi có từ 2 điểm trở lên",
                 gradeLegendBtn: "Xếp Loại",
                 thRank: "HẠNG",
                 thName: "HỌ VÀ TÊN HỌC SINH",
@@ -3002,11 +3047,10 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 btnAddReward: "Thêm Quà Mới",
                 btnResetPoints: "Reset Toàn Bộ Điểm Dư Phát Biểu",
                 shopItemsSub: "Danh Mục Quà Có Thể Đổi",
-                inventorySub: "Túi Đồ & Quà Đang Sở Hữu Của Học Sinh (Lớp Hiện Tại)",
+                inventorySub: "Quà Đang Sở Hữu Của Học Sinh",
                 thCurrentPts: "ĐIỂM DƯ HIỆN CÓ (PTS)",
                 thInventory: "QUÀ ĐANG GIỮ TRONG TÚI",
                 violationHeader: "Quản Lý & Lưu Trữ Vi Phạm",
-                violationSub: "Ghi nhận danh sách vi phạm cá nhân để lưu trữ (Không trừ điểm thi đua)",
                 btnManageViolations: "Tạo vi phạm",
                 modalTimerTitle: "Đồng Hồ Đếm Ngược",
                 lblHours: "Giờ",
@@ -3096,6 +3140,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 lblYearModalPrefix: "năm",
                 lblRedeemBtn: "Đổi Quà",
                 shopFxLabel: "Hiệu ứng nhỏ",
+                shopViewGrid: "Lưới",
+                shopViewList: "Danh sách",
                 lblGiftQty: "Số lượng quà:",
                 lblApplyBtn: "Áp dụng",
                 lblEmptyBag: "Túi trống",
@@ -3120,12 +3166,10 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             },
             en: {
                 finalExamTitle: "Final Exam",
-                finalExamSubtitle: "Accumulated points come from the average in the Score Matrix. Choose which subjects to combine with accumulated points.",
                 finalExamRanking: "Final Exam Leaderboard",
                 finalExamRank: "Rank", finalExamStudent: "Student", finalExamListening: "Listening", finalExamSpeaking: "Speaking", finalExamReading: "Reading", finalExamWriting: "Writing", finalExamGrammar: "Grammar", finalExamVocabulary: "Vocabulary", finalExamGrammarVocabulary: "Grammar + Vocabulary Avg.", finalExamTotal: "Overall Avg.",
                 appTitle: "STUDENT COMPETITION MANAGEMENT",
                 teacherSwitch: "Switch teacher",
-                appSubtitle: "Real-time automatic leaderboard and grade evaluation",
                 btnTimer: "Timer",
                 btnSeating: "Seating Plan", tabFinalExam: "Final Exam",
                 btnRandom: "Random Picker",
@@ -3147,7 +3191,6 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 btnDeleteClass: "Delete Class",
                 btnAddStudent: "Add Student",
                 rankingHeader: "Automatic Student Leaderboard",
-                rankingSub: "Average Score = (Total Accumulated Score) / (Total Classes Held) — calculated only once a student has 2 or more scores",
                 gradeLegendBtn: "Grades",
                 thRank: "RANK",
                 thName: "STUDENT FULL NAME",
@@ -3161,11 +3204,10 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 btnAddReward: "Add New Reward",
                 btnResetPoints: "Reset All Unused Speaking Points",
                 shopItemsSub: "Redeemable Gifts Category",
-                inventorySub: "Student Inventory & Held Rewards (Current Class)",
+                inventorySub: "Student Held Rewards",
                 thCurrentPts: "REMAINING POINTS (PTS)",
                 thInventory: "HELD REWARDS IN BAG",
                 violationHeader: "Violation Log & Storage",
-                violationSub: "Record individual violations for archiving (Does not deduct points)",
                 btnManageViolations: "Create violation",
                 modalTimerTitle: "Countdown Timer",
                 lblHours: "Hours",
@@ -3255,6 +3297,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 lblYearModalPrefix: "/",
                 lblRedeemBtn: "Redeem",
                 shopFxLabel: "Small effects",
+                shopViewGrid: "Grid",
+                shopViewList: "List",
                 lblGiftQty: "Gift quantity:",
                 lblApplyBtn: "Apply",
                 lblEmptyBag: "Empty bag",
@@ -3280,7 +3324,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         };
 
         Object.assign(translations.vi, {
-          btnSeating:'Đổi chỗ ngồi', tabFinalExam:'Kiểm tra cuối kỳ', editActiveCourseTitle:'Thông tin khóa hiện tại', saveCourseDetailsBtn:'Lưu thông tin khóa hiện tại', newCourseDetailsTitle:'Tạo khóa học mới', weekNumberLabel:'Số tuần', dayContentLabel:'Nội dung giảng dạy', dayDetailLabel:'Chi tiết', noScheduledClasses:'Không có lớp được xếp lịch vào ngày này.', courseManagerBtn:'Quản lý khóa học', tabStudents:'Danh sách lớp', tabTeaching:'Nội dung dạy', studentsTitle:'Danh sách lớp & hồ sơ học sinh', studentsSubtitle:'Dữ liệu học sinh đồng bộ với khóa học hiện tại.', teachingSubtitle:'Kế hoạch theo tuần, nhiều lớp, lưu theo khóa học.', addWeekBtn:'+ Thêm tuần', courseManagerTitle:'Quản lý khóa học', courseNameLabel:'Tên khóa học', courseStartLabel:'Ngày bắt đầu', courseEndLabel:'Ngày kết thúc', createCourseBtn:'Tạo khóa mới và tách dữ liệu', archiveNewCourseBtn:'Lưu trữ khóa hiện tại và bắt đầu khóa mới', courseListTitle:'Danh sách khóa học', copyPreviousCourseClasses:'Lấy danh sách lớp từ khóa học trước có ngày kết thúc trước ngày bắt đầu khóa mới', deleteCourseBtn:'Xóa khóa', deleteCourseConfirm:'Bạn có chắc muốn xóa khóa học này và dữ liệu lịch sử của nó không? Thao tác này không thể hoàn tác.', activeCourseDeleteBlocked:'Không thể xóa khóa đang hoạt động. Hãy chuyển sang khóa khác trước.', courseSafetyNote:'Khóa đã lưu trữ được giữ dưới dạng bản chụp lịch sử và không tự ghi đè dữ liệu đang hoạt động.', moveStudentTitle:'Chuyển lớp học sinh', cancelBtn:'Hủy', confirmMoveBtn:'Xác nhận chuyển', courseActive:'Đang hoạt động', courseArchived:'Đã lưu trữ', viewHistory:'Xem lịch sử', activateCourseBtn:'Dùng khóa này', activeCourseLabel:'Khóa hiện tại', noStudents:'Không có học sinh trong lớp này.', profileDetails:'Chi tiết', moveClassBtn:'Chuyển lớp', totalAccumulated:'Tổng điểm tích lũy', averageAccumulated:'Điểm trung bình tích lũy', finalScore:'Điểm cuối kỳ', violationsLabel:'Vi phạm', notesLabel:'Ghi chú', classLabel:'Lớp', addLessonBtn:'+ Buổi học', editBtn:'Sửa', deleteBtn:'Xóa', dateLabel:'Ngày học', makeupDateLabel:'Ngày dạy bù', lessonStatusLabel:'Loại ngày học', lessonContentLabel:'Nội dung giảng dạy', lessonDetailLabel:'Chi tiết bài học', unitLabel:'Unit / Lesson / Chủ đề', homeworkLabel:'Bài tập / ghi chú', saveBtn:'Lưu', noWeeks:'Chưa có tuần học. Bấm “Thêm tuần” để bắt đầu.', weekLabel:'Tuần học', weekStartLabel:'Từ', weekEndLabel:'Đến', allClasses:'Tất cả lớp', searchPlaceholder:'Tìm nội dung...', classScheduleBtn:'Lịch học', classScheduleTitle:'Lịch học theo lớp', classScheduleHelp:'Thiết lập ngày và giờ học thường lệ cho từng lớp.', weekdays:['Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7','Chủ nhật'], weeklyScheduleTitle:'Lịch theo ngày trong tuần'
+          btnSeating:'Đổi chỗ ngồi', tabFinalExam:'Kiểm tra cuối kỳ', editActiveCourseTitle:'Thông tin khóa hiện tại', saveCourseDetailsBtn:'Lưu thông tin khóa hiện tại', newCourseDetailsTitle:'Tạo khóa học mới', weekNumberLabel:'Số tuần', dayContentLabel:'Nội dung giảng dạy', dayDetailLabel:'Chi tiết', noScheduledClasses:'Không có lớp được xếp lịch vào ngày này.', courseManagerBtn:'Quản lý khóa học', tabStudents:'Danh sách lớp', tabTeaching:'Nội dung dạy', studentsTitle:'Danh sách lớp & hồ sơ học sinh', addWeekBtn:'+ Thêm tuần', courseManagerTitle:'Quản lý khóa học', courseNameLabel:'Tên khóa học', courseStartLabel:'Ngày bắt đầu', courseEndLabel:'Ngày kết thúc', createCourseBtn:'Tạo khóa mới và tách dữ liệu', archiveNewCourseBtn:'Lưu trữ khóa hiện tại và bắt đầu khóa mới', courseListTitle:'Danh sách khóa học', copyPreviousCourseClasses:'Lấy danh sách lớp từ khóa học trước có ngày kết thúc trước ngày bắt đầu khóa mới', deleteCourseBtn:'Xóa khóa', deleteCourseConfirm:'Bạn có chắc muốn xóa khóa học này và dữ liệu lịch sử của nó không? Thao tác này không thể hoàn tác.', activeCourseDeleteBlocked:'Không thể xóa khóa đang hoạt động. Hãy chuyển sang khóa khác trước.', courseSafetyNote:'Khóa đã lưu trữ được giữ dưới dạng bản chụp lịch sử và không tự ghi đè dữ liệu đang hoạt động.', moveStudentTitle:'Chuyển lớp học sinh', cancelBtn:'Hủy', confirmMoveBtn:'Xác nhận chuyển', courseActive:'Đang hoạt động', courseArchived:'Đã lưu trữ', viewHistory:'Xem lịch sử', activateCourseBtn:'Dùng khóa này', activeCourseLabel:'Khóa hiện tại', noStudents:'Không có học sinh trong lớp này.', profileDetails:'Chi tiết', moveClassBtn:'Chuyển lớp', totalAccumulated:'Tổng điểm tích lũy', averageAccumulated:'Điểm trung bình tích lũy', finalScore:'Điểm cuối kỳ', violationsLabel:'Vi phạm', notesLabel:'Ghi chú', classLabel:'Lớp', addLessonBtn:'+ Buổi học', editBtn:'Sửa', deleteBtn:'Xóa', dateLabel:'Ngày học', makeupDateLabel:'Ngày dạy bù', lessonStatusLabel:'Loại ngày học', lessonContentLabel:'Nội dung giảng dạy', lessonDetailLabel:'Chi tiết bài học', unitLabel:'Unit / Lesson / Chủ đề', homeworkLabel:'Bài tập / ghi chú', saveBtn:'Lưu', noWeeks:'Chưa có tuần học. Bấm “Thêm tuần” để bắt đầu.', weekLabel:'Tuần học', weekStartLabel:'Từ', weekEndLabel:'Đến', allClasses:'Tất cả lớp', searchPlaceholder:'Tìm nội dung...', classScheduleBtn:'Lịch học', classScheduleTitle:'Lịch học theo lớp', classScheduleHelp:'Thiết lập ngày và giờ học thường lệ cho từng lớp.', weekdays:['Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7','Chủ nhật'], weeklyScheduleTitle:'Lịch theo ngày trong tuần'
         });
         Object.assign(translations.vi, {
           studentProgressSubtitle:'So sánh điểm tích lũy giữa khóa hiện tại và các khóa đã lưu',
@@ -3290,7 +3334,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
           studentProgressSubtitle:'Compare accumulated points between the current course and saved courses.',
           seatingModalTitle:'Random Seat Assignment',
           
-          btnSeating:'Seating Plan', tabFinalExam:'Final Exam', editActiveCourseTitle:'Current course details', saveCourseDetailsBtn:'Save current course details', newCourseDetailsTitle:'Create a new course', weekNumberLabel:'Week number', dayContentLabel:'Teaching content', dayDetailLabel:'Details', noScheduledClasses:'No classes are scheduled for this day.', courseManagerBtn:'Manage Courses', tabStudents:'Class List', tabTeaching:'Teaching Plan', studentsTitle:'Class List & Student Profiles', studentsSubtitle:'Student data is synced with the active course.', teachingSubtitle:'Weekly plans across classes, saved per course.', addWeekBtn:'+ Add Week', courseManagerTitle:'Manage Courses', courseNameLabel:'Course name', courseStartLabel:'Start date', courseEndLabel:'End date', createCourseBtn:'Create course and separate its data', archiveNewCourseBtn:'Archive current course and start a new one', courseListTitle:'Courses', copyPreviousCourseClasses:'Copy the class list from the previous course that ended before the new course starts', deleteCourseBtn:'Delete course', deleteCourseConfirm:'Are you sure you want to delete this course and its history? This cannot be undone.', activeCourseDeleteBlocked:'The active course cannot be deleted. Switch to another course first.', courseSafetyNote:'Archived courses are kept as historical snapshots and will not overwrite active data.', moveStudentTitle:'Move student to another class', cancelBtn:'Cancel', confirmMoveBtn:'Confirm move', courseActive:'Active', courseArchived:'Archived', viewHistory:'View history', activateCourseBtn:'Use this course', activeCourseLabel:'Active course', noStudents:'No students in this class.', profileDetails:'Details', moveClassBtn:'Move class', totalAccumulated:'Total accumulated points', averageAccumulated:'Average accumulated points', finalScore:'Final exam score', violationsLabel:'Violations', notesLabel:'Notes', classLabel:'Class', addLessonBtn:'+ Lesson', editBtn:'Edit', deleteBtn:'Delete', dateLabel:'Lesson date', makeupDateLabel:'Make-up date', lessonStatusLabel:'Lesson status', lessonContentLabel:'Teaching content', lessonDetailLabel:'Lesson details', unitLabel:'Unit / Lesson / Topic', homeworkLabel:'Homework / notes', saveBtn:'Save', noWeeks:'No teaching weeks yet. Click “Add Week” to begin.', weekLabel:'Teaching week', weekStartLabel:'From', weekEndLabel:'To', allClasses:'All classes', searchPlaceholder:'Search content...', classScheduleBtn:'Class Schedule', classScheduleTitle:'Class Schedule', classScheduleHelp:'Set the regular teaching days and times for each class.', weekdays:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], weeklyScheduleTitle:'Weekly schedule by day'
+          btnSeating:'Seating Plan', tabFinalExam:'Final Exam', editActiveCourseTitle:'Current course details', saveCourseDetailsBtn:'Save current course details', newCourseDetailsTitle:'Create a new course', weekNumberLabel:'Week number', dayContentLabel:'Teaching content', dayDetailLabel:'Details', noScheduledClasses:'No classes are scheduled for this day.', courseManagerBtn:'Manage Courses', tabStudents:'Class List', tabTeaching:'Teaching Plan', studentsTitle:'Class List & Student Profiles', addWeekBtn:'+ Add Week', courseManagerTitle:'Manage Courses', courseNameLabel:'Course name', courseStartLabel:'Start date', courseEndLabel:'End date', createCourseBtn:'Create course and separate its data', archiveNewCourseBtn:'Archive current course and start a new one', courseListTitle:'Courses', copyPreviousCourseClasses:'Copy the class list from the previous course that ended before the new course starts', deleteCourseBtn:'Delete course', deleteCourseConfirm:'Are you sure you want to delete this course and its history? This cannot be undone.', activeCourseDeleteBlocked:'The active course cannot be deleted. Switch to another course first.', courseSafetyNote:'Archived courses are kept as historical snapshots and will not overwrite active data.', moveStudentTitle:'Move student to another class', cancelBtn:'Cancel', confirmMoveBtn:'Confirm move', courseActive:'Active', courseArchived:'Archived', viewHistory:'View history', activateCourseBtn:'Use this course', activeCourseLabel:'Active course', noStudents:'No students in this class.', profileDetails:'Details', moveClassBtn:'Move class', totalAccumulated:'Total accumulated points', averageAccumulated:'Average accumulated points', finalScore:'Final exam score', violationsLabel:'Violations', notesLabel:'Notes', classLabel:'Class', addLessonBtn:'+ Lesson', editBtn:'Edit', deleteBtn:'Delete', dateLabel:'Lesson date', makeupDateLabel:'Make-up date', lessonStatusLabel:'Lesson status', lessonContentLabel:'Teaching content', lessonDetailLabel:'Lesson details', unitLabel:'Unit / Lesson / Topic', homeworkLabel:'Homework / notes', saveBtn:'Save', noWeeks:'No teaching weeks yet. Click “Add Week” to begin.', weekLabel:'Teaching week', weekStartLabel:'From', weekEndLabel:'To', allClasses:'All classes', searchPlaceholder:'Search content...', classScheduleBtn:'Class Schedule', classScheduleTitle:'Class Schedule', classScheduleHelp:'Set the regular teaching days and times for each class.', weekdays:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], weeklyScheduleTitle:'Weekly schedule by day'
         });
 
         Object.assign(translations.vi, { optTypeDeleteScore: "Xóa điểm đã có trong ô (Xóa điểm, kể cả ô 0 đỏ do vắng)", dsGiftHint: "Xóa ô điểm đang mở (kể cả ô 0 đỏ do vắng)", dsConfirmTitle: "Xác nhận xóa", dsConfirmMsg: "Xóa điểm này? Học sinh: {student} · Ngày: {date} · Ô điểm: {value}. Quà \"{gift}\" sẽ được sử dụng.", dsValueAbsent: "0.0 (vắng)", dsToastSuccess: "Điểm đã được xóa thành công", dsToastEmpty: "Không thể xóa ô trống", dsToastNoValid: "Không có ô điểm hợp lệ để xóa", dsToastNoGift: "Bạn không có quà xóa điểm", dsToastCancel: "Hủy thao tác xóa điểm", dsToastError: "Đã xảy ra lỗi khi lưu dữ liệu" });
@@ -3299,7 +3343,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         Object.assign(translations.vi, {"quick_gift_title": "Túi quà", "quick_gift_button": "Quà", "no_gifts_available": "Học sinh này chưa có quà", "select_student_gift": "Chọn quà để sử dụng cho học sinh", "apply_gift_success": "Đã sử dụng quà {giftName} thành công cho {studentName}!", "no_valid_cell_for_gift": "Không tìm thấy ô điểm phù hợp để áp dụng quà này!", "confirm_use_quick_gift": "Bạn có chắc muốn dùng quà này ngay lập tức?", "lowest_score_improved": "Đã cải thiện ô điểm thấp nhất ({score}đ)!", "empty_cell_filled": "Đã điền điểm mới vào ô trống hợp lệ!", "score_deleted_quick": "Đã xóa ô điểm thấp nhất thành công!", "qg_use_btn": "Dùng", "qg_consume_btn": "Tiêu thụ", "qg_close": "Đóng", "qg_type_plus": "Cộng điểm", "qg_type_add": "Tạo điểm mới", "qg_type_change": "Đổi điểm", "qg_type_delete": "Xóa điểm", "qg_type_none": "Quà thông thường", "qg_type_wheel": "Vòng quay may mắn", "qg_wheel_note": "Dùng trong Vòng quay may mắn", "qg_gift_count": "{n} quà", "qg_only_gifts": "Chỉ hiện học sinh có quà", "qg_no_gift_in_class": "Chưa có học sinh nào trong lớp có quà", "qg_no_students": "Lớp chưa có học sinh nào.", "qg_detail_change": "{student} · ô {date}: {before} → {after}", "qg_detail_add": "{student} · điền ô trống {date} = {after}", "qg_detail_delete": "{student} · xóa ô {date} ({before})", "qg_detail_plain": "{student} · {giftName}", "qg_gift_missing": "Không tìm thấy quà này trong túi đồ"});
         Object.assign(translations.en, {"quick_gift_title": "Gift Bag", "quick_gift_button": "Gifts", "no_gifts_available": "No gifts available for this student", "select_student_gift": "Select a gift to use for student", "apply_gift_success": "Successfully applied {giftName} for {studentName}!", "no_valid_cell_for_gift": "No eligible score cell found to apply this gift!", "confirm_use_quick_gift": "Are you sure you want to use this gift immediately?", "lowest_score_improved": "Improved lowest score cell ({score} pts)!", "empty_cell_filled": "New score filled into valid empty cell!", "score_deleted_quick": "Lowest score cell deleted successfully!", "qg_use_btn": "Use", "qg_consume_btn": "Consume", "qg_close": "Close", "qg_type_plus": "Add Points", "qg_type_add": "New Score", "qg_type_change": "Change Score", "qg_type_delete": "Delete Score", "qg_type_none": "Regular Gift", "qg_type_wheel": "Lucky Wheel", "qg_wheel_note": "Use it in the Lucky Wheel", "qg_gift_count": "{n} gifts", "qg_only_gifts": "Only students with gifts", "qg_no_gift_in_class": "No student in this class has any gifts", "qg_no_students": "No students in this class.", "qg_detail_change": "{student} · cell {date}: {before} → {after}", "qg_detail_add": "{student} · fill empty cell {date} = {after}", "qg_detail_delete": "{student} · delete cell {date} ({before})", "qg_detail_plain": "{student} · {giftName}", "qg_gift_missing": "This gift was not found in the inventory"});
 
-        Object.assign(translations.vi, {"qg_type_streak": "Quà thưởng Streak", "sg_name": "Quà Streak {tier}", "sg_type_desc": "Cộng {n} điểm 10 · không tính streak", "sg_confirm": "cộng {used} điểm 10 cho {student}: {fills} ô trống trước hôm nay, {ups} ô dưới 9 chuyển thành 10.", "sg_confirm_rest": " Còn dư {left} điểm 10 trong quà.", "sg_done": "Đã cộng {used} điểm 10 cho {student}.", "sg_done_rest": " Còn dư {left} điểm 10 trong quà.", "sg_no_cell": "Không còn ô trống trước hôm nay hoặc ô dưới 9 để dùng quà này.", "sg_award": "🎁 {student} đạt streak {tier}: nhận quà {n} điểm 10!", "sg_award_many": "🎁 Đã tặng quà thưởng streak cho {n} học sinh.", "sg_cell_tag": "Quà Streak {tier} (khóa)"});
+        Object.assign(translations.vi, {"qg_type_streak": "Quà thưởng Chuỗi", "sg_name": "Quà Streak {tier}", "sg_type_desc": "Cộng {n} điểm 10 · không tính streak", "sg_confirm": "cộng {used} điểm 10 cho {student}: {fills} ô trống trước hôm nay, {ups} ô dưới 9 chuyển thành 10.", "sg_confirm_rest": " Còn dư {left} điểm 10 trong quà.", "sg_done": "Đã cộng {used} điểm 10 cho {student}.", "sg_done_rest": " Còn dư {left} điểm 10 trong quà.", "sg_no_cell": "Không còn ô trống trước hôm nay hoặc ô dưới 9 để dùng quà này.", "sg_award": "🎁 {student} đạt streak {tier}: nhận quà {n} điểm 10!", "sg_award_many": "🎁 Đã tặng quà thưởng streak cho {n} học sinh.", "sg_cell_tag": "Quà Chuỗi {tier} (khóa)"});
         Object.assign(translations.en, {"qg_type_streak": "Streak reward", "sg_name": "Streak {tier} Gift", "sg_type_desc": "Adds {n} scores of 10 · no streak credit", "sg_confirm": "add {used} scores of 10 for {student}: {fills} empty cells before today, {ups} cells below 9 become 10.", "sg_confirm_rest": " {left} score(s) of 10 stay in the gift.", "sg_done": "Added {used} scores of 10 for {student}.", "sg_done_rest": " {left} score(s) of 10 stay in the gift.", "sg_no_cell": "No empty cell before today or cell below 9 left to use this gift on.", "sg_award": "🎁 {student} hit a {tier} streak: earned a gift of {n} tens!", "sg_award_many": "🎁 Streak reward gifts given to {n} students.", "sg_cell_tag": "Streak {tier} gift (locked)"});
         Object.assign(translations.vi, {"optTypePlusMatch": "Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)", "lblMatchCond": "Ô điểm quy định được cộng (điều kiện & mức điểm):", "optMatchLte": "Từ mức này trở xuống (≤)", "optMatchEq": "Bằng đúng mức này (=)", "optMatchGte": "Từ mức này trở lên (≥)", "phMatchScore": "VD: 7", "qg_type_plus_match": "Cộng điểm theo ô quy định", "pm_desc": "Ô có điểm {op} {score} → +{delta}", "qg_plus_match_done": "Đã cộng {delta} điểm vào ô {date} ({before}đ → {after}đ)!"});
         Object.assign(translations.en, {"optTypePlusMatch": "Add points to a cell with a specified score (e.g. +1 to a cell of 7 or lower)", "lblMatchCond": "Specified cell score to receive points (condition & score):", "optMatchLte": "This score or lower (≤)", "optMatchEq": "Exactly this score (=)", "optMatchGte": "This score or higher (≥)", "phMatchScore": "e.g. 7", "qg_type_plus_match": "Add Points to Specified Cell", "pm_desc": "Cell score {op} {score} → +{delta}", "qg_plus_match_done": "Added {delta} pts to cell {date} ({before} → {after} pts)!"});
@@ -3443,15 +3487,16 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         }
 
         /* ===================== QS: quick entry, bulk add, presentation, count-up, rank delta ===================== */
+        const qsOnOff = on => (appData.language === 'en') ? (on ? 'ON' : 'OFF') : (on ? 'BẬT' : 'TẮT');
         const QS_I18N = {
             vi: {
                 speakLbl: 'Nhập Phát Biểu',
                 speakTitle: 'Bật để gõ số lần phát biểu thẳng vào ô (không mở cửa sổ): tự quy đổi sang điểm hệ 10 theo hệ số M đang chọn, phần dư từ M trở lên chuyển vào túi quà Pts.',
-                speakOn: 'Đã bật Nhập Phát Biểu: gõ số lần phát biểu vào ô, hệ thống tự quy đổi sang điểm hệ 10 theo hệ số M = {M}; phần dư chuyển vào túi quà. (Chế độ Test score và Sửa điểm được tắt.)',
+                speakOn: 'Đã bật Nhập Phát Biểu: gõ số lần phát biểu vào ô, hệ thống tự quy đổi sang điểm hệ 10 theo hệ số M = {M}; phần dư chuyển vào túi quà. (Chế độ điểm kiểm tra và Sửa điểm được tắt.)',
                 speakPrev: (n, sc, ex) => `${n} lần phát biểu → ${sc}đ` + (ex ? ` · +${ex} Pts túi quà` : ''),
                 speakOver: 'Số lần phát biểu phải từ 0 đến 100.',
-                legAbsent: 'Vắng (0.0đ)', legScored: 'Có điểm', legExam: 'Điểm Test score', legManual: 'Điểm đã sửa', legStreak: 'Điểm streak',
-                testLbl: 'Nhập Test score',
+                legAbsent: 'Vắng (0.0đ)', legScored: 'Có điểm', legExam: 'Điểm kiểm tra', legManual: 'Điểm đã sửa', legStreak: 'Điểm chuỗi',
+                testLbl: 'Nhập điểm kiểm tra',
                 saved: 'Đã lưu',
                 editLbl: 'Sửa điểm',
                 editTitle: 'Bật để sửa tay điểm: ô được sửa sẽ gỡ liên kết với số lần phát biểu; điểm dư trong túi quà không đổi',
@@ -3479,10 +3524,10 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 tenLbl: 'Hiện điểm 10',
                 tenHint: 'Làm mờ các điểm dưới 10 và nhô các điểm 10 lên cho dễ thấy (luôn tắt khi mở trang).',
                 tenOn: 'Đã bật Hiện điểm 10: điểm dưới 10 mờ đi, điểm 10 nổi bật.',
-                tplLbl: 'Template tên',
-                tplHint: 'Hiện nền template của Class list ở cột Họ & Tên (bật/tắt, được nhớ cho lần mở sau).',
-                tplOn: 'Đã bật Template tên: cột Họ & Tên dùng nền template của từng học sinh.',
-                testOn: 'Đã bật Nhập Test score: mọi điểm gõ vào sẽ được đánh dấu là điểm Bài Kiểm Tra.',
+                tplLbl: 'Mẫu tên',
+                tplHint: 'Hiện nền mẫu của Danh sách lớp ở cột Họ & Tên (bật/tắt, được nhớ cho lần mở sau).',
+                tplOn: 'Đã bật Mẫu tên: cột Họ & Tên dùng nền mẫu của từng học sinh.',
+                testOn: 'Đã bật Nhập điểm kiểm tra: mọi điểm gõ vào sẽ được đánh dấu là điểm Bài Kiểm Tra.',
                 trendOn: 'Đã bật Xu hướng điểm: hiện mũi tên ▲▼ cạnh ĐTB (TB 5 điểm gần nhất so với 5 điểm trước đó).',
                 editOn: 'Đã bật Sửa điểm: điểm sửa tay sẽ không còn tính theo số lần phát biểu, điểm dư trong túi quà giữ nguyên.',
                 editTag: 'Điểm sửa tay',
@@ -3507,11 +3552,11 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                 presFinal: c => `Bảng xếp hạng cuối kỳ · Lớp ${c}`,
                 rankUp: n => `Lên ${n} hạng`, rankDown: n => `Xuống ${n} hạng`,
                 trendLbl: 'Xu hướng điểm',
-                sgLocked: 'Điểm quà Streak đã bị khóa: không thể sửa hoặc xóa.',
-                keepLbl: 'Không trừ streak',
-                keepHint: 'Khi BẬT, điểm dưới 10 nhập vào lúc này sẽ không trừ/đứt streak (điểm 10 vẫn cộng streak). Những điểm đó được miễn trừ vĩnh viễn, kể cả sau khi tắt nút. Điểm nhập khi TẮT vẫn tính streak bình thường.',
-                keepOn: 'Đã bật Không trừ streak: các điểm dưới 10 nhập từ bây giờ (vòng quay, quà đổi điểm 7-8-9...) sẽ không trừ streak; điểm 10 vẫn cộng streak bình thường.',
-                keepOff: 'Đã tắt Không trừ streak: điểm nhập từ giờ tính streak bình thường. Các điểm đã nhập lúc bật vẫn được miễn trừ.',
+                sgLocked: 'Điểm quà Chuỗi đã bị khóa: không thể sửa hoặc xóa.',
+                keepLbl: 'Không trừ chuỗi',
+                keepHint: 'Khi BẬT, điểm dưới 10 nhập vào lúc này sẽ không trừ/đứt chuỗi (điểm 10 vẫn cộng chuỗi). Những điểm đó được miễn trừ vĩnh viễn, kể cả sau khi tắt nút. Điểm nhập khi TẮT vẫn tính chuỗi bình thường.',
+                keepOn: 'Đã bật Không trừ chuỗi: các điểm dưới 10 nhập từ bây giờ (vòng quay, quà đổi điểm 7-8-9...) sẽ không trừ chuỗi; điểm 10 vẫn cộng chuỗi bình thường.',
+                keepOff: 'Đã tắt Không trừ chuỗi: điểm nhập từ giờ tính chuỗi bình thường. Các điểm đã nhập lúc bật vẫn được miễn trừ.',
                 trendHint: 'Hiện mũi tên ▲▼ cạnh ĐTB: so sánh TB 5 điểm gần nhất với 5 điểm trước đó (luôn tắt khi mở trang).',
                 bdayLbl: 'Ngày sinh nhật (không bắt buộc):',
                 bdayHint: 'Đến ngày này hệ thống sẽ thông báo và thẻ học sinh có hiệu ứng sinh nhật.'
@@ -4303,7 +4348,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             if (sig === qsToolbarSig) return;
             qsToolbarSig = sig;
             const collapsed = !!window.__qsToolbarCollapsed;
-            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle qs-toggle-speak ${qsSpeak ? 'on' : ''}" onclick="qsToggleSpeak()" aria-pressed="${qsSpeak}" title="${qsT('speakTitle')}"><i class="fa-solid fa-comments"></i>${qsT('speakLbl')}<b>${qsSpeak ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsTest ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i>${qsT('editLbl')}<b>${qsEdit ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsTrend ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-fire-flame-curved"></i>${qsT('keepLbl')}<b>${appData.keepStreak ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i>${qsT('tplLbl')}<b>${qsTpl ? 'ON' : 'OFF'}</b></button><button type="button" class="qs-toggle qs-toggle-ten ${qsTen ? 'on' : ''}" onclick="qsToggleTen()" aria-pressed="${qsTen}" title="${qsT('tenHint')}"><i class="fa-solid fa-star"></i>${qsT('tenLbl')}<b>${qsTen ? 'ON' : 'OFF'}</b></button><span class="mx-today-group" role="group"><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i>${qsT('todayLbl')}</button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button></span><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsSpeakPrev" class="qs-speak-prev" style="display:none"></span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span><div class="qs-legend" role="group"><span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>${qsT('legAbsent')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>${qsT('legScored')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>${qsT('legExam')}</span><span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>${qsT('legManual')}</span><span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>${qsT('legStreak')}</span></div></div>`;
+            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle qs-toggle-speak ${qsSpeak ? 'on' : ''}" onclick="qsToggleSpeak()" aria-pressed="${qsSpeak}" title="${qsT('speakTitle')}"><i class="fa-solid fa-comments"></i>${qsT('speakLbl')}<b>${qsOnOff(qsSpeak)}</b></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i>${qsT('testLbl')}<b>${qsOnOff(qsTest)}</b></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i>${qsT('editLbl')}<b>${qsOnOff(qsEdit)}</b></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i>${qsT('trendLbl')}<b>${qsOnOff(qsTrend)}</b></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-fire-flame-curved"></i>${qsT('keepLbl')}<b>${qsOnOff(appData.keepStreak)}</b></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i>${qsT('tplLbl')}<b>${qsOnOff(qsTpl)}</b></button><button type="button" class="qs-toggle qs-toggle-ten ${qsTen ? 'on' : ''}" onclick="qsToggleTen()" aria-pressed="${qsTen}" title="${qsT('tenHint')}"><i class="fa-solid fa-star"></i>${qsT('tenLbl')}<b>${qsOnOff(qsTen)}</b></button><span class="mx-today-group" role="group"><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i>${qsT('todayLbl')}</button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button></span><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsSpeakPrev" class="qs-speak-prev" style="display:none"></span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span><div class="qs-legend" role="group"><span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>${qsT('legAbsent')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>${qsT('legScored')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>${qsT('legExam')}</span><span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>${qsT('legManual')}</span><span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>${qsT('legStreak')}</span></div></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
             const mt = qsEl('scoreMatrix'); if (mt) { mt.classList.toggle('qs-edit-on', qsEdit); mt.classList.toggle('qs-test-on', qsTest); mt.classList.toggle('qs-speak-on', qsSpeak); mt.classList.toggle('qs-ten-on', qsTen); }
             mxUpdateTodayBadge(); mxUpdateMultiInfo(); qsSpeakPreview();
@@ -5117,7 +5162,6 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
           'Tên giáo viên đã tồn tại.':'A teacher with this name already exists.',
           'Mật khẩu xác nhận không khớp.':'Password confirmation does not match.',
           'Chưa có giáo viên nào. Hãy tạo giáo viên đầu tiên.':'No teachers yet. Create the first teacher.',
-          'Kế hoạch theo tuần, nhiều lớp, lưu theo khóa học.':'Weekly plans for multiple classes, saved by course.',
           'Tìm nội dung...':'Search content...',
           'Chưa có tuần học. Bấm “Thêm tuần” để bắt đầu.':'No teaching weeks yet. Click “Add Week” to get started.',
           'Không có lớp được xếp lịch vào ngày này.':'No classes are scheduled for this day.',
@@ -5778,43 +5822,55 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             const itemsToRender = appData.globalShopItems || [];
             const lang = appData.language || 'vi';
             const t = translations[lang];
+            const en = lang === 'en';
+            const asList = shopViewMode() === 'list';
+            shopViewApply();
+            gridContainer.className = asList ? "shop-list-grid grid grid-cols-1 lg:grid-cols-2 gap-2" : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4";
 
             if (itemsToRender.length === 0) {
-                gridContainer.innerHTML = `<p class='col-span-full text-center text-slate-400 py-6 text-xs italic'>${lang === 'en' ? 'No gifts available in system.' : 'Chưa có quà nào trong hệ thống.'}</p>`;
+                gridContainer.innerHTML = `<p class='col-span-full text-center text-slate-400 py-6 text-xs italic'>${en ? 'No gifts available in system.' : 'Chưa có quà nào trong hệ thống.'}</p>`;
             } else {
                 itemsToRender.forEach(item => {
                     const card = document.createElement("div");
-                    card.className = "gift-card border border-slate-200 rounded-xl p-4 bg-white text-center shadow-sm flex flex-col justify-between relative group";
-                    
+                    card.className = "gift-card border border-slate-200 rounded-xl p-4 bg-white text-center shadow-sm flex flex-col justify-between relative group" + (asList ? " as-list" : "");
+                    card.dataset.id = item.id;
+
                     let deleteBtnHtml = "";
                     if (!item.isFixed) {
                         deleteBtnHtml = `
-                            <button onclick="deleteShopItem('${item.id}')" 
-                                    class="w-6 h-6 bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white rounded-full flex items-center justify-center text-[10px] transition opacity-80 hover:opacity-100" 
-                                    title="Xóa món quà này">
+                            <button onclick="deleteShopItem('${item.id}')"
+                                    class="w-6 h-6 bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white rounded-full flex items-center justify-center text-[10px] transition opacity-80 hover:opacity-100"
+                                    title="${en ? 'Delete this gift' : 'Xóa món quà này'}">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         `;
                     }
 
                     const displayName = getRewardName(item);
+                    const descHtml = item.description ? `<div class="gift-desc">${escapeHtml(String(item.description))}</div>` : '';
 
                     card.innerHTML = `
-                        <div class="absolute top-2 right-2 flex items-center gap-1">
-                            <button onclick="openEditItemModal('${item.id}')" 
-                                    class="w-6 h-6 bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white rounded-full flex items-center justify-center text-[10px] transition opacity-80 hover:opacity-100" 
-                                    title="Sửa điểm / Tên quà">
+                        <span class="gift-handle" title="${en ? 'Drag to reorder' : 'Kéo để di chuyển vị trí'}"><i class="fa-solid fa-ellipsis-vertical"></i></span>
+                        <div class="gift-actions">
+                            <button onclick="openEditItemModal('${item.id}')"
+                                    class="w-6 h-6 bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white rounded-full flex items-center justify-center text-[10px] transition opacity-80 hover:opacity-100"
+                                    title="${en ? 'Edit points / name' : 'Sửa điểm / Tên quà'}">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                             ${deleteBtnHtml}
                         </div>
 
-                        <div class="mt-2">
-                            <div class="text-2xl mb-1 mt-1"><span class="gift-emoji">${item.isFixed ? '⭐' : '🎁'}</span></div>
-                            <div class="font-bold text-slate-800 text-sm mb-1 pr-2 pl-2">${displayName}</div>
-                            <div class="text-amber-600 font-extrabold text-xs mb-3">${item.cost} Pts</div>
+                        <div class="gift-body">
+                            <div class="gift-emoji-wrap text-2xl mb-1 mt-1"><span class="gift-emoji">${item.isFixed ? '⭐' : '🎁'}</span></div>
+                            <div class="gift-info">
+                                <div class="gift-name font-bold text-slate-800 text-sm mb-1">${displayName}</div>
+                                ${descHtml}
+                            </div>
+                            <div class="gift-stats">
+                                <span class="gift-cost">${item.cost} Pts</span>
+                            </div>
                         </div>
-                        <button onclick="openSelectStudentModal('${item.id}')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition flex items-center justify-center gap-1">
+                        <button onclick="openSelectStudentModal('${item.id}')" class="gift-redeem w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition flex items-center justify-center gap-1">
                             <i class="fa-solid fa-cart-shopping text-xs"></i> ${t.lblRedeemBtn}
                         </button>
                     `;
@@ -5874,6 +5930,71 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             shopFxApply();
         };
         shopFxApply();
+
+        /* --- CHẾ ĐỘ XEM (LƯỚI / DANH SÁCH) + KÉO THẢ SẮP XẾP THẺ QUÀ --- */
+        function shopViewMode() { let m = 'grid'; try { m = localStorage.getItem('shopViewMode') === 'list' ? 'list' : 'grid'; } catch (e) {} return m; }
+        function shopViewApply() {
+            const m = shopViewMode();
+            document.querySelectorAll('#shopViewSwitch button').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+        }
+        window.setShopView = function (m) {
+            try { localStorage.setItem('shopViewMode', m === 'list' ? 'list' : 'grid'); } catch (e) {}
+            renderShopView();
+        };
+        (function () {
+            let drag = null;
+            function onMove(e) {
+                if (!drag) return;
+                const { card, ghost, grid } = drag;
+                ghost.style.left = (e.clientX - drag.dx) + 'px';
+                ghost.style.top = (e.clientY - drag.dy) + 'px';
+                const el = document.elementsFromPoint(e.clientX, e.clientY).find(x => x.classList && x.classList.contains('gift-card') && x !== card && x.parentNode === grid);
+                if (el) {
+                    const r = el.getBoundingClientRect();
+                    const list = getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).length === 1;
+                    const after = list ? e.clientY > r.top + r.height / 2 : e.clientX > r.left + r.width / 2;
+                    const ref = after ? el.nextSibling : el;
+                    if (ref !== card) grid.insertBefore(card, ref);
+                }
+                const sc = document.getElementById('viewShopContainer');
+                const dy = e.clientY < 80 ? -14 : (e.clientY > window.innerHeight - 80 ? 14 : 0);
+                if (dy) { if (sc && sc.scrollHeight > sc.clientHeight) sc.scrollTop += dy; else window.scrollBy(0, dy); }
+            }
+            function onEnd() {
+                if (!drag) return;
+                const { card, ghost, grid } = drag; drag = null;
+                ghost.remove(); card.classList.remove('gift-placeholder');
+                document.body.classList.remove('gift-dragging');
+                document.removeEventListener('pointermove', onMove);
+                document.removeEventListener('pointerup', onEnd);
+                document.removeEventListener('pointercancel', onEnd);
+                const ids = Array.from(grid.children).map(c => c.dataset && c.dataset.id).filter(Boolean);
+                const items = appData.globalShopItems || [];
+                const sorted = ids.map(id => items.find(i => i.id === id)).filter(Boolean);
+                items.forEach(i => { if (!sorted.includes(i)) sorted.push(i); });
+                if (sorted.some((x, i) => x !== items[i])) { appData.globalShopItems = sorted; saveData(); }
+            }
+            document.addEventListener('pointerdown', function (e) {
+                if (e.button !== undefined && e.button !== 0) return;
+                const h = e.target.closest && e.target.closest('.gift-handle');
+                if (!h) return;
+                const card = h.closest('.gift-card'), grid = document.getElementById('shopItemsGrid');
+                if (!card || !grid || card.parentNode !== grid) return;
+                e.preventDefault();
+                const r = card.getBoundingClientRect();
+                const ghost = card.cloneNode(true);
+                ghost.classList.add('gift-ghost');
+                ghost.style.width = r.width + 'px'; ghost.style.height = r.height + 'px';
+                ghost.style.left = r.left + 'px'; ghost.style.top = r.top + 'px';
+                document.body.appendChild(ghost);
+                card.classList.add('gift-placeholder');
+                document.body.classList.add('gift-dragging');
+                drag = { card, ghost, grid, dx: e.clientX - r.left, dy: e.clientY - r.top };
+                document.addEventListener('pointermove', onMove);
+                document.addEventListener('pointerup', onEnd);
+                document.addEventListener('pointercancel', onEnd);
+            });
+        })();
 
         /* --- XỬ LÝ ĐỔI QUÀ VÀ KIỂM TRA ĐIỂM Pts (có số lượng) --- */
         function readGiftQty() {
@@ -7192,13 +7313,13 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             const cellHtml = cellKeys.length ? cellKeys.map(key => { const c = cells[key], t = sgTierKey(c.sgTier), d = sgFmtDate(key.replace(st.id + '_', ''));
                 const up = c.sgOrig && c.sgOrig.v !== undefined;
                 const how = up ? T(`Nâng từ ${c.sgOrig.v} → 10`, `Raised from ${c.sgOrig.v} → 10`) : T('Điền ô trống', 'Filled empty cell');
-                return `<div class="sgb-row sg-t${t}"><i class="fa-solid fa-fire-flame-curved"></i><div><b>${esc(d)}</b><small>${T('Quà Streak', 'Streak Gift')} ${t}</small></div><div class="sgb-r">10<small>${how}</small></div></div>`; }).join('')
+                return `<div class="sgb-row sg-t${t}"><i class="fa-solid fa-fire-flame-curved"></i><div><b>${esc(d)}</b><small>${T('Quà Chuỗi', 'Streak Gift')} ${t}</small></div><div class="sgb-r">10<small>${how}</small></div></div>`; }).join('')
                 : `<p class="sgb-empty">${T('Chưa dùng quà vào ô điểm nào.', 'No gift has been applied to a cell yet.')}</p>`;
             const notes = [
                 T('Đạt mốc 5 / 10 / 15 / 20 / 30 / 40 / 50 nhận 1 / 2 / 3 / 4 / 5 / 10 / 20 quà. Mỗi quà tương ứng 1 điểm 10.', 'Reaching 5 / 10 / 15 / 20 / 30 / 40 / 50 earns 1 / 2 / 3 / 4 / 5 / 10 / 20 gifts. Each gift equals one score of 10.'),
                 T('Quà mốc 5 chỉ nhận MỘT LẦN DUY NHẤT, ở lần đầu đạt streak 5 (hiện chữ Đã nhận). Streak về 0 rồi lên 5 lại không nhận thêm. Các mốc từ 10 trở lên chỉ tặng một lần trong cùng một chuỗi; chuỗi chỉ kết thúc khi streak về 0.', 'The milestone-5 gift can be received ONLY ONCE, the first time a student reaches streak 5 (shown as Received). Falling to 0 and climbing back to 5 earns nothing more. Milestones from 10 up are awarded once per chain; a chain only ends when the streak reaches 0.'),
-                T('Streak bị trừ rồi tăng lại không được tặng lại các mốc đã nhận.', 'If the streak is reduced and then climbs back, milestones already received are not awarded again.'),
-                T('Streak về 0 rồi xây lại từ đầu thì các mốc từ 10 trở lên được tặng lại (mốc 5 thì không).', 'If the streak falls to 0 and is rebuilt, milestones from 10 up are awarded again (milestone 5 is not).'),
+                T('Chuỗi bị trừ rồi tăng lại không được tặng lại các mốc đã nhận.', 'If the streak is reduced and then climbs back, milestones already received are not awarded again.'),
+                T('Chuỗi về 0 rồi xây lại từ đầu thì các mốc từ 10 trở lên được tặng lại (mốc 5 thì không).', 'If the streak falls to 0 and is rebuilt, milestones from 10 up are awarded again (milestone 5 is not).'),
                 T('Hoàn tác (Ctrl+Z), phím Delete hoặc nút Xóa điểm làm mất một mốc: quà mốc đó chưa dùng sẽ bị thu hồi (mốc 5 cũng được tính là chưa nhận), kỷ lục hạ theo, và mốc được tặng lại khi đạt lại.', 'Undo (Ctrl+Z), the Delete key or the Delete Score button that removes a milestone: its unused gift is withdrawn (milestone 5 then counts as not received), the record drops accordingly, and the milestone is awarded again when reached again.'),
                 T('Dưới streak 10, điểm dưới 9 làm đứt streak (9 vẫn giữ). Từ streak 10, điểm dưới 9 bị trừ 1 streak; quá 3 lần (mốc 10), 4 (mốc 15), 5 (mốc 20), 10 (mốc 30), 15 (mốc 40), 20 (mốc 50) thì mất hết. Đổi mốc thì đếm lại từ đầu.', 'Below streak 10, a score under 9 ends the streak (a 9 keeps it). From streak 10, each score below 9 costs 1 streak; more than 3 (tier 10), 4 (15), 5 (20), 10 (30), 15 (40) or 20 (50) wipes it out. Changing tier restarts the count.'),
                 T('Quà đã nhận không bị thu hồi khi streak bị trừ hay đứt, và không bị ảnh hưởng bởi việc sửa điểm bằng tay.', 'Received gifts are never taken back when the streak drops or ends, and manual score edits do not affect them.'),
@@ -7209,8 +7330,8 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
             w.innerHTML = `<div class="sgb sg-t${k}"><div class="sgb-bar"></div>
                 <button type="button" class="sgb-x" onclick="sgCloseBook()" aria-label="${T('Đóng', 'Close')}"><i class="fa-solid fa-xmark"></i></button>
                 <div class="sgb-body">
-                    <div class="sgb-head"><div class="sgb-ico">${st.icon || '🎓'}</div><div class="min-w-0"><div class="sgb-name">${esc(getStudentDisplayName(st))}</div><div class="sgb-sub">${esc(cls ? cls.name : '')} · ${T('Sổ quà Streak', 'Streak Gift Book')}</div></div><div style="margin-left:auto">${tenStreakHtml(st.id)}</div></div>
-                    <div class="sgb-stats"><div class="sgb-stat"><b>${cur}</b><span>${T('Streak hiện tại', 'Current streak')}</span></div><div class="sgb-stat"><b>${inf.best}</b><span>${T('Kỷ lục', 'Record')}</span></div><div class="sgb-stat"><b>${leftTens}</b><span>${T('Điểm 10 còn lại', 'Tens left')}</span></div></div>
+                    <div class="sgb-head"><div class="sgb-ico">${st.icon || '🎓'}</div><div class="min-w-0"><div class="sgb-name">${esc(getStudentDisplayName(st))}</div><div class="sgb-sub">${esc(cls ? cls.name : '')} · ${T('Sổ quà Chuỗi', 'Streak Gift Book')}</div></div><div style="margin-left:auto">${tenStreakHtml(st.id)}</div></div>
+                    <div class="sgb-stats"><div class="sgb-stat"><b>${cur}</b><span>${T('Chuỗi hiện tại', 'Current streak')}</span></div><div class="sgb-stat"><b>${inf.best}</b><span>${T('Kỷ lục', 'Record')}</span></div><div class="sgb-stat"><b>${leftTens}</b><span>${T('Điểm 10 còn lại', 'Tens left')}</span></div></div>
                     <div class="sgb-h"><i class="fa-solid fa-flag-checkered"></i>${T('Mốc của chuỗi hiện tại', 'Current chain milestones')}</div>
                     ${ms}${prog}
                     <div class="sgb-h"><i class="fa-solid fa-gift"></i>${T('Quà trong túi', 'Gifts in the bag')}</div>${bagHtml}
@@ -7539,7 +7660,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
                         <tr class="hl-row ${rank===1?'hl-r1':rank===2?'hl-r2':rank===3?'hl-r3':''} ${qsRowFlash('rk', activeClass.id, s.id, st.hasData)}">
                             <td class="py-3.5 px-4 text-center">${rankBadge}</td>
                             <td class="py-3.5 px-4 font-bold text-slate-800">
-                                <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> <span class="tf-name-link" onclick="tfOpenProfile('${s.id}')" title="${lang === 'en' ? 'View profile' : 'Xem hồ sơ'}">${getStudentDisplayName(s)}</span>${levelPillHtml(s.id)}${(() => { const f = tenStreakHtml(s.id); return f ? `<span class="sg-open" role="button" tabindex="0" onclick="sgOpenBook('${s.id}')" onkeydown="if(event.key==='Enter')sgOpenBook('${s.id}')" title="${lang === 'en' ? 'Open Streak Gift Book' : 'Mở Sổ quà Streak'}">${f}</span>` : ''; })()} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span>
+                                <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> <span class="tf-name-link" onclick="tfOpenProfile('${s.id}')" title="${lang === 'en' ? 'View profile' : 'Xem hồ sơ'}">${getStudentDisplayName(s)}</span>${levelPillHtml(s.id)}${(() => { const f = tenStreakHtml(s.id); return f ? `<span class="sg-open" role="button" tabindex="0" onclick="sgOpenBook('${s.id}')" onkeydown="if(event.key==='Enter')sgOpenBook('${s.id}')" title="${lang === 'en' ? 'Open Streak Gift Book' : 'Mở Sổ quà Chuỗi'}">${f}</span>` : ''; })()} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span>
                             </td>
                             <td class="py-2 px-2 text-center">${gradeBadgeSvg(st.avg, st.hasData)}</td>
                             <td class="py-3.5 px-4 text-center font-semibold text-slate-600"><span data-cu="rkt:${s.id}:n" data-to="${st.attendedCount}" data-dec="0">${st.attendedCount}</span></td>
@@ -8918,7 +9039,13 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
         function archivedFinalTotal(snap,id){const ex=(snap.finalExams||{})[id]||{};const stats=calculateSnapshotTotal(snap,id);const accumulated=stats.avg;const num=v=>v!==''&&v!==null&&v!==undefined&&Number.isFinite(Number(v))?Number(v):null;const cats=['listening','speaking','reading','writing'].map(k=>num(ex[k]));let g=num(ex.grammar),v=num(ex.vocabulary);if(ex.bonusTo?.grammar&&g!==null)g=(g+accumulated)/2;if(ex.bonusTo?.vocabulary&&v!==null)v=(v+accumulated)/2;if(ex.bonusTo?.grammarVocabulary){if(g!==null)g=(g+accumulated)/2;if(v!==null)v=(v+accumulated)/2;}const gv=[g,v].filter(x=>x!==null);if(gv.length)cats.push(gv.reduce((a,b)=>a+b,0)/gv.length);const valid=cats.filter(x=>x!==null);return valid.length? (valid.reduce((a,b)=>a+b,0)/valid.length).toFixed(2):'—';}
         function calculateSnapshotTotal(snap,id){let total=0,count=0;Object.entries(snap.scores||{}).forEach(([k,v])=>{if(k.startsWith(id+'_')){total+=Number(v.score)||0;count++;}});return {total,avg:count?total/count:0};}
         window.closeStudentProfile=function(){hideModuleModal('studentProfileModal');};
-        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':ctCls(st)}">${xfBdayFx(st)}${xfBdayToday(st)?'':ctFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar">${escapeHtml(st.icon||'🎓')}</div><div class="min-w-0 flex-1"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="ctOpenPicker('${st.id}')" aria-label="${appData.language==='en'?'Card template':'Template thẻ'}" title="${appData.language==='en'?'Choose card template':'Chọn template thẻ'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 text-xs"><i class="fa-solid fa-palette"></i></button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
+        function scbUpdate(n){
+          const el=document.getElementById('studentCountBadge'); if(!el)return;
+          const lbl=el.querySelector('.scb-lbl'),num=el.querySelector('.scb-num');
+          if(lbl)lbl.textContent=appData.language==='en'?'Students':'Số lượng học sinh';
+          if(num&&num.textContent!==String(n)){num.textContent=String(n);num.classList.remove('scb-pop');void num.offsetWidth;num.classList.add('scb-pop');}
+        }
+        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);scbUpdate(arr.length);box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':ctCls(st)}">${xfBdayFx(st)}${xfBdayToday(st)?'':ctFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar">${escapeHtml(st.icon||'🎓')}</div><div class="min-w-0 flex-1"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="ctOpenPicker('${st.id}')" aria-label="${appData.language==='en'?'Card template':'Mẫu thẻ'}" title="${appData.language==='en'?'Choose card template':'Chọn template thẻ'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 text-xs"><i class="fa-solid fa-palette"></i></button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
         window.openStudentProgress=function(studentId){ensureNewModules();const st=appData.students.find(x=>String(x.id)===String(studentId));if(!st)return;window.studentProgressViewingId=String(studentId);document.getElementById('studentProgressTitle').innerText=(st.icon||'🎓')+' '+getStudentDisplayName(st)+' · '+(appData.language==='en'?'Progress profile':'Hồ sơ tiến độ');window.renderStudentProgress();showModuleModal('studentProgressModal');};
 window.closeStudentProgress=function(){hideModuleModal('studentProgressModal');};
 window.renderStudentProgress=function(){
@@ -9065,6 +9192,8 @@ window.openStudentProfile=function(studentId){
             </section>`;
           }).join('')||`<div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center"><p class="text-sm text-slate-600">${moduleText('noWeeks')}</p><button type="button" onclick="addTeachingWeek()" class="mt-3 rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-bold">${moduleText('addWeekBtn')}</button></div>`;
           if(autoFocusWeek)setTimeout(teachingFocusNext,120);
+          tpUpdateBadge();
+          if(window.__tpJump){window.__tpJump=false;setTimeout(tpJumpFirst,60);}
         }
         window.renderTeachingView=renderTeachingView;
         function teachingFocusNext(){
@@ -9097,9 +9226,9 @@ window.openStudentProfile=function(studentId){
               if(!lesson) lesson=(lessons||[]).find(l=>String(l.classId)===String(c.id)&&!l.date&&!l.makeupDate&&Number(l.weekday)===Number(d.key));
               const textForSearch=`${c.name} ${lesson?.content||''} ${lesson?.detail||''}`.toLocaleLowerCase();
               if(query&&!textForSearch.includes(query))return '';
-              return `<div class="teaching-day-grid px-1 py-1${isNext?' teaching-next-row':''}" style="border-bottom:1px solid #f1f5f9${isNext?`;--tn-c:${classColorHex(c.color)};--tn-bg:${tnRgba(classColorHex(c.color),.16)};--tn-g:${tnRgba(classColorHex(c.color),.65)}`:''}">
+              return `<div class="teaching-day-grid px-1 py-1${isNext?' teaching-next-row':''}${(tpIsDue(date,appData.classSchedules?.[c.id]?.[d.key])&&!String(lesson?.content||'').trim())?' tp-row-pending':''}" style="border-bottom:1px solid #f1f5f9${isNext?`;--tn-c:${classColorHex(c.color)};--tn-bg:${tnRgba(classColorHex(c.color),.16)};--tn-g:${tnRgba(classColorHex(c.color),.65)}`:''}">
                 <div class="teaching-grid-cell gap-1" style="border-left:3px solid ${classColorHex(c.color)}"><div class="min-w-0"><div class="text-xs font-extrabold text-slate-900" style="font-weight:800;overflow-wrap:anywhere">${escapeHtml(c.name)}${isNext?`<span class="teaching-next-badge">${appData.language==='en'?'Next':'Tiếp theo'}</span>`:''}</div><div class="text-[10px] font-semibold text-slate-500">${escapeHtml(appData.classSchedules?.[c.id]?.[d.key]||'')}</div></div></div>
-                <div class="teaching-grid-cell"><input type="text" class="teaching-grid-input" value="${escapeHtml(lesson?.content||'')}" placeholder="${appData.language==='en'?'Enter teaching content':'Nhập nội dung giảng dạy'}" onblur="updateScheduledLesson('${w.id}','${c.id}','${date}','content',this.value)"></div>
+                <div class="teaching-grid-cell"><input type="text" data-tp-key="${w.id}|${c.id}|${date}" class="teaching-grid-input" value="${escapeHtml(lesson?.content||'')}" placeholder="${appData.language==='en'?'Enter teaching content':'Nhập nội dung giảng dạy'}" onblur="updateScheduledLesson('${w.id}','${c.id}','${date}','content',this.value)"></div>
                 <div class="teaching-grid-cell"><textarea class="teaching-grid-input" rows="1" placeholder="${appData.language==='en'?'Enter lesson details':'Nhập chi tiết buổi học'}" onblur="updateScheduledLesson('${w.id}','${c.id}','${date}','detail',this.value)">${escapeHtml(lesson?.detail||'')}</textarea></div>
               </div>`;
             }).filter(Boolean).join('');
@@ -9107,12 +9236,59 @@ window.openStudentProfile=function(studentId){
             return `<section class="teaching-day-card rounded-lg overflow-hidden bg-white" style="border:1px solid #94a3b8"><button type="button" onclick="toggleTeachingDay('${w.id}','${date}')" class="w-full px-2 py-1.5 flex items-center gap-2 text-left hover:brightness-95" style="background:#e2e8f0;border-bottom:1px solid #94a3b8"><span class="text-xs font-black text-slate-900" style="width:12px">${dayCollapsed?'▸':'▾'}</span><b class="text-xs font-black text-slate-900" style="letter-spacing:.02em;font-weight:900">${days[i]||''}</b><span class="text-[11px] font-extrabold text-slate-800">${date}</span>${isToday?`<span class="teaching-today-tag">${appData.language==='en'?'Today':'Hôm nay'}</span>`:''}<span class="ml-auto text-[10px] font-semibold text-slate-500">${dayCollapsed?(appData.language==='en'?'Expand day':'Mở ngày'):(appData.language==='en'?'Collapse day':'Thu gọn ngày')}</span></button>${dayCollapsed?'':`<div class="teaching-day-table-scroll">${rows||noClass}</div>`}</section>`;
           }).join('')}</div>`;
         }
+        /* ===== Huy hiệu: số buổi học đã đến giờ nhưng chưa điền nội dung giảng dạy ===== */
+        function tpIsDue(date,timeStr){
+          const m=String(timeStr||'').match(/(\d{1,2})\s*[:h.]\s*(\d{2})/); const p=String(date||'').split('-').map(Number);
+          if(p.length<3||!p[0])return false;
+          return new Date(p[0],p[1]-1,p[2],m?+m[1]:0,m?+m[2]:0).getTime()<=Date.now();
+        }
+        function tpPendingList(){
+          const cm=appData.courseManager; if(!cm||!appData.teachingPlans)return [];
+          const plans=appData.teachingPlans[cm.activeCourseId]||[]; const course=activeCourse(); const out=[];
+          plans.forEach(w=>{
+            const st=mondayOfDate(w.startDate||course?.startDate||''); if(!st)return;
+            scheduleWeekdays.forEach((d,i)=>{
+              const date=datePlus(st,i);
+              (appData.classes||[]).forEach(c=>{
+                const tm=appData.classSchedules?.[c.id]?.[d.key];
+                if(tm===undefined||tm===''||!tpIsDue(date,tm))return;
+                const ls=w.lessons||[];
+                let l=ls.find(x=>String(x.classId)===String(c.id)&&(x.date===date||x.makeupDate===date));
+                if(!l)l=ls.find(x=>String(x.classId)===String(c.id)&&!x.date&&!x.makeupDate&&Number(x.weekday)===Number(d.key));
+                if(!l||!String(l.content||'').trim())out.push({wid:w.id,classId:c.id,date,time:String(tm),year:Number(w.year||st.slice(0,4))});
+              });
+            });
+          });
+          return out.sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
+        }
+        function tpUpdateBadge(){
+          const el=document.getElementById('teachingPendingBadge'); if(!el)return;
+          let n=0; try{n=tpPendingList().length;}catch(e){n=0;}
+          const en=appData.language==='en';
+          el.classList.toggle('hidden',n<=0);
+          el.textContent=n>99?'99+':String(n);
+          el.title=en?`${n} lesson(s) without teaching content`:`${n} buổi học chưa điền nội dung giảng dạy`;
+        }
+        window.tpUpdateBadge=tpUpdateBadge;
+        function tpJumpFirst(){
+          const p=tpPendingList()[0]; if(!p)return;
+          const ys=document.getElementById('teachingYear'),cf=document.getElementById('teachingClassFilter'),sr=document.getElementById('teachingSearch');
+          if(ys)ys.value=String(p.year); if(cf)cf.value='all'; if(sr)sr.value='';
+          teachingExpandedWeeks.add(p.wid); teachingCollapsedDays.delete(`${p.wid}_${p.date}`);
+          renderTeachingView();
+          setTimeout(()=>{
+            const inp=document.querySelector(`[data-tp-key="${p.wid}|${p.classId}|${p.date}"]`); if(!inp)return;
+            try{inp.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}
+            try{inp.focus({preventScroll:true});}catch(e){inp.focus();}
+          },150);
+        }
+        setInterval(tpUpdateBadge,5000); [800,2500,6000].forEach(ms=>setTimeout(tpUpdateBadge,ms));
         function filterScheduleClass(classId){const f=document.getElementById('teachingClassFilter')?.value||'all';return f==='all'||String(classId)===f;}
         window.updateScheduledLesson=function(wid,classId,date,key,value){
           const plans=appData.teachingPlans[appData.courseManager.activeCourseId]||[]; const w=plans.find(x=>x.id===wid); if(!w)return;
           w.lessons=w.lessons||[]; let l=w.lessons.find(x=>String(x.classId)===String(classId)&&x.date===date);
           if(!l){l={id:'lesson_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),classId:String(classId),date,makeupDate:'',content:'',detail:'',unit:'',homework:'',status:'class'};w.lessons.push(l);}
-          if(l[key]===value)return; l[key]=value;
+          if(l[key]===value)return; l[key]=value; tpUpdateBadge();
           saveData().then(ok=>{if(!ok)console.warn('Teaching content was not synced to Firebase.');});
         };
         window.teachingWeekHeadClick=function(ev,id){if(ev.target.closest('button,input,textarea,select,label,a,[data-no-hover]'))return;toggleTeachingWeek(id);};
@@ -9798,7 +9974,7 @@ window.openStudentProfile=function(studentId){
             }
             const box = (ic, val, lb) => `<div class="rounded-xl bg-slate-50 border border-slate-200 p-2 text-center"><div class="text-lg font-black text-slate-800">${ic} ${val}</div><div class="text-[10px] font-bold text-slate-500">${lb}</div></div>`;
             return `<div class="mt-3"><div class="flex justify-between text-[11px] font-black text-indigo-700"><span>Lv${lv}</span><span>XP ${cur.toFixed(0)}/${XP_PER_LEVEL}</span></div><div class="tf-xpbar"><i style="width:${(cur / XP_PER_LEVEL * 100).toFixed(0)}%"></i></div></div>
-                <div class="grid grid-cols-3 gap-2 mt-3">${box('🔥', inf.cur, L2('Streak 10', 'Streak'))}${box('🏆', inf.best, L2('Kỷ lục', 'Record'))}${box('📊', stats.hasData ? stats.avg : '--', L2('ĐTB', 'AVG'))}${box('🎁', (st.inventory || []).length, L2('Quà đang có', 'Gifts'))}${box('📝', pts.length, L2('Số điểm', 'Scores'))}${box('🚫', absent, L2('Số buổi vắng', 'Absences'))}</div>
+                <div class="grid grid-cols-3 gap-2 mt-3">${box('🔥', inf.cur, L2('Chuỗi 10', 'Streak'))}${box('🏆', inf.best, L2('Kỷ lục', 'Record'))}${box('📊', stats.hasData ? stats.avg : '--', L2('ĐTB', 'AVG'))}${box('🎁', (st.inventory || []).length, L2('Quà đang có', 'Gifts'))}${box('📝', pts.length, L2('Số điểm', 'Scores'))}${box('🚫', absent, L2('Số buổi vắng', 'Absences'))}</div>
                 <div class="mt-3"><p class="text-[11px] font-bold text-slate-500 mb-1">${L2('Điểm 20 lần gần nhất (theo ngày)', 'Last 20 scores (by date)')}</p>${chart}</div>`;
         }
         // Khối thẻ thành tích trong cửa sổ "xem chi tiết" (Danh sách lớp)
@@ -9926,7 +10102,7 @@ window.openStudentProfile=function(studentId){
         function ctProfileSection(st, isArchived) {
             const id = xfEsc(st.id), t = ctGet(st);
             const btn = isArchived ? '' : `<button type="button" onclick="ctOpenPicker('${id}')" class="mt-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-3 py-2 text-xs font-bold">${L2('Chọn template', 'Choose template')}</button>`;
-            return `<section class="mt-4 rounded-xl border border-fuchsia-200 bg-fuchsia-50 p-3"><h3 class="font-bold text-sm text-fuchsia-700">🎨 ${L2('Template thẻ học sinh', 'Student card template')}</h3><p class="text-xs mt-1 text-slate-600">${t ? t.ic + ' ' : ''}${xfEsc(ctName(t))}</p>${btn}</section>`;
+            return `<section class="mt-4 rounded-xl border border-fuchsia-200 bg-fuchsia-50 p-3"><h3 class="font-bold text-sm text-fuchsia-700">🎨 ${L2('Mẫu thẻ học sinh', 'Student card template')}</h3><p class="text-xs mt-1 text-slate-600">${t ? t.ic + ' ' : ''}${xfEsc(ctName(t))}</p>${btn}</section>`;
         }
         window.ctClosePicker = function () { const w = document.getElementById('ctPicker'); if (w) w.remove(); };
         window.ctOpenPicker = function (id) {
