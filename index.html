@@ -2005,6 +2005,27 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
 .mx-today-group .qs-lbl{display:inline}
 @media (prefers-reduced-motion:reduce){.qs-toolbar-content .qs-toggle .qs-lbl{transition:none}}
 </style>
+<style id="sm-style">
+/* ===== Tên học sinh nổi bật (Score Matrix + cửa sổ Cập nhật điểm) ===== */
+@keyframes smBob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-4px) rotate(6deg) scale(1.1)}}
+@keyframes smShine{to{background-position:-250% 0}}
+@keyframes smPop{0%{opacity:0;transform:translateY(8px) scale(.92)}60%{opacity:1;transform:translateY(-2px) scale(1.04)}100%{transform:none}}
+#scoreMatrix td.sticky-col-2 .mx-ico{display:inline-block;font-size:16px;animation:smBob 1.6s ease-in-out infinite;transform-origin:50% 100%}
+#scoreMatrix td.sticky-col-2 .tf-name-link{font-size:14px;font-weight:800;letter-spacing:.1px}
+#scoreMatrix .score-row:hover>td.sticky-col-2 .mx-ico{animation-duration:.7s}
+#scoreModal #modalStudentName{display:flex;align-items:center;gap:.5rem;font-size:1.4rem;line-height:1.25;font-weight:900;color:#312e81}
+#scoreModal #modalStudentName.sm-pop{animation:smPop .55s cubic-bezier(.2,.9,.3,1.3)}
+#scoreModal .sm-lbl{font-size:.75rem;font-weight:700;color:#6366f1}
+#scoreModal .sm-ico{display:inline-block;font-size:1.8rem;line-height:1;animation:smBob 1.4s ease-in-out infinite;transform-origin:50% 100%}
+#scoreModal .sm-nm{background:linear-gradient(90deg,#312e81,#7c3aed,#db2777,#312e81);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:smShine 4s linear infinite}
+/* Dải tiêu đề đồng bộ template của học sinh */
+#scoreModal .sm-hdr.sm-tpl{position:relative;overflow:hidden}
+#scoreModal .sm-hdr>.sm-bg{position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:inherit}
+#scoreModal .sm-hdr.sm-tpl>*:not(.sm-bg){position:relative;z-index:1}
+#scoreModal .sm-hdr.sm-light h3,#scoreModal .sm-hdr.sm-light i,#scoreModal .sm-hdr.sm-light button{color:#1e293b !important;text-shadow:none}
+#scoreModal .sm-hdr.sm-tpl{background:transparent !important}
+@media (prefers-reduced-motion:reduce){#scoreMatrix .mx-ico,#scoreModal .sm-ico,#scoreModal .sm-nm,#scoreModal #modalStudentName{animation:none !important}#scoreModal .sm-nm{color:#312e81;background:none}}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -2519,9 +2540,9 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
     </div>
 
     <!-- Modal: Nhập / Sửa Điểm & Dùng Quà (hình chữ nhật, hai nửa; không tự đóng) -->
-    <div id="scoreModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
+    <div id="scoreModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-3" onmousedown="window.__smDownOut=(event.target===this)" onclick="if(event.target===this&&window.__smDownOut){window.__smDownOut=false;smAutoSaveClose();}">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl p-6 transition-all max-h-[94vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
+            <div id="scoreModalHdr" class="sm-hdr flex justify-between items-center border-b pb-3 mb-4">
                 <h3 class="text-base font-bold text-slate-800" data-i18n="modalScoreTitle">Cập Nhật Điểm Học Sinh</h3>
                 <button type="button" onclick="closeScoreModal()" class="text-slate-400 hover:text-slate-600" aria-label="Đóng"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
@@ -3853,7 +3874,7 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
         document.addEventListener('keydown', e => {
             if (e.key !== 'Escape') return;
             const m = document.getElementById('scoreModal'), c = document.getElementById('appConfirmModal');
-            if (m && !m.classList.contains('hidden') && !(c && !c.classList.contains('hidden'))) window.closeScoreModal();
+            if (m && !m.classList.contains('hidden') && !(c && !c.classList.contains('hidden'))) window.smAutoSaveClose();
         });
         function qsOldExcess(item) {
             if (item && item.speakingCount !== undefined) { const M = parseInt(appData.maxSpeakingLimit) || 15; return Math.max(0, item.speakingCount - M); }
@@ -7789,7 +7810,7 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
                     if (mxTpl) html += ctFx(student, 3);
                     html += `<div class="flex items-center justify-between">`;
                     html += `<div class="flex items-center space-x-1.5 mx-nbox">`;
-                    html += `<span>${student.icon || '🎓'}</span>`;
+                    html += `<span class="mx-ico">${student.icon || '🎓'}</span>`;
                     const nfx = tfNameFx(student.id);
                     html += `<span class="tf-name-link${nfx.nm}" onclick="tfOpenProfile('${student.id}')" title="${lang === 'en' ? 'View profile' : 'Xem hồ sơ'}">${getStudentDisplayName(student)}</span>${nfx.flame}`;
                     html += `</div>`;
@@ -7855,7 +7876,8 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
 
             document.getElementById('modalStudentId').value = studentId;
             document.getElementById('modalDateStr').value = dateStr;
-            document.getElementById('modalStudentName').innerText = `${t.lblStudentModalPrefix} ${getStudentDisplayName(student)}`;
+            smRenderName(student, t.lblStudentModalPrefix);
+            smApplyTheme(student);
             
             const [y, m, d] = dateStr.split('-');
             document.getElementById('modalDateLabel').innerText = `${t.lblDateModalPrefix} ${d} ${t.lblMonthModalPrefix} ${m}, ${t.lblYearModalPrefix} ${y}`;
@@ -7893,6 +7915,59 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
             const focusEl = absentCheckbox.checked ? absentCheckbox : speakingInput;
             focusEl.focus();
             if (focusEl === speakingInput) { try { speakingInput.select(); } catch (err) {} }
+            window.__smSnap = smSnap();
+        };
+
+        /* --- Cửa sổ Cập nhật điểm: tên to + icon nhấp nhô, dải màu theo template, tự lưu khi bấm ra ngoài / Esc --- */
+        function smSnap() {
+            const g = id => document.getElementById(id) || {};
+            return JSON.stringify([!!g('modalAbsentCheckbox').checked, g('modalScoreInput').value, g('modalSpeakingCountInput').value, !!g('modalIsExamCheckbox').checked]);
+        }
+        function smRenderName(student, prefix) {
+            const box = document.getElementById('modalStudentName'); if (!box) return;
+            box.textContent = '';
+            const lb = document.createElement('span'); lb.className = 'sm-lbl'; lb.textContent = prefix || '';
+            const ic = document.createElement('span'); ic.className = 'sm-ico'; ic.textContent = student.icon || '🎓';
+            const nm = document.createElement('span'); nm.className = 'sm-nm'; nm.textContent = getStudentDisplayName(student);
+            box.append(lb, ic, nm);
+            box.classList.remove('sm-pop'); void box.offsetWidth; box.classList.add('sm-pop');
+        }
+        function smApplyTheme(student) {
+            const hdr = document.getElementById('scoreModalHdr'); if (!hdr) return;
+            hdr.querySelectorAll('.sm-bg').forEach(n => n.remove());
+            hdr.classList.remove('sm-tpl', 'sm-light');
+            try {
+                if (!qsTpl) return;
+                const bday = (typeof xfBdayToday === 'function') && xfBdayToday(student);
+                const tpl = (!bday && typeof ctGet === 'function') ? ctGet(student) : null;
+                if (!bday && !tpl) return;
+                const bg = document.createElement('div');
+                bg.setAttribute('aria-hidden', 'true');
+                if (bday) { bg.className = 'sm-bg mx-bday'; hdr.classList.add('sm-light'); }
+                else {
+                    bg.className = 'sm-bg ' + ctCls(student);
+                    bg.style.setProperty('--h', '56px'); bg.style.setProperty('--w', '720px');
+                    bg.innerHTML = ctFx(student, 3);
+                    if (!tpl.dark) hdr.classList.add('sm-light');
+                }
+                hdr.classList.add('sm-tpl');
+                hdr.prepend(bg);
+            } catch (err) {}
+        }
+        window.smAutoSaveClose = function () {
+            const m = document.getElementById('scoreModal');
+            if (!m || m.classList.contains('hidden')) return;
+            let changed = false;
+            try { changed = smSnap() !== window.__smSnap; } catch (e) {}
+            const absent = !!(document.getElementById('modalAbsentCheckbox') || {}).checked;
+            const sc = (document.getElementById('modalScoreInput') || {}).value;
+            const sp = (document.getElementById('modalSpeakingCountInput') || {}).value;
+            const hasData = absent || sc !== '' || sp !== '';
+            if (changed && hasData) {
+                window.__qsModalFromKey = false;
+                try { window.saveScore({ preventDefault() {} }); } catch (err) { console.error(err); }
+            }
+            window.closeScoreModal();
         };
 
         window.onSpeakingCountChange = function() {
