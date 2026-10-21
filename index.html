@@ -1974,6 +1974,17 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 .gift-card.gift-ghost{position:fixed !important;z-index:9999;pointer-events:none;opacity:.93;margin:0;transform:scale(1.03) rotate(1deg) !important;transition:none !important;box-shadow:0 18px 36px rgba(79,70,229,.35) !important}
 body.gift-dragging{user-select:none;-webkit-user-select:none;cursor:grabbing}
 body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
+.gift-type-ico{color:#d97706}
+.gift-card.as-list .gift-type-ico{font-size:1.3rem}
+#studentSelectList .gs-row.sel{background:#eef2ff;border-color:#818cf8;box-shadow:0 0 0 1px #818cf8 inset}
+#studentSelectList .gs-row.gs-off{cursor:not-allowed;background:#f8fafc}
+#studentSelectList .gs-row.gs-off:hover{background:#f8fafc;border-color:#fecdd3}
+.qg-acts{margin-left:auto;display:flex;align-items:center;gap:.35rem;flex:none}
+.qg-acts .qg-use,.qg-acts .qg-note{margin-left:0}
+.qg-del{flex:none;width:1.9rem;height:1.9rem;display:inline-flex;align-items:center;justify-content:center;border-radius:.6rem;background:#fff1f2;color:#e11d48;border:1px solid #fecdd3;font-size:12px;transition:background .15s,color .15s}
+.qg-del:hover{background:#e11d48;color:#fff}
+html.mx-dark .qg-del{background:#4c1d2b;border-color:#9f1239;color:#fda4af}
+html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
 @media (max-width:640px){.gift-card.as-list{flex-wrap:wrap}.gift-card.as-list .gift-stats{order:4}}
 /* Huy hiệu số buổi học chưa điền nội dung (tab Nội dung giảng dạy) */
 .tp-badge{position:absolute;top:-6px;right:-4px;min-width:1.2rem;height:1.2rem;padding:0 .3rem;border-radius:9999px;background:#dc2626;color:#fff;font-size:.68rem;font-weight:900;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff;z-index:5;animation:tpBlink 1s ease-in-out infinite}
@@ -2865,7 +2876,7 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
 
     <!-- Modal: Chọn Học Sinh Để Đổi Quà -->
     <div id="selectStudentModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-2xl w-96 p-6">
+        <div class="bg-white rounded-xl shadow-2xl w-[26rem] max-w-[95vw] p-6">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
                 <h3 class="text-base font-bold text-slate-800" data-i18n="modalAssignRewardTitle">Tặng Quà Cho Học Sinh</h3>
                 <button onclick="closeSelectStudentModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -2880,11 +2891,22 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
                 <span id="giftQtyTotal" class="ml-auto text-[11px] font-black text-amber-600"></span>
             </div>
             <p class="text-xs font-semibold text-slate-600 mb-2" data-i18n="lblSelectStudentPrompt">Click chọn học sinh để trừ điểm Pts và lưu quà vào túi đồ:</p>
+            <div class="mb-2 flex items-center justify-between gap-2">
+                <button type="button" id="giftSelectAllBtn" onclick="giftSelectAllEligible()" class="rounded-lg border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[11px] font-bold text-indigo-700 hover:bg-indigo-100"></button>
+                <span id="giftSelCount" class="text-[11px] font-black text-indigo-700"></span>
+            </div>
             <div id="studentSelectList" class="max-h-60 overflow-y-auto space-y-1.5 mb-4 pr-1">
                 <!-- Dynamic Student Options -->
             </div>
-            <div class="flex justify-end">
-                <button type="button" onclick="closeSelectStudentModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold" data-i18n="btnClose">Đóng</button>
+            <div class="flex items-center justify-between gap-2">
+                <button type="button" id="giftConfirmBtn" onclick="confirmGiftRedeem()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-cart-shopping"></i><span id="giftConfirmLbl"></span></button>
+                <div class="flex items-center gap-2">
+                    <span class="relative inline-block">
+                        <button type="button" id="giftRedeemDateBtn" onclick="openGiftRedeemDatePicker()" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-xs font-semibold flex items-center gap-1.5"><i class="fa-regular fa-calendar-days"></i><span id="giftRedeemDateLbl"></span></button>
+                        <input type="date" id="giftRedeemDate" onchange="onGiftRedeemDateChange()" tabindex="-1" aria-hidden="true" style="position:absolute;left:0;bottom:0;width:100%;height:100%;opacity:0;pointer-events:none">
+                    </span>
+                    <button type="button" onclick="closeSelectStudentModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold" data-i18n="btnClose">Đóng</button>
+                </div>
             </div>
         </div>
     </div>
@@ -4762,6 +4784,29 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
             return null;
         }
 
+        window.qgDelete = async function (studentId, invId) {
+            if (qgBusy) return;
+            if (qsArchived()) { saveData(); return; }
+            const findGift = () => {
+                const st = appData.students.find(x => x.id === studentId);
+                return (st && Array.isArray(st.inventory)) ? st.inventory.find(i => i.invId === invId) : null;
+            };
+            const student = appData.students.find(x => x.id === studentId), gift = findGift();
+            if (!student || !gift) { qsToast(qgT('qg_gift_missing'), 'warning'); qgRender(); return; }
+            const en = appData.language === 'en';
+            qgBusy = true;
+            try {
+                const msg = en
+                    ? `Delete gift "${getRewardName(gift)}" of ${getStudentDisplayName(student)}? Pts spent on it will NOT be refunded.`
+                    : `Xóa quà "${getRewardName(gift)}" của ${getStudentDisplayName(student)}? Điểm Pts đã đổi quà sẽ KHÔNG được hoàn lại.`;
+                if (!await showAppConfirm(msg, qgT('quick_gift_title'))) return;
+                const st2 = appData.students.find(x => x.id === studentId);
+                if (!st2 || !Array.isArray(st2.inventory) || !findGift()) { qgRender(); return; }
+                st2.inventory = st2.inventory.filter(i => i.invId !== invId);
+                saveData();
+                qgRender();
+            } finally { qgBusy = false; }
+        };
         window.qgUse = async function (studentId, invId) {
             if (qgBusy) return;
             if (qsArchived()) { saveData(); return; }
@@ -4865,7 +4910,7 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
                     if (kind === 'streak_ten') { gifts += sgGiftCardHtml(st.id, g); return; }
                     const action = kind === 'lucky' ? `<span class="qg-note">${qgT('qg_wheel_note')}</span>`
                         : `<button type="button" class="qg-use" onclick="qgUse('${st.id}','${g.invId}')">${kind === 'none' ? qgT('qg_consume_btn') : qgT('qg_use_btn')}</button>`;
-                    gifts += `<div class="qg-gift"><i class="fa-solid ${QG_ICON[kind]}"></i><div class="min-w-0"><div class="qg-gn">${escapeHtml(getRewardName(g))}</div><div class="qg-gt">${qgT(QG_TYPE_KEY[kind])}${kind === 'plus_match' ? ' · ' + pmDesc(g) : (kind === 'plus_exam' ? ' · +' + g.deltaScore : '')}</div></div>${action}</div>`;
+                    gifts += `<div class="qg-gift"><i class="fa-solid ${QG_ICON[kind]}"></i><div class="min-w-0"><div class="qg-gn">${escapeHtml(getRewardName(g))}</div><div class="qg-gt">${qgT(QG_TYPE_KEY[kind])}${kind === 'plus_match' ? ' · ' + pmDesc(g) : (kind === 'plus_exam' ? ' · +' + g.deltaScore : '')}</div></div><div class="qg-acts">${action}<button type="button" class="qg-del" onclick="qgDelete('${st.id}','${g.invId}')" title="${appData.language === 'en' ? 'Delete gift' : 'Xóa quà'}" aria-label="${appData.language === 'en' ? 'Delete gift' : 'Xóa quà'}"><i class="fa-solid fa-trash-can"></i></button></div></div>`;
                 });
                 if (!inv.length) gifts = `<p class="text-xs italic text-slate-400">${qgT('no_gifts_available')}</p>`;
                 rows += `<div class="qg-stu"><div class="qg-stu-h"><span>${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}</span><span class="qg-pts">${inv.length ? qgT('qg_gift_count', { n: inv.length }) : ''}</span></div>${gifts}</div>`;
@@ -5894,7 +5939,7 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
                         </div>
 
                         <div class="gift-body">
-                            <div class="gift-emoji-wrap text-2xl mb-1 mt-1"><span class="gift-emoji">${item.isFixed ? '⭐' : '🎁'}</span></div>
+                            <div class="gift-emoji-wrap text-2xl mb-1 mt-1"><span class="gift-emoji gift-type-ico">${giftTypeIconHtml(item)}</span></div>
                             <div class="gift-info">
                                 <div class="gift-name font-bold text-slate-800 text-sm mb-1">${displayName}</div>
                                 ${descHtml}
@@ -6036,6 +6081,79 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
             const q = Number(raw);
             return (raw !== '' && Number.isInteger(q) && q >= 1) ? q : 0;
         }
+        /* Icon theo loại quà: dùng chung bộ icon với Túi quà ở Matrix Score (QG_ICON) */
+        function giftTypeIconHtml(item) {
+            const MAP = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', none: 'fa-gift', lucky: 'fa-dice' };
+            const t = String((item && item.type) || '').toLowerCase();
+            let k = 'none';
+            if (t === 'lucky_spin' || String((item && (item.itemId || item.id)) || '') === 'fix_lucky_spin') k = 'lucky';
+            else if (['plus', 'add', 'change', 'delete_score', 'plus_match', 'plus_exam', 'streak_ten'].includes(t)) k = t;
+            return `<i class="fa-solid ${MAP[k]}"></i>`;
+        }
+
+        /* --- Chọn nhiều học sinh + đổi ngày đổi quà --- */
+        const giftSel = new Set();
+        let giftRedeemDate = '';
+        const giftLocalToday = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+        const giftFmtDate = v => { const p = String(v).split('-'); return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : v; };
+
+        function giftSyncSelection() {
+            const en = appData.language === 'en';
+            const rows = [...document.querySelectorAll('#studentSelectList .gs-row')];
+            let eligible = 0, eligibleOn = 0;
+            rows.forEach(row => {
+                const on = giftSel.has(row.dataset.sid);
+                row.classList.toggle('sel', on);
+                const chk = row.querySelector('[data-chk]');
+                if (chk) chk.className = on ? 'fa-solid fa-square-check text-indigo-600' : (row.dataset.off === '1' ? 'fa-regular fa-square text-slate-300' : 'fa-regular fa-square text-slate-400');
+                if (row.dataset.off !== '1') { eligible++; if (on) eligibleOn++; }
+            });
+            const n = giftSel.size;
+            const cnt = document.getElementById('giftSelCount');
+            if (cnt) cnt.textContent = en ? `Selected: ${n}` : `Đã chọn: ${n}`;
+            const btn = document.getElementById('giftConfirmBtn');
+            if (btn) btn.disabled = n === 0;
+            const lbl = document.getElementById('giftConfirmLbl');
+            if (lbl) lbl.textContent = (en ? 'Redeem' : 'Đổi quà') + (n ? ` (${n})` : '');
+            const all = document.getElementById('giftSelectAllBtn');
+            if (all) {
+                all.disabled = eligible === 0;
+                all.classList.toggle('opacity-50', eligible === 0);
+                all.textContent = (eligible > 0 && eligibleOn === eligible)
+                    ? (en ? 'Deselect all' : 'Bỏ chọn tất cả')
+                    : (en ? 'Select all with enough points' : 'Chọn tất cả đủ điểm');
+            }
+        }
+        function giftUpdateDateLabel() {
+            const en = appData.language === 'en';
+            const el = document.getElementById('giftRedeemDateLbl');
+            if (el) el.textContent = `${en ? 'Change date' : 'Đổi ngày'} · ${giftFmtDate(giftRedeemDate || giftLocalToday())}`;
+        }
+        window.openGiftRedeemDatePicker = function () {
+            const inp = document.getElementById('giftRedeemDate');
+            if (!inp) return;
+            inp.value = giftRedeemDate || giftLocalToday();
+            try { inp.showPicker(); } catch (e) { try { inp.focus(); inp.click(); } catch (e2) {} }
+        };
+        window.onGiftRedeemDateChange = function () {
+            const inp = document.getElementById('giftRedeemDate');
+            giftRedeemDate = (inp && inp.value) ? inp.value : giftLocalToday();
+            giftUpdateDateLabel();
+        };
+        window.giftToggleStudent = function (sid) {
+            const row = document.querySelector(`#studentSelectList .gs-row[data-sid="${sid}"]`);
+            if (!row || row.dataset.off === '1') return;
+            if (giftSel.has(sid)) giftSel.delete(sid); else giftSel.add(sid);
+            giftSyncSelection();
+        };
+        window.giftSelectAllEligible = function () {
+            const rows = [...document.querySelectorAll('#studentSelectList .gs-row')].filter(r => r.dataset.off !== '1');
+            if (!rows.length) return;
+            const allOn = rows.every(r => giftSel.has(r.dataset.sid));
+            rows.forEach(r => allOn ? giftSel.delete(r.dataset.sid) : giftSel.add(r.dataset.sid));
+            giftSyncSelection();
+        };
+
         window.refreshGiftQtyHint = function () {
             const item = (appData.globalShopItems || []).find(i => i.id === selectedItemIdForPurchase);
             const q = readGiftQty(), en = appData.language === 'en';
@@ -6045,36 +6163,18 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
                 const short = !!(item && q) && (Number(row.dataset.pts) < item.cost * q);
                 row.classList.toggle('opacity-60', short);
                 row.classList.toggle('border-rose-200', short);
+                row.classList.toggle('gs-off', short);
+                row.dataset.off = short ? '1' : '0';
+                if (short) giftSel.delete(row.dataset.sid);
                 const note = row.querySelector('[data-short]');
                 if (note) note.textContent = short ? (en ? 'Not enough' : 'Không đủ') : '';
             });
+            giftSyncSelection();
         };
-        window.assignGiftToStudent = function(studentId) {
-            const student = appData.students.find(s => s.id === studentId);
-            if (!student) return;
 
-            const item = (appData.globalShopItems || []).find(i => i.id === selectedItemIdForPurchase);
-            if (!item) return;
-
-            const en = appData.language === 'en';
-            const qty = readGiftQty();
-            if (!qty) {
-                alert(en ? 'Invalid quantity! Please enter a whole number of at least 1.' : 'Số lượng không hợp lệ! Hãy nhập số nguyên từ 1 trở lên.');
-                return;
-            }
-
-            const currentPts = student.rewardPoints || 0;
-            const totalCost = item.cost * qty;
-            if (currentPts < totalCost) {
-                alert(en
-                    ? `Not enough points to redeem! ${getStudentDisplayName(student)} has ${currentPts} Pts, but ${qty} gift(s) cost ${totalCost} Pts (${item.cost} Pts each).`
-                    : `Không đủ điểm để đổi! ${getStudentDisplayName(student)} hiện có ${currentPts} Pts, nhưng ${qty} quà cần ${totalCost} Pts (${item.cost} Pts/quà).`);
-                return;
-            }
-
-            student.rewardPoints = currentPts - totalCost;
+        function giveGiftToStudent(student, item, qty, dateStr) {
+            student.rewardPoints = (student.rewardPoints || 0) - item.cost * qty;
             if (!student.inventory) student.inventory = [];
-
             let lastInv = null;
             for (let k = 0; k < qty; k++) {
                 const invData = {
@@ -6084,7 +6184,7 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
                     itemName: item.name,
                     isFixed: !!item.isFixed,
                     type: item.type || null,
-                    date: new Date().toISOString().split('T')[0]
+                    date: dateStr
                 };
                 if (item.targetScore !== undefined) invData.targetScore = item.targetScore;
                 if (item.deltaScore !== undefined) invData.deltaScore = item.deltaScore;
@@ -6093,16 +6193,51 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
                 student.inventory.push(invData);
                 lastInv = invData;
             }
-            /* Chỉ phát animation toàn màn hình khi công tắc đang bật.
-               Hover sparkle của thẻ quà là hiệu ứng cố định, không bị ảnh hưởng. */
+            return lastInv;
+        }
+
+        window.confirmGiftRedeem = function () {
+            const item = (appData.globalShopItems || []).find(i => i.id === selectedItemIdForPurchase);
+            if (!item) return;
+            const en = appData.language === 'en';
+            const qty = readGiftQty();
+            if (!qty) {
+                alert(en ? 'Invalid quantity! Please enter a whole number of at least 1.' : 'Số lượng không hợp lệ! Hãy nhập số nguyên từ 1 trở lên.');
+                return;
+            }
+            const students = [...giftSel].map(id => appData.students.find(s => s.id === id)).filter(Boolean);
+            if (!students.length) {
+                alert(en ? 'Please select at least one student.' : 'Hãy chọn ít nhất một học sinh.');
+                return;
+            }
+            const totalCost = item.cost * qty;
+            const short = students.filter(s => (s.rewardPoints || 0) < totalCost);
+            if (short.length) {
+                alert(en
+                    ? `Not enough points: ${short.map(s => `${getStudentDisplayName(s)} (${s.rewardPoints || 0} Pts)`).join(', ')}. ${qty} gift(s) cost ${totalCost} Pts per student.`
+                    : `Không đủ điểm: ${short.map(s => `${getStudentDisplayName(s)} (${s.rewardPoints || 0} Pts)`).join(', ')}. ${qty} quà cần ${totalCost} Pts mỗi học sinh.`);
+                short.forEach(s => giftSel.delete(s.id));
+                refreshGiftQtyHint();
+                return;
+            }
+            const dateStr = giftRedeemDate || giftLocalToday();
+            let lastInv = null;
+            students.forEach(st => { lastInv = giveGiftToStudent(st, item, qty, dateStr); });
+
+            /* Animation toàn màn hình chỉ phát khi đổi cho 1 học sinh và công tắc đang bật. */
             let showSuccessFx = true;
             try { showSuccessFx = localStorage.getItem(SHOP_FX_KEY) !== '0'; } catch (e) {}
-            if (showSuccessFx) {
-                try { xfGiftOpenFx(student, lastInv, qty); } catch (e) { console.warn('Gift FX skipped:', e); }
+            if (showSuccessFx && students.length === 1) {
+                try { xfGiftOpenFx(students[0], lastInv, qty); } catch (e) { console.warn('Gift FX skipped:', e); }
             }
 
             saveData().then(ok => { if (ok) uiToast('toastGiftGiven', 'success'); });
             closeSelectStudentModal();
+        };
+        /* Giữ tương thích: đổi nhanh cho đúng 1 học sinh */
+        window.assignGiftToStudent = function (studentId) {
+            giftSel.clear(); giftSel.add(studentId);
+            confirmGiftRedeem();
         };
 
         /* --- NÚT RESET TOÀN BỘ ĐIỂM DƯ TÍCH LŨY --- */
@@ -6684,6 +6819,8 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
 
         window.openSelectStudentModal = function(itemId) {
             selectedItemIdForPurchase = itemId;
+            giftSel.clear();
+            giftRedeemDate = giftLocalToday();
             const item = (appData.globalShopItems || []).find(i => i.id === itemId);
             document.getElementById("modalSelectedItemName").innerText = item ? `${getRewardName(item)} (${item.cost} Pts)` : '';
             const qtyInput = document.getElementById("giftQtyInput"); if (qtyInput) qtyInput.value = 1;
@@ -6700,17 +6837,20 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
                 studentsInClass.forEach(student => {
                     const currentPts = student.rewardPoints || 0;
                     const div = document.createElement("div");
-                    div.className = "p-2.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:border-indigo-300 cursor-pointer transition flex items-center justify-between";
+                    div.className = "gs-row p-2.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:border-indigo-300 cursor-pointer transition flex items-center justify-between gap-2";
                     div.dataset.pts = currentPts;
+                    div.dataset.sid = student.id;
+                    div.dataset.off = '0';
                     div.innerHTML = `
-                        <div class="flex items-center gap-2"><span>${student.icon || '🎓'}</span> <span>${getStudentDisplayName(student)}</span></div>
-                        <span class="flex items-center gap-2"><span data-short class="text-[10px] font-bold text-rose-500"></span><span class="text-[11px] font-black text-amber-600">${currentPts} Pts</span></span>
+                        <div class="flex items-center gap-2 min-w-0"><i data-chk class="fa-regular fa-square text-slate-400"></i><span>${student.icon || '🎓'}</span> <span class="truncate">${getStudentDisplayName(student)}</span></div>
+                        <span class="flex items-center gap-2 flex-none"><span data-short class="text-[10px] font-bold text-rose-500"></span><span class="text-[11px] font-black text-amber-600">${currentPts} Pts</span></span>
                     `;
-                    div.onclick = () => assignGiftToStudent(student.id);
+                    div.onclick = () => giftToggleStudent(student.id);
                     listContainer.appendChild(div);
                 });
             }
 
+            giftUpdateDateLabel();
             refreshGiftQtyHint();
             document.getElementById("selectStudentModal").classList.remove("hidden");
             document.getElementById("selectStudentModal").classList.add("flex");
@@ -6720,6 +6860,7 @@ body.gift-dragging .gift-card:not(.gift-ghost):hover{transform:none}
             document.getElementById("selectStudentModal").classList.add("hidden");
             document.getElementById("selectStudentModal").classList.remove("flex");
             selectedItemIdForPurchase = null;
+            giftSel.clear();
         };
 
         window.deleteStudentGift = async function(studentId, invId) {
