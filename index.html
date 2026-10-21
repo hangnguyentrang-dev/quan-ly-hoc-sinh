@@ -7164,29 +7164,30 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
         const TEN_MISS_LIMIT = { 10: 3, 15: 4, 20: 5, 30: 10, 40: 15, 50: 20 };
         function tenMissTier(n) { return n >= 50 ? 50 : n >= 40 ? 40 : n >= 30 ? 30 : n >= 20 ? 20 : n >= 15 ? 15 : n >= 10 ? 10 : 0; }
         function tenStreakInfo(studentId, scores) {
-            let run = 0, best = 0, miss = 0, tier = 0, peak = 0, live = [];
+            let run = 0, best = 0, miss = 0, tier = 0, peak = 0, live = [], prot = false;
             const all = [];
             // Đổi mốc (lên hay xuống) thì đếm lại số lần bị trừ từ đầu theo mốc mới, bỏ qua các lần trừ trước đó.
-            const retier = () => { const t = tenMissTier(run); if (t !== tier) { tier = t; miss = 0; } };
+            // Chuỗi đã từng đạt >= 10 (prot): khi tụt xuống dưới 10 vẫn giữ mốc 10 và số lần đã bị trừ, không đếm lại.
+            const retier = () => { const t = tenMissTier(run); if (t !== tier && !(prot && t === 0)) { tier = t; miss = 0; } };
             tenSeries(studentId, scores).forEach(e => {
                 if (e.sg) return; // Điểm từ quà Streak: trung lập, không cộng cũng không làm đứt/trừ streak
                 // Quà thường nâng ô lên 10: tính là điểm 10 thật (như sửa tay), kể cả dữ liệu cũ từng gắn cờ giftNeutral.
                 if (e.v >= 10) {
                     run++; if (run > best) best = run; if (run > peak) peak = run;
-                    retier();
+                    retier(); if (run >= TEN_PROTECT_MIN) prot = true;
                     if (SG_REWARDS[run]) { const h = { tier: run, key: e.key }; all.push(h); live.push(h); }
                 }
                 else if (e.keep) { /* điểm nhập lúc bật 'Không trừ streak': giữ nguyên streak, không tính lần trừ */ }
-                else if (run >= TEN_PROTECT_MIN) {
-                    // Từ streak 10 trở đi: mỗi điểm dưới 9 trừ 1 streak; 9 đến dưới 10 giữ nguyên.
+                else if (run >= TEN_PROTECT_MIN || (prot && run > 0)) {
+                    // Từ streak 10 trở đi (kể cả khi đã tụt xuống dưới 10 trong cùng chuỗi): mỗi điểm dưới 9 chỉ trừ 1 streak; 9 đến dưới 10 giữ nguyên.
                     // Quá giới hạn của mốc đang hiện hữu thì mất hết.
                     if (e.v < 9) {
                         miss++;
-                        if (miss > (TEN_MISS_LIMIT[tier] || 3)) { run = 0; miss = 0; tier = 0; }
+                        if (miss > (TEN_MISS_LIMIT[tier] || 3)) { run = 0; miss = 0; tier = 0; prot = false; }
                         else { run = Math.max(0, run - 1); retier(); }
                     }
                 } else if (e.v < 9) { run = 0; miss = 0; tier = 0; } /* dưới streak 10: cũng chỉ điểm dưới 9 mới đứt; 9 đến dưới 10 giữ nguyên như từ streak 10 */
-                if (run === 0) { live = []; peak = 0; }
+                if (run === 0) { live = []; peak = 0; prot = false; tier = 0; miss = 0; }
             });
             const st = appData.students.find(x => x.id === studentId);
             return { cur: run, peak, hist: best, best: Math.max(best, (st && st.bestTenStreak) || 0), hits: all, liveHits: live.filter(h => h.tier <= run) };
@@ -7495,7 +7496,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                 T('Chuỗi bị trừ rồi tăng lại không được tặng lại các mốc đã nhận.', 'If the streak is reduced and then climbs back, milestones already received are not awarded again.'),
                 T('Chuỗi về 0 rồi xây lại từ đầu thì các mốc từ 10 trở lên được tặng lại (mốc 5 thì không).', 'If the streak falls to 0 and is rebuilt, milestones from 10 up are awarded again (milestone 5 is not).'),
                 T('Hoàn tác (Ctrl+Z), phím Delete hoặc nút Xóa điểm làm mất một mốc: quà mốc đó chưa dùng sẽ bị thu hồi (mốc 5 cũng được tính là chưa nhận), kỷ lục hạ theo, và mốc được tặng lại khi đạt lại.', 'Undo (Ctrl+Z), the Delete key or the Delete Score button that removes a milestone: its unused gift is withdrawn (milestone 5 then counts as not received), the record drops accordingly, and the milestone is awarded again when reached again.'),
-                T('Dưới streak 10, điểm dưới 9 làm đứt streak (9 vẫn giữ). Từ streak 10, điểm dưới 9 bị trừ 1 streak; quá 3 lần (mốc 10), 4 (mốc 15), 5 (mốc 20), 10 (mốc 30), 15 (mốc 40), 20 (mốc 50) thì mất hết. Đổi mốc thì đếm lại từ đầu.', 'Below streak 10, a score under 9 ends the streak (a 9 keeps it). From streak 10, each score below 9 costs 1 streak; more than 3 (tier 10), 4 (15), 5 (20), 10 (30), 15 (40) or 20 (50) wipes it out. Changing tier restarts the count.'),
+                T('Dưới streak 10, điểm dưới 9 làm đứt streak (9 vẫn giữ). Từ streak 10, mỗi điểm dưới 9 chỉ bị trừ 1 streak (kể cả khi đã tụt xuống dưới 10 trong cùng chuỗi); quá 3 lần (mốc 10), 4 (mốc 15), 5 (mốc 20), 10 (mốc 30), 15 (mốc 40), 20 (mốc 50) thì mất hết. Đổi mốc thì đếm lại từ đầu.', 'Below streak 10, a score under 9 ends the streak (a 9 keeps it). From streak 10, each score below 9 costs only 1 streak (even after dropping under 10 within the same chain); more than 3 (tier 10), 4 (15), 5 (20), 10 (30), 15 (40) or 20 (50) wipes it out. Changing tier restarts the count.'),
                 T('Quà đã nhận không bị thu hồi khi streak bị trừ hay đứt, và không bị ảnh hưởng bởi việc sửa điểm bằng tay.', 'Received gifts are never taken back when the streak drops or ends, and manual score edits do not affect them.'),
                 T('Điểm từ quà không cộng và không bị trừ streak; ô điểm quà bị khóa. Ô dưới 9 được nâng lên 10 vẫn tính streak theo điểm cũ.', 'Gift scores neither add to nor reduce the streak, and gift cells are locked. A cell below 9 raised to 10 still counts toward the streak as its old score.')
             ].map(x => `<p>${x}</p>`).join('');
