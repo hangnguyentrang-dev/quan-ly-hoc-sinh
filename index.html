@@ -3702,15 +3702,15 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
         let qsTrend = false; // Xu hướng điểm: luôn TẮT mỗi lần mở trang (không lưu)
         let qsEdit = false; // chế độ Sửa điểm: sửa tay, gỡ liên kết số lần phát biểu (không lưu giữa các lần mở trang)
         function mfl(o) { return (o && o.manual) ? { manual: true } : {}; }
-        // Áp quà cộng điểm: giữ nguyên mốc thời gian của bài gốc để streak tính đúng thứ tự (7 -> 10 vẫn nằm đúng chỗ cũ)
-        // Quà KHÔNG phải quà Test score (cộng điểm / đổi điểm) áp lên ô đã có điểm: nếu ô lên >= 10 thì streak coi ô đó trung lập
-        // (không cộng, không trừ; vẫn bắn pháo giấy) -> streak trở về như lúc chưa bị trừ. Quà Test score (plus_exam) thì KHÔNG đặt cờ: tính là 10 thật.
-        function giftNeutralFlag(cell, kind) {
-            const had = !!cell && (cell.absent === true || (cell.score !== undefined && cell.score !== null && cell.score !== ''));
-            return (had && kind !== 'add' && kind !== 'plus_exam') ? { giftNeutral: true } : {};
-        }
+        // Áp quà cộng điểm / đổi điểm: ô được nâng lên 10 phải tính streak GIỐNG HỆT khi sửa tay (+1 streak, và điểm dưới 9
+        // trước đó không còn trừ streak vì ô đã đổi giá trị). Vì vậy KHÔNG đặt cờ trung lập nữa.
+        // (Quà Streak - ô sg - vẫn trung lập để tránh vòng lặp quà sinh quà; xem tenSeries/tenStreakInfo.)
+        function giftNeutralFlag(cell, kind) { return {}; }
+        // Ô ĐÃ CÓ điểm: giữ mốc thời gian của bài gốc để 7 -> 10 nằm đúng chỗ cũ trong chuỗi.
+        // Ô TRỐNG được quà điền: không giữ mốc cũ (trả {}), để lần lưu gán mốc "bây giờ" như nhập tay -> streak cộng ở cuối chuỗi.
         function giftKeepTs(cell, key) {
-            const t = (cell && cell.ts) || Math.min(scoreKeyDateMs(key) || Date.now(), Date.now());
+            if (!cell) return {};
+            const t = cell.ts || Math.min(scoreKeyDateMs(key) || Date.now(), Date.now());
             return { ts: t, keepTs: true };
         }
         const QS_TPL_KEY = 'qsNameTemplate';
@@ -7170,7 +7170,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
             const retier = () => { const t = tenMissTier(run); if (t !== tier) { tier = t; miss = 0; } };
             tenSeries(studentId, scores).forEach(e => {
                 if (e.sg) return; // Điểm từ quà Streak: trung lập, không cộng cũng không làm đứt/trừ streak
-                if (e.gn && e.v >= 10) return; // Quà thường (không phải Test score) nâng lên 10: trung lập, streak về như chưa bị trừ
+                // Quà thường nâng ô lên 10: tính là điểm 10 thật (như sửa tay), kể cả dữ liệu cũ từng gắn cờ giftNeutral.
                 if (e.v >= 10) {
                     run++; if (run > best) best = run; if (run > peak) peak = run;
                     retier();
