@@ -1888,6 +1888,27 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 @media (max-width:420px) { #randomPickerModal .rp-mode-btn { flex-basis:0 !important; flex-grow:1 !important; padding:.42rem .35rem !important; font-size:.72rem !important; } }
 </style>
 
+<style id="patch-2026-10-21-shop-inventory-hover">
+/* Cửa hàng quà - "Quà đang sở hữu của học sinh": rê chuột vào một học sinh thì cả dòng (tên, điểm, các phần quà) nổi lên như một thẻ */
+.overflow-x-auto:has(#studentInventoryList){padding:10px 8px 14px;margin:-10px -8px -14px}
+#studentInventoryList tr{position:relative;transition:transform .2s ease,filter .2s ease}
+#studentInventoryList tr td{transition:background-color .2s ease}
+#studentInventoryList tr:hover{transform:translateY(-3px);z-index:2;border-color:transparent;filter:drop-shadow(0 8px 12px rgba(15,23,42,.18))}
+#studentInventoryList tr:hover td{background:#fff}
+#studentInventoryList tr:hover td:first-child{border-radius:.85rem 0 0 .85rem}
+#studentInventoryList tr:hover td:last-child{border-radius:0 .85rem .85rem 0}
+#studentInventoryList tr:hover td span.inline-flex{box-shadow:0 2px 6px rgba(79,70,229,.18)}
+html.mx-dark #studentInventoryList tr:hover td{background:#1e293b}
+html.mx-dark #studentInventoryList tr:hover{filter:drop-shadow(0 8px 12px rgba(0,0,0,.5))}
+@media (prefers-reduced-motion:reduce){#studentInventoryList tr,#studentInventoryList tr td{transition:none}}
+</style>
+<style id="patch-2026-10-21-rp-mode-hover">
+/* Nút chế độ gọi: bỏ viền/outline vuông khi rê chuột, focus hoặc đang chọn; chỉ còn bóng đổ mềm theo bo góc */
+#randomPickerModal .rp-mode-btn,#randomPickerModal .rp-mode-btn:hover,#randomPickerModal .rp-mode-btn:focus,#randomPickerModal .rp-mode-btn:focus-visible,#randomPickerModal .rp-mode-btn:active,#randomPickerModal .rp-mode-btn.is-active,#randomPickerModal .rp-mode-btn.is-active:hover{outline:none !important;outline-offset:0 !important;-webkit-tap-highlight-color:transparent}
+#randomPickerModal .rp-mode-btn:hover{box-shadow:0 4px 12px rgba(15,23,42,.12) !important}
+#randomPickerModal .rp-mode-btn.is-active,#randomPickerModal .rp-mode-btn.is-active:hover{box-shadow:0 5px 14px rgba(217,119,6,.32) !important}
+#randomPickerModal #rpModeSaveBtn.is-active,#randomPickerModal #rpModeSaveBtn.is-active:hover{box-shadow:0 5px 14px rgba(79,70,229,.32) !important}
+</style>
 <style id="patch-2026-10-19-random-wheel-gap">
 /* Gọi random: thẻ nhỏ (arena) tĩnh sau khi chọn xong; thẻ lớn phía trên nhấp nhô nổi bật */
 .rp-chip.won{animation:none !important;transform:scale(1.35)}
@@ -2700,7 +2721,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
     <div id="classModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
         <div class="bg-white rounded-xl shadow-2xl w-96 p-6">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="text-base font-bold text-slate-800" id="classModalTitle" data-i18n="modalAddClassTitle">Thêm Lớp Học Mới</h3>
+                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2"><i id="classModalIcon" class="fa-solid fa-folder-plus text-emerald-600"></i><span id="classModalTitle" data-i18n="modalAddClassTitle">Thêm Lớp Học Mới</span></h3>
                 <button onclick="closeClassModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form onsubmit="saveClassForm(event)">
@@ -2732,7 +2753,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
     <div id="studentModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
         <div class="bg-white rounded-xl shadow-2xl w-96 max-w-[96vw] max-h-[94vh] overflow-y-auto p-6">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="text-base font-bold text-slate-800" id="studentModalTitle" data-i18n="modalAddStudentTitle">Thêm Học Sinh Mới</h3>
+                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2"><i id="studentModalIcon" class="fa-solid fa-user-plus text-indigo-600"></i><span id="studentModalTitle" data-i18n="modalAddStudentTitle">Thêm Học Sinh Mới</span></h3>
                 <button onclick="closeStudentModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form onsubmit="saveStudentForm(event)">
@@ -3008,7 +3029,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
     <!-- Modal: Đổi chỗ ngồi ngẫu nhiên -->
     <div id="seatingModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto">
-        <div class="flex justify-between items-center border-b pb-3 mb-4"><h3 class="text-base font-black text-slate-800" data-i18n="seatingModalTitle"><i class="fa-solid fa-chair text-sky-600 mr-2"></i>Đổi chỗ ngồi ngẫu nhiên</h3><button onclick="closeSeatingModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+        <div class="flex justify-between items-center border-b pb-3 mb-4"><h3 class="text-base font-black text-slate-800 flex items-center gap-2"><i class="fa-solid fa-chair text-sky-600"></i><span data-i18n="seatingModalTitle">Đổi chỗ ngồi ngẫu nhiên</span></h3><button onclick="closeSeatingModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button></div>
         <div class="grid grid-cols-2 gap-3 mb-4">
           <label class="text-xs font-bold text-slate-600"><span>Số hàng</span><input id="seatRows" type="number" min="1" max="20" value="5" oninput="renderSeatPreview()" class="block w-full mt-1 border rounded-lg p-2"></label>
           <label class="text-xs font-bold text-slate-600"><span>Số cột</span><input id="seatCols" type="number" min="1" max="20" value="4" oninput="renderSeatPreview()" class="block w-full mt-1 border rounded-lg p-2"></label>
@@ -3025,7 +3046,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
 
     <!-- JavaScript Logic with Firebase Integration -->
     <div id="classScheduleModal" class="fixed inset-0 z-[82] hidden items-center justify-center bg-slate-900/60 p-3"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-5"><div class="flex justify-between items-center mb-4"><h2 class="font-black text-lg" data-i18n="classScheduleTitle">Lịch học theo lớp</h2><button onclick="closeClassSchedule()" class="text-xl px-2">×</button></div><p class="text-xs text-slate-500 mb-3" data-i18n="classScheduleHelp">Thiết lập ngày và giờ học thường lệ cho từng lớp.</p><div id="classScheduleEditor" class="space-y-3"></div><div class="flex justify-end gap-2 mt-4"><button onclick="closeClassSchedule()" class="rounded-lg bg-slate-100 px-3 py-2 text-sm" data-i18n="cancelBtn">Hủy</button><button onclick="saveClassSchedule()" class="rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-bold" data-i18n="saveBtn">Lưu</button></div></div></div>
-    <div id="courseManagerModal" class="fixed inset-0 z-[80] hidden items-center justify-center bg-slate-900/60 p-3"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-5"><div class="flex items-center justify-between gap-3 mb-4"><h2 class="font-black text-lg" data-i18n="courseManagerTitle">Quản lý khóa học</h2><button onclick="closeCourseManager()" class="text-xl px-2">×</button></div>
+    <div id="courseManagerModal" class="fixed inset-0 z-[80] hidden items-center justify-center bg-slate-900/60 p-3"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-5"><div class="flex items-center justify-between gap-3 mb-4"><h2 class="font-black text-lg flex items-center gap-2"><i class="fa-solid fa-folder-open text-violet-600"></i><span data-i18n="courseManagerTitle">Quản lý khóa học</span></h2><button onclick="closeCourseManager()" class="text-xl px-2">×</button></div>
       <section class="border rounded-xl p-3 mb-4 bg-slate-50"><h3 class="font-bold text-sm mb-3" data-i18n="editActiveCourseTitle">Thông tin khóa hiện tại</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-xs font-bold"><span data-i18n="courseNameLabel">Tên khóa học</span><input id="currentCourseName" class="mt-1 w-full border rounded-lg p-2"></label><label class="text-xs font-bold"><span data-i18n="courseStartLabel">Ngày bắt đầu</span><input id="currentCourseStart" type="date" class="mt-1 w-full border rounded-lg p-2"></label><label class="text-xs font-bold"><span data-i18n="courseEndLabel">Ngày kết thúc</span><input id="currentCourseEnd" type="date" class="mt-1 w-full border rounded-lg p-2"></label></div><button onclick="saveActiveCourseDetails()" class="mt-3 rounded-lg bg-emerald-600 text-white px-3 py-2 text-xs font-bold" data-i18n="saveCourseDetailsBtn">Lưu thông tin khóa hiện tại</button></section>
       <section class="border rounded-xl p-3 mb-5"><h3 class="font-bold text-sm mb-3" data-i18n="newCourseDetailsTitle">Tạo khóa học mới</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-xs font-bold"><span data-i18n="courseNameLabel">Tên khóa học</span><input id="newCourseName" class="mt-1 w-full border rounded-lg p-2" placeholder="Khóa năm học 2026–2027"></label><label class="text-xs font-bold"><span data-i18n="courseStartLabel">Ngày bắt đầu</span><input id="newCourseStart" type="date" class="mt-1 w-full border rounded-lg p-2"></label><label class="text-xs font-bold"><span data-i18n="courseEndLabel">Ngày kết thúc</span><input id="newCourseEnd" type="date" class="mt-1 w-full border rounded-lg p-2"></label></div><label class="mt-3 mb-1 flex items-start gap-2 text-xs font-semibold text-slate-700"><input id="copyPreviousCourseClasses" type="checkbox" checked class="mt-0.5"><span data-i18n="copyPreviousCourseClasses">Lấy danh sách lớp từ khóa học trước có ngày kết thúc trước ngày bắt đầu khóa mới</span></label><div class="flex flex-wrap gap-2 mt-3"><button onclick="archiveAndStartCourse()" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-xs font-bold" data-i18n="createCourseBtn">Tạo khóa mới và tách dữ liệu</button><button onclick="archiveAndStartCourse()" class="rounded-lg bg-rose-600 text-white px-3 py-2 text-xs font-bold" data-i18n="archiveNewCourseBtn">Lưu trữ khóa hiện tại và bắt đầu khóa mới</button></div></section>
       <h3 class="font-bold text-sm mb-2" data-i18n="courseListTitle">Danh sách khóa học</h3><div id="courseList" class="space-y-2"></div><p class="text-xs text-slate-500 mt-4" data-i18n="courseSafetyNote">Khóa đã lưu trữ được giữ dưới dạng bản chụp lịch sử và không tự ghi đè dữ liệu đang hoạt động.</p></div></div>
@@ -5365,6 +5386,21 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
             el.innerHTML = html;
         }
         window.ehMore = function () { ehLimit += 120; ehRender(); };
+        window.ehClearAll = async function () {
+            const en = (appData.language || 'vi') === 'en', T = (v, n) => en ? n : v;
+            const total = Array.isArray(appData.editHistory) ? appData.editHistory.length : 0;
+            if (!total) { alert(T('Chưa có lịch sử chỉnh sửa nào để dọn dẹp.', 'There is no edit history to clear.')); return; }
+            const ok = await showAppConfirm(T(`Xóa toàn bộ ${total} thao tác trong lịch sử chỉnh sửa đã lưu? Thao tác này không thể hoàn tác.`, `Delete all ${total} saved edit history actions? This cannot be undone.`));
+            if (!ok) return;
+            const btn = document.getElementById('editHistoryClearBtn'); if (btn) btn.disabled = true;
+            const backup = appData.editHistory; appData.editHistory = [];
+            let saved = false;
+            try { saved = await saveData(); } catch (e) { saved = false; }
+            if (btn) btn.disabled = false;
+            if (!saved) { appData.editHistory = backup; ehRender(); alert(T('Không thể lưu thay đổi. Lịch sử chỉnh sửa được giữ nguyên.', 'Could not save changes. Edit history was kept.')); return; }
+            ehLimit = 120; ehRender();
+            alert(T(`Đã dọn dẹp ${total} thao tác trong lịch sử chỉnh sửa.`, `Cleared ${total} edit history actions.`));
+        };
         window.ehSetFilter = function (f) { ehFilter = f; ehLimit = 120; document.querySelectorAll('#editHistoryModal .eh-chip').forEach(b => b.classList.toggle('on', b.dataset.f === f)); ehRender(); };
         window.ehSetQuery = function (v) { ehQuery = v || ''; ehLimit = 120; ehRender(); };
         window.closeEditHistory = function () { const m = document.getElementById('editHistoryModal'); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); } };
@@ -5387,17 +5423,23 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
 #editHistoryModal .eh-time{flex:0 0 auto;font-size:.68rem;font-weight:800;color:#94a3b8;font-variant-numeric:tabular-nums}
 #editHistoryModal .eh-empty{display:flex;flex-direction:column;align-items:center;gap:.6rem;padding:2.5rem 1rem;color:#94a3b8;font-size:.8rem;font-weight:700}#editHistoryModal .eh-empty i{font-size:2rem}
 #editHistoryModal .eh-more{display:block;margin:.6rem auto 0;padding:.45rem 1rem;border-radius:9999px;font-size:.75rem;font-weight:800;background:#eef2ff;color:#3730a3;transition:transform .15s ease,box-shadow .15s ease}#editHistoryModal .eh-more:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(79,70,229,.18)}
+#editHistoryModal .eh-clear{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .8rem;border-radius:9999px;font-size:.72rem;font-weight:900;color:#fff;background:#e11d48;border:1px solid #fb7185;cursor:pointer;white-space:nowrap;outline:none;transition:background .15s,transform .15s ease,box-shadow .15s ease}
+#editHistoryModal .eh-clear:hover{background:#be123c;transform:translateY(-1px);box-shadow:0 4px 12px rgba(190,18,60,.45)}
+#editHistoryModal .eh-clear:active{transform:translateY(0) scale(.97)}
+#editHistoryModal .eh-clear:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
 .mx-dark #editHistoryModal .eh-chip{background:#1e293b;color:#cbd5e1;border-color:#334155}.mx-dark #editHistoryModal .eh-chip.on{background:#6366f1;color:#fff;border-color:#6366f1}.mx-dark #editHistoryModal .eh-day{background:#1e1b4b;color:#c7d2fe}.mx-dark #editHistoryModal .eh-row:hover{background:#1e1b4b}.mx-dark #editHistoryModal .eh-txt{color:#e2e8f0}`;
                     document.head.appendChild(st);
                 }
                 m = document.createElement('div'); m.id = 'editHistoryModal';
                 m.className = 'fixed inset-0 z-[110] hidden items-center justify-center bg-slate-900/60 p-3';
                 m.addEventListener('click', ev => { if (ev.target === m) closeEditHistory(); });
-                m.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden"><div class="px-5 py-3 bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 text-white flex items-center gap-3"><span class="menu-ico bg-white/20 text-white"><i class="fa-solid fa-clock-rotate-left"></i></span><div class="flex-1 min-w-0"><h2 class="font-black text-base leading-tight" data-eh-title></h2><p class="text-[11px] opacity-80 font-bold" id="editHistoryCount"></p></div><button type="button" onclick="closeEditHistory()" class="text-xl px-2 opacity-90 hover:opacity-100" aria-label="Close">×</button></div><div class="px-4 pt-3 pb-2 space-y-2 border-b border-slate-100"><input id="editHistorySearch" type="search" oninput="ehSetQuery(this.value)" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" /><div class="flex flex-wrap gap-1.5" id="editHistoryChips"></div></div><div id="editHistoryList" class="flex-1 overflow-y-auto px-3 py-2"></div></div>`;
+                m.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden"><div class="px-5 py-3 bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 text-white flex items-center gap-3"><i class="fa-solid fa-clock-rotate-left text-xl leading-none shrink-0"></i><div class="flex-1 min-w-0"><h2 class="font-black text-base leading-tight" data-eh-title></h2><p class="text-[11px] opacity-80 font-bold" id="editHistoryCount"></p></div><button type="button" id="editHistoryClearBtn" onclick="ehClearAll()" class="eh-clear"><i class="fa-solid fa-broom"></i><span data-eh-clear></span></button><button type="button" onclick="closeEditHistory()" class="text-xl px-2 opacity-90 hover:opacity-100" aria-label="Close">×</button></div><div class="px-4 pt-3 pb-2 space-y-2 border-b border-slate-100"><input id="editHistorySearch" type="search" oninput="ehSetQuery(this.value)" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" /><div class="flex flex-wrap gap-1.5" id="editHistoryChips"></div></div><div id="editHistoryList" class="flex-1 overflow-y-auto px-3 py-2"></div></div>`;
                 document.body.appendChild(m);
                 document.addEventListener('keydown', ev => { if (ev.key === 'Escape') closeEditHistory(); });
             }
             m.querySelector('[data-eh-title]').textContent = T('Lịch sử chỉnh sửa', 'Edit history');
+            m.querySelector('[data-eh-clear]').textContent = T('Dọn dẹp', 'Clear all');
+            m.querySelector('#editHistoryClearBtn').title = T('Xóa toàn bộ lịch sử chỉnh sửa đã lưu', 'Delete all saved edit history');
             const se = document.getElementById('editHistorySearch'); se.placeholder = T('Tìm theo tên học sinh, quà, điểm...', 'Search by student, gift, score...'); se.value = ehQuery;
             const chips = [['all', T('Tất cả', 'All'), 'fa-layer-group'], ['score', T('Điểm số', 'Scores'), 'fa-pen-to-square'], ['gift', T('Quà & điểm thưởng', 'Gifts & points'), 'fa-gift'], ['student', T('Học sinh & lớp', 'Students & classes'), 'fa-user-graduate'], ['other', T('Khác', 'Other'), 'fa-sliders']];
             document.getElementById('editHistoryChips').innerHTML = chips.map(c => `<button type="button" class="eh-chip${ehFilter === c[0] ? ' on' : ''}" data-f="${c[0]}" onclick="ehSetFilter('${c[0]}')"><i class="fa-solid ${c[2]}"></i>${c[1]}</button>`).join('');
@@ -9123,7 +9165,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
         };
 
         window.openClassModal = function() {
-            document.getElementById('classModalTitle').innerText = translations[appData.language || 'vi'].modalAddClassTitle;
+            document.getElementById('classModalTitle').innerText = translations[appData.language || 'vi'].modalAddClassTitle; { const _i = document.getElementById('classModalIcon'); if (_i) _i.className = 'fa-solid fa-folder-plus text-emerald-600'; }
             document.getElementById('editClassId').value = '';
             document.getElementById('newClassName').value = '';
             document.getElementById('classModal').classList.remove('hidden');
@@ -9134,7 +9176,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
             const current = appData.classes.find(c => c.id === appData.activeClassId);
             if (!current) return;
 
-            document.getElementById('classModalTitle').innerText = appData.language === 'en' ? 'Edit Class Name' : 'Chỉnh Sửa Tên Lớp';
+            document.getElementById('classModalTitle').innerText = appData.language === 'en' ? 'Edit Class Name' : 'Chỉnh Sửa Tên Lớp'; { const _i = document.getElementById('classModalIcon'); if (_i) _i.className = 'fa-solid fa-palette text-emerald-600'; }
             document.getElementById('editClassId').value = current.id;
             document.getElementById('newClassName').value = current.name;
             document.getElementById('newClassColor').value = current.color || 'bg-indigo-600';
@@ -9328,7 +9370,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
         };
 
         window.openStudentModal = function() {
-            document.getElementById('studentModalTitle').innerText = translations[appData.language || 'vi'].modalAddStudentTitle;
+            document.getElementById('studentModalTitle').innerText = translations[appData.language || 'vi'].modalAddStudentTitle; { const _i = document.getElementById('studentModalIcon'); if (_i) _i.className = 'fa-solid fa-user-plus text-indigo-600'; }
             document.getElementById('editStudentId').value = '';
             document.getElementById('newStudentName').value = '';
             document.getElementById('newStudentIcon').value = '🎓';
@@ -9343,7 +9385,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
             const student = appData.students.find(s => s.id === studentId);
             if (!student) return;
 
-            document.getElementById('studentModalTitle').innerText = appData.language === 'en' ? 'Edit Student' : 'Chỉnh Sửa Học Sinh';
+            document.getElementById('studentModalTitle').innerText = appData.language === 'en' ? 'Edit Student' : 'Chỉnh Sửa Học Sinh'; { const _i = document.getElementById('studentModalIcon'); if (_i) _i.className = 'fa-solid fa-user-pen text-indigo-600'; }
             document.getElementById('editStudentId').value = student.id;
             document.getElementById('newStudentName').value = student.name;
             document.getElementById('newStudentIcon').value = student.icon || '🎓';
@@ -9433,7 +9475,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
             if (!modal) {
                 modal = document.createElement('div'); modal.id = 'deletedStudentsModal';
                 modal.className = 'fixed inset-0 z-[110] hidden items-center justify-center bg-slate-900/60 p-3';
-                modal.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[85vh] overflow-y-auto p-5"><div class="flex items-center justify-between gap-3 mb-4"><h2 class="font-black text-lg" data-trash-title>Khôi Phục</h2><button onclick="closeDeletedStudents()" class="text-xl px-2" aria-label="Đóng">×</button></div><p class="text-xs text-slate-500 mb-3" data-trash-help>Khôi phục học sinh, lớp hoặc khóa học đã xóa.</p><div class="flex justify-end mb-3"><button onclick="emptyTrash()" class="rounded-lg bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 text-xs font-bold"><i class="fa-solid fa-trash-can mr-1"></i><span data-trash-empty> Dọn dẹp toàn bộ thùng rác</span></button></div><div id="deletedStudentsList" class="space-y-2"></div><div class="flex justify-end mt-4"><button onclick="closeDeletedStudents()" class="rounded-lg bg-slate-100 px-3 py-2 text-sm font-bold" data-trash-close>Đóng</button></div></div>`;
+                modal.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[85vh] overflow-y-auto p-5"><div class="flex items-center justify-between gap-3 mb-4"><h2 class="font-black text-lg flex items-center gap-2"><i class="fa-solid fa-trash-arrow-up text-fuchsia-600"></i><span data-trash-title>Khôi Phục</span></h2><button onclick="closeDeletedStudents()" class="text-xl px-2" aria-label="Đóng">×</button></div><p class="text-xs text-slate-500 mb-3" data-trash-help>Khôi phục học sinh, lớp hoặc khóa học đã xóa.</p><div class="flex justify-end mb-3"><button onclick="emptyTrash()" class="rounded-lg bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 text-xs font-bold"><i class="fa-solid fa-trash-can mr-1"></i><span data-trash-empty> Dọn dẹp toàn bộ thùng rác</span></button></div><div id="deletedStudentsList" class="space-y-2"></div><div class="flex justify-end mt-4"><button onclick="closeDeletedStudents()" class="rounded-lg bg-slate-100 px-3 py-2 text-sm font-bold" data-trash-close>Đóng</button></div></div>`;
                 document.body.appendChild(modal);
             }
             if (!Array.isArray(appData.deletedItems)) appData.deletedItems = [];
@@ -11067,6 +11109,67 @@ window.openStudentProfile=function(studentId){
         if (disp === 'inline') el.classList.add('hv-inline');
         cache.set(el, { cls: el.className });
     }, true);
+})();
+</script>
+
+<script id="patch-2026-10-21-modal-dismiss">
+/* Esc / click ra ngoài để đóng cửa sổ. Chỉ xử lý những cửa sổ CHƯA có cơ chế này; các cửa sổ đã có thì giữ nguyên. */
+(function () {
+  // [id, hàm đóng, đã có click-ngoài?, đã có Esc?]
+  var M = [
+    ['studentProgressModal', 'closeStudentProgress', true, false],
+    ['teacherFormModal', 'closeTeacherFormModal', true, false],
+    ['teacherEditModal', 'closeTeacherEditModal', true, false],
+    ['teacherPasswordModal', function () { if (window.resolveTeacherPassword) window.resolveTeacherPassword(null); }, true, false],
+    ['timerModal', 'closeTimerModal', false, false],
+    ['randomPickerModal', 'closeRandomPickerModal', false, false],
+    ['groupModal', 'closeGroupModal', false, false],
+    ['classModal', 'closeClassModal', false, false],
+    ['studentModal', 'closeStudentModal', false, false],
+    ['createItemModal', 'closeCreateItemModal', false, false],
+    ['editItemModal', 'closeEditItemModal', false, false],
+    ['selectStudentModal', 'closeSelectStudentModal', false, false],
+    ['addViolationModal', 'closeAddViolationModal', false, false],
+    ['manageViolationTypesModal', 'closeManageViolationTypesModal', false, false],
+    ['studentViolationDetailsModal', 'closeStudentViolationDetailsModal', false, false],
+    ['seatingModal', 'closeSeatingModal', false, false],
+    ['classScheduleModal', 'closeClassSchedule', false, false],
+    ['courseManagerModal', 'closeCourseManager', false, false],
+    ['studentProfileModal', 'closeStudentProfile', false, false],
+    ['moveStudentModal', 'closeMoveStudent', false, false],
+    ['deletedStudentsModal', 'closeDeletedStudents', false, false]
+  ];
+  // Cửa sổ đã tự xử lý Esc / click ngoài: nếu đang mở thì để chúng tự đóng, không chen vào
+  var SELF = ['scoreModal', 'wheelResultModal', 'editHistoryModal', 'tfProfile', 'ctPicker', 'xfBdayPop', 'xfGift', 'appConfirmModal', 'appNoticeModal', 'teacherGate'];
+  function shown(el) {
+    if (!el || el.classList.contains('hidden')) return false;
+    var cs = getComputedStyle(el); return cs.display !== 'none' && cs.visibility !== 'hidden';
+  }
+  function run(f) { try { if (typeof f === 'function') f(); else if (typeof window[f] === 'function') window[f](); } catch (e) { console.error(e); } }
+  function z(el) { var v = parseInt(getComputedStyle(el).zIndex, 10); return isNaN(v) ? 0 : v; }
+  var downOn = null;
+  document.addEventListener('mousedown', function (e) { downOn = e.target; }, true);
+  document.addEventListener('click', function (e) {
+    var t = e.target; if (!t || !t.id || downOn !== t) return;   // chỉ đóng khi nhấn và thả đều ở nền ngoài (tránh đóng nhầm khi kéo chọn chữ)
+    for (var i = 0; i < M.length; i++) {
+      var m = M[i]; if (m[0] !== t.id || m[2]) continue;
+      if (shown(t)) run(m[1]);
+      return;
+    }
+  }, true);
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape' || e.defaultPrevented) return;
+    for (var k = 0; k < SELF.length; k++) { if (shown(document.getElementById(SELF[k])) && SELF[k] !== 'teacherGate') return; }
+    if (shown(document.getElementById('teacherGate')) && !shown(document.getElementById('teacherFormModal')) && !shown(document.getElementById('teacherEditModal')) && !shown(document.getElementById('teacherPasswordModal'))) return;
+    var best = null;
+    M.forEach(function (m) {
+      var el = document.getElementById(m[0]); if (!shown(el)) return;
+      if (!best) { best = { el: el, m: m }; return; }
+      var a = z(el), b = z(best.el);
+      if (a > b || (a === b && (best.el.compareDocumentPosition(el) & 4))) best = { el: el, m: m };
+    });
+    if (best) { e.preventDefault(); run(best.m[1]); }
+  });
 })();
 </script>
 </body>
