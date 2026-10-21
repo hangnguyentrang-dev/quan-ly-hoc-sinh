@@ -407,16 +407,16 @@
         .tf-streak.tf-t5 .tf-flame { transform:scale(1.3); transform-origin:50% 85%; margin-right:.15rem; }
         .tf-streak.tf-t5 .tf-txt { font-size:.92rem; }
         .tf-streak.tf-t5 .tf-txt .tf-n { font-size:1.15rem; }
-        .tf-streak.tf-t10 { position:relative; height:1.7rem; padding:0 .55rem 0 .35rem; background:linear-gradient(180deg,#ecfdf5,#a7f3d0); border-color:#10b981; box-shadow:0 0 0 1.5px #34d399, 0 0 10px rgba(16,185,129,.7); --gh:0 0 18px rgba(52,211,153,1); animation:none; }
-        .tf-streak.tf-t10 .tf-flame { transform:scale(1.15); transform-origin:50% 85%; margin-right:.1rem; filter:drop-shadow(0 0 3px rgba(16,185,129,.85)); }
+        .tf-streak.tf-t10 { position:relative; height:1.9rem; padding:0 .6rem 0 .38rem; background:linear-gradient(180deg,#ecfdf5,#a7f3d0); border-color:#10b981; box-shadow:0 0 0 1.5px #34d399, 0 0 10px rgba(16,185,129,.7); --gh:0 0 18px rgba(52,211,153,1); animation:none; }
+        .tf-streak.tf-t10 .tf-flame { transform:scale(1.35); transform-origin:50% 85%; margin-right:.15rem; filter:drop-shadow(0 0 3px rgba(16,185,129,.85)); }
         .tf-streak.tf-t10 .tf-flame .tf-l1 { background:linear-gradient(135deg,#047857,#10b981 60%,#6ee7b7); }
         .tf-streak.tf-t10 .tf-flame .tf-l2 { background:linear-gradient(135deg,#34d399,#a7f3d0); }
         .tf-streak.tf-t10 .tf-flame .tf-l3 { background:linear-gradient(135deg,#fff,#ecfdf5); }
         .tf-streak.tf-t10 .tf-flame .tf-sp { background:#ecfdf5; box-shadow:0 0 5px #10b981; }
         .tf-streak.tf-t10 .tf-flame .tf-sp3 { margin-left:5px; animation-delay:.3s; }
-        .tf-streak.tf-t10 .tf-txt { font-size:.86rem; color:#047857; -webkit-text-stroke:.5px #fff; text-shadow:0 1px 0 #065f46, 0 0 8px rgba(52,211,153,.95); }
+        .tf-streak.tf-t10 .tf-txt { font-size:.93rem; color:#047857; -webkit-text-stroke:.5px #fff; text-shadow:0 1px 0 #065f46, 0 0 8px rgba(52,211,153,.95); }
         .tf-streak.tf-t10 .tf-txt .tf-x { color:#065f46; }
-        .tf-streak.tf-t10 .tf-txt .tf-n { color:#059669; font-size:1.08rem; }
+        .tf-streak.tf-t10 .tf-txt .tf-n { color:#059669; font-size:1.18rem; }
         @keyframes tfGlowGold { 0%,100%{box-shadow:0 0 0 1.5px #facc15, 0 0 10px rgba(250,204,21,.7)} 50%{box-shadow:0 0 0 1.5px #f59e0b, 0 0 20px rgba(250,204,21,1)} }
         /* ===== Các mốc streak: 15 ngọc lục bảo · 20 cầu vồng chàm · 30 đỏ rực · 40 vũ trụ · 50 thần thánh ===== */
         @property --tf-a { syntax:'<angle>'; inherits:false; initial-value:0deg; }
@@ -1901,6 +1901,78 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 html.mx-dark #studentInventoryList tr:hover td{background:#1e293b}
 html.mx-dark #studentInventoryList tr:hover{filter:drop-shadow(0 8px 12px rgba(0,0,0,.5))}
 @media (prefers-reduced-motion:reduce){#studentInventoryList tr,#studentInventoryList tr td{transition:none}}
+</style>
+<style id="patch-2026-10-21-leaderboard-fx">
+/* ---- Lửa chuỗi trong chú thích xếp loại ---- */
+.gr-flm{display:inline-flex;flex-direction:column;align-items:center;gap:.15rem;margin:.25rem .55rem .1rem .15rem}
+.gr-flm small{font-size:.65rem;font-weight:800;color:#64748b}
+html.mx-dark .gr-flm small{color:#94a3b8}
+/* ---- Podium top 3: icon nhấp nhô + mưa tiền khi rê chuột ---- */
+@keyframes rkBob{0%,100%{transform:translateY(0) rotate(-4deg) scale(1)}50%{transform:translateY(-6px) rotate(4deg) scale(1.07)}}
+@keyframes rkBobHard{0%,100%{transform:translateY(0) rotate(-13deg) scale(1)}50%{transform:translateY(-14px) rotate(13deg) scale(1.28)}}
+.rank-card .rk-icon{display:inline-block}
+.rank-card.gold .rk-icon{animation:rkBob 1.8s ease-in-out infinite}
+.rank-card.silver .rk-icon{animation:rkBob 2.2s ease-in-out .3s infinite}
+.rank-card.bronze .rk-icon{animation:rkBob 2.5s ease-in-out .6s infinite}
+.rank-card:hover .rk-icon{animation:rkBobHard .55s ease-in-out infinite}
+.rank-card.gold{--fall:19.5rem}.rank-card.silver{--fall:17.5rem}.rank-card.bronze{--fall:16.5rem}
+.rk-rain{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;border-radius:inherit}
+.rk-coin,.rk-gem{position:absolute;top:-22px;left:var(--x);width:var(--w,15px);height:var(--w,15px);opacity:0;pointer-events:none}
+.rk-coin{border-radius:50%;border:2px solid var(--cb);background:radial-gradient(circle at 35% 30%,var(--c1),var(--c2) 62%,var(--c3));box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.rk-coin::after{content:"";position:absolute;inset:23%;border-radius:50%;border:1.5px solid var(--cb);opacity:.55}
+.rank-card.gold .rk-coin{--c1:#fff7bf;--c2:#fbbf24;--c3:#d97706;--cb:#b45309}
+.rank-card.silver .rk-coin{--c1:#ffffff;--c2:#cbd5e1;--c3:#64748b;--cb:#475569}
+.rank-card.bronze .rk-coin{--c1:#fed7aa;--c2:#ea8a3a;--c3:#9a3412;--cb:#7c2d12}
+.rk-gem{clip-path:polygon(50% 0,100% 36%,50% 100%,0 36%);filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+.rk-gem.g0{background:linear-gradient(135deg,#fecdd3,#fb7185 45%,#be123c)}
+.rk-gem.g1{background:linear-gradient(135deg,#e0f2fe,#38bdf8 45%,#0369a1)}
+.rk-gem.g2{background:linear-gradient(135deg,#d1fae5,#34d399 45%,#047857)}
+@keyframes rkCoinFall{0%{opacity:0;transform:translateY(0) translateX(0) perspective(140px) rotateY(0deg)}8%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateY(var(--fall,17rem)) translateX(var(--dx,0)) perspective(140px) rotateY(900deg)}}
+.rank-card:hover .rk-coin,.rank-card:hover .rk-gem{animation:rkCoinFall var(--t,1.6s) cubic-bezier(.45,.05,.85,.6) var(--dl,0s) infinite}
+.rk-empty .rk-rain{display:none}
+/* ---- Hover chung cho các ô nhập / dòng bảng (không áp cho chữ thuần) ---- */
+input:where(:not([type=checkbox],[type=radio],[type=range],[type=file],[type=hidden],[type=color],[type=button],[type=submit])):not(:focus):not(:disabled):not([readonly]):not(table input):hover,textarea:not(:focus):not(:disabled):not([readonly]):hover{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+html.mx-dark input:where(:not([type=checkbox],[type=radio],[type=range],[type=file],[type=hidden],[type=color],[type=button],[type=submit])):not(:focus):not(:disabled):not([readonly]):not(table input):hover,html.mx-dark textarea:not(:focus):not(:disabled):not([readonly]):hover{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.22)}
+tbody tr:not(.score-row):not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-shadow:inset 0 0 0 9999px rgba(99,102,241,.06)}
+#studentInventoryList tr:hover>td{box-shadow:none}
+html.mx-dark tbody tr:not(.score-row):not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-shadow:inset 0 0 0 9999px rgba(129,140,248,.1)}
+</style>
+<style id="patch-2026-10-21-streak-size">
+/* Lửa chuỗi: kích thước tăng đều từ mốc 1 đến 50 (khung, ngọn lửa, chữ 10x, số chuỗi) */
+.tf-streak.tf-t1:not(.tf-mini){height:1.55rem}
+.tf-streak.tf-t1:not(.tf-mini) .tf-flame{transform:scale(1.0);transform-origin:50% 85%}
+.tf-streak.tf-t1:not(.tf-mini) .tf-txt{font-size:0.8rem}
+.tf-streak.tf-t1:not(.tf-mini) .tf-txt .tf-n{font-size:1.0rem}
+.tf-streak.tf-t5:not(.tf-mini){height:1.7rem}
+.tf-streak.tf-t5:not(.tf-mini) .tf-flame{transform:scale(1.15);transform-origin:50% 85%}
+.tf-streak.tf-t5:not(.tf-mini) .tf-txt{font-size:0.86rem}
+.tf-streak.tf-t5:not(.tf-mini) .tf-txt .tf-n{font-size:1.1rem}
+.tf-streak.tf-t10:not(.tf-mini){height:1.85rem}
+.tf-streak.tf-t10:not(.tf-mini) .tf-flame{transform:scale(1.3);transform-origin:50% 85%}
+.tf-streak.tf-t10:not(.tf-mini) .tf-txt{font-size:0.92rem}
+.tf-streak.tf-t10:not(.tf-mini) .tf-txt .tf-n{font-size:1.2rem}
+.tf-streak.tf-t15:not(.tf-mini){height:2.0rem}
+.tf-streak.tf-t15:not(.tf-mini) .tf-flame{transform:scale(1.45);transform-origin:50% 85%}
+.tf-streak.tf-t15:not(.tf-mini) .tf-txt{font-size:0.98rem}
+.tf-streak.tf-t15:not(.tf-mini) .tf-txt .tf-n{font-size:1.3rem}
+.tf-streak.tf-t20{--h:2.15rem;--fs:1.6;--ns:1.4rem}
+.tf-streak.tf-hi.tf-t20:not(.tf-mini) .tf-txt{font-size:1.04rem}
+.tf-streak.tf-t30{--h:2.3rem;--fs:1.75;--ns:1.5rem}
+.tf-streak.tf-hi.tf-t30:not(.tf-mini) .tf-txt{font-size:1.1rem}
+.tf-streak.tf-t40{--h:2.45rem;--fs:1.9;--ns:1.6rem}
+.tf-streak.tf-hi.tf-t40:not(.tf-mini) .tf-txt{font-size:1.16rem}
+.tf-streak.tf-t50{--h:2.6rem;--fs:2.05;--ns:1.7rem}
+.tf-streak.tf-hi.tf-t50:not(.tf-mini) .tf-txt{font-size:1.22rem}
+/* Mốc 50: giữ hiệu ứng ánh sắc cầu vồng nhưng vẫn nhấp nhô như các mốc khác */
+.tf-streak.tf-hi.tf-t50 .tf-txt{animation:tfShine50 1.6s linear infinite,tfText20 1.1s ease-in-out infinite !important}
+@media (prefers-reduced-motion:reduce){.tf-streak.tf-hi.tf-t50 .tf-txt{animation:none !important}}
+/* Leaderboard: icon học sinh trên podium luôn nhấp nhô, rê chuột thì nhấp nhô mạnh hơn */
+@keyframes rkAvBob{0%,100%{transform:translateY(0) rotate(-3deg) scale(1)}50%{transform:translateY(-5px) rotate(3deg) scale(1.04)}}
+@keyframes rkAvBobHard{0%,100%{transform:translateY(0) rotate(-10deg) scale(1.08)}50%{transform:translateY(-11px) rotate(10deg) scale(1.2)}}
+.rank-card.gold .rk-avatar{animation:rkAvBob 2.2s ease-in-out infinite}
+.rank-card.silver .rk-avatar{animation:rkAvBob 2.6s ease-in-out .35s infinite}
+.rank-card.bronze .rk-avatar{animation:rkAvBob 2.9s ease-in-out .7s infinite}
+.rank-card:hover .rk-avatar{animation:rkAvBobHard .6s ease-in-out infinite}
 </style>
 <style id="patch-2026-10-21-rp-mode-hover">
 /* Nút chế độ gọi: bỏ viền/outline vuông khi rê chuột, focus hoặc đang chọn; chỉ còn bóng đổ mềm theo bo góc */
@@ -5423,7 +5495,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
 #editHistoryModal .eh-time{flex:0 0 auto;font-size:.68rem;font-weight:800;color:#94a3b8;font-variant-numeric:tabular-nums}
 #editHistoryModal .eh-empty{display:flex;flex-direction:column;align-items:center;gap:.6rem;padding:2.5rem 1rem;color:#94a3b8;font-size:.8rem;font-weight:700}#editHistoryModal .eh-empty i{font-size:2rem}
 #editHistoryModal .eh-more{display:block;margin:.6rem auto 0;padding:.45rem 1rem;border-radius:9999px;font-size:.75rem;font-weight:800;background:#eef2ff;color:#3730a3;transition:transform .15s ease,box-shadow .15s ease}#editHistoryModal .eh-more:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(79,70,229,.18)}
-#editHistoryModal .eh-clear{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .8rem;border-radius:9999px;font-size:.72rem;font-weight:900;color:#fff;background:#e11d48;border:1px solid #fb7185;cursor:pointer;white-space:nowrap;outline:none;transition:background .15s,transform .15s ease,box-shadow .15s ease}
+#editHistoryModal .eh-clear{display:inline-flex;align-items:center;flex-shrink:0;gap:.4rem;padding:.5rem .85rem;border-radius:.75rem;font-size:.75rem;font-weight:900;color:#fff;background:#e11d48;border:1px solid #fb7185;cursor:pointer;white-space:nowrap;outline:none;transition:background .15s,transform .15s ease,box-shadow .15s ease}
 #editHistoryModal .eh-clear:hover{background:#be123c;transform:translateY(-1px);box-shadow:0 4px 12px rgba(190,18,60,.45)}
 #editHistoryModal .eh-clear:active{transform:translateY(0) scale(.97)}
 #editHistoryModal .eh-clear:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
@@ -5433,7 +5505,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                 m = document.createElement('div'); m.id = 'editHistoryModal';
                 m.className = 'fixed inset-0 z-[110] hidden items-center justify-center bg-slate-900/60 p-3';
                 m.addEventListener('click', ev => { if (ev.target === m) closeEditHistory(); });
-                m.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden"><div class="px-5 py-3 bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 text-white flex items-center gap-3"><i class="fa-solid fa-clock-rotate-left text-xl leading-none shrink-0"></i><div class="flex-1 min-w-0"><h2 class="font-black text-base leading-tight" data-eh-title></h2><p class="text-[11px] opacity-80 font-bold" id="editHistoryCount"></p></div><button type="button" id="editHistoryClearBtn" onclick="ehClearAll()" class="eh-clear"><i class="fa-solid fa-broom"></i><span data-eh-clear></span></button><button type="button" onclick="closeEditHistory()" class="text-xl px-2 opacity-90 hover:opacity-100" aria-label="Close">×</button></div><div class="px-4 pt-3 pb-2 space-y-2 border-b border-slate-100"><input id="editHistorySearch" type="search" oninput="ehSetQuery(this.value)" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" /><div class="flex flex-wrap gap-1.5" id="editHistoryChips"></div></div><div id="editHistoryList" class="flex-1 overflow-y-auto px-3 py-2"></div></div>`;
+                m.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden"><div class="px-5 py-3 bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 text-white flex items-center gap-3"><i class="fa-solid fa-clock-rotate-left text-xl leading-none shrink-0"></i><div class="flex-1 min-w-0"><h2 class="font-black text-base leading-tight" data-eh-title></h2><p class="text-[11px] opacity-80 font-bold" id="editHistoryCount"></p></div><button type="button" onclick="closeEditHistory()" class="text-xl px-2 opacity-90 hover:opacity-100" aria-label="Close">×</button></div><div class="px-4 pt-3 pb-2 space-y-2 border-b border-slate-100"><div class="flex items-center gap-2"><input id="editHistorySearch" type="search" oninput="ehSetQuery(this.value)" class="flex-1 min-w-0 rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" /><button type="button" id="editHistoryClearBtn" onclick="ehClearAll()" class="eh-clear"><i class="fa-solid fa-broom"></i><span data-eh-clear></span></button></div><div class="flex flex-wrap gap-1.5" id="editHistoryChips"></div></div><div id="editHistoryList" class="flex-1 overflow-y-auto px-3 py-2"></div></div>`;
                 document.body.appendChild(m);
                 document.addEventListener('keydown', ev => { if (ev.key === 'Escape') closeEditHistory(); });
             }
@@ -6312,7 +6384,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                             if (invItem.type === 'streak_ten') { giftsHtml += sgGiftChipHtml(student.id, invItem); return; }
                             giftsHtml += `
                                 <span class="inline-flex items-center bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-semibold px-2.5 py-1 rounded-full mr-1.5 mb-1">
-                                    🎁 ${itemName}
+                                    <i class="fa-solid ${(typeof QG_ICON !== 'undefined' && typeof qgKind === 'function' && QG_ICON[qgKind(invItem)]) || 'fa-gift'} gift-type-ico mr-1.5"></i>${itemName}
                                     <button title="Đã dùng / Xóa quà" onclick="deleteStudentGift('${student.id}', '${invItem.invId}')" class="ml-1.5 w-4 h-4 bg-rose-500 hover:bg-rose-600 text-white rounded-full flex items-center justify-center text-[10px] leading-none transition">✕</button>
                                 </span>
                             `;
@@ -7300,7 +7372,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
             { key: 'good', min: 6.5,  range: '6.5 – 7.9', vi: 'Khá',          en: 'Good',         cls: 'gr-good' },
             { key: 'pass', min: 5,    range: '5.0 – 6.4', vi: 'Trung Bình',   en: 'Pass',         cls: 'gr-pass' },
             { key: 'try',  min: 3.5,  range: '3.5 – 4.9', vi: 'Cần Cố Gắng',  en: 'Needs Effort', cls: 'gr-try' },
-            { key: 'poor', min: -Infinity, range: '0.0 – 3.4', vi: 'Kém',     en: 'Poor / Fail',  cls: 'gr-poor',
+            { key: 'poor', min: -Infinity, range: '0.0 – 3.4', vi: 'Kém',     en: 'Poor',  cls: 'gr-poor',
               descVi: 'Kiến thức hổng nhiều, không đạt', descEn: 'Major knowledge gaps, not passing' }
         ];
         function gradeTierOf(avg) {
@@ -7365,6 +7437,16 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
         }
         window.toggleGradeLegend = toggleGradeLegend;
 
+        // Lửa chuỗi theo mốc (5/10/15/20/30/40/50): dùng đúng class + hiệu ứng của hệ thống streak
+        const STREAK_LEGEND_TIERS = [1, 5, 10, 15, 20, 30, 40, 50];
+        const STREAK_RANGE = { 1: '1–4', 5: '5–9', 10: '10–14', 15: '15–19', 20: '20–29', 30: '30–39', 40: '40–49', 50: '50+' };
+        function streakLegendFlameHtml(k) {
+            const hi = k >= 20 ? ' tf-hi' : '';
+            const extraSp = k >= 40 ? '<i class="tf-sp tf-sp3"></i><i class="tf-sp tf-sp4"></i><i class="tf-sp tf-sp5"></i><i class="tf-sp tf-sp6"></i>' : (k >= 20 ? '<i class="tf-sp tf-sp3"></i><i class="tf-sp tf-sp4"></i>' : (k >= 15 ? '' : (k >= 10 ? '<i class="tf-sp tf-sp3"></i>' : '')));
+            const en = appData.language === 'en';
+            const tip = en ? `${k} consecutive scores of 10` : `${k} điểm 10 liên tiếp`;
+            return `<span class="gr-flm" title="${tip}"><span class="tf-streak${hi} tf-t${k}" aria-label="${tip}"><span class="tf-flame" aria-hidden="true"><i class="tf-l tf-l1"></i><i class="tf-l tf-l2"></i><i class="tf-l tf-l3"></i><i class="tf-sp"></i><i class="tf-sp tf-sp2"></i>${extraSp}</span><span class="tf-txt">10<span class="tf-x">x</span><span class="tf-n">${k}</span></span></span><small>${STREAK_RANGE[k]}</small></span>`;
+        }
         // Chú thích thang xếp loại (hiển thị ở tab Bảng xếp loại, đồng bộ Việt/Anh)
         function renderGradeLegend() {
             const box = document.getElementById('gradeLegend');
@@ -7379,7 +7461,9 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                     const lv = i + 1;
                     const range = lv === 10 ? '10' : `${lv}.0–${lv}.9`;
                     return `<span class="gr-stk" title="${en ? 'Level' : 'Cấp'} ${lv}: ${range}">${gradeStickerSvg(lv, false, 38)}<small>${range}</small></span>`;
-                }).join('');
+                }).join('') + '<span class="gr-leg-break"></span>' +
+                `<span class="gr-leg-title">${en ? 'Streak flame' : 'Lửa chuỗi'}:</span>` +
+                STREAK_LEGEND_TIERS.map(streakLegendFlameHtml).join('');
         }
 
         // Shared, deterministic ranking logic for accumulated scores (Ranking + Score Matrix).
@@ -7544,7 +7628,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
         }
         function sgGiftChipHtml(sid, g) {
             const tier = sgTierKey(g.tier), n = parseInt(g.count) || 1;
-            return `<span class="sg-chip sg-t${tier}" title="${escapeHtml(qgT('sg_type_desc', { n }))}">🔥 ${escapeHtml(sgGiftName(g))} <span class="sg-x10">10 ×${n}</span><button type="button" class="sg-chip-use" onclick="qgUse('${sid}','${g.invId}')">${qgT('qg_use_btn')}</button></span>`;
+            return `<span class="sg-chip sg-t${tier}" title="${escapeHtml(qgT('sg_type_desc', { n }))}"><i class="fa-solid fa-fire-flame-curved"></i>${escapeHtml(sgGiftName(g))} <span class="sg-x10">10 ×${n}</span><button type="button" class="sg-chip-use" onclick="qgUse('${sid}','${g.invId}')">${qgT('qg_use_btn')}</button></span>`;
         }
         // ===== Sổ quà Streak (appData.sgLedger): nguồn chuẩn cho quà, ô điểm quà và trạng thái chuỗi =====
         // Mọi cách sửa tay (nhập nhanh, hộp điểm, hàng loạt, xóa, quà khác, Ctrl+Z...) đều không tác động được tới quà này.
@@ -8132,6 +8216,14 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                 { item: top3, cls: 'bronze', label: t.rankLabel3, icon: 'fa-medal', order: 'md:order-3', n: 3, delay: 0.15 }
             ];
             const sparkles = n => Array.from({ length: n }, (_, k) => `<span class="rk-spark" style="left:${(10 + k * 29) % 86}%;top:${(14 + k * 37) % 68}%;animation-delay:${(k * 0.45).toFixed(2)}s"></span>`).join('');
+            // Mưa tiền khi rê chuột: hạng 1 nhiều tiền vàng + châu báu, hạng 2 ít tiền bạc, hạng 3 ít tiền đồng
+            const coinRain = n => {
+                const cfg = n === 1 ? { c: 16, g: 9 } : n === 2 ? { c: 9, g: 0 } : { c: 6, g: 0 };
+                let h = '';
+                for (let k = 0; k < cfg.c; k++) h += `<i class="rk-coin" style="--x:${6 + (k * 37) % 88}%;--t:${(1.3 + ((k * 7) % 9) * 0.1).toFixed(2)}s;--dl:${(((k * 13) % 10) * 0.11).toFixed(2)}s;--w:${(n === 1 ? 15 : 14) + (k % 3) * 2}px;--dx:${(k % 2 ? 1 : -1) * (4 + (k % 4) * 4)}px"></i>`;
+                for (let k = 0; k < cfg.g; k++) h += `<i class="rk-gem g${k % 3}" style="--x:${10 + (k * 41) % 82}%;--t:${(1.5 + ((k * 5) % 7) * 0.12).toFixed(2)}s;--dl:${(((k * 17) % 10) * 0.12).toFixed(2)}s;--w:${14 + (k % 3) * 3}px;--dx:${(k % 2 ? -1 : 1) * (5 + (k % 3) * 5)}px"></i>`;
+                return `<span class="rk-rain" aria-hidden="true">${h}</span>`;
+            };
             const embers = () => Array.from({ length: 9 }, (_, k) => `<i class="rk-ember" style="--x:${8 + k * 10}%;--dx:${(k % 2 ? 1 : -1) * (6 + k * 2)}px;animation-delay:${(k * 0.42).toFixed(2)}s"></i>`).join('');
             top3Container.className = 'grid grid-cols-1 md:grid-cols-3 gap-4 md:items-end pt-2';
             top3Html = podium.map(p => {
@@ -8144,6 +8236,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                     <span class="rk-bignum">${p.n}</span>
                     ${sparkles(p.n === 1 ? 7 : 4)}
                     ${p.n === 1 ? embers() : ''}
+                    ${it ? coinRain(p.n) : ''}
                     <div class="rk-top"><span class="rk-pill">${p.label}</span><i class="fa-solid ${p.icon} rk-icon"></i></div>
                     <div class="rk-avatar-wrap"><span class="rk-ring"></span><span class="rk-avatar">${avatar}</span></div>
                     <div class="qs-namewrap"><h3 class="rk-name" title="${name}">${name}</h3>${it ? qsDeltaHtml('rk', activeClass.id, it.student.id, it.stats.hasData) : ''}</div>
