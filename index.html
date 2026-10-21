@@ -767,7 +767,7 @@ td.grid-cell.cell-sg .sg-cf{position:absolute;top:-2px;left:-1px;transform:scale
 /* ===== Sổ quà Streak (mở từ lửa streak ở Leaderboard) ===== */
 .sg-t1{--sg-a:#b5942f;--sg-bg:#fefce8;--sg-tx:#8a6d1f;--sg-bd:#e6cc7a}
 .sg-open{display:inline-flex;align-items:center;vertical-align:middle;cursor:pointer;transition:transform .15s ease,filter .15s ease;border-radius:9999px}
-.sg-open:hover{transform:scale(1.1);filter:brightness(1.05)}
+.sg-open:hover{transform:scale(1.1);filter:none}
 .sg-open .tf-streak{cursor:pointer}
 .sgb-wrap{position:fixed;inset:0;z-index:85;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.6);padding:12px}
 .sgb{position:relative;background:#fff;border-radius:18px;box-shadow:0 25px 60px rgba(15,23,42,.35);width:100%;max-width:30rem;max-height:92vh;overflow:hidden;display:flex;flex-direction:column}
@@ -2001,12 +2001,12 @@ html.mx-dark tbody tr:not(.score-row):not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>
 .tf-nm-t80{background-image:linear-gradient(90deg,#9B1560,#D62986 50%,#FF6EB4)!important;filter:drop-shadow(0 0 4px rgba(214,41,134,.85))!important}
 .tf-banner.fuchsia,.tf-banner.tf-t80{font-size:1.65rem;padding:.85rem 2.1rem;color:#fff;background:linear-gradient(135deg,#3a0a25,#A81C6B 60%,#D62986);border:3px solid #FF9BCB;box-shadow:0 0 0 4px rgba(255,110,180,.5),0 12px 40px rgba(214,41,134,.65),0 0 60px rgba(214,41,134,.65)}
 .sg-t80{--sg-a:#D62986;--sg-bg:#FCE0EE;--sg-tx:#7E0F4A;--sg-bd:#F08CC0}
-.tf-streak.tf-t90{--h:2.76rem;--fs:2.25;--ns:1.78rem;--spin:1.1s;--bg:linear-gradient(135deg,#032e34,#055a66);--ring:#087F8C,#35E6D0,#E8FFFC,#087F8C;--g1:rgba(8,127,140,.95);--g2:rgba(53,230,208,.55);--g3:rgba(232,255,252,.95);--g4:rgba(53,230,208,.9);--f1:linear-gradient(135deg,#05626C,#087F8C 55%,#35E6D0);--f2:linear-gradient(135deg,#35E6D0,#E8FFFC);--f3:linear-gradient(135deg,#fff,#E8FFFC);--fglow:rgba(53,230,208,.95);--spk:#35E6D0;--tg1:rgba(53,230,208,.95);--tg2:rgba(8,127,140,.9);--x:#35E6D0;--n:#E8FFFC}
+.tf-streak.tf-t90{--h:2.76rem;--fs:2.25;--ns:1.78rem;--spin:1.1s;--bg:linear-gradient(135deg,#2E130E,#4B241C);--ring:#7B3828,#F3C7A5,#FFE9D6,#7B3828;--g1:rgba(123,56,40,.95);--g2:rgba(243,199,165,.5);--g3:rgba(243,199,165,.95);--g4:rgba(123,56,40,.9);--f1:linear-gradient(135deg,#4B241C,#7B3828 55%,#D98E62);--f2:linear-gradient(135deg,#B5603F,#F3C7A5);--f3:linear-gradient(135deg,#fff,#FBE3CE);--fglow:rgba(243,199,165,.9);--spk:#F3C7A5;--tg1:rgba(243,199,165,.9);--tg2:rgba(123,56,40,.9);--x:#F3C7A5;--n:#F3C7A5}
 .tf-streak.tf-hi.tf-t90:not(.tf-mini) .tf-txt{font-size:1.3rem}
-.tf-streak.tf-hi.tf-t90 .tf-txt,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-n{color:#E8FFFC!important;-webkit-text-fill-color:#E8FFFC!important;text-shadow:0 0 5px rgba(53,230,208,.95),0 0 12px rgba(5,98,108,.85)!important}
-.tf-nm-t90{background-image:linear-gradient(90deg,#055A66,#087F8C 50%,#19B5A5)!important;filter:drop-shadow(0 0 4px rgba(53,230,208,.8))!important}
-.tf-banner.teal,.tf-banner.tf-t90{font-size:1.65rem;padding:.85rem 2.1rem;color:#fff;background:linear-gradient(135deg,#032e34,#087F8C 60%,#0AA0AF);border:3px solid #35E6D0;box-shadow:0 0 0 4px rgba(53,230,208,.5),0 12px 40px rgba(8,127,140,.7),0 0 60px rgba(8,127,140,.7)}
-.sg-t90{--sg-a:#087F8C;--sg-bg:#D2F3F0;--sg-tx:#054F58;--sg-bd:#35E6D0}
+.tf-streak.tf-hi.tf-t90 .tf-txt,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-n{color:#F3C7A5!important;-webkit-text-fill-color:#F3C7A5!important;text-shadow:0 0 5px rgba(123,56,40,.95),0 0 12px rgba(75,36,28,.85)!important}
+.tf-nm-t90{background-image:linear-gradient(90deg,#4B241C,#7B3828 55%,#A8573A)!important;filter:drop-shadow(0 0 4px rgba(123,56,40,.7))!important}
+.tf-banner.choco,.tf-banner.teal,.tf-banner.tf-t90{font-size:1.65rem;padding:.85rem 2.1rem;color:#F3C7A5;background:linear-gradient(135deg,#2E130E,#7B3828 60%,#4B241C);border:3px solid #F3C7A5;box-shadow:0 0 0 4px rgba(243,199,165,.45),0 12px 40px rgba(75,36,28,.75),0 0 60px rgba(123,56,40,.7)}
+.sg-t90{--sg-a:#7B3828;--sg-bg:#F6E2D2;--sg-tx:#4B241C;--sg-bd:#D9A57F}
 .tf-streak.tf-t100{--h:2.8rem;--fs:2.3;--ns:1.8rem;--spin:1s}
 .tf-streak.tf-hi.tf-t100:not(.tf-mini) .tf-txt{font-size:1.32rem}
 .tf-banner.tf-t100{font-size:1.8rem}
@@ -2171,6 +2171,98 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
 #scoreModal .sm-hdr.sm-light h3,#scoreModal .sm-hdr.sm-light i,#scoreModal .sm-hdr.sm-light button{color:#1e293b !important;text-shadow:none}
 #scoreModal .sm-hdr.sm-tpl{background:transparent !important}
 @media (prefers-reduced-motion:reduce){#scoreMatrix .mx-ico,#scoreModal .sm-ico,#scoreModal .sm-nm,#scoreModal #modalStudentName{animation:none !important}#scoreModal .sm-nm{color:#312e81;background:none}}
+</style>
+
+<style id="patch-2026-10-21-streak90-font-hover">
+/* ===== 1) Font chữ "10x{số}" từ mốc 20 đến 100 giống mốc 1–15 (đậm 900, viền mảnh, bóng nổi 1px, nhịp phóng nhẹ 1.3s) — chỉ phần chữ trong khung lửa ===== */
+.tf-streak.tf-hi .tf-txt{font-weight:900;letter-spacing:.02em;line-height:1;paint-order:stroke fill;-webkit-text-stroke:.5px var(--tx-st,#fff);animation:tfText 1.3s ease-in-out infinite!important}
+.tf-streak.tf-hi .tf-txt .tf-x{font-size:.74em;margin:0 .08rem 0 .12rem}
+.tf-streak.tf-hi.tf-t20{--tx-st:#e0f2fe}
+.tf-streak.tf-hi.tf-t30{--tx-st:#fff1f2}
+.tf-streak.tf-hi.tf-t40{--tx-st:#fdf4ff}
+.tf-streak.tf-hi.tf-t50{--tx-st:#F8FAFC}
+.tf-streak.tf-hi.tf-t60{--tx-st:#ECFEFF}
+.tf-streak.tf-hi.tf-t70{--tx-st:#F7FEE7}
+.tf-streak.tf-hi.tf-t80{--tx-st:#FFF1F8}
+.tf-streak.tf-hi.tf-t90{--tx-st:#FFF3E6}
+.tf-streak.tf-hi.tf-t20 .tf-txt,.tf-streak.tf-hi.tf-t20 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t20 .tf-txt .tf-n{text-shadow:0 1px 0 #1e1b4b,0 0 8px rgba(56,189,248,.95)!important}
+.tf-streak.tf-hi.tf-t30 .tf-txt,.tf-streak.tf-hi.tf-t30 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t30 .tf-txt .tf-n{text-shadow:0 1px 0 #450a0a,0 0 8px rgba(239,68,68,.95)!important}
+.tf-streak.tf-hi.tf-t40 .tf-txt,.tf-streak.tf-hi.tf-t40 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t40 .tf-txt .tf-n{text-shadow:0 1px 0 #3b0764,0 0 8px rgba(217,70,239,.95)!important}
+.tf-streak.tf-hi.tf-t50 .tf-txt,.tf-streak.tf-hi.tf-t50 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t50 .tf-txt .tf-n{text-shadow:0 1px 0 #1b212b,0 0 8px rgba(203,213,225,.95)!important}
+.tf-streak.tf-hi.tf-t60 .tf-txt,.tf-streak.tf-hi.tf-t60 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t60 .tf-txt .tf-n{text-shadow:0 1px 0 #03222b,0 0 8px rgba(0,169,199,.95)!important}
+.tf-streak.tf-hi.tf-t70 .tf-txt,.tf-streak.tf-hi.tf-t70 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t70 .tf-txt .tf-n{text-shadow:0 1px 0 #112207,0 0 8px rgba(132,204,22,.95)!important}
+.tf-streak.tf-hi.tf-t80 .tf-txt,.tf-streak.tf-hi.tf-t80 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t80 .tf-txt .tf-n{text-shadow:0 1px 0 #3a0a25,0 0 8px rgba(255,64,160,.95)!important}
+.tf-streak.tf-hi.tf-t90 .tf-txt,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-n{text-shadow:0 1px 0 #2E130E,0 0 8px rgba(123,56,40,.95)!important}
+/* mốc 100: chữ cầu vồng, không viền để không lộ khung */
+.tf-streak.tf-hi.tf-t100 .tf-txt{-webkit-text-stroke:0;text-shadow:none!important;animation:tfShine50 1.6s linear infinite,tfText 1.3s ease-in-out infinite!important}
+.tf-streak.tf-hi.tf-t100 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t100 .tf-txt .tf-n{-webkit-text-stroke:0;text-shadow:none!important;animation:tfShine50 1.6s linear infinite!important}
+
+/* ===== 2) Leaderboard: rê chuột vào thẻ học sinh -> lửa streak cháy mạnh hơn ===== */
+.tf-streak.tf-t1{--fglow:rgba(181,148,58,.95)}
+.tf-streak.tf-t5{--fglow:rgba(249,115,22,.95)}
+.tf-streak.tf-t10{--fglow:rgba(16,185,129,.95)}
+.tf-streak.tf-t15{--fglow:rgba(250,204,21,.98)}
+@keyframes tfFlickHot{0%,100%{transform:rotate(-45deg) scale(1.1,1.1)}20%{transform:rotate(-37deg) scale(.9,1.4)}40%{transform:rotate(-53deg) scale(1.22,.94)}60%{transform:rotate(-41deg) scale(.94,1.34)}80%{transform:rotate(-50deg) scale(1.16,1.04)}}
+@keyframes tfSparkHot{0%{transform:translateY(0) scale(1);opacity:0}15%{opacity:1}100%{transform:translateY(-20px) scale(1.5);opacity:0}}
+@keyframes tfGlowHot{0%,100%{opacity:.55}50%{opacity:1}}
+.rank-card .tf-flame,.hl-row .tf-flame{transition:transform .25s cubic-bezier(.2,.9,.3,1.4),filter .25s}
+.rank-card:hover .tf-flame,.hl-row:hover .tf-flame{transform-origin:50% 85%}
+.rank-card:hover .tf-streak:not(.tf-hi) .tf-flame,.hl-row:hover .tf-streak:not(.tf-hi) .tf-flame{transform:scale(1.28)}
+.rank-card:hover .tf-streak.tf-hi .tf-flame,.hl-row:hover .tf-streak.tf-hi .tf-flame{transform:scale(calc(var(--fs,1.5) * 1.2))}
+.rank-card:hover .tf-streak.tf-mini .tf-flame,.hl-row:hover .tf-streak.tf-mini .tf-flame{transform:scale(1.3)}
+.rank-card:hover .tf-streak:not(.tf-t100) .tf-flame,.hl-row:hover .tf-streak:not(.tf-t100) .tf-flame{filter:drop-shadow(0 0 5px var(--fglow,rgba(249,115,22,.95))) drop-shadow(0 0 11px var(--fglow,rgba(249,115,22,.95))) brightness(1.18) saturate(1.25)}
+.rank-card:hover .tf-flame .tf-l1,.hl-row:hover .tf-flame .tf-l1{animation:tfFlickHot .4s ease-in-out infinite}
+.rank-card:hover .tf-flame .tf-l2,.hl-row:hover .tf-flame .tf-l2{animation:tfFlickHot .32s ease-in-out infinite -.1s}
+.rank-card:hover .tf-flame .tf-l3,.hl-row:hover .tf-flame .tf-l3{animation:tfFlickHot .25s ease-in-out infinite -.18s}
+.rank-card:hover .tf-flame .tf-sp,.hl-row:hover .tf-flame .tf-sp{animation:tfSparkHot .6s ease-out infinite}
+.rank-card:hover .tf-flame .tf-sp2,.hl-row:hover .tf-flame .tf-sp2{animation-delay:.3s}
+.rank-card:hover .tf-streak::after,.hl-row:hover .tf-streak::after{animation:tfGlowHot .55s ease-in-out infinite}
+.rank-card:hover .tf-streak:not(.tf-mini) .tf-txt,.hl-row:hover .tf-streak:not(.tf-mini) .tf-txt{animation-duration:.7s!important}
+@media (prefers-reduced-motion:reduce){.rank-card:hover .tf-flame *,.hl-row:hover .tf-flame *,.rank-card:hover .tf-streak::after,.hl-row:hover .tf-streak::after{animation:none!important}}
+
+/* ===== 3) Leaderboard: hết khối vuông khi rê chuột vào thẻ học sinh ===== */
+/* thẻ top 3: bỏ filter trên cả thẻ (filter + overflow/bo góc + phần tử animation con làm lộ khung vuông), giữ nâng thẻ + sáng nhẹ bằng bóng */
+.rank-card:hover{filter:none!important;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.rank-card{transform:translateZ(0);-webkit-tap-highlight-color:transparent}
+.rank-card:hover{transform:translateY(-10px) scale(1.03) rotate(-.4deg) translateZ(0)}
+.rank-card .rk-avatar-wrap{isolation:isolate}
+.rank-card .rk-ring{will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.rank-card .rk-avatar,.rank-card .rk-icon,.rank-card .rk-spark,.rank-card .rk-ember,.rank-card .rk-coin,.rank-card .rk-gem{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.rank-card .tf-streak,.rank-card .tf-flame{isolation:isolate}
+/* hàng bảng xếp hạng: cô lập mọi phần tử có animation / background-clip để không lộ khung vuông khi hàng phóng to */
+.hl-row .tf-streak,.hl-row .sg-open,.hl-row .hl-ico,.hl-row .tf-pill,.hl-row .tf-lv,.hl-row [class*="level"]{isolation:isolate;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.hl-row .tf-name-link{display:inline-block;vertical-align:baseline;isolation:isolate;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.hl-row .sg-open:hover{filter:none!important}
+.hl-row .tf-txt .tf-n,.hl-row .tf-txt .tf-x{backface-visibility:hidden}
+/* lớp tô inset 9999px chỉ dành cho bảng điểm, không áp cho hàng xếp hạng */
+tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-shadow:none}
+tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td:first-child{box-shadow:inset 5px 0 0 #6366f1}
+html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-shadow:none}
+/* Leaderboard: không phóng to cả hàng <tr> (nguyên nhân khối vuông ở các phần tử con); chỉ tô nền + nâng nhẹ từng ô */
+.hl-row{will-change:transform}
+.hl-row:hover{transform:scale(1.015)}
+.hl-row:hover>td{position:relative}
+.hl-row:hover .hl-ico{transform:scale(1.25) rotate(-10deg)}
+/* Score Matrix: rê chuột vào hàng học sinh -> lửa cạnh tên cháy mạnh hơn */
+#scoreMatrix tbody tr .tf-flame{transition:transform .25s cubic-bezier(.2,.9,.3,1.4),filter .25s;transform-origin:50% 85%}
+#scoreMatrix tbody tr:hover .tf-streak .tf-flame{transform:scale(1.3)}
+#scoreMatrix tbody tr:hover .tf-streak.tf-hi .tf-flame{transform:scale(calc(var(--fs,1.5) * 1.2))}
+#scoreMatrix tbody tr:hover .tf-streak:not(.tf-t100) .tf-flame{filter:drop-shadow(0 0 5px var(--fglow,rgba(249,115,22,.95))) drop-shadow(0 0 11px var(--fglow,rgba(249,115,22,.95))) brightness(1.18) saturate(1.25)}
+#scoreMatrix tbody tr:hover .tf-flame .tf-l1{animation:tfFlickHot .4s ease-in-out infinite}
+#scoreMatrix tbody tr:hover .tf-flame .tf-l2{animation:tfFlickHot .32s ease-in-out infinite -.1s}
+#scoreMatrix tbody tr:hover .tf-flame .tf-l3{animation:tfFlickHot .25s ease-in-out infinite -.18s}
+#scoreMatrix tbody tr:hover .tf-flame .tf-sp{animation:tfSparkHot .6s ease-out infinite}
+@media (prefers-reduced-motion:reduce){#scoreMatrix tbody tr:hover .tf-flame *{animation:none!important}}
+/* Font "10x{số}" streak 20–100: nét viền và bóng như streak 15; cỡ chữ vẫn to dần theo mốc */
+.tf-streak.tf-hi[class*="tf-t"]:not(.tf-t100) .tf-txt,.tf-streak.tf-hi[class*="tf-t"]:not(.tf-t100) .tf-txt .tf-x,.tf-streak.tf-hi[class*="tf-t"]:not(.tf-t100) .tf-txt .tf-n{-webkit-text-stroke:.5px var(--tx-st,#fff)!important;paint-order:stroke fill}
+.tf-streak.tf-hi.tf-t20 .tf-txt,.tf-streak.tf-hi.tf-t20 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t20 .tf-txt .tf-n{text-shadow:0 1px 0 #1e1b4b,0 0 4px rgba(56,189,248,.8)!important}
+.tf-streak.tf-hi.tf-t30 .tf-txt,.tf-streak.tf-hi.tf-t30 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t30 .tf-txt .tf-n{text-shadow:0 1px 0 #450a0a,0 0 4px rgba(239,68,68,.8)!important}
+.tf-streak.tf-hi.tf-t40 .tf-txt,.tf-streak.tf-hi.tf-t40 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t40 .tf-txt .tf-n{text-shadow:0 1px 0 #3b0764,0 0 4px rgba(217,70,239,.8)!important}
+.tf-streak.tf-hi.tf-t50 .tf-txt,.tf-streak.tf-hi.tf-t50 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t50 .tf-txt .tf-n{text-shadow:0 1px 0 #1b212b,0 0 4px rgba(203,213,225,.8)!important}
+.tf-streak.tf-hi.tf-t60 .tf-txt,.tf-streak.tf-hi.tf-t60 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t60 .tf-txt .tf-n{text-shadow:0 1px 0 #03222b,0 0 4px rgba(0,169,199,.8)!important}
+.tf-streak.tf-hi.tf-t70 .tf-txt,.tf-streak.tf-hi.tf-t70 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t70 .tf-txt .tf-n{text-shadow:0 1px 0 #112207,0 0 4px rgba(132,204,22,.8)!important}
+.tf-streak.tf-hi.tf-t80 .tf-txt,.tf-streak.tf-hi.tf-t80 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t80 .tf-txt .tf-n{text-shadow:0 1px 0 #3a0a25,0 0 4px rgba(255,64,160,.8)!important}
+.tf-streak.tf-hi.tf-t90 .tf-txt,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-n{text-shadow:0 1px 0 #2E130E,0 0 4px rgba(123,56,40,.8)!important}
 </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
@@ -7936,7 +8028,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
             const PTS = [0, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100], NT = TIERS.length; let pos = 0;
             if (cur >= 100) pos = NT; else for (let i = 0; i < NT; i++) if (cur >= PTS[i] && cur < PTS[i + 1]) { pos = i + (cur - PTS[i]) / (PTS[i + 1] - PTS[i]); break; }
             const pct = Math.max(0.5, pos / NT * 100);
-            const GRAD = 'linear-gradient(90deg,' + ['#b5942f', '#f97316', '#10b981', '#f59e0b', '#6366f1', '#dc2626', '#c026d3', '#68778B', '#00A9C7', '#5C9E16', '#D62986', '#087F8C', '#d946ef'].map((c, i) => c + ' ' + (i * 100 / NT).toFixed(2) + '%').join(',') + ')';
+            const GRAD = 'linear-gradient(90deg,' + ['#b5942f', '#f97316', '#10b981', '#f59e0b', '#6366f1', '#dc2626', '#c026d3', '#68778B', '#00A9C7', '#5C9E16', '#D62986', '#7B3828', '#d946ef'].map((c, i) => c + ' ' + (i * 100 / NT).toFixed(2) + '%').join(',') + ')';
             const nodes = `<div class="sgb-node zero"><div class="sgb-dot"></div><b>${T('Bắt đầu', 'Start')}</b></div>` + TIERS.map(t => {
                 const state = got.has(t) ? 'got' : (t === next ? 'nxt' : '');
                 const badge = (t === 5 && claimed5) ? `<span class="sgb-done">${T('Đã nhận', 'Received')}</span>` : '';
@@ -8077,8 +8169,8 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                   pal: ['#5C9E16', '#84CC16', '#A3E635', '#D9F99D', '#ffffff', '#3F6F0E', '#ECFCCB'] },
             80: { cls: 'fuchsia', vi: 'TỐI THƯỢNG!', en: 'SUPREME!', dur: 6600, waves: 8, burst: 180, flash: 'rgba(214,41,134,.6)', notes: [349, 440, 523, 698, 880, 1047, 1397, 1760, 2093, 2794],
                   pal: ['#D62986', '#FF6EB4', '#FFC4E2', '#F472B6', '#ffffff', '#9B1560', '#FFE0F0'] },
-            90: { cls: 'teal', vi: 'CHÍ TÔN!', en: 'SOVEREIGN!', dur: 6800, waves: 8, burst: 190, flash: 'rgba(53,230,208,.6)', notes: [392, 494, 587, 784, 988, 1175, 1568, 1976, 2349, 3136],
-                  pal: ['#087F8C', '#35E6D0', '#E8FFFC', '#19B5A5', '#ffffff', '#05626C', '#99F6E4'] },
+            90: { cls: 'choco', vi: 'CHÍ TÔN!', en: 'SOVEREIGN!', dur: 6800, waves: 8, burst: 190, flash: 'rgba(243,199,165,.55)', notes: [392, 494, 587, 784, 988, 1175, 1568, 1976, 2349, 3136],
+                  pal: ['#4B241C', '#7B3828', '#F3C7A5', '#A8573A', '#ffffff', '#2E130E', '#FBE3CE'] },
             100: { cls: 'divine', vi: 'HUYỀN THOẠI VĨNH CỬU!', en: 'ETERNAL LEGEND!', dur: 8000, waves: 10, burst: 200, flash: 'rgba(255,255,255,.85)', notes: [262, 330, 392, 523, 659, 784, 1047, 1319, 1568, 2093, 2637, 3136],
                   pal: ['#ef4444', '#f59e0b', '#facc15', '#22c55e', '#06b6d4', '#6366f1', '#d946ef'] }
         };
@@ -8293,7 +8385,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                     ${it ? coinRain(p.n) : ''}
                     <div class="rk-top"><span class="rk-pill">${p.label}</span><i class="fa-solid ${p.icon} rk-icon"></i></div>
                     <div class="rk-avatar-wrap"><span class="rk-ring"></span><span class="rk-avatar">${avatar}</span></div>
-                    <div class="qs-namewrap"><h3 class="rk-name" title="${name}">${name}${it ? tfNameFx(it.student.id).flame : ''}</h3>${it ? qsDeltaHtml('rk', activeClass.id, it.student.id, it.stats.hasData) : ''}</div>
+                    <div class="qs-namewrap"><h3 class="rk-name" title="${name}">${name}</h3>${it ? qsDeltaHtml('rk', activeClass.id, it.student.id, it.stats.hasData) : ''}</div>
                     <p class="rk-score"><span class="rk-num" data-cu="rkp:${it ? it.student.id : 'x' + p.n}:a" data-to="${avg}" data-dec="1" data-final="${avg}">${avg}</span> <small>${avgLabel}</small></p>
                     <div class="rk-foot">${totalLabel} <b data-cu="rkp:${it ? it.student.id : 'x' + p.n}:t" data-to="${it ? it.stats.total : 0}" data-dec="1" data-final="${it ? it.stats.total : 0}">${it ? it.stats.total : 0}</b></div>
                 </div>`;
