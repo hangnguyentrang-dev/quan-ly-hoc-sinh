@@ -8194,14 +8194,24 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                     validGiftsCount++;
                     const btn = document.createElement('button');
                     btn.type = 'button';
-                    btn.className = 'w-full text-left p-2 bg-white hover:bg-amber-100 border border-amber-200 rounded text-xs font-bold text-amber-900 transition flex justify-between items-center mb-1';
+                    btn.className = 'flex-1 min-w-0 text-left p-2 bg-white hover:bg-amber-100 border border-amber-200 rounded text-xs font-bold text-amber-900 transition flex justify-between items-center gap-2';
                     const isDeleteGift = invItem.type === 'delete_score';
                     btn.innerHTML = `
-                        <span>🎁 ${getRewardName(invItem)}${isDeleteGift ? `<span class="block text-[10px] font-medium text-amber-700">${t.dsGiftHint}</span>` : (invItem.type === 'plus_exam' ? `<span class="block text-[10px] font-medium text-amber-700">${t.qg_type_plus_exam} +${invItem.deltaScore}</span>` : invItem.type === 'plus_match' ? `<span class="block text-[10px] font-medium text-amber-700">${pmDesc(invItem)}</span>` : '')}</span>
+                        <span><span class="text-amber-600 mr-1">${giftTypeIconHtml(invItem)}</span>${getRewardName(invItem)}${isDeleteGift ? `<span class="block text-[10px] font-medium text-amber-700">${t.dsGiftHint}</span>` : (invItem.type === 'plus_exam' ? `<span class="block text-[10px] font-medium text-amber-700">${t.qg_type_plus_exam} +${invItem.deltaScore}</span>` : invItem.type === 'plus_match' ? `<span class="block text-[10px] font-medium text-amber-700">${pmDesc(invItem)}</span>` : '')}</span>
                         <span class="text-[10px] bg-amber-200 text-amber-800 px-1.5 py-0.5 rounded shadow-sm">${t.lblApplyBtn}</span>
                     `;
                     btn.onclick = () => isDeleteGift ? applyDeleteScoreGift(student.id, invItem) : applyGiftToCell(student.id, invItem);
-                    giftList.appendChild(btn);
+                    const delBtn = document.createElement('button');
+                    delBtn.type = 'button';
+                    delBtn.className = 'qg-del';
+                    const delLbl = lang === 'en' ? 'Delete gift' : 'Xóa quà';
+                    delBtn.title = delLbl; delBtn.setAttribute('aria-label', delLbl);
+                    delBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+                    delBtn.onclick = () => mxDeleteModalGift(student.id, invItem.invId);
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center gap-1.5 mb-1';
+                    row.appendChild(btn); row.appendChild(delBtn);
+                    giftList.appendChild(row);
                 }
             });
 
@@ -8314,68 +8324,105 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
             }
         }
 
+        /* --- Dùng quà ngay trong hộp "Cập nhật điểm": có hộp xác nhận (điểm trước ➔ sau) và thông báo kết quả giống Túi quà --- */
+        let mxGiftBusy = false;
+        const mxFmt = v => String(Math.round(parseFloat(v) * 10) / 10);
+        async function mxConfirmGift(studentId, invItem, pl, dateStr) {
+            const student = appData.students.find(x => x.id === studentId);
+            const sName = student ? getStudentDisplayName(student) : '', gName = getRewardName(invItem);
+            const args = { student: sName, date: qgDateLabel(dateStr), before: pl.before, after: pl.after };
+            let detail;
+            if (pl.kind === 'plain') detail = qgT('qg_detail_plain', { student: sName, giftName: gName });
+            else if (pl.kind === 'plus_exam') detail = qgT('qg_detail_exam', args);
+            else if (pl.before === '—') detail = qgT('qg_detail_add', args);
+            else detail = qgT('qg_detail_change', args);
+            const td = qsGetCell(studentId, dateStr);
+            if (td) td.classList.add('ds-target');
+            try { return await showAppConfirm(`${qgT('confirm_use_quick_gift')} ${gName} — ${detail}`, qgT('quick_gift_title')); }
+            finally { if (td) td.classList.remove('ds-target'); }
+        }
+        function mxGiftDoneToast(studentId, invItem, pl, dateStr) {
+            const student = appData.students.find(x => x.id === studentId);
+            const gName = getRewardName(invItem), d = qgDateLabel(dateStr);
+            let extra = '';
+            if (pl.kind === 'plus_exam') extra = ' ' + qgT('qg_exam_done', { delta: invItem.deltaScore, date: d, before: pl.before, after: pl.after });
+            else if (pl.kind === 'plus_match') extra = ' ' + qgT('qg_plus_match_done', { delta: invItem.deltaScore, date: d, before: pl.before, after: pl.after });
+            else if (pl.kind === 'plus') extra = ' ' + qgT('qg_plus_match_done', { delta: invItem.deltaScore, date: d, before: pl.before, after: pl.after });
+            else if (pl.kind === 'change') extra = ' ' + qgT('lowest_score_improved', { score: pl.after });
+            else if (pl.kind === 'add') extra = ' ' + qgT('empty_cell_filled');
+            qsToast(qgT('apply_gift_success', { giftName: gName, studentName: student ? getStudentDisplayName(student) : '' }) + extra, 'success');
+        }
+        async function mxApplyGift(studentId, invItem, compute) {
+            if (mxGiftBusy) return;
+            if (qsArchived()) { saveData(); return; }
+            mxGiftBusy = true;
+            try {
+                const dateStr = document.getElementById('modalDateStr').value;
+                if (document.getElementById('modalStudentId').value !== studentId) return;
+                const key = `${studentId}_${dateStr}`;
+                const owns = () => { const st = appData.students.find(x => x.id === studentId); return (st && Array.isArray(st.inventory)) ? st.inventory.find(i => i.invId === invItem.invId) : null; };
+                if (!owns()) { uiToast('qg_gift_missing', 'warning'); refreshScoreModalData(); return; }
+                let pl = compute(key); if (!pl) return;
+                if (!await mxConfirmGift(studentId, invItem, pl, dateStr)) return;
+
+                // Kiểm tra lại sau xác nhận rồi mới ghi dữ liệu
+                if (document.getElementById('modalStudentId').value !== studentId || document.getElementById('modalDateStr').value !== dateStr) return;
+                if (!owns()) { uiToast('qg_gift_missing', 'warning'); refreshScoreModalData(); return; }
+                pl = compute(key); if (!pl) return;
+
+                const student = appData.students.find(x => x.id === studentId);
+                const cell = appData.scores[key];
+                const prevCell = cell ? deepCopy(cell) : undefined, prevGift = deepCopy(owns());
+                if (pl.build) appData.scores[key] = pl.build(cell);
+                student.inventory = student.inventory.filter(i => i.invId !== invItem.invId);
+                refreshScoreModalData();
+
+                const saved = await saveData();
+                if (!saved) {
+                    const st2 = appData.students.find(x => x.id === studentId);
+                    if (st2) {
+                        if (!st2.inventory) st2.inventory = [];
+                        if (!st2.inventory.some(i => i.invId === prevGift.invId)) {
+                            st2.inventory.push(prevGift);
+                            if (pl.build) { if (prevCell === undefined) delete appData.scores[key]; else appData.scores[key] = prevCell; }
+                        }
+                    }
+                    uiToast('dsToastError', 'error');
+                    try { renderCurrentView(); } catch (e) {}
+                    refreshScoreModalData();
+                    return;
+                }
+                mxGiftDoneToast(studentId, invItem, pl, dateStr);
+            } finally { mxGiftBusy = false; }
+        }
+
         /* --- Quà cộng điểm vào ô có điểm quy định (plus_match): dùng thủ công trên ô đang mở --- */
         function applyPlusMatchGift(studentId, invItem) {
-            if (qsArchived()) { saveData(); return; }
-            const dateStr = document.getElementById('modalDateStr').value;
-            const key = `${studentId}_${dateStr}`;
-            const cell = appData.scores[key];
-            const student = appData.students.find(s => s.id === studentId);
-            const owned = student && Array.isArray(student.inventory) && student.inventory.find(i => i.invId === invItem.invId);
-            if (!owned) { uiToast('qg_gift_missing', 'warning'); return; }
-            if (cell && cell.isExam) { uiToast('gift_skip_exam', 'warning'); return; }
-            const cur = (cell && !cell.absent && cell.score !== undefined && cell.score !== null) ? parseFloat(cell.score) : NaN;
-            const delta = parseFloat(invItem.deltaScore);
-            const after = Math.min(10, Math.max(0, Math.round((cur + delta) * 10) / 10));
-            if (isNaN(cur) || isNaN(delta) || !matchGiftCond(invItem, cur) || after === cur) { uiToast('no_valid_cell_for_gift', 'warning'); return; }
-
-            if (cell && cell.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
-            const prevCell = deepCopy(cell), prevGift = deepCopy(owned);
-            appData.scores[key] = { ...mfl(cell), ...giftKeepTs(cell, key), ...giftNeutralFlag(cell, 'plus_match'), score: after, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: !!cell.isExam };
-            student.inventory = student.inventory.filter(i => i.invId !== invItem.invId);
-            saveData().then(ok => {
-                if (ok) { uiToast('toastGiftGiven', 'success'); return; }
-                const st2 = appData.students.find(s => s.id === studentId);
-                if (st2) {
-                    if (!st2.inventory) st2.inventory = [];
-                    if (!st2.inventory.some(i => i.invId === prevGift.invId)) { st2.inventory.push(prevGift); appData.scores[key] = prevCell; }
-                }
-                uiToast('dsToastError', 'error');
-                try { renderCurrentView(); } catch (e) {}
-                refreshScoreModalData();
+            return mxApplyGift(studentId, invItem, key => {
+                const cell = appData.scores[key];
+                if (cell && cell.isExam) { uiToast('gift_skip_exam', 'warning'); return null; }
+                const cur = (cell && !cell.absent && cell.score !== undefined && cell.score !== null) ? parseFloat(cell.score) : NaN;
+                const delta = parseFloat(invItem.deltaScore);
+                const after = Math.min(10, Math.max(0, Math.round((cur + delta) * 10) / 10));
+                if (isNaN(cur) || isNaN(delta) || !matchGiftCond(invItem, cur) || after === cur) { uiToast('no_valid_cell_for_gift', 'warning'); return null; }
+                if (cell.sg) { qsToast(qsT('sgLocked'), 'warning'); return null; }
+                return { kind: 'plus_match', before: mxFmt(cur), after: mxFmt(after), build: c => ({ ...mfl(c), ...giftKeepTs(c, key), ...giftNeutralFlag(c, 'plus_match'), score: after, absent: false, speakingCount: c.speakingCount !== undefined ? c.speakingCount : 0, isExam: !!c.isExam }) };
             });
-            refreshScoreModalData();
         }
 
         /* --- Quà cộng điểm Bài Kiểm Tra (plus_exam): áp dụng NGAY trên ô đang mở (không quét như Nhập quà nhanh) --- */
         function applyExamGiftToCell(studentId, invItem) {
-            if (qsArchived()) { saveData(); return; }
-            const dateStr = document.getElementById('modalDateStr').value;
-            const key = `${studentId}_${dateStr}`;
-            const student = appData.students.find(s => s.id === studentId);
-            const owned = student && Array.isArray(student.inventory) && student.inventory.find(i => i.invId === invItem.invId);
-            if (!owned) { uiToast('qg_gift_missing', 'warning'); return; }
-            const cell = appData.scores[key];
-            if (cell && cell.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
-            const delta = parseFloat(owned.deltaScore);
-            const cur = (cell && !cell.absent && cell.score !== undefined && cell.score !== null) ? parseFloat(cell.score) : NaN;
-            if (!cell || !cell.isExam || isNaN(cur) || isNaN(delta) || delta <= 0 || qgClamp(cur + delta) === qgClamp(cur)) { uiToast('no_exam_cell_for_gift', 'warning'); return; }
-            const after = qgClamp(cur + delta);
-            const prevCell = deepCopy(cell), prevGift = deepCopy(owned);
-            appData.scores[key] = { ...mfl(cell), ...giftKeepTs(cell, key), score: after, absent: false, speakingCount: cell.speakingCount !== undefined ? cell.speakingCount : 0, isExam: true };
-            student.inventory = student.inventory.filter(i => i.invId !== invItem.invId);
-            saveData().then(ok => {
-                if (ok) { uiToast('toastGiftGiven', 'success'); return; }
-                const st2 = appData.students.find(s => s.id === studentId);
-                if (st2) {
-                    if (!st2.inventory) st2.inventory = [];
-                    if (!st2.inventory.some(i => i.invId === prevGift.invId)) { st2.inventory.push(prevGift); appData.scores[key] = prevCell; }
-                }
-                uiToast('dsToastError', 'error');
-                try { renderCurrentView(); } catch (e) {}
-                refreshScoreModalData();
+            return mxApplyGift(studentId, invItem, key => {
+                const st = appData.students.find(s => s.id === studentId);
+                const owned = st && Array.isArray(st.inventory) && st.inventory.find(i => i.invId === invItem.invId);
+                const cell = appData.scores[key];
+                if (cell && cell.sg) { qsToast(qsT('sgLocked'), 'warning'); return null; }
+                const delta = parseFloat(owned && owned.deltaScore);
+                const cur = (cell && !cell.absent && cell.score !== undefined && cell.score !== null) ? parseFloat(cell.score) : NaN;
+                if (!cell || !cell.isExam || isNaN(cur) || isNaN(delta) || delta <= 0 || qgClamp(cur + delta) === qgClamp(cur)) { uiToast('no_exam_cell_for_gift', 'warning'); return null; }
+                const after = qgClamp(cur + delta);
+                return { kind: 'plus_exam', before: mxFmt(cur), after: mxFmt(after), build: c => ({ ...mfl(c), ...giftKeepTs(c, key), score: after, absent: false, speakingCount: c.speakingCount !== undefined ? c.speakingCount : 0, isExam: true }) };
             });
-            refreshScoreModalData();
         }
 
         function applyGiftToCell(studentId, invItem) {
@@ -8383,28 +8430,41 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
             if (invItem && invItem.type === 'plus_exam') { applyExamGiftToCell(studentId, invItem); return; }
             if (invItem && invItem.type === 'delete_score') { applyDeleteScoreGift(studentId, invItem); return; }
             if (invItem && invItem.type === 'plus_match') { applyPlusMatchGift(studentId, invItem); return; }
-            const dateStr = document.getElementById('modalDateStr').value;
-            const key = `${studentId}_${dateStr}`;
-            const existing = appData.scores[key];
-            if (existing && existing.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
-            if (existing && existing.isExam) { uiToast('gift_skip_exam', 'warning'); return; }
-
-            if (invItem.type === 'plus' && invItem.deltaScore !== undefined) {
-                let currentScore = (existing && existing.score !== undefined && existing.score !== null) ? parseFloat(existing.score) : 0;
-                let newScore = Math.min(10, currentScore + parseFloat(invItem.deltaScore));
-                appData.scores[key] = { ...mfl(existing), ...giftKeepTs(existing, key), ...giftNeutralFlag(existing, 'plus'), score: newScore, absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
-            } else if (invItem.targetScore !== null && invItem.targetScore !== undefined) {
-                appData.scores[key] = { ...mfl(existing), ...(existing && existing.ts ? giftKeepTs(existing, key) : {}), ...giftNeutralFlag(existing, invItem.type), score: parseFloat(invItem.targetScore), absent: false, speakingCount: existing ? existing.speakingCount : 0, isExam: !!(existing && existing.isExam) };
-            }
-
-            const student = appData.students.find(s => s.id === studentId);
-            if (student && student.inventory) {
-                student.inventory = student.inventory.filter(i => i.invId !== invItem.invId);
-            }
-
-            saveData().then(ok => { if (ok) uiToast('toastGiftGiven', 'success'); });
-            refreshScoreModalData();
+            return mxApplyGift(studentId, invItem, key => {
+                const existing = appData.scores[key];
+                if (existing && existing.sg) { qsToast(qsT('sgLocked'), 'warning'); return null; }
+                if (existing && existing.isExam) { uiToast('gift_skip_exam', 'warning'); return null; }
+                const hasScore = !!(existing && existing.score !== undefined && existing.score !== null);
+                if (invItem.type === 'plus' && invItem.deltaScore !== undefined) {
+                    const cur = hasScore ? parseFloat(existing.score) : 0;
+                    const nw = Math.min(10, cur + parseFloat(invItem.deltaScore));
+                    return { kind: 'plus', before: hasScore ? mxFmt(cur) : '—', after: mxFmt(nw), build: c => ({ ...mfl(c), ...giftKeepTs(c, key), ...giftNeutralFlag(c, 'plus'), score: nw, absent: false, speakingCount: c ? c.speakingCount : 0, isExam: !!(c && c.isExam) }) };
+                }
+                if (invItem.targetScore !== null && invItem.targetScore !== undefined) {
+                    const nw = parseFloat(invItem.targetScore);
+                    return { kind: hasScore ? 'change' : 'add', before: hasScore ? mxFmt(existing.score) : '—', after: mxFmt(nw), build: c => ({ ...mfl(c), ...(c && c.ts ? giftKeepTs(c, key) : {}), ...giftNeutralFlag(c, invItem.type), score: nw, absent: false, speakingCount: c ? c.speakingCount : 0, isExam: !!(c && c.isExam) }) };
+                }
+                return { kind: 'plain', before: '', after: '', build: null };
+            });
         }
+
+        /* Xóa quà trong Túi đồ của hộp "Cập nhật điểm" */
+        window.mxDeleteModalGift = async function (studentId, invId) {
+            if (qsArchived()) { saveData(); return; }
+            const student = appData.students.find(x => x.id === studentId);
+            const gift = student && Array.isArray(student.inventory) ? student.inventory.find(i => i.invId === invId) : null;
+            if (!gift) { uiToast('qg_gift_missing', 'warning'); refreshScoreModalData(); return; }
+            const en = appData.language === 'en';
+            const msg = en
+                ? `Delete gift "${getRewardName(gift)}" of ${getStudentDisplayName(student)}? Pts spent on it will NOT be refunded.`
+                : `Xóa quà "${getRewardName(gift)}" của ${getStudentDisplayName(student)}? Điểm Pts đã đổi quà sẽ KHÔNG được hoàn lại.`;
+            if (!await showAppConfirm(msg, qgT('quick_gift_title'))) return;
+            const st2 = appData.students.find(x => x.id === studentId);
+            if (!st2 || !Array.isArray(st2.inventory)) return;
+            st2.inventory = st2.inventory.filter(i => i.invId !== invId);
+            saveData();
+            refreshScoreModalData();
+        };
 
         window.setQuickScore = function(val) {
             const scoreInput = document.getElementById('modalScoreInput');
