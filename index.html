@@ -2206,6 +2206,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                         <div class="p-1.5">
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openCourseManager()"><span class="menu-ico bg-violet-100 text-violet-600"><i class="fa-solid fa-folder-open"></i></span><span data-i18n="courseManagerBtn">Quản lý khóa học</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openClassModal()"><span class="menu-ico bg-emerald-100 text-emerald-600"><i class="fa-solid fa-folder-plus"></i></span><span data-i18n="btnAddClass">Thêm Lớp Mới</span></button>
+                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openEditHistory()"><span class="menu-ico bg-amber-100 text-amber-600"><i class="fa-solid fa-clock-rotate-left"></i></span><span data-i18n="menuEditHistory">Lịch sử chỉnh sửa</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openDeletedStudents()"><span class="menu-ico bg-fuchsia-100 text-fuchsia-600"><i class="fa-solid fa-trash-arrow-up"></i></span><span data-i18n="menuRestoreStudents">Khôi phục học sinh đã xóa</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();exportData()" data-i18n-title="backupTitle" title="Tải bản sao lưu dữ liệu ra file JSON"><span class="menu-ico bg-slate-100 text-slate-600"><i class="fa-solid fa-download"></i></span><span data-i18n="btnBackup">Sao lưu dữ liệu</span></button>
                             <label role="menuitem" class="menu-item"><span class="menu-ico bg-sky-100 text-sky-600"><i class="fa-solid fa-cloud-arrow-up"></i></span><span data-i18n="btnRestoreData">Phục hồi dữ liệu</span>
@@ -3400,6 +3401,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
 
         Object.assign(translations.vi, {"qg_type_streak": "Quà thưởng Chuỗi", "sg_name": "Quà Streak {tier}", "sg_type_desc": "Cộng {n} điểm 10 · không tính streak", "sg_confirm": "cộng {used} điểm 10 cho {student}: {fills} ô trống trước hôm nay, {ups} ô dưới 9 chuyển thành 10.", "sg_confirm_rest": " Còn dư {left} điểm 10 trong quà.", "sg_done": "Đã cộng {used} điểm 10 cho {student}.", "sg_done_rest": " Còn dư {left} điểm 10 trong quà.", "sg_no_cell": "Không còn ô trống trước hôm nay hoặc ô dưới 9 để dùng quà này.", "sg_award": "🎁 {student} đạt streak {tier}: nhận quà {n} điểm 10!", "sg_award_many": "🎁 Đã tặng quà thưởng streak cho {n} học sinh.", "sg_cell_tag": "Quà Chuỗi {tier} (khóa)"});
         Object.assign(translations.en, {"qg_type_streak": "Streak reward", "sg_name": "Streak {tier} Gift", "sg_type_desc": "Adds {n} scores of 10 · no streak credit", "sg_confirm": "add {used} scores of 10 for {student}: {fills} empty cells before today, {ups} cells below 9 become 10.", "sg_confirm_rest": " {left} score(s) of 10 stay in the gift.", "sg_done": "Added {used} scores of 10 for {student}.", "sg_done_rest": " {left} score(s) of 10 stay in the gift.", "sg_no_cell": "No empty cell before today or cell below 9 left to use this gift on.", "sg_award": "🎁 {student} hit a {tier} streak: earned a gift of {n} tens!", "sg_award_many": "🎁 Streak reward gifts given to {n} students.", "sg_cell_tag": "Streak {tier} gift (locked)"});
+        Object.assign(translations.vi, { menuEditHistory: 'Lịch sử chỉnh sửa' }); Object.assign(translations.en, { menuEditHistory: 'Edit history' });
         Object.assign(translations.vi, {"optTypePlusMatch": "Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)", "lblMatchCond": "Ô điểm quy định được cộng (điều kiện & mức điểm):", "optMatchLte": "Từ mức này trở xuống (≤)", "optMatchEq": "Bằng đúng mức này (=)", "optMatchGte": "Từ mức này trở lên (≥)", "phMatchScore": "VD: 7", "qg_type_plus_match": "Cộng điểm theo ô quy định", "pm_desc": "Ô có điểm {op} {score} → +{delta}", "qg_plus_match_done": "Đã cộng {delta} điểm vào ô {date} ({before}đ → {after}đ)!"});
         Object.assign(translations.en, {"optTypePlusMatch": "Add points to a cell with a specified score (e.g. +1 to a cell of 7 or lower)", "lblMatchCond": "Specified cell score to receive points (condition & score):", "optMatchLte": "This score or lower (≤)", "optMatchEq": "Exactly this score (=)", "optMatchGte": "This score or higher (≥)", "phMatchScore": "e.g. 7", "qg_type_plus_match": "Add Points to Specified Cell", "pm_desc": "Cell score {op} {score} → +{delta}", "qg_plus_match_done": "Added {delta} pts to cell {date} ({before} → {after} pts)!"});
 
@@ -3508,6 +3510,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
         // Lịch sử hoàn tác chỉ tồn tại trong phiên trình duyệt hiện tại; thùng rác học sinh được lưu cùng dữ liệu.
         let undoHistory = [];
         let lastPersistedSnapshot = null;
+        let ehBase = null; // mốc dữ liệu đã ghi vào Lịch sử chỉnh sửa
         let suppressUndoCapture = false;
         const MAX_UNDO_HISTORY = 20;
 
@@ -3702,10 +3705,10 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
         let qsTrend = false; // Xu hướng điểm: luôn TẮT mỗi lần mở trang (không lưu)
         let qsEdit = false; // chế độ Sửa điểm: sửa tay, gỡ liên kết số lần phát biểu (không lưu giữa các lần mở trang)
         function mfl(o) { return (o && o.manual) ? { manual: true } : {}; }
-        // Áp quà cộng điểm / đổi điểm: ô được nâng lên 10 phải tính streak GIỐNG HỆT khi sửa tay (+1 streak, và điểm dưới 9
-        // trước đó không còn trừ streak vì ô đã đổi giá trị). Vì vậy KHÔNG đặt cờ trung lập nữa.
+        // Áp quà cộng điểm / đổi điểm: ô được nâng lên 10 tính streak GIỐNG HỆT khi sửa tay (+1 streak).
+        // Ô vẫn dưới 10 sau khi áp quà thì được MIỄN TRỪ streak (cờ giftKeep -> stampScoreTimes đổi thành keep=true, vĩnh viễn).
         // (Quà Streak - ô sg - vẫn trung lập để tránh vòng lặp quà sinh quà; xem tenSeries/tenStreakInfo.)
-        function giftNeutralFlag(cell, kind) { return {}; }
+        function giftNeutralFlag(cell, kind) { return { giftKeep: true }; }
         // Ô ĐÃ CÓ điểm: giữ mốc thời gian của bài gốc để 7 -> 10 nằm đúng chỗ cũ trong chuỗi.
         // Ô TRỐNG được quà điền: không giữ mốc cũ (trả {}), để lần lưu gán mốc "bây giờ" như nhập tay -> streak cộng ở cuối chuỗi.
         function giftKeepTs(cell, key) {
@@ -4999,6 +5002,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
         }
 
         function initApp() {
+            ehBase = null;
             if (unsubscribeTeacherData) { unsubscribeTeacherData(); unsubscribeTeacherData = null; }
             const dataRef = ref(db, `appDataMultiTeacher/teacherData/${currentTeacherId || LEGACY_TEACHER_ID}`);
             unsubscribeTeacherData = onValue(dataRef, (snapshot) => {
@@ -5082,6 +5086,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                 let sgBootChanged = false; try { const sgE = sgEnforce(); sgBootChanged = sgSync() || sgE; } catch (e) { console.warn('sgSync skipped:', e); }
                 renderClassTabs();
                 renderCurrentView();
+                try { ehFromListener(); } catch (e) { console.warn('ehFromListener skipped:', e); }
                 lastPersistedSnapshot = deepCopy(appData);
                 if (sgBootChanged) { try { saveData(); } catch (e) {} }
                 if (window.__mxYearFixPending) { window.__mxYearFixPending = false; try { saveData(); } catch (e) {} }
@@ -5094,6 +5099,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                 return Promise.resolve(false);
             }
             try { sgEnforce(); stampScoreTimes(); updateTenRecords(); sgSync(); } catch (e) { console.warn('stampScoreTimes skipped:', e); }
+            try { ehRecord(); } catch (e) { console.warn('ehRecord skipped:', e); }
             // Ghi lại trạng thái đã lưu gần nhất trước khi thay đổi, để có thể hoàn tác.
             if (!suppressUndoCapture && lastPersistedSnapshot && JSON.stringify(lastPersistedSnapshot) !== JSON.stringify(appData)) {
                 undoHistory.push(deepCopy(lastPersistedSnapshot));
@@ -5113,6 +5119,292 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
             });
         }
 
+        /* ===== Lịch sử chỉnh sửa (menu Tiện ích): ghi lại mọi thay đổi dữ liệu mỗi lần lưu; KHÔNG ghi việc bật/tắt chế độ ===== */
+        const EH_MAX = 800;
+        const EH_FIELDS = ['listening', 'speaking', 'reading', 'writing', 'grammar', 'vocabulary'];
+        const EH_MERGE = new Set(['note', 'mnote', 'fe_edit', 'wheel_cfg', 'gen', 'shop_edit', 'vt_edit', 'stu_edit', 'stu_rename', 'cls_rename']);
+        function ehCanon(v) {
+            if (v === undefined || v === null) return undefined;
+            if (Array.isArray(v)) { const a = v.map(ehCanon).filter(x => x !== undefined); return a.length ? a : undefined; }
+            if (typeof v === 'object') { const o = {}; Object.keys(v).sort().forEach(k => { const c = ehCanon(v[k]); if (c !== undefined) o[k] = c; }); return Object.keys(o).length ? o : undefined; }
+            return v;
+        }
+        function ehJson(v) { const c = ehCanon(v); return c === undefined ? '' : JSON.stringify(c); }
+        function ehSnap(d) {
+            const cm = d.courseManager || {};
+            const lw = d.luckyWheel || {};
+            return {
+                scores: deepCopy(d.scores || {}),
+                students: (d.students || []).map(s => ({ id: s.id, name: s.name || '', classId: s.classId || '', icon: s.icon || '', birthday: s.birthday || '', pts: Number(s.rewardPoints) || 0, inv: deepCopy(s.inventory || []), viol: deepCopy(s.violations || []) })),
+                classes: (d.classes || []).map(c => ({ id: c.id, name: c.name || '' })),
+                fe: deepCopy(d.finalExams || {}),
+                sn: deepCopy(d.studentNotes || {}),
+                mn: deepCopy(d.matrixNotes || {}),
+                shop: (d.globalShopItems || []).map(i => ({ id: i.id, name: i.name || '', cost: i.cost })),
+                vt: (d.globalViolationTypes || []).map(v => ({ id: v.id, name: v.name || '' })),
+                wh: (Array.isArray(lw.history) ? lw.history : []).map(h => ({ id: h.spinId || h.at, sn: h.studentName || '', pn: h.prizeName || '' })),
+                wp: ehJson(lw.prizes),
+                gen: {
+                    sched: ehJson(d.classSchedules), teach: ehJson(d.teachingPlans), trf: ehJson(d.classTransferHistory),
+                    course: ehJson({ a: cm.activeCourseId, c: (cm.courses || []).map(c => ({ id: c.id, name: c.name, status: c.status, s: c.startDate, e: c.endDate })) }),
+                    set: [d.monthCount, d.startMonth, d.year, d.maxSpeakingLimit].join('|')
+                }
+            };
+        }
+        function ehGiftName(it) {
+            try { if (it && it.type === 'streak_ten' && typeof sgGiftName === 'function') return sgGiftName(it); return getRewardName(it); } catch (e) { return (it && (it.name || it.itemName)) || ''; }
+        }
+        function ehDiff(b, c) {
+            const out = [], now = Date.now();
+            const bs = new Map(b.students.map(s => [String(s.id), s])), cs = new Map(c.students.map(s => [String(s.id), s]));
+            const bc = new Map(b.classes.map(x => [String(x.id), x.name])), cc = new Map(c.classes.map(x => [String(x.id), x.name]));
+            const cName = id => cc.get(String(id)) || bc.get(String(id)) || '';
+            const sObj = id => cs.get(String(id)) || bs.get(String(id));
+            const sName = id => { const s = sObj(id); return s ? s.name : ''; };
+            const sCls = id => { const s = sObj(id); return s ? cName(s.classId) : ''; };
+            const push = e => { const o = { ts: now }; Object.keys(e).forEach(k => { if (e[k] !== undefined && e[k] !== null) o[k] = e[k]; }); out.push(o); return o; };
+            const sig = x => !x ? null : (x.absent ? 'A' : (x.score === '' || x.score === undefined || x.score === null || isNaN(parseFloat(x.score)) ? '' : String(parseFloat(x.score))));
+            const cnt = it => (it && it.count !== undefined && it.count !== null) ? (parseInt(it.count) || 0) : 1;
+            const hints = (window.__ehHints || []).filter(h => now - h.t < 600000);
+
+            // --- Điểm số trên Score Matrix ---
+            const scoreBySid = {};
+            new Set([...Object.keys(b.scores), ...Object.keys(c.scores)]).forEach(key => {
+                const m = String(key).match(/^(.*)_(\d{4}-\d{1,2}-\d{1,2})$/); if (!m) return;
+                const o = b.scores[key], n = c.scores[key]; if (!o && !n) return;
+                if (!sObj(m[1])) return; // học sinh bị xóa/khôi phục: đã có mục riêng
+                const so = sig(o), sn = sig(n); if (so === sn) return;
+                let k, a, bb;
+                if (!o) { if (n.absent) { k = 'score_abs'; } else { k = 'score_add'; bb = sn; } }
+                else if (!n) { k = 'score_del'; a = so; }
+                else if (n.absent) { k = 'score_abs'; a = so; }
+                else { k = 'score_edit'; a = so; bb = sn; }
+                const e = push({ c: 'score', k, sid: m[1], sn: sName(m[1]), cn: sCls(m[1]), d: m[2], a, b: bb, ex: (n || o).isExam ? 1 : undefined, g: (n && n.sg) ? 'sg' : undefined });
+                (scoreBySid[m[1]] = scoreBySid[m[1]] || []).push(e);
+            });
+
+            // --- Học sinh, quà, điểm thưởng, vi phạm ---
+            bs.forEach((o, id) => { if (!cs.has(id)) push({ c: 'student', k: 'stu_del', sid: id, sn: o.name, cn: cName(o.classId) }); });
+            c.students.forEach(s => {
+                const id = String(s.id), o = bs.get(id);
+                if (!o) { push({ c: 'student', k: 'stu_add', sid: id, sn: s.name, cn: cName(s.classId) }); return; }
+                if (o.name !== s.name) push({ c: 'student', k: 'stu_rename', sid: id, sn: s.name, a: o.name, b: s.name });
+                if (o.classId !== s.classId) push({ c: 'student', k: 'stu_move', sid: id, sn: s.name, a: cName(o.classId), b: cName(s.classId) });
+                if (o.icon !== s.icon || o.birthday !== s.birthday) push({ c: 'student', k: 'stu_edit', sid: id, sn: s.name, cn: cName(s.classId) });
+                const oi = new Map(o.inv.map(i => [i.invId, i])), ni = new Map(s.inv.map(i => [i.invId, i]));
+                const adds = [], outs = [];
+                ni.forEach((it, iid) => { const p = oi.get(iid); if (!p) adds.push({ it, n: cnt(it) }); else if (cnt(it) < cnt(p)) outs.push({ it, n: cnt(p) - cnt(it) }); else if (cnt(it) > cnt(p)) adds.push({ it, n: cnt(it) - cnt(p) }); });
+                oi.forEach((it, iid) => { if (!ni.has(iid)) outs.push({ it, n: cnt(it) }); });
+                let explained = 0; const groups = {};
+                adds.forEach(({ it, n }) => { const key = (it.itemId || it.name || '') + '|' + (it.type || ''); const g = groups[key] = groups[key] || { it, n: 0, q: 0 }; g.n += n; g.q += 1; });
+                Object.keys(groups).forEach(key => {
+                    const g = groups[key], it = g.it, nm = ehGiftName(it);
+                    if (it.type === 'streak_ten') { push({ c: 'gift', k: 'gift_streak', sid: id, sn: s.name, cn: cName(s.classId), x: nm, n: g.n }); return; }
+                    const h = hints.find(h => String(h.sid) === id && h.itemId === it.itemId);
+                    if (h) { const p = (Number(h.cost) || 0) * g.q; explained += p; push({ c: 'gift', k: 'gift_buy', sid: id, sn: s.name, cn: cName(s.classId), x: nm, n: g.q, p }); }
+                    else push({ c: 'gift', k: 'gift_get', sid: id, sn: s.name, cn: cName(s.classId), x: nm, n: g.q });
+                });
+                const sc = scoreBySid[id] || [];
+                if (outs.length) {
+                    if (sc.length) { const nm = ehGiftName(outs[0].it); sc.forEach(e => { if (!e.g) e.g = nm; }); }
+                    else outs.forEach(({ it, n }) => push({ c: 'gift', k: (it.type === 'lucky_spin' || it.itemId === 'fix_lucky_spin') ? 'gift_spin' : 'gift_out', sid: id, sn: s.name, cn: cName(s.classId), x: ehGiftName(it), n }));
+                }
+                const extra = (s.pts - o.pts) + explained;
+                if (Math.abs(extra) > 1e-9 && !sc.length) push({ c: 'gift', k: 'pts', sid: id, sn: s.name, cn: cName(s.classId), a: String(o.pts), b: String(s.pts), n: Math.round((s.pts - o.pts) * 100) / 100 });
+                const ov = new Map(o.viol.map(v => [v.vId || JSON.stringify(v), v])), nv = new Map(s.viol.map(v => [v.vId || JSON.stringify(v), v]));
+                nv.forEach((v, vid) => { if (!ov.has(vid)) push({ c: 'student', k: 'viol_add', sid: id, sn: s.name, cn: cName(s.classId), x: v.name, d: v.date }); });
+                ov.forEach((v, vid) => { if (!nv.has(vid)) push({ c: 'student', k: 'viol_del', sid: id, sn: s.name, cn: cName(s.classId), x: v.name, d: v.date }); });
+            });
+
+            // --- Lớp ---
+            cc.forEach((nm, id) => { if (!bc.has(id)) push({ c: 'student', k: 'cls_add', x: nm }); else if (bc.get(id) !== nm) push({ c: 'student', k: 'cls_rename', sid: id, a: bc.get(id), b: nm }); });
+            bc.forEach((nm, id) => { if (!cc.has(id)) push({ c: 'student', k: 'cls_del', x: nm }); });
+
+            // --- Kiểm tra cuối kỳ ---
+            new Set([...Object.keys(b.fe), ...Object.keys(c.fe)]).forEach(id => {
+                if (!cs.has(String(id)) || !bs.has(String(id))) return;
+                const o = b.fe[id] || {}, n = c.fe[id] || {}; let any = false;
+                EH_FIELDS.forEach(f => { const x = String(o[f] === undefined || o[f] === null ? '' : o[f]), y = String(n[f] === undefined || n[f] === null ? '' : n[f]); if (x !== y) { any = true; push({ c: 'score', k: 'fe_edit', sid: id, sn: sName(id), cn: sCls(id), x: f, a: x, b: y }); } });
+                if (!any && ehJson(o) !== ehJson(n)) push({ c: 'score', k: 'fe_edit', sid: id, sn: sName(id), cn: sCls(id), x: 'bonus' });
+            });
+
+            // --- Ghi chú ---
+            new Set([...Object.keys(b.sn), ...Object.keys(c.sn)]).forEach(id => { if (cs.has(String(id)) && bs.has(String(id)) && ehJson(b.sn[id]) !== ehJson(c.sn[id])) push({ c: 'other', k: 'note', sid: id, sn: sName(id), cn: sCls(id) }); });
+            new Set([...Object.keys(b.mn), ...Object.keys(c.mn)]).forEach(id => { if (ehJson(b.mn[id]) !== ehJson(c.mn[id])) push({ c: 'other', k: 'mnote', sid: id, x: cName(id) }); });
+
+            // --- Cửa hàng quà, loại vi phạm, vòng quay ---
+            const listDiff = (bl, cl, pre, cat, fmt) => {
+                const bm = new Map(bl.map(i => [String(i.id), i])), cm = new Map(cl.map(i => [String(i.id), i]));
+                cm.forEach((i, id) => { const o = bm.get(id); if (!o) push({ c: cat, k: pre + '_add', sid: id, x: i.name, n: i.cost }); else if (o.name !== i.name || o.cost !== i.cost) push({ c: cat, k: pre + '_edit', sid: id, x: i.name, a: fmt(o), b: fmt(i) }); });
+                bm.forEach((o, id) => { if (!cm.has(id)) push({ c: cat, k: pre + '_del', sid: id, x: o.name }); });
+            };
+            listDiff(b.shop, c.shop, 'shop', 'gift', i => (i.name || '') + (i.cost !== undefined ? ' · ' + i.cost : ''));
+            listDiff(b.vt, c.vt, 'vt', 'other', i => i.name || '');
+            const bw = new Set(b.wh.map(h => String(h.id)));
+            c.wh.forEach(h => { if (!bw.has(String(h.id))) push({ c: 'gift', k: 'wheel_spin', sn: h.sn, x: h.pn }); });
+            if (b.wp !== c.wp) push({ c: 'other', k: 'wheel_cfg' });
+            Object.keys(c.gen).forEach(k => { if (b.gen[k] !== c.gen[k]) push({ c: 'other', k: 'gen', x: k }); });
+            return out;
+        }
+        function ehAppend(list) {
+            if (!list.length) return false;
+            if (!Array.isArray(appData.editHistory)) appData.editHistory = [];
+            const H = appData.editHistory;
+            const ents = list.length > 60 ? [{ ts: Date.now(), c: 'other', k: 'bulk', n: list.length }] : list;
+            ents.forEach(e => {
+                if (EH_MERGE.has(e.k)) {
+                    for (let i = H.length - 1; i >= 0 && i >= H.length - 6; i--) {
+                        const p = H[i];
+                        if (p.k === e.k && p.sid === e.sid && (p.x || '') === (e.x || '') && e.ts - p.ts < 120000) {
+                            if (e.b !== undefined) p.b = e.b; p.ts = e.ts;
+                            if (p.a !== undefined && p.a === p.b && p.k !== 'cls_rename') H.splice(i, 1);
+                            return;
+                        }
+                    }
+                }
+                H.push(e);
+            });
+            if (H.length > EH_MAX) H.splice(0, H.length - EH_MAX);
+            return true;
+        }
+        function ehRecord() {
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return false;
+            if (!ehBase) { if (!lastPersistedSnapshot) { ehBase = ehSnap(appData); return false; } ehBase = ehSnap(lastPersistedSnapshot); }
+            const cur = ehSnap(appData), ents = ehDiff(ehBase, cur);
+            ehBase = cur; window.__ehHints = [];
+            if (window.__ehTag) { ents.forEach(e => { e.u = 1; }); window.__ehTag = null; }
+            return ehAppend(ents);
+        }
+        // Thay đổi đến từ máy chủ (ví dụ: vòng quay may mắn ghi trực tiếp lên Firebase) cũng được ghi lại
+        function ehFromListener() {
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return;
+            if (!ehBase) { ehBase = ehSnap(appData); return; }
+            const cur = ehSnap(appData), ents = ehDiff(ehBase, cur);
+            ehBase = cur;
+            if (ents.length && ehAppend(ents)) setTimeout(() => { try { saveData(); } catch (e) {} }, 60);
+        }
+
+        /* ===== Giao diện: Lịch sử chỉnh sửa ===== */
+        let ehFilter = 'all', ehQuery = '', ehLimit = 120;
+        const EH_ICON = {
+            score_add: ['fa-circle-plus', 'score'], score_edit: ['fa-pen', 'score'], score_del: ['fa-eraser', 'del'], score_abs: ['fa-user-slash', 'del'], fe_edit: ['fa-file-pen', 'score'],
+            gift_buy: ['fa-bag-shopping', 'gift'], gift_get: ['fa-gift', 'gift'], gift_streak: ['fa-fire-flame-curved', 'fire'], gift_spin: ['fa-dice', 'gift'], gift_out: ['fa-box-open', 'gift'], pts: ['fa-coins', 'gift'],
+            wheel_spin: ['fa-dice', 'gift'], shop_add: ['fa-store', 'gift'], shop_edit: ['fa-store', 'gift'], shop_del: ['fa-store-slash', 'del'],
+            viol_add: ['fa-triangle-exclamation', 'del'], viol_del: ['fa-circle-check', 'stu'], stu_add: ['fa-user-plus', 'stu'], stu_del: ['fa-user-minus', 'del'], stu_rename: ['fa-signature', 'stu'], stu_move: ['fa-right-left', 'stu'], stu_edit: ['fa-user-pen', 'stu'],
+            cls_add: ['fa-folder-plus', 'stu'], cls_del: ['fa-folder-minus', 'del'], cls_rename: ['fa-folder-open', 'stu'],
+            note: ['fa-note-sticky', 'oth'], mnote: ['fa-note-sticky', 'oth'], vt_add: ['fa-list-check', 'oth'], vt_edit: ['fa-list-check', 'oth'], vt_del: ['fa-list-check', 'del'], wheel_cfg: ['fa-sliders', 'oth'], gen: ['fa-sliders', 'oth'], bulk: ['fa-layer-group', 'oth']
+        };
+        function ehText(e) {
+            const en = (appData.language || 'vi') === 'en', T = (v, n) => en ? n : v, q = s => '“' + s + '”';
+            const date = e.d ? String(e.d).split('-').reverse().join('/') : '';
+            const sc = v => v === 'A' ? T('Vắng', 'Absent') : (v === '' || v === undefined ? '—' : v);
+            const who = e.cn ? `${e.sn} (${e.cn})` : (e.sn || '');
+            const g = e.g ? (e.g === 'sg' ? T(' · Quà Streak', ' · Streak gift') : T(` · dùng quà ${q(e.g)}`, ` · via gift ${q(e.g)}`)) : '';
+            const ex = e.ex ? T(' · Bài kiểm tra', ' · Test score') : '';
+            const FL = { listening: T('Nghe', 'Listening'), speaking: T('Nói', 'Speaking'), reading: T('Đọc', 'Reading'), writing: T('Viết', 'Writing'), grammar: T('Ngữ pháp', 'Grammar'), vocabulary: T('Từ vựng', 'Vocabulary'), bonus: T('điểm cộng', 'bonus') };
+            const GL = { sched: T('Cập nhật lịch học', 'Updated class schedule'), teach: T('Cập nhật nội dung giảng dạy', 'Updated teaching content'), course: T('Cập nhật quản lý khóa học', 'Updated course manager'), set: T('Đổi cài đặt khóa học', 'Changed course settings'), trf: T('Cập nhật lịch sử chuyển lớp', 'Updated class transfer history') };
+            const times = n => n > 1 ? ' ×' + n : '';
+            let t;
+            switch (e.k) {
+                case 'score_add': t = T(`Nhập điểm ${e.b} cho ${who} · ngày ${date}`, `Entered score ${e.b} for ${who} · ${date}`) + ex + g; break;
+                case 'score_edit': t = T(`Sửa điểm của ${who} · ngày ${date}: ${sc(e.a)} → ${sc(e.b)}`, `Edited score of ${who} · ${date}: ${sc(e.a)} → ${sc(e.b)}`) + ex + g; break;
+                case 'score_del': t = T(`Xóa điểm ${sc(e.a)} của ${who} · ngày ${date}`, `Deleted score ${sc(e.a)} of ${who} · ${date}`) + ex; break;
+                case 'score_abs': t = T(`Đánh dấu vắng: ${who} · ngày ${date}`, `Marked absent: ${who} · ${date}`) + (e.a ? T(` (trước đó ${e.a})`, ` (was ${e.a})`) : ''); break;
+                case 'fe_edit': t = e.x === 'bonus' ? T(`Kiểm tra cuối kỳ · ${who}: sửa điểm cộng`, `Final exam · ${who}: edited bonus`) : T(`Kiểm tra cuối kỳ · ${who}: ${FL[e.x] || e.x} ${e.a || '—'} → ${e.b || '—'}`, `Final exam · ${who}: ${FL[e.x] || e.x} ${e.a || '—'} → ${e.b || '—'}`); break;
+                case 'gift_buy': t = T(`${who} đổi quà ${q(e.x)}${times(e.n)} (−${e.p} điểm)`, `${who} exchanged for ${q(e.x)}${times(e.n)} (−${e.p} pts)`); break;
+                case 'gift_get': t = T(`${who} nhận quà ${q(e.x)}${times(e.n)}`, `${who} received gift ${q(e.x)}${times(e.n)}`); break;
+                case 'gift_streak': t = T(`${who} nhận ${q(e.x)} (${e.n} điểm 10)`, `${who} received ${q(e.x)} (${e.n} scores of 10)`); break;
+                case 'gift_spin': t = T(`${who} dùng lượt quay may mắn`, `${who} used a Lucky Wheel turn`); break;
+                case 'gift_out': t = T(`${who} dùng hoặc xóa quà ${q(e.x)}${times(e.n)}`, `${who} used or deleted gift ${q(e.x)}${times(e.n)}`); break;
+                case 'pts': t = T(`Điểm thưởng của ${who}: ${e.a} → ${e.b} (${e.n > 0 ? '+' : ''}${e.n})`, `Reward points of ${who}: ${e.a} → ${e.b} (${e.n > 0 ? '+' : ''}${e.n})`); break;
+                case 'wheel_spin': t = T(`Quay may mắn${e.sn ? ' · ' + e.sn : ''}: trúng ${q(e.x || '')}`, `Lucky Wheel${e.sn ? ' · ' + e.sn : ''}: won ${q(e.x || '')}`); break;
+                case 'viol_add': t = T(`Ghi vi phạm cho ${who}: ${e.x}`, `Violation recorded for ${who}: ${e.x}`); break;
+                case 'viol_del': t = T(`Xóa vi phạm của ${who}: ${e.x}`, `Violation removed from ${who}: ${e.x}`); break;
+                case 'stu_add': t = T(`Thêm học sinh ${e.sn} vào lớp ${e.cn}`, `Added student ${e.sn} to class ${e.cn}`); break;
+                case 'stu_del': t = T(`Xóa học sinh ${e.sn} (lớp ${e.cn})`, `Deleted student ${e.sn} (class ${e.cn})`); break;
+                case 'stu_rename': t = T(`Đổi tên học sinh: ${e.a} → ${e.b}`, `Renamed student: ${e.a} → ${e.b}`); break;
+                case 'stu_move': t = T(`Chuyển ${e.sn} từ lớp ${e.a} sang lớp ${e.b}`, `Moved ${e.sn} from class ${e.a} to ${e.b}`); break;
+                case 'stu_edit': t = T(`Sửa thông tin học sinh ${who}`, `Edited student info: ${who}`); break;
+                case 'cls_add': t = T(`Thêm lớp ${e.x}`, `Added class ${e.x}`); break;
+                case 'cls_del': t = T(`Xóa lớp ${e.x}`, `Deleted class ${e.x}`); break;
+                case 'cls_rename': t = T(`Đổi tên lớp: ${e.a} → ${e.b}`, `Renamed class: ${e.a} → ${e.b}`); break;
+                case 'note': t = T(`Sửa ghi chú của ${who}`, `Edited note of ${who}`); break;
+                case 'mnote': t = T(`Sửa ghi chú lớp ${e.x}`, `Edited class notes: ${e.x}`); break;
+                case 'shop_add': t = T(`Thêm quà vào cửa hàng: ${q(e.x)}${e.n !== undefined ? ' · ' + e.n + ' điểm' : ''}`, `Added shop gift: ${q(e.x)}${e.n !== undefined ? ' · ' + e.n + ' pts' : ''}`); break;
+                case 'shop_edit': t = T(`Sửa quà trong cửa hàng: ${e.a} → ${e.b}`, `Edited shop gift: ${e.a} → ${e.b}`); break;
+                case 'shop_del': t = T(`Xóa quà khỏi cửa hàng: ${q(e.x)}`, `Removed shop gift: ${q(e.x)}`); break;
+                case 'vt_add': t = T(`Thêm loại vi phạm: ${q(e.x)}`, `Added violation type: ${q(e.x)}`); break;
+                case 'vt_edit': t = T(`Sửa loại vi phạm: ${e.a} → ${e.b}`, `Edited violation type: ${e.a} → ${e.b}`); break;
+                case 'vt_del': t = T(`Xóa loại vi phạm: ${q(e.x)}`, `Removed violation type: ${q(e.x)}`); break;
+                case 'wheel_cfg': t = T('Chỉnh cấu hình vòng quay may mắn', 'Edited Lucky Wheel setup'); break;
+                case 'gen': t = GL[e.x] || T('Cập nhật dữ liệu', 'Updated data'); break;
+                case 'bulk': t = T(`Cập nhật hàng loạt (${e.n} thay đổi)`, `Bulk update (${e.n} changes)`); break;
+                default: t = T('Thay đổi dữ liệu', 'Data change');
+            }
+            return (e.u ? T('↩ Hoàn tác · ', '↩ Undo · ') : '') + t;
+        }
+        function ehCat(e) { const c = e.c || 'other'; return c === 'exam' ? 'score' : c; }
+        function ehRender() {
+            const el = document.getElementById('editHistoryList'); if (!el) return;
+            const en = (appData.language || 'vi') === 'en', T = (v, n) => en ? n : v;
+            const all = (Array.isArray(appData.editHistory) ? appData.editHistory : []).slice().reverse();
+            const qn = ehQuery.trim().toLowerCase();
+            const rows = all.map(e => ({ e, text: ehText(e) })).filter(r => (ehFilter === 'all' || ehCat(r.e) === ehFilter) && (!qn || r.text.toLowerCase().includes(qn)));
+            const cnt = document.getElementById('editHistoryCount'); if (cnt) cnt.textContent = T(`${rows.length} / ${all.length} thao tác`, `${rows.length} / ${all.length} actions`);
+            if (!rows.length) { el.innerHTML = `<div class="eh-empty"><i class="fa-solid fa-clock-rotate-left"></i><p>${all.length ? T('Không có thao tác nào khớp bộ lọc.', 'No actions match the filter.') : T('Chưa có thao tác nào được ghi lại.', 'No actions recorded yet.')}</p></div>`; return; }
+            const today = new Date(), dk = d => d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+            const yest = new Date(today.getTime() - 86400000), tk = dk(today), yk = dk(yest);
+            let html = '', lastDay = '';
+            rows.slice(0, ehLimit).forEach(({ e, text }) => {
+                const d = new Date(e.ts), day = dk(d);
+                if (day !== lastDay) { lastDay = day; const lbl = day === tk ? T('Hôm nay', 'Today') : day === yk ? T('Hôm qua', 'Yesterday') : `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; html += `<div class="eh-day">${lbl}</div>`; }
+                const ic = EH_ICON[e.k] || ['fa-pen', 'oth'], tm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+                html += `<div class="eh-row"><span class="eh-ico eh-${ic[1]}"><i class="fa-solid ${ic[0]}"></i></span><div class="eh-txt">${escapeHtml(text)}</div><span class="eh-time">${tm}</span></div>`;
+            });
+            if (rows.length > ehLimit) html += `<button type="button" class="eh-more" onclick="ehMore()">${T('Xem thêm', 'Show more')} (${rows.length - ehLimit})</button>`;
+            el.innerHTML = html;
+        }
+        window.ehMore = function () { ehLimit += 120; ehRender(); };
+        window.ehSetFilter = function (f) { ehFilter = f; ehLimit = 120; document.querySelectorAll('#editHistoryModal .eh-chip').forEach(b => b.classList.toggle('on', b.dataset.f === f)); ehRender(); };
+        window.ehSetQuery = function (v) { ehQuery = v || ''; ehLimit = 120; ehRender(); };
+        window.closeEditHistory = function () { const m = document.getElementById('editHistoryModal'); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); } };
+        window.openEditHistory = function () {
+            const en = (appData.language || 'vi') === 'en', T = (v, n) => en ? n : v;
+            let m = document.getElementById('editHistoryModal');
+            if (!m) {
+                if (!document.getElementById('eh-style')) {
+                    const st = document.createElement('style'); st.id = 'eh-style';
+                    st.textContent = `#editHistoryModal .eh-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.35rem .75rem;border-radius:9999px;font-size:.72rem;font-weight:800;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;transition:background .15s,color .15s,transform .15s ease,box-shadow .15s ease;cursor:pointer}
+#editHistoryModal .eh-chip:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(79,70,229,.16);background:#eef2ff;color:#3730a3}
+#editHistoryModal .eh-chip.on{background:#4f46e5;color:#fff;border-color:#4f46e5}
+#editHistoryModal .eh-day{position:sticky;top:0;z-index:1;padding:.35rem .6rem;margin:.5rem 0 .25rem;border-radius:.6rem;font-size:.68rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#3730a3;background:#eef2ff}
+#editHistoryModal .eh-row{display:flex;align-items:center;gap:.7rem;padding:.5rem .6rem;border-radius:.85rem;transition:background .15s,transform .15s ease,box-shadow .15s ease}
+#editHistoryModal .eh-row:hover{background:#eef2ff;transform:translateX(4px);box-shadow:0 4px 12px rgba(79,70,229,.14)}
+#editHistoryModal .eh-ico{display:flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:.7rem;font-size:.85rem;flex:0 0 auto;transition:transform .2s cubic-bezier(.2,.9,.3,1.4),box-shadow .2s ease}
+#editHistoryModal .eh-row:hover .eh-ico{transform:scale(1.15) rotate(-6deg);box-shadow:0 3px 8px rgba(15,23,42,.2)}
+#editHistoryModal .eh-score{background:#e0e7ff;color:#4f46e5}#editHistoryModal .eh-gift{background:#fce7f3;color:#db2777}#editHistoryModal .eh-fire{background:#ffedd5;color:#ea580c}#editHistoryModal .eh-stu{background:#d1fae5;color:#059669}#editHistoryModal .eh-oth{background:#e2e8f0;color:#475569}#editHistoryModal .eh-del{background:#ffe4e6;color:#e11d48}
+#editHistoryModal .eh-txt{flex:1;min-width:0;font-size:.78rem;font-weight:700;color:#334155;line-height:1.35;word-break:break-word}
+#editHistoryModal .eh-time{flex:0 0 auto;font-size:.68rem;font-weight:800;color:#94a3b8;font-variant-numeric:tabular-nums}
+#editHistoryModal .eh-empty{display:flex;flex-direction:column;align-items:center;gap:.6rem;padding:2.5rem 1rem;color:#94a3b8;font-size:.8rem;font-weight:700}#editHistoryModal .eh-empty i{font-size:2rem}
+#editHistoryModal .eh-more{display:block;margin:.6rem auto 0;padding:.45rem 1rem;border-radius:9999px;font-size:.75rem;font-weight:800;background:#eef2ff;color:#3730a3;transition:transform .15s ease,box-shadow .15s ease}#editHistoryModal .eh-more:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(79,70,229,.18)}
+.mx-dark #editHistoryModal .eh-chip{background:#1e293b;color:#cbd5e1;border-color:#334155}.mx-dark #editHistoryModal .eh-chip.on{background:#6366f1;color:#fff;border-color:#6366f1}.mx-dark #editHistoryModal .eh-day{background:#1e1b4b;color:#c7d2fe}.mx-dark #editHistoryModal .eh-row:hover{background:#1e1b4b}.mx-dark #editHistoryModal .eh-txt{color:#e2e8f0}`;
+                    document.head.appendChild(st);
+                }
+                m = document.createElement('div'); m.id = 'editHistoryModal';
+                m.className = 'fixed inset-0 z-[110] hidden items-center justify-center bg-slate-900/60 p-3';
+                m.addEventListener('click', ev => { if (ev.target === m) closeEditHistory(); });
+                m.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden"><div class="px-5 py-3 bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 text-white flex items-center gap-3"><span class="menu-ico bg-white/20 text-white"><i class="fa-solid fa-clock-rotate-left"></i></span><div class="flex-1 min-w-0"><h2 class="font-black text-base leading-tight" data-eh-title></h2><p class="text-[11px] opacity-80 font-bold" id="editHistoryCount"></p></div><button type="button" onclick="closeEditHistory()" class="text-xl px-2 opacity-90 hover:opacity-100" aria-label="Close">×</button></div><div class="px-4 pt-3 pb-2 space-y-2 border-b border-slate-100"><input id="editHistorySearch" type="search" oninput="ehSetQuery(this.value)" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" /><div class="flex flex-wrap gap-1.5" id="editHistoryChips"></div></div><div id="editHistoryList" class="flex-1 overflow-y-auto px-3 py-2"></div></div>`;
+                document.body.appendChild(m);
+                document.addEventListener('keydown', ev => { if (ev.key === 'Escape') closeEditHistory(); });
+            }
+            m.querySelector('[data-eh-title]').textContent = T('Lịch sử chỉnh sửa', 'Edit history');
+            const se = document.getElementById('editHistorySearch'); se.placeholder = T('Tìm theo tên học sinh, quà, điểm...', 'Search by student, gift, score...'); se.value = ehQuery;
+            const chips = [['all', T('Tất cả', 'All'), 'fa-layer-group'], ['score', T('Điểm số', 'Scores'), 'fa-pen-to-square'], ['gift', T('Quà & điểm thưởng', 'Gifts & points'), 'fa-gift'], ['student', T('Học sinh & lớp', 'Students & classes'), 'fa-user-graduate'], ['other', T('Khác', 'Other'), 'fa-sliders']];
+            document.getElementById('editHistoryChips').innerHTML = chips.map(c => `<button type="button" class="eh-chip${ehFilter === c[0] ? ' on' : ''}" data-f="${c[0]}" onclick="ehSetFilter('${c[0]}')"><i class="fa-solid ${c[2]}"></i>${c[1]}</button>`).join('');
+            ehLimit = 120; ehRender();
+            m.classList.remove('hidden'); m.classList.add('flex');
+        };
+
         window.undoLastAction = async function() {
             if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) {
                 alert(appData.language === 'en' ? 'Archived courses are read-only.' : 'Khóa đã lưu trữ chỉ được xem.'); return;
@@ -5126,11 +5418,14 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
             const previous = undoHistory.pop();
             // Spin transactions are audit records and must never be rolled back by generic Undo.
             const protectedWheel = deepCopy(appData.luckyWheel || {prizes:[],history:[],transactions:{}});
+            const protectedEh = deepCopy(appData.editHistory || []); // Lịch sử chỉnh sửa không bị hoàn tác
+            window.__ehTag = 'undo';
             const protectedSg = appData.sgLedger ? deepCopy(appData.sgLedger) : null;
             let sgBeforeAll = null; try { sgBeforeAll = sgSnap(); } catch (e) {}
             suppressUndoCapture = true;
             appData = deepCopy(previous);
             appData.luckyWheel = protectedWheel;
+            appData.editHistory = protectedEh;
             // Quà Streak (quà, ô điểm quà, trạng thái chuỗi) không bị hoàn tác
             if (protectedSg) appData.sgLedger = protectedSg;
             try { sgTrimChains(null, sgBeforeAll); sgEnforce(); } catch (e) { console.warn('sgEnforce skipped:', e); }
@@ -6174,6 +6469,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
 
         function giveGiftToStudent(student, item, qty, dateStr) {
             student.rewardPoints = (student.rewardPoints || 0) - item.cost * qty;
+            try { (window.__ehHints = window.__ehHints || []).push({ sid: student.id, itemId: item.id, cost: item.cost, qty, t: Date.now() }); } catch (e) {}
             if (!student.inventory) student.inventory = [];
             let lastInv = null;
             for (let k = 0; k < qty; k++) {
@@ -7108,6 +7404,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
             const tenEvents = [], changedSids = new Set(); let changedCount = 0;
             Object.keys(appData.scores || {}).forEach(key => {
                 const cur = appData.scores[key]; if (!cur || typeof cur !== 'object') return;
+                const gk = !!cur.giftKeep; if (cur.giftKeep !== undefined) delete cur.giftKeep; // cờ một lần: ô vừa áp quà
                 const prev = prevScores[key];
                 const changed = !prev || sig(prev) !== sig(cur);
                 if (changed) {
@@ -7117,7 +7414,8 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                     delete cur.keepTs; // cờ một lần: ô áp quà giữ ts gốc
                     // Nút "Không trừ streak": điểm dưới 10 nhập lúc nút đang BẬT được đánh dấu miễn trừ vĩnh viễn
                     const curV = parseFloat(cur.score);
-                    if (!restored) { if (appData.keepStreak && !cur.absent && !isNaN(curV) && curV < 10) cur.keep = true; else delete cur.keep; }
+                    if (gk && !cur.absent && !isNaN(curV) && curV < 10) cur.keep = true; /* quà áp vào ô dưới 10: luôn miễn trừ streak */
+                    else if (!restored) { if (appData.keepStreak && !cur.absent && !isNaN(curV) && curV < 10) cur.keep = true; else delete cur.keep; }
                     changedCount++; changedSids.add(String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, ''));
                     if (!cur.absent && !cur.sg && parseFloat(cur.score) >= 10) tenEvents.push(key);
                 } else if (!cur.ts) {
@@ -7498,7 +7796,8 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                 T('Hoàn tác (Ctrl+Z), phím Delete hoặc nút Xóa điểm làm mất một mốc: quà mốc đó chưa dùng sẽ bị thu hồi (mốc 5 cũng được tính là chưa nhận), kỷ lục hạ theo, và mốc được tặng lại khi đạt lại.', 'Undo (Ctrl+Z), the Delete key or the Delete Score button that removes a milestone: its unused gift is withdrawn (milestone 5 then counts as not received), the record drops accordingly, and the milestone is awarded again when reached again.'),
                 T('Dưới streak 10, điểm dưới 9 làm đứt streak (9 vẫn giữ). Từ streak 10, mỗi điểm dưới 9 chỉ bị trừ 1 streak (kể cả khi đã tụt xuống dưới 10 trong cùng chuỗi); quá 3 lần (mốc 10), 4 (mốc 15), 5 (mốc 20), 10 (mốc 30), 15 (mốc 40), 20 (mốc 50) thì mất hết. Đổi mốc thì đếm lại từ đầu.', 'Below streak 10, a score under 9 ends the streak (a 9 keeps it). From streak 10, each score below 9 costs only 1 streak (even after dropping under 10 within the same chain); more than 3 (tier 10), 4 (15), 5 (20), 10 (30), 15 (40) or 20 (50) wipes it out. Changing tier restarts the count.'),
                 T('Quà đã nhận không bị thu hồi khi streak bị trừ hay đứt, và không bị ảnh hưởng bởi việc sửa điểm bằng tay.', 'Received gifts are never taken back when the streak drops or ends, and manual score edits do not affect them.'),
-                T('Điểm từ quà không cộng và không bị trừ streak; ô điểm quà bị khóa. Ô dưới 9 được nâng lên 10 vẫn tính streak theo điểm cũ.', 'Gift scores neither add to nor reduce the streak, and gift cells are locked. A cell below 9 raised to 10 still counts toward the streak as its old score.')
+                T('Điểm từ quà không cộng và không bị trừ streak; ô điểm quà bị khóa. Ô dưới 9 được nâng lên 10 vẫn tính streak theo điểm cũ.', 'Gift scores neither add to nor reduce the streak, and gift cells are locked. A cell below 9 raised to 10 still counts toward the streak as its old score.'),
+                T('Quà áp vào một ô vẫn dưới 10 (cộng điểm, đổi điểm 7-8-9...) được miễn trừ: ô đó không bao giờ bị trừ streak.', 'A gift applied to a cell that stays below 10 (plus points, 7-8-9 exchange...) is exempt: that cell never costs streak.')
             ].map(x => `<p>${x}</p>`).join('');
             const w = document.createElement('div'); w.id = 'sgBook'; w.className = 'sgb-wrap';
             w.onclick = e => { if (e.target === w) sgCloseBook(); };
@@ -8422,7 +8721,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
                 const cur = (cell && !cell.absent && cell.score !== undefined && cell.score !== null) ? parseFloat(cell.score) : NaN;
                 if (!cell || !cell.isExam || isNaN(cur) || isNaN(delta) || delta <= 0 || qgClamp(cur + delta) === qgClamp(cur)) { uiToast('no_exam_cell_for_gift', 'warning'); return null; }
                 const after = qgClamp(cur + delta);
-                return { kind: 'plus_exam', before: mxFmt(cur), after: mxFmt(after), build: c => ({ ...mfl(c), ...giftKeepTs(c, key), score: after, absent: false, speakingCount: c.speakingCount !== undefined ? c.speakingCount : 0, isExam: true }) };
+                return { kind: 'plus_exam', before: mxFmt(cur), after: mxFmt(after), build: c => ({ ...mfl(c), ...giftKeepTs(c, key), ...giftNeutralFlag(c, 'plus_exam'), score: after, absent: false, speakingCount: c.speakingCount !== undefined ? c.speakingCount : 0, isExam: true }) };
             });
         }
 
@@ -9724,7 +10023,7 @@ window.openStudentProfile=function(studentId){
           if(currentTeacherId&&appData.language)teacherGateLanguage=appData.language;
           // End the current teacher session before allowing another workspace to be selected.
           if(unsubscribeTeacherData){unsubscribeTeacherData();unsubscribeTeacherData=null;}
-          undoHistory=[];lastPersistedSnapshot=null;suppressUndoCapture=false;
+          undoHistory=[];lastPersistedSnapshot=null;ehBase=null;suppressUndoCapture=false;
           currentTeacherId=null;
           qsTeacherSwitch(null);
           renderTeacherGate();
@@ -9790,11 +10089,11 @@ window.openStudentProfile=function(studentId){
             // Undo snapshots belong to the currently open teacher only. Clear them before
             // switching workspaces so Undo can never write teacher A's snapshot into teacher B.
             undoHistory = [];
-            lastPersistedSnapshot = null;
+            lastPersistedSnapshot = null; ehBase = null;
             suppressUndoCapture = false;
             // Never carry undo snapshots or persistence state across teacher workspaces.
             if(unsubscribeTeacherData){unsubscribeTeacherData();unsubscribeTeacherData=null;}
-            undoHistory=[];lastPersistedSnapshot=null;suppressUndoCapture=false;
+            undoHistory=[];lastPersistedSnapshot=null;ehBase=null;suppressUndoCapture=false;
             qsTeacherSwitch(id);
             currentTeacherId=id;
             sessionViewMode='matrix'; // Luôn mở tab Bảng Điểm (Score Matrix) khi vào không gian giáo viên
@@ -9915,7 +10214,7 @@ window.openStudentProfile=function(studentId){
           if(!await showAppConfirm(teacherGateLanguage==='vi'?'Xác nhận lần cuối: xóa toàn bộ dữ liệu giáo viên?':'Final confirmation: delete all teacher data?'))return;
           await set(ref(db,`appDataMultiTeacher/teacherData/${id}`),null);await set(ref(db,TEACHERS_PATH+'/'+id),null);
           teacherRecords=teacherRecords.filter(x=>x.teacherId!==id);renderTeacherGate();
-          if(currentTeacherId===id){currentTeacherId=null;undoHistory=[];lastPersistedSnapshot=null;suppressUndoCapture=false;document.getElementById('teacherGate').classList.remove('hidden');}
+          if(currentTeacherId===id){currentTeacherId=null;undoHistory=[];lastPersistedSnapshot=null;ehBase=null;suppressUndoCapture=false;document.getElementById('teacherGate').classList.remove('hidden');}
         };
 
         // Initialize teacher selector
