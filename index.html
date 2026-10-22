@@ -3131,7 +3131,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblRewardName">Tên món quà:</label>
                     <input type="text" id="inputItemName" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
                 </div>
-                <div class="mb-3">
+                <div class="mb-3" id="inputItemCostRow">
                     <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblRewardCost">Giá điểm đổi quà (Pts):</label>
                     <input type="number" id="inputItemCost" min="1" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
                 </div>
@@ -3187,7 +3187,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblRewardName">Tên món quà:</label>
                     <input type="text" id="editItemName" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
                 </div>
-                <div class="mb-3">
+                <div class="mb-3" id="editItemCostRow">
                     <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblRewardCost">Giá điểm đổi quà (Pts):</label>
                     <input type="number" id="editItemCost" min="1" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
                 </div>
@@ -5976,7 +5976,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             });
             applyExtraLanguageUI();
             if (typeof renderWheelView === 'function' && document.getElementById('viewWheelContainer')) renderWheelView();
-            try { if (window.renderGachaView) window.renderGachaView(); } catch (e) {}
+            try { if (window.gcRefresh) window.gcRefresh(); else if (window.renderGachaView) window.renderGachaView(); } catch (e) {}
         }
 
         // Keep hard-coded text in dynamically created dialogs and cards synchronized with the selected language.
@@ -6572,7 +6572,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             const gridContainer = document.getElementById("shopItemsGrid");
             gridContainer.innerHTML = "";
 
-            const itemsToRender = appData.globalShopItems || [];
+            const itemsToRender = (appData.globalShopItems || []).filter(i => !i.gachaOnly);
             const lang = appData.language || 'vi';
             const t = translations[lang];
             const en = lang === 'en';
@@ -7319,7 +7319,32 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             inp.placeholder = uiTr('phMatchScore');
         }
 
+        /* Chế độ tạo quà riêng cho Hộp Quà Bí Ẩn: không có giá pts, không hiện ở cửa hàng */
+        window.gcCreateMode = false;
+        function gcApplyCreateMode(on) {
+            window.gcCreateMode = !!on;
+            const row = document.getElementById('inputItemCostRow'), inp = document.getElementById('inputItemCost');
+            const h = document.querySelector('#createItemModal h3');
+            if (row) row.classList.toggle('hidden', !!on);
+            if (inp) inp.required = !on;
+            if (h) {
+                if (on) {
+                    h.removeAttribute('data-i18n');
+                    h.textContent = appData.language === 'en' ? 'Add Mystery Box Gift' : 'Thêm Quà Hộp Bí Ẩn';
+                } else {
+                    h.setAttribute('data-i18n', 'modalRewardTitle');
+                    const tr = (typeof translations !== 'undefined' && translations[appData.language || 'vi']) || {};
+                    if (tr.modalRewardTitle) h.textContent = tr.modalRewardTitle;
+                }
+            }
+        }
+        window.openGachaCreateItemModal = function() {
+            window.openCreateItemModal();
+            gcApplyCreateMode(true);
+        };
+
         window.openCreateItemModal = function() {
+            gcApplyCreateMode(false);
             document.getElementById('inputItemName').value = '';
             document.getElementById('inputItemCost').value = '';
             document.getElementById('inputItemType').value = 'none';
@@ -7334,12 +7359,14 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         window.closeCreateItemModal = function() {
             document.getElementById('createItemModal').classList.add('hidden');
             document.getElementById('createItemModal').classList.remove('flex');
+            gcApplyCreateMode(false);
         };
 
         window.saveNewItem = function(e) {
             e.preventDefault();
             const name = document.getElementById('inputItemName').value.trim();
-            const cost = parseInt(document.getElementById('inputItemCost').value);
+            const gachaMode = !!window.gcCreateMode;
+            const cost = gachaMode ? 0 : parseInt(document.getElementById('inputItemCost').value);
             const type = document.getElementById('inputItemType').value;
             const valueVal = parseFloat(document.getElementById('inputItemValue').value);
 
@@ -7354,6 +7381,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 isFixed: false,
                 type: type !== 'none' ? type : null
             };
+            if (gachaMode) newItem.gachaOnly = true;
 
             if (type === 'plus' || type === 'plus_exam') {
                 newItem.deltaScore = !isNaN(valueVal) ? valueVal : 1;
@@ -7371,6 +7399,10 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
 
             saveData();
             closeCreateItemModal();
+            if (gachaMode) {
+                try { window.gcRefresh && window.gcRefresh(); } catch (err) {}
+                try { window.showAppToast && window.showAppToast(appData.language === 'en' ? 'Mystery box gift created. Pick its star rarity in the lists below.' : 'Đã tạo quà cho hộp bí ẩn. Hãy chọn hạng sao cho quà ở danh sách bên dưới.', 'success'); } catch (err) {}
+            }
         };
 
         window.openEditItemModal = function(itemId) {
@@ -7392,6 +7424,10 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             const costInput = document.getElementById('editItemCost');
             costInput.min = isLuckySpinSpecial ? '0' : '1';
             costInput.step = '1';
+            const _ecr = document.getElementById('editItemCostRow');
+            if (_ecr) _ecr.classList.toggle('hidden', !!item.gachaOnly);
+            costInput.required = !item.gachaOnly;
+            if (item.gachaOnly) { costInput.min = '0'; costInput.value = '0'; }
             typeSelect.value = itemType;
 
             const valueInput = document.getElementById('editItemValue');
@@ -7439,7 +7475,9 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             if (typeRow) typeRow.classList.remove('hidden');
             if (valueRow) valueRow.classList.add('hidden');
             const costInput = document.getElementById('editItemCost');
-            if (costInput) costInput.min = '1';
+            if (costInput) { costInput.min = '1'; costInput.required = true; }
+            const _ecr = document.getElementById('editItemCostRow');
+            if (_ecr) _ecr.classList.remove('hidden');
         };
 
         window.saveEditedItem = function(e) {
@@ -7450,9 +7488,9 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             const type = document.getElementById('editItemType').value;
             const valueVal = parseFloat(document.getElementById('editItemValue').value);
 
-            if (isNaN(cost)) return;
-
             const item = (appData.globalShopItems || []).find(i => i.id === itemId);
+            if (isNaN(cost) && !(item && item.gachaOnly)) return;
+
             if (item) {
                 const isLuckySpinSpecial = String(item.id || '') === 'fix_lucky_spin' || String(item.type || '').toLowerCase() === 'lucky_spin';
                 if (isLuckySpinSpecial) {
@@ -7494,8 +7532,9 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                         item.matchOp = document.getElementById('editItemMatchOp').value || 'lte';
                     }
                 }
-                item.cost = cost;
+                item.cost = item.gachaOnly ? 0 : cost;
                 saveData();
+                if (item.gachaOnly) { try { window.gcRefresh && window.gcRefresh(); } catch (err) {} }
             }
 
             closeEditItemModal();
@@ -7510,10 +7549,13 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 return;
             }
 
-            const msg = appData.language === 'en' ? `Are you sure you want to delete gift "${item.name}" from shop?` : `Bạn có chắc chắn muốn xóa món quà "${item.name}" khỏi cửa hàng không?`;
+            const msg = item.gachaOnly
+                ? (appData.language === 'en' ? `Delete mystery box gift "${item.name}"? It will no longer drop from the box (gifts already in students' bags are kept).` : `Xóa quà "${item.name}" khỏi hộp bí ẩn? Quà sẽ không còn rơi từ hộp (quà đã có trong túi học sinh vẫn giữ nguyên).`)
+                : (appData.language === 'en' ? `Are you sure you want to delete gift "${item.name}" from shop?` : `Bạn có chắc chắn muốn xóa món quà "${item.name}" khỏi cửa hàng không?`);
             if (await showAppConfirm(msg)) {
                 appData.globalShopItems = appData.globalShopItems.filter(i => i.id !== itemId);
                 saveData();
+                if (item.gachaOnly) { try { window.gcRefresh && window.gcRefresh(); } catch (err) {} }
             }
         };
 
@@ -11274,12 +11316,25 @@ html.mx-dark .gc-bar{background:#334155}
     const opts=sel=>P.map(it=>`<option value="${escapeHtml(it.id)}"${it.id===sel?' selected':''}>${escapeHtml(gname(it))}</option>`).join('');
     const w=ok(c.g5w)?c.g5w:'fix_add_10',l=ok(c.g5l)?c.g5l:'fix_add_10';
     const i4=(c.p4||[]).filter(ok),i3=(c.p3||[]).filter(ok);
-    const chk=(n,ids,max)=>`<div class="flex flex-wrap gap-2" data-max="${max}">`+P.map(it=>`<label class="gc-pick"><input type="checkbox" data-g="${n}" value="${escapeHtml(it.id)}"${ids.includes(it.id)?' checked':''}><span>${escapeHtml(gname(it))}</span></label>`).join('')+'</div>';
-    box.innerHTML=`<div class="font-black text-sm">${T('Quà của từng hạng sao','Prizes per rarity')}</div>
+    const chk=(n,ids,max)=>`<div class="flex flex-wrap gap-2" data-max="${max}">`+P.map(it=>`<label class="gc-pick"><input type="checkbox" data-g="${n}" value="${escapeHtml(it.id)}"${ids.includes(it.id)?' checked':''}><span>${escapeHtml(gname(it))}</span>${it.gachaOnly?`<span class="gc-chip" style="background:#7c3aed">${T('Riêng hộp','Box only')}</span>`:''}</label>`).join('')+'</div>';
+    const own=P.filter(x=>x.gachaOnly);
+    const ownHtml=`<div class="rounded-xl border border-violet-200 bg-violet-50/60 p-3 space-y-2"><div class="flex flex-wrap items-center justify-between gap-2"><div class="font-black text-sm">🎁 ${T('Quà riêng của hộp bí ẩn','Mystery-box-only gifts')}</div><button type="button" onclick="openGachaCreateItemModal()" class="rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-bold px-3 py-1.5 text-xs"><i class="fa-solid fa-plus mr-1"></i>${T('Tạo quà','Create gift')}</button></div>`+
+      (own.length?`<div class="flex flex-wrap gap-2">`+own.map(it=>`<div class="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white px-3 py-1 text-sm font-semibold text-slate-800"><span class="gift-type-ico">${typeof giftTypeIconHtml==='function'?giftTypeIconHtml(it):'🎁'}</span><span>${escapeHtml(gname(it))}</span><button type="button" onclick="openEditItemModal('${escapeHtml(it.id)}')" class="text-indigo-600 hover:text-indigo-800 text-xs" title="${T('Sửa quà','Edit gift')}"><i class="fa-solid fa-pen"></i></button><button type="button" onclick="deleteShopItem('${escapeHtml(it.id)}')" class="text-rose-600 hover:text-rose-800 text-xs" title="${T('Xóa quà','Delete gift')}"><i class="fa-solid fa-trash-can"></i></button></div>`).join('')+`</div>`
+       :'')+`</div>`;
+    box.innerHTML=ownHtml+`<div class="font-black text-sm">${T('Quà của từng hạng sao','Prizes per rarity')}</div>
 <div class="flex flex-wrap gap-3 items-end"><label data-no-hover class="text-sm font-semibold">⭐5 ${T('Trúng (LIMITED)','Win (LIMITED)')} <span class="font-normal text-slate-500">× ${c.limitedN}</span><select id="gcG5w" class="block border rounded-lg px-3 py-2 mt-1 min-w-[14rem]">${opts(w)}</select></label>
 <label data-no-hover class="text-sm font-semibold">⭐5 ${T('Lệch','Lose 50/50')} <span class="font-normal text-slate-500">× ${c.standardN}</span><select id="gcG5l" class="block border rounded-lg px-3 py-2 mt-1 min-w-[14rem]">${opts(l)}</select></label></div>
 <div><div class="text-sm font-semibold mb-1.5">⭐4 — ${T('chọn tối đa 5 quà (trúng ngẫu nhiên 1 trong số đã chọn)','pick up to 5 gifts (one is drawn at random)')} <span id="gcCnt4" class="gc-chip gc-c4">${i4.length}/5</span></div>${chk('p4',i4,5)}</div>
 <div><div class="text-sm font-semibold mb-1.5">⭐3 — ${T('chọn tối đa 10 quà (trúng ngẫu nhiên 1 trong số đã chọn)','pick up to 10 gifts (one is drawn at random)')} <span id="gcCnt3" class="gc-chip gc-c3">${i3.length}/10</span></div>${chk('p3',i3,10)}</div>`;}
+  window.gcRefresh=function(){const box=$('gcGiftCfg');let keep=null;
+    if(box&&box.children.length&&$('gcG5w')){keep={p4:picked('p4'),p3:picked('p3'),w:$('gcG5w').value,l:$('gcG5l').value};}
+    renderGiftCfg();
+    if(keep&&box.children.length){
+      box.querySelectorAll('input[data-g]').forEach(x=>{const arr=keep[x.dataset.g]||[];x.checked=arr.includes(x.value);});
+      if($('gcG5w')&&Array.from($('gcG5w').options).some(o=>o.value===keep.w))$('gcG5w').value=keep.w;
+      if($('gcG5l')&&Array.from($('gcG5l').options).some(o=>o.value===keep.l))$('gcG5l').value=keep.l;
+      if($('gcCnt4'))$('gcCnt4').textContent=picked('p4').length+'/5';if($('gcCnt3'))$('gcCnt3').textContent=picked('p3').length+'/10';}
+    renderGachaView();};
   const picked=n=>Array.from(document.querySelectorAll('#gcGiftCfg input[data-g="'+n+'"]:checked')).map(x=>x.value);
   window.clearGachaHistory=async function(){if(busy)return;const st=cur();if(!st)return;
     if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(T('Khóa đã lưu trữ chỉ được xem. Hãy quay lại khóa hiện tại để chỉnh sửa.','Archived course is read-only.'));return;}
@@ -11301,7 +11356,7 @@ html.mx-dark .gc-bar{background:#334155}
     if(ctx!==lastCtx){const first=lastCtx===null;lastCtx=ctx;if(!first&&!busy){selId=null;selSig='';stageIdle();const m=$('gcManager');if(m)m.classList.add('hidden');}}
     const c=cfg(),list=students();if(!list.some(s=>s.id===selId))selId=list[0]?list[0].id:null;
     $('gcTitle').innerHTML='<i class="fa-solid fa-box-open mr-2 text-violet-600"></i>'+T('Hộp Quà Bí Ẩn','Mystery Box');
-    $('gcSub').textContent=T('Dùng điểm dư để mở hộp — quà trúng được cộng thẳng vào túi quà.','Spend bonus points to open boxes — prizes go straight to the gift bag.');
+    $('gcSub').textContent='';$('gcSub').classList.add('hidden');
     $('gcManageToggle').textContent=T('Cấu hình hộp quà','Box settings');
     $('gcCostL').textContent=T('Giá mỗi lần mở (pts)','Cost per box (pts)');$('gcHardL').textContent=T('Bảo hiểm 5★ (số lần)','5★ hard pity (pulls)');$('gcSave').textContent=T('Lưu','Save');
     $('gcModeT').textContent=T('Hộp quà của học sinh','Student mystery box');$('gcStuL').textContent=T('Học sinh','Student');$('gcHistT').textContent=T('Lịch sử mở hộp','Opening history');
