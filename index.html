@@ -585,7 +585,7 @@
         @keyframes rpFall { 0% { transform:translateY(0) rotate(0); opacity:1; } 100% { transform:translateY(190px) rotate(540deg); opacity:0; } }
 
         /* ===== Vòng quay may mắn: nền chìm ===== */
-        #viewWheelContainer > section:first-child { position:relative; overflow:hidden; isolation:isolate;
+        #viewWheelContainer > section:first-child, #viewGachaContainer > section:first-child { position:relative; overflow:hidden; isolation:isolate;
           background-color:#fff;
           background-image:
             radial-gradient(circle at 12% 18%, rgba(251,191,36,.10) 0, transparent 38%),
@@ -593,7 +593,7 @@
             radial-gradient(circle at 85% 12%, rgba(236,72,153,.07) 0, transparent 30%),
             url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg fill='none' stroke='%236366f1' stroke-opacity='.10' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M30 40l4 9 10 1-7.5 6.5 2.5 10-9-5.5-9 5.5 2.5-10L16 50l10-1z'/%3E%3Ccircle cx='150' cy='40' r='12'/%3E%3Cpath d='M150 28v24M138 40h24'/%3E%3Crect x='40' y='140' width='34' height='26' rx='3'/%3E%3Cpath d='M40 150h34M57 140v26'/%3E%3Cpath d='M120 160c6-12 14-12 20 0 6 12 14 12 20 0'/%3E%3C/g%3E%3Cg fill='%23f59e0b' fill-opacity='.10'%3E%3Ccircle cx='100' cy='90' r='3'/%3E%3Ccircle cx='190' cy='120' r='3'/%3E%3Ccircle cx='20' cy='110' r='2.5'/%3E%3Ccircle cx='110' cy='200' r='2.5'/%3E%3C/g%3E%3C/svg%3E");
           background-size:auto, auto, auto, 220px 220px; }
-        html.mx-dark #viewWheelContainer > section:first-child { background-color:#0f172a; background-image:
+        html.mx-dark #viewWheelContainer > section:first-child, html.mx-dark #viewGachaContainer > section:first-child { background-color:#0f172a; background-image:
             radial-gradient(circle at 12% 18%, rgba(251,191,36,.07) 0, transparent 38%),
             radial-gradient(circle at 88% 82%, rgba(99,102,241,.10) 0, transparent 42%); }
     </style>
@@ -1573,7 +1573,8 @@ main:has(#viewFinalExamContainer:not(.hidden)),
 main:has(#viewStudentsContainer:not(.hidden)),
 main:has(#viewViolationContainer:not(.hidden)),
 main:has(#viewShopContainer:not(.hidden)),
-main:has(#viewWheelContainer:not(.hidden)){max-width:min(1500px,100%) !important;padding-left:clamp(12px,2.2vw,36px);padding-right:clamp(12px,2.2vw,36px)}
+main:has(#viewWheelContainer:not(.hidden)),
+main:has(#viewGachaContainer:not(.hidden)){max-width:min(1500px,100%) !important;padding-left:clamp(12px,2.2vw,36px);padding-right:clamp(12px,2.2vw,36px)}
 .stage-row{max-width:min(72rem,100%)}
 
 /* ===== Lucky wheel emphasis ===== */ #wheelManageToggle{background:linear-gradient(135deg,#7c3aed,#db2777 58%,#f59e0b)!important;color:#fff!important;border:1px solid rgba(255,255,255,.65)!important;box-shadow:0 5px 16px rgba(147,51,234,.28);transition:transform .18s,filter .18s,box-shadow .18s}#wheelManageToggle:hover{transform:translateY(-2px);filter:brightness(1.1) saturate(1.15);box-shadow:0 9px 22px rgba(219,39,119,.35)}
@@ -2643,6 +2644,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                         <div class="tab-pills">
                             <button id="btnViewShop" onclick="switchViewMode('shop')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-gift mr-1"></i> <span data-i18n="tabShop">Cửa Hàng Quà</span></button>
                             <button id="btnViewWheel" onclick="switchViewMode('wheel')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-circle-notch mr-1"></i><span id="wheelTabLabel">Vòng Quay May Mắn</span></button>
+                            <button id="btnViewGacha" onclick="switchViewMode('gacha')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-box-open mr-1"></i> <span data-i18n="tabGacha">Hộp Quà Bí Ẩn</span></button>
                         </div>
                     </div>
                 </div>
@@ -2831,6 +2833,22 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
       </section>
       <div id="wheelResultModal" class="fixed inset-0 z-[13000] hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4" onclick="if(event.target===this)closeWheelResultModal()"><div class="w-full max-w-md overflow-hidden rounded-3xl border border-white/70 bg-white shadow-2xl text-center"><div class="bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 px-6 py-5 text-white"><div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 text-3xl shadow-inner">🎉</div><h2 id="wheelResultModalTitle" class="text-2xl font-black">Chúc mừng!</h2></div><div class="px-6 py-5"><p id="wheelResultModalMessage" class="text-slate-600 mb-2">Bạn đã trúng</p><div id="wheelResultModalPrize" class="text-2xl font-black text-indigo-700 py-3"></div><button onclick="closeWheelResultModal()" id="wheelResultModalClose" class="mt-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg">Đóng</button></div></div></div>
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap justify-between gap-2 items-center mb-3"><h3 id="wheelHistoryTitle" class="font-black text-lg">Lịch sử quay</h3><button onclick="clearWheelHistoryView()" class="rounded-lg border px-3 py-2 text-xs font-bold">Xóa lịch sử hiển thị</button></div><div id="wheelHistory" class="space-y-2"></div></section>
+    </div>
+
+    <div id="viewGachaContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3">
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
+        <div class="flex flex-wrap items-start justify-between gap-3"><div><h2 id="gcTitle" class="text-xl font-black text-slate-800"><i class="fa-solid fa-box-open mr-2 text-violet-600"></i>Hộp Quà Bí Ẩn</h2><p id="gcSub" class="text-sm text-slate-500 mt-1"></p></div><button id="gcManageToggle" type="button" onclick="toggleGachaManager()" class="rounded-lg border px-3 py-2 text-sm font-bold">Cấu hình hộp quà</button></div>
+        <div id="gcManager" class="hidden mt-4 rounded-xl bg-slate-50 border p-4 space-y-4"><div class="flex flex-wrap gap-3 items-end"><label data-no-hover class="text-sm font-semibold"><span id="gcCostL"></span><input id="gcCost" type="number" min="1" step="1" class="block border rounded-lg px-3 py-2 mt-1 w-40"></label><label data-no-hover class="text-sm font-semibold"><span id="gcHardL"></span><input id="gcHard" type="number" min="10" max="200" step="1" class="block border rounded-lg px-3 py-2 mt-1 w-40"></label></div><div id="gcGiftCfg" class="space-y-4"></div><div><button id="gcSave" type="button" class="rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2"></button></div></div>
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.25fr)_minmax(320px,1fr)] gap-8 items-center mt-5">
+          <div class="flex flex-col items-center gap-3">
+            <div class="gc-frame w-full"><div id="gcStage" data-no-hover class="gc-stage" role="button" tabindex="0" aria-label="Open mystery box"></div></div>
+            <div class="flex flex-wrap justify-center gap-3"><button id="gcBtn1" type="button" class="wheel-spin-btn disabled:opacity-50 text-white font-black shadow-lg"></button><button id="gcBtn10" type="button" class="wheel-spin-btn disabled:opacity-50 text-white font-black shadow-lg"></button></div>
+            <p id="gcStatus" aria-live="polite" class="text-sm text-center text-slate-600"></p>
+          </div>
+          <div class="space-y-4"><div class="wheel-mode-card rounded-xl border p-4 space-y-3"><h3 id="gcModeT" class="font-black"></h3><label id="gcStuL" class="block text-sm font-semibold"></label><select id="gcSel" class="w-full border rounded-lg px-3 py-2"></select><div id="gcPts" class="text-sm font-bold text-emerald-700"></div><button id="gcInfoToggle" type="button" aria-expanded="false" class="gc-info-toggle w-full flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm font-bold"><span id="gcInfoToggleT"></span><i class="fa-solid fa-chevron-down gc-chev"></i></button><div id="gcInfoWrap" class="gc-collapse"><div><div id="gcInfo" class="space-y-3 pt-3"></div></div></div></div></div>
+        </div>
+      </section>
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap justify-between gap-2 items-center mb-3"><h3 id="gcHistT" class="font-black text-lg"></h3><button id="gcHistClear" type="button" class="rounded-lg border border-rose-300 text-rose-600 hover:bg-rose-50 px-3 py-1.5 text-sm font-bold transition disabled:cursor-not-allowed"></button></div><div id="gcHist"></div></section>
     </div>
     </main>
 
@@ -4063,7 +4081,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         const qsCU = {};
         let qsArchSeen = null, qsTeacherSeen = null;
         const qsArchived = () => (typeof viewingArchivedCourseId !== 'undefined') && !!viewingArchivedCourseId;
-        const qsIsMatrix = () => !['ranking', 'shop', 'violation', 'finalExam', 'students', 'teaching', 'wheel'].includes(appData.activeViewMode);
+        const qsIsMatrix = () => !['ranking', 'shop', 'violation', 'finalExam', 'students', 'teaching', 'wheel', 'gacha'].includes(appData.activeViewMode);
         function qsToast(msg, type) { if (window.showAppToast) window.showAppToast(msg, type || 'success'); }
 
         /* ---- count-up numbers (from the previously shown value to the new one) ---- */
@@ -5958,6 +5976,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             });
             applyExtraLanguageUI();
             if (typeof renderWheelView === 'function' && document.getElementById('viewWheelContainer')) renderWheelView();
+            try { if (window.renderGachaView) window.renderGachaView(); } catch (e) {}
         }
 
         // Keep hard-coded text in dynamically created dialogs and cards synchronized with the selected language.
@@ -6096,8 +6115,8 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
 
         // Chuyển tab: khung giao diện đang hiện lướt ra theo hướng tab được chọn, khung mới lướt vào từ hướng đó
         (function () {
-            const ORDER = ['matrix', 'ranking', 'finalExam', 'students', 'teaching', 'violation', 'shop', 'wheel'];
-            const IDS = { matrix: 'viewMatrixContainer', ranking: 'viewRankingContainer', finalExam: 'viewFinalExamContainer', students: 'viewStudentsContainer', teaching: 'viewTeachingContainer', violation: 'viewViolationContainer', shop: 'viewShopContainer', wheel: 'viewWheelContainer' };
+            const ORDER = ['matrix', 'ranking', 'finalExam', 'students', 'teaching', 'violation', 'shop', 'wheel', 'gacha'];
+            const IDS = { matrix: 'viewMatrixContainer', ranking: 'viewRankingContainer', finalExam: 'viewFinalExamContainer', students: 'viewStudentsContainer', teaching: 'viewTeachingContainer', violation: 'viewViolationContainer', shop: 'viewShopContainer', wheel: 'viewWheelContainer', gacha: 'viewGachaContainer' };
             const raw = window.switchViewMode; let busy = false;
             window.switchViewMode = function (mode) {
                 const curRaw = appData.activeViewMode, cur = ORDER.includes(curRaw) ? curRaw : 'matrix';
@@ -6132,6 +6151,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             const btnStudents = document.getElementById('btnViewStudents');
             const btnTeaching = document.getElementById('btnViewTeaching');
             const btnWheel = document.getElementById('btnViewWheel');
+            const btnGacha = document.getElementById('btnViewGacha'); const gachaContainer = document.getElementById('viewGachaContainer');
             const wheelContainer = document.getElementById('viewWheelContainer');
             if (appData.activeViewMode !== 'ranking') { window.__rankSig = null; qsCUReset('rk'); }
             if (appData.activeViewMode !== 'finalExam') { window.__examSig = null; qsCUReset('fe'); }
@@ -6150,14 +6170,14 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             btnShop.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900";
             btnViolation.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900";
             btnFinalExam.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900";
-            btnStudents.className = btnTeaching.className = btnWheel.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900";
+            btnStudents.className = btnTeaching.className = btnWheel.className = btnGacha.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900";
 
             matrixContainer.classList.add('hidden');
             rankingContainer.classList.add('hidden');
             shopContainer.classList.add('hidden');
             violationContainer.classList.add('hidden');
             finalExamContainer.classList.add('hidden');
-            studentsContainer.classList.add('hidden'); teachingContainer.classList.add('hidden'); wheelContainer.classList.add('hidden');
+            studentsContainer.classList.add('hidden'); teachingContainer.classList.add('hidden'); wheelContainer.classList.add('hidden'); gachaContainer.classList.add('hidden');
             if (appData.activeViewMode !== 'ranking') grLegendSet(false);
 
             if (appData.activeViewMode === 'shop') {
@@ -6181,6 +6201,8 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 btnTeaching.className = "px-3 py-1 rounded-md transition bg-white text-indigo-700 shadow"; teachingContainer.classList.remove('hidden'); renderTeachingView();
             } else if (appData.activeViewMode === 'wheel') {
                 btnWheel.className = "px-3 py-1 rounded-md transition bg-white text-indigo-700 shadow"; wheelContainer.classList.remove('hidden'); renderWheelView();
+            } else if (appData.activeViewMode === 'gacha') {
+                btnGacha.className = "px-3 py-1 rounded-md transition bg-white text-indigo-700 shadow"; gachaContainer.classList.remove('hidden'); renderGachaView();
             } else {
                 btnMatrix.className = "px-3 py-1 rounded-md transition bg-white text-indigo-700 shadow";
                 matrixContainer.classList.remove('hidden');
@@ -10489,6 +10511,7 @@ window.openStudentProfile=function(studentId){
               // or the previous teacher's violation catalogue into a fresh workspace.
               blank.globalShopItems=deepCopy(DEFAULT_FIXED_ITEMS);
               blank.luckyWheel={prizes:[],history:[],transactions:{}};
+              blank.gacha={cfg:{},st:{},history:[]}; // Hộp Quà Bí Ẩn: cấu hình, bảo hiểm và lịch sử riêng của từng giáo viên
               blank.globalViolationTypes=[];
               blank.deletedItems=[];
               blank.monthCount=3; blank.startMonth=9; blank.language=teacherGateLanguage;
@@ -11150,6 +11173,212 @@ window.openStudentProfile=function(studentId){
         function xfAfterRender() {
             clearTimeout(xfScanT); xfScanT = setTimeout(xfBdayScan, 700);
         }
+
+    
+/* ===== GACHA: HỘP QUÀ BÍ ẨN (kiểu Genshin) — tab trong nhóm "Tương tác & Thưởng", tiền tệ: điểm dư (rewardPoints) ===== */
+(function(){
+  Object.assign(translations.vi,{tabGacha:'Hộp Quà Bí Ẩn'});Object.assign(translations.en,{tabGacha:'Mystery Box'});
+  const GD={cost:1,base5:0.6,hard5:90,base4:5.1,hard4:10,limitedN:5,standardN:3,g5w:'fix_add_10',g5l:'fix_add_10',p4:['gacha_delete_low','fix_plus_exam_1'],p3:['fix_lucky_spin']};
+  const T=(vi,en)=>(appData&&appData.language==='en')?en:vi;
+  const $=id=>document.getElementById(id);
+  let busy=false,skip=null,selId=null,selSig='',lastCtx=null,infoOpen=false;
+  const G=()=>{const a=appData;if(!a.gacha||typeof a.gacha!=='object')a.gacha={};if(!a.gacha.cfg)a.gacha.cfg={};if(!a.gacha.st)a.gacha.st={};if(!Array.isArray(a.gacha.history))a.gacha.history=[];return a.gacha;};
+  const cfg=()=>Object.assign({},GD,G().cfg);
+  const rnd=()=>{try{return crypto.getRandomValues(new Uint32Array(1))[0]/4294967296}catch(e){return Math.random()}};
+  const students=()=>(appData.students||[]).filter(s=>s.classId===appData.activeClassId);
+  const cur=()=>students().find(s=>s.id===selId)||null;
+  const gs=id=>Object.assign({p5:0,p4:0,gu:false,total:0},G().st[id]||{});
+  const toast=(m,t)=>{try{window.showAppToast&&window.showAppToast(m,t||'info')}catch(e){}};
+  function rate5(n,c){const soft=Math.max(1,c.hard5-16);if(n>=c.hard5)return 1;if(n>=soft)return Math.min(1,c.base5/100+0.06*(n-soft+1));return c.base5/100;}
+  const DEL_ID='gacha_delete_low';
+  function pool(){const out=[{id:DEL_ID,name:'Xóa điểm thấp nhất',type:'delete_score',isFixed:false,special:true}];
+    (appData.globalShopItems||[]).forEach(it=>{if(it&&it.id&&it.type!=='streak_ten')out.push(it);});return out;}
+  const gname=it=>it.special?T('Xóa điểm thấp nhất','Delete lowest score'):getRewardName(it);
+  const find=id=>pool().find(x=>x.id===id)||null;
+  const gnameOf=(id,def)=>{const it=find(id)||find(def)||pool()[0];return it?gname(it):'?';};
+  const namesOf=(ids,def)=>{let l=(ids||[]).map(find).filter(Boolean);if(!l.length)l=def.map(find).filter(Boolean);return l.map(gname).join(' / ')||'?';};
+  const pickFrom=(ids,def)=>{let l=(ids||[]).map(find).filter(Boolean);if(!l.length)l=def.map(find).filter(Boolean);if(!l.length)l=[find('fix_add_10')||pool()[0]];return l[Math.floor(rnd()*l.length)];};
+  function pullOne(g,c){
+    g.p5=(g.p5||0)+1;g.p4=(g.p4||0)+1;g.total=(g.total||0)+1;
+    if(rnd()<rate5(g.p5,c)){const win=!!g.gu||rnd()<0.5;const it=find(win?c.g5w:c.g5l)||find('fix_add_10')||pool()[0];const r={star:5,win,n:win?c.limitedN:c.standardN,key:it.id};g.p5=0;g.gu=!win;return r;}
+    if(g.p4>=c.hard4||rnd()<c.base4/100){g.p4=0;return{star:4,key:pickFrom(c.p4,GD.p4).id};}
+    return{star:3,key:pickFrom(c.p3,GD.p3).id};
+  }
+  const mk=o=>Object.assign({invId:'inv_'+Date.now()+'_'+Math.random().toString(36).slice(2,9),date:new Date().toISOString().slice(0,10),isFixed:true},o,{itemName:o.name});
+  function itemsOf(r){
+    const base=find(r.key)||find('fix_add_10')||pool()[0];
+    const one=()=>{const o={itemId:base.id,name:base.name,type:base.type||null,isFixed:!!base.isFixed};['targetScore','deltaScore','matchScore','matchOp'].forEach(k=>{if(base[k]!==undefined)o[k]=base[k];});return mk(o);};
+    return Array.from({length:r.star===5?r.n:1},one);
+  }
+  const label=r=>{const it=find(r.key),nm=it?gname(it):'?';
+    return r.star===5?(r.win?'🌟 '+r.n+' × '+nm+' (LIMITED)':r.n+' × '+nm):nm;};
+
+  function css(){if($('gc-style'))return;const s=document.createElement('style');s.id='gc-style';s.textContent=`
+#gcManageToggle{background:linear-gradient(135deg,#7c3aed,#db2777 58%,#f59e0b)!important;color:#fff!important;border:1px solid rgba(255,255,255,.65)!important;box-shadow:0 5px 16px rgba(147,51,234,.28);transition:transform .18s,filter .18s,box-shadow .18s}#gcManageToggle:hover{transform:translateY(-2px);filter:brightness(1.1) saturate(1.15);box-shadow:0 9px 22px rgba(219,39,119,.35)}
+#gcBtn1,#gcBtn10{padding:.6rem 1.7rem!important;font-size:1.05rem!important;letter-spacing:.06em!important;margin-top:.2rem!important}
+#gcBtn10{background:linear-gradient(135deg,#f59e0b,#ef4444 55%,#d946ef)!important}
+.gc-frame{position:relative;max-width:760px;margin:.9rem auto .35rem;border-radius:1.4rem;padding:4px;background:conic-gradient(from 0deg,#f43f5e,#f59e0b,#fde047,#22c55e,#06b6d4,#6366f1,#d946ef,#f43f5e);box-shadow:0 0 24px rgba(99,102,241,.4),0 0 48px rgba(236,72,153,.2)}
+.gc-stage{position:relative;width:100%;min-height:clamp(300px,calc(100vh - 360px),440px);border-radius:1.15rem;background:radial-gradient(ellipse at 50% 30%,#ffffff,#e0e7ff 55%,#c7d2fe 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;color:#312e81;text-align:center;padding:1.25rem}
+.gc-hint{color:#4f46e5}
+.gc-stage::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .7s ease;background:radial-gradient(ellipse at 50% 28%,#fffbe6,#fde68a 50%,#f59e0b 108%)}
+.gc-stage.gc-gold::before{opacity:1}
+.gc-stage.gc-gold{color:#78350f}.gc-stage.gc-gold .gc-hint{color:#92400e}
+.gc-stage>*:not(.gc-flash){position:relative;z-index:1}
+html.mx-dark .gc-stage::before{background:radial-gradient(ellipse at 50% 28%,#fbbf24,#b45309 62%,#78350f 105%)}html.mx-dark .gc-stage.gc-gold{color:#fff}
+.gc-hero{display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.gc-hero .gc-hero-ic{font-size:clamp(6rem,20vw,10.5rem);filter:drop-shadow(0 0 34px var(--gl,#c084fc));animation:gcHeroIn .75s cubic-bezier(.2,1.4,.4,1) both;transition:font-size .55s cubic-bezier(.4,0,.2,1)}
+.gc-stars{display:flex;justify-content:center;gap:.35rem;font-size:2.4rem;line-height:1;font-weight:900;text-shadow:0 2px 10px rgba(255,255,255,.75);transition:font-size .55s cubic-bezier(.4,0,.2,1)}
+.gc-stars span{display:inline-block;animation:gcStarIn .45s cubic-bezier(.2,1.6,.4,1) both;animation-delay:calc(.55s + var(--k)*.3s)}
+.gc-stage:hover .gc-hero .gc-hero-ic{transform:none}
+.gc-hero.gc-shrunk .gc-hero-ic{font-size:clamp(2.6rem,6vw,3.6rem)}
+.gc-hero.gc-shrunk .gc-stars{font-size:1.1rem}
+.gc-hero.gc-instant,.gc-hero.gc-instant *{animation:none!important;transition:none!important}
+@keyframes gcHeroIn{0%{transform:scale(.1) rotate(-20deg);opacity:0}60%{transform:scale(1.18) rotate(6deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes gcStarIn{0%{opacity:0;transform:scale(0) rotate(-90deg)}100%{opacity:1;transform:none}}
+@keyframes gcBob4{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes gcBob5{0%,100%{transform:translateY(0) scale(1)}25%{transform:translateY(-8px) scale(1.05) rotate(-1.5deg)}50%{transform:translateY(0) scale(1)}75%{transform:translateY(-8px) scale(1.05) rotate(1.5deg)}}
+.gc-it.gc-s4,.gc-it.gc-s5{animation-name:gcPop,gcBob4;animation-duration:.45s,1.9s;animation-timing-function:cubic-bezier(.2,1.5,.4,1),ease-in-out;animation-iteration-count:1,infinite;animation-fill-mode:both,none;animation-delay:calc(var(--i)*90ms),calc(var(--i)*90ms + .6s)}
+.gc-it.gc-s5{animation-name:gcPop,gcBob5;animation-duration:.45s,1.2s}
+.gc-collapse{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}.gc-collapse.open{grid-template-rows:1fr}.gc-collapse>div{overflow:hidden;min-height:0}
+.gc-info-toggle{background:#fff;border-color:#e2e8f0;color:#334155;transition:background .15s,border-color .15s}.gc-info-toggle:hover{background:#f1f5f9;border-color:#a5b4fc}
+.gc-info-toggle .gc-chev{transition:transform .25s ease}.gc-info-toggle[aria-expanded=true] .gc-chev{transform:rotate(180deg)}
+html.mx-dark .gc-info-toggle{background:#1e293b;border-color:#475569;color:#e2e8f0}html.mx-dark .gc-info-toggle:hover{background:#334155}
+html.mx-dark .gc-stage{background:radial-gradient(ellipse at 50% 30%,#4338ca,#312e81 58%,#1e1b4b 95%);color:#fff}html.mx-dark .gc-hint{color:#c7d2fe}
+.gc-pick{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .7rem;border-radius:9999px;border:1px solid #cbd5e1;background:#fff;font-size:.8rem;font-weight:700;cursor:pointer;transition:transform .15s,background .15s,border-color .15s}.gc-pick:hover{transform:translateY(-1px);border-color:#8b5cf6}.gc-pick:has(input:checked){background:#ede9fe;border-color:#8b5cf6;color:#5b21b6}
+html.mx-dark .gc-pick{background:#1e293b;border-color:#475569;color:#e2e8f0}html.mx-dark .gc-pick:has(input:checked){background:#4c1d95;border-color:#a78bfa;color:#fff}
+.gc-box{font-size:clamp(4rem,11vw,7rem);line-height:1;filter:drop-shadow(0 0 20px var(--gl,#818cf8));transition:transform .2s}.gc-stage:hover .gc-box{transform:scale(1.06) rotate(-3deg)}
+.gc-box.sm{font-size:clamp(2.6rem,6vw,3.6rem)}
+.gc-box.shake{animation:gcShake .5s ease-in-out infinite}
+.gc-box.float{animation:gcFloat 3s ease-in-out infinite}
+@keyframes gcFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes gcShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-12deg) scale(1.05)}40%{transform:rotate(12deg) scale(1.1)}60%{transform:rotate(-8deg)}80%{transform:rotate(8deg)}}
+.gc-flash{position:absolute;inset:0;z-index:2;background:var(--gl,#fff);opacity:0;animation:gcFlash .8s ease-out;pointer-events:none}
+@keyframes gcFlash{0%{opacity:.95}100%{opacity:0}}
+.gc-res{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;width:100%;max-width:40rem;margin-top:.85rem;cursor:default}.gc-res.one{grid-template-columns:minmax(0,1fr);max-width:16rem}
+.gc-it{border:2px solid rgba(255,255,255,.55);border-radius:.9rem;padding:9px 4px;text-align:center;font-size:.74rem;font-weight:800;line-height:1.25;color:#fff;animation:gcPop .45s cubic-bezier(.2,1.5,.4,1) both;animation-delay:calc(var(--i)*90ms)}
+.gc-it b{display:block;font-size:.95rem;letter-spacing:1px}
+.gc-s3{background:linear-gradient(160deg,#3b82f6,#1e3a8a);box-shadow:0 4px 12px rgba(59,130,246,.35)}
+.gc-s4{background:linear-gradient(160deg,#a855f7,#581c87);box-shadow:0 0 16px #a855f7aa}
+.gc-s5{background:linear-gradient(160deg,#fbbf24,#b45309);box-shadow:0 0 24px #fbbf24;color:#451a03}
+@keyframes gcPop{from{transform:translateY(20px) scale(.6);opacity:0}to{transform:none;opacity:1}}
+.gc-bar{height:9px;border-radius:9px;background:#e2e8f0;overflow:hidden}.gc-bar>i{display:block;height:100%;border-radius:9px;transition:width .5s}
+.gc-chip{display:inline-block;border-radius:9999px;padding:0 .5rem;font-weight:900;font-size:.7rem;color:#fff}
+.gc-c3{background:#3b82f6}.gc-c4{background:#9333ea}.gc-c5{background:#d97706}
+html.mx-dark .gc-bar{background:#334155}
+@media (prefers-reduced-motion:reduce){.gc-box.shake,.gc-box.float,.gc-it,.gc-it.gc-s4,.gc-it.gc-s5,.gc-flash,.gc-hero .gc-hero-ic,.gc-stars span{animation:none}.gc-stage::before,.gc-collapse{transition:none}}
+@media (max-width:520px){.gc-res{grid-template-columns:repeat(3,minmax(0,1fr))}}`;document.head.appendChild(s);}
+
+  function stageIdle(){const st=$('gcStage');if(!st)return;st.style.removeProperty('--gl');st.classList.remove('gc-gold');st.innerHTML='<div class="gc-box float">🎁</div><div class="gc-hint text-sm font-bold mt-2">'+T('Bấm để mở hộp','Tap to open')+'</div>';}
+  function renderGiftCfg(){const box=$('gcGiftCfg');if(!box)return;const c=cfg(),P=pool();
+    const ok=id=>P.some(x=>x.id===id);
+    const opts=sel=>P.map(it=>`<option value="${escapeHtml(it.id)}"${it.id===sel?' selected':''}>${escapeHtml(gname(it))}</option>`).join('');
+    const w=ok(c.g5w)?c.g5w:'fix_add_10',l=ok(c.g5l)?c.g5l:'fix_add_10';
+    const i4=(c.p4||[]).filter(ok),i3=(c.p3||[]).filter(ok);
+    const chk=(n,ids,max)=>`<div class="flex flex-wrap gap-2" data-max="${max}">`+P.map(it=>`<label class="gc-pick"><input type="checkbox" data-g="${n}" value="${escapeHtml(it.id)}"${ids.includes(it.id)?' checked':''}><span>${escapeHtml(gname(it))}</span></label>`).join('')+'</div>';
+    box.innerHTML=`<div class="font-black text-sm">${T('Quà của từng hạng sao','Prizes per rarity')}</div>
+<div class="flex flex-wrap gap-3 items-end"><label data-no-hover class="text-sm font-semibold">⭐5 ${T('Trúng (LIMITED)','Win (LIMITED)')} <span class="font-normal text-slate-500">× ${c.limitedN}</span><select id="gcG5w" class="block border rounded-lg px-3 py-2 mt-1 min-w-[14rem]">${opts(w)}</select></label>
+<label data-no-hover class="text-sm font-semibold">⭐5 ${T('Lệch','Lose 50/50')} <span class="font-normal text-slate-500">× ${c.standardN}</span><select id="gcG5l" class="block border rounded-lg px-3 py-2 mt-1 min-w-[14rem]">${opts(l)}</select></label></div>
+<div><div class="text-sm font-semibold mb-1.5">⭐4 — ${T('chọn tối đa 5 quà (trúng ngẫu nhiên 1 trong số đã chọn)','pick up to 5 gifts (one is drawn at random)')} <span id="gcCnt4" class="gc-chip gc-c4">${i4.length}/5</span></div>${chk('p4',i4,5)}</div>
+<div><div class="text-sm font-semibold mb-1.5">⭐3 — ${T('chọn tối đa 10 quà (trúng ngẫu nhiên 1 trong số đã chọn)','pick up to 10 gifts (one is drawn at random)')} <span id="gcCnt3" class="gc-chip gc-c3">${i3.length}/10</span></div>${chk('p3',i3,10)}</div>`;}
+  const picked=n=>Array.from(document.querySelectorAll('#gcGiftCfg input[data-g="'+n+'"]:checked')).map(x=>x.value);
+  window.clearGachaHistory=async function(){if(busy)return;const st=cur();if(!st)return;
+    if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(T('Khóa đã lưu trữ chỉ được xem. Hãy quay lại khóa hiện tại để chỉnh sửa.','Archived course is read-only.'));return;}
+    const ok=await showAppConfirm(T('Xóa lịch sử mở hộp của '+st.name+'? Điểm bảo hiểm 5★/4★ và quà đã có trong túi quà vẫn được giữ nguyên.','Clear the opening history of '+st.name+'? Pity counters and gifts already in the bag are kept.'));
+    if(!ok)return;const g=G();g.history=g.history.filter(h=>h.sid!==st.id);saveData();renderGachaView();
+    toast(T('Đã xóa lịch sử mở hộp của '+st.name+'.','Cleared the opening history of '+st.name+'.'),'success');};
+  window.toggleGachaManager=function(){const m=$('gcManager');if(!m)return;m.classList.toggle('hidden');if(!m.classList.contains('hidden'))renderGiftCfg();};
+  window.saveGachaCfg=function(){const c=G().cfg;
+    if($('gcGiftCfg')&&$('gcGiftCfg').children.length){const p4=picked('p4'),p3=picked('p3');
+      if(!p4.length||!p3.length){toast(T('Mỗi hạng 4★ và 3★ cần chọn ít nhất 1 quà.','Pick at least 1 gift for both 4★ and 3★.'),'error');return;}
+      c.p4=p4.slice(0,5);c.p3=p3.slice(0,10);c.g5w=$('gcG5w').value;c.g5l=$('gcG5l').value;}
+    c.cost=Math.max(1,parseInt($('gcCost').value)||GD.cost);c.hard5=Math.min(200,Math.max(10,parseInt($('gcHard').value)||GD.hard5));saveData();renderGachaView();renderGiftCfg();toast(T('Đã lưu cấu hình hộp quà.','Mystery box settings saved.'),'success');};
+
+  function applyInfo(){const w=$('gcInfoWrap'),b=$('gcInfoToggle');if(!w||!b)return;w.classList.toggle('open',infoOpen);b.setAttribute('aria-expanded',infoOpen?'true':'false');
+    $('gcInfoToggleT').textContent=infoOpen?T('Thu gọn thông tin','Hide details'):T('Xem tỉ lệ, bảo hiểm & tổng đã mở','Show rates, pity & total opened');}
+  function renderGachaView(){
+    const root=$('viewGachaContainer');if(!root)return;css();
+    const ctx=(typeof currentTeacherId!=='undefined'&&currentTeacherId?currentTeacherId:'')+'|'+(appData.activeClassId||'');
+    if(ctx!==lastCtx){const first=lastCtx===null;lastCtx=ctx;if(!first&&!busy){selId=null;selSig='';stageIdle();const m=$('gcManager');if(m)m.classList.add('hidden');}}
+    const c=cfg(),list=students();if(!list.some(s=>s.id===selId))selId=list[0]?list[0].id:null;
+    $('gcTitle').innerHTML='<i class="fa-solid fa-box-open mr-2 text-violet-600"></i>'+T('Hộp Quà Bí Ẩn','Mystery Box');
+    $('gcSub').textContent=T('Dùng điểm dư để mở hộp — quà trúng được cộng thẳng vào túi quà.','Spend bonus points to open boxes — prizes go straight to the gift bag.');
+    $('gcManageToggle').textContent=T('Cấu hình hộp quà','Box settings');
+    $('gcCostL').textContent=T('Giá mỗi lần mở (pts)','Cost per box (pts)');$('gcHardL').textContent=T('Bảo hiểm 5★ (số lần)','5★ hard pity (pulls)');$('gcSave').textContent=T('Lưu','Save');
+    $('gcModeT').textContent=T('Hộp quà của học sinh','Student mystery box');$('gcStuL').textContent=T('Học sinh','Student');$('gcHistT').textContent=T('Lịch sử mở hộp','Opening history');
+    const sig=list.map(s=>s.id+'|'+s.name+'|'+(s.rewardPoints||0)).join(',')+'#'+selId;
+    if(sig!==selSig){selSig=sig;$('gcSel').innerHTML=list.map(s=>`<option value="${escapeHtml(s.id)}"${s.id===selId?' selected':''}>${escapeHtml(s.name)} — ${s.rewardPoints||0} pts</option>`).join('');}
+    const st=cur(),g=gs(st?st.id:''),pts=st?(st.rewardPoints||0):0;
+    applyInfo();
+    $('gcPts').textContent='💎 '+T('Điểm dư hiện có','Bonus points')+': '+pts+' pts';
+    const nmW=gnameOf(c.g5w,'fix_add_10'),nmL=gnameOf(c.g5l,'fix_add_10'),n4=namesOf(c.p4,GD.p4),n3=namesOf(c.p3,GD.p3);const p5=Math.min(100,Math.round(100*g.p5/c.hard5)),p4=Math.min(100,Math.round(100*g.p4/c.hard4));
+    $('gcInfo').innerHTML=`<div><div class="flex justify-between text-xs font-extrabold gap-2"><span>⭐5 — ${g.p5}/${c.hard5}</span><span style="color:${g.gu?'#b45309':'#64748b'}">${g.gu?'🔒 '+T('Lần 5★ tới CHẮC CHẮN '+c.limitedN+' × '+nmW,'Next 5★ is GUARANTEED: '+c.limitedN+' × '+nmW):T('50/50: '+c.limitedN+' × '+nmW+' hoặc '+c.standardN+' × '+nmL,'50/50: '+c.limitedN+' × '+nmW+' or '+c.standardN+' × '+nmL)}</span></div><div class="gc-bar"><i style="width:${p5}%;background:linear-gradient(90deg,#fbbf24,#f59e0b)"></i></div></div>
+<div><div class="text-xs font-extrabold">⭐4 — ${g.p4}/${c.hard4} <span class="font-normal text-slate-500">(${T('chắc chắn có 4★ mỗi '+c.hard4+' lần','guaranteed every '+c.hard4+' pulls')})</span></div><div class="gc-bar"><i style="width:${p4}%;background:linear-gradient(90deg,#c084fc,#7c3aed)"></i></div></div>
+<div class="text-xs text-slate-500 leading-5">${T('Tổng đã mở','Opened')}: <b>${g.total}</b><br><span class="gc-chip gc-c5">5★</span> ${c.base5}% (${T('tăng mạnh từ lần','soft pity from')} ${Math.max(1,c.hard5-16)}) → ${c.limitedN} × ${nmW} / ${c.standardN} × ${nmL}<br><span class="gc-chip gc-c4">4★</span> ${c.base4}% → ${escapeHtml(n4)}<br><span class="gc-chip gc-c3">3★</span> ${T('còn lại → ','rest → ')}${escapeHtml(n3)}</div>`;
+    $('gcBtn1').textContent='🎁 '+T('MỞ 1','OPEN 1')+' · '+c.cost+' pts';$('gcBtn10').textContent='🎁 '+T('MỞ 10','OPEN 10')+' · '+c.cost*10+' pts';
+    $('gcBtn1').disabled=busy||!st||pts<c.cost;$('gcBtn10').disabled=busy||!st||pts<c.cost*10;
+    if(!busy)$('gcStatus').textContent=!st?T('Lớp chưa có học sinh.','No students in this class.'):pts<c.cost?T('Chưa đủ điểm dư để mở hộp.','Not enough bonus points.'):T('Sẵn sàng','Ready');
+    if(document.activeElement!==$('gcCost')&&document.activeElement!==$('gcHard')){$('gcCost').value=c.cost;$('gcHard').value=c.hard5;}
+    if(!$('gcStage').firstChild)stageIdle();
+    const H=G().history.filter(h=>h.sid===selId).slice(-30).reverse();
+    $('gcHistT').textContent=T('Lịch sử mở hộp','Opening history')+(st?' — '+st.name:'');
+    $('gcHistClear').textContent='🗑 '+T('Xóa lịch sử','Clear history');$('gcHistClear').disabled=!H.length;$('gcHistClear').classList.toggle('opacity-50',!H.length);
+    $('gcHist').innerHTML=H.length?H.map(h=>`<div class="flex flex-wrap items-center gap-2 py-1.5 border-b border-slate-100 text-sm"><span class="text-slate-400 text-xs">${new Date(h.t).toLocaleString(appData.language==='en'?'en-US':'vi-VN')}</span><span>${h.n} ${T('hộp','boxes')}:</span>${(Array.isArray(h.g)?h.g.map(x=>{const it=find(x.key);return `<span class="gc-chip gc-c${x.star}">${x.star}★ ${x.n>1?x.n+' × ':''}${escapeHtml(it?gname(it):'?')}</span>`;}):h.stars.map(x=>`<span class="gc-chip gc-c${x}">${x}★</span>`)).join(' ')}</div>`).join(''):`<div class="text-sm text-slate-500">${T('Học sinh này chưa có lượt mở hộp nào.','This student has no openings yet.')}</div>`;
+  }
+  window.renderGachaView=renderGachaView;
+
+  function animate(res){return new Promise(done=>{
+    const top=Math.max(...res.map(r=>r.star)),col=top===5?'#fbbf24':top===4?'#c084fc':'#60a5fa',tcol=top===5?'#b45309':top===4?'#9333ea':'#2563eb',stg=$('gcStage');
+    const icon=top===5?'🌟':top===4?'💜':'💙';
+    stg.style.setProperty('--gl',col);stg.classList.remove('gc-gold');
+    stg.innerHTML='<div class="gc-box shake">🎁</div><div class="gc-hint text-sm font-bold mt-2">'+T('Đang mở... (bấm để bỏ qua)','Opening... (tap to skip)')+'</div>';
+    const resHtml='<div class="gc-res'+(res.length===1?' one':'')+'">'+res.map((r,i)=>`<div class="gc-it gc-s${r.star}" style="--i:${i}"><b>${'★'.repeat(r.star)}</b>${escapeHtml(label(r))}</div>`).join('')+'</div>';
+    const hero=cls=>'<div class="gc-hero '+cls+'"><div class="gc-box gc-hero-ic">'+icon+'</div><div class="gc-stars" style="color:'+tcol+'">'+Array.from({length:top},(_,k)=>'<span style="--k:'+k+'">★</span>').join('')+'</div></div>';
+    let fin=false;const timers=[];const later=(fn,ms)=>{timers.push(setTimeout(fn,ms));};
+    const end=()=>{fin=true;skip=null;timers.forEach(clearTimeout);setTimeout(done,350);};
+    // Bỏ qua / hết hiệu ứng: dựng thẳng trạng thái cuối (biểu tượng thu nhỏ + danh sách quà)
+    const finish=()=>{if(fin)return;timers.forEach(clearTimeout);
+      stg.innerHTML='<div class="gc-flash"></div>'+hero('gc-shrunk gc-instant')+resHtml;
+      if(top===5)stg.classList.add('gc-gold');end();};
+    skip=finish;
+    if(top<4){later(finish,1400);return;}
+    // 4★ / 5★: lắc hộp -> biểu tượng LỚN -> các ngôi sao lần lượt hiện -> thu nhỏ -> liệt kê quà
+    const shake=top===5?1600:1200,starsEnd=(.55+(top-1)*.3+.45)*1000,hold=600;
+    later(()=>{if(fin)return;
+      stg.innerHTML='<div class="gc-flash"></div>'+hero('');
+      if(top===5)stg.classList.add('gc-gold');
+      later(()=>{if(fin)return;const h=stg.querySelector('.gc-hero');if(h)h.classList.add('gc-shrunk');
+        later(()=>{if(fin)return;stg.insertAdjacentHTML('beforeend',resHtml);end();},450);
+      },starsEnd+hold);
+    },shake);
+  });}
+
+  async function pull(n){
+    if(busy)return;if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(T('Khóa đã lưu trữ chỉ được xem. Hãy quay lại khóa hiện tại để chỉnh sửa.','Archived course is read-only.'));return;}
+    const st=cur();if(!st)return;const c=cfg(),need=c.cost*n;
+    if((st.rewardPoints||0)<need){toast(T('Không đủ điểm dư.','Not enough bonus points.'),'error');return;}
+    const g=G();const s=g.st[st.id]=Object.assign({p5:0,p4:0,gu:false,total:0},g.st[st.id]);
+    st.rewardPoints=(st.rewardPoints||0)-need;if(!Array.isArray(st.inventory))st.inventory=[];
+    const res=[];for(let i=0;i<n;i++){const r=pullOne(s,c);itemsOf(r).forEach(it=>st.inventory.push(it));res.push(r);}
+    g.history.push({sid:st.id,t:Date.now(),n,stars:res.map(r=>r.star),g:res.map(r=>({star:r.star,key:r.key,n:r.star===5?r.n:1}))});if(g.history.length>1000)g.history.splice(0,g.history.length-1000);
+    busy=true;const sid=st.id;$('gcStatus').textContent=T('Đang mở hộp...','Opening...');
+    $('gcBtn1').disabled=$('gcBtn10').disabled=true;
+    try{saveData();}catch(e){console.warn(e);}   /* lưu TRƯỚC khi chạy hiệu ứng: tải lại trang cũng không quay lại được */
+    await animate(res);busy=false;selId=sid;selSig='';renderGachaView();
+    toast(res.some(r=>r.star===5)?T('🌟 Trúng 5★! Quà đã vào túi quà.','5★! Added to the gift bag.'):T('Quà đã được cộng vào túi quà.','Prizes added to the gift bag.'),'success');
+  }
+  function wire(){const sel=$('gcSel');if(!sel||sel.dataset.w)return;sel.dataset.w=1;
+    sel.onchange=e=>{selId=e.target.value;selSig='';stageIdle();renderGachaView();};
+    $('gcGiftCfg').addEventListener('change',e=>{const t=e.target;if(!t||!t.matches||!t.matches('input[data-g]'))return;
+      const g=t.dataset.g,max=g==='p4'?5:10,n=picked(g).length;
+      if(n>max){t.checked=false;toast(T('Tối đa '+max+' quà cho hạng này.','Maximum '+max+' gifts for this rarity.'),'error');}
+      const k=g==='p4'?'gcCnt4':'gcCnt3';$(k).textContent=picked(g).length+'/'+max;});
+    $('gcInfoToggle').onclick=()=>{infoOpen=!infoOpen;applyInfo();};
+    $('gcHistClear').onclick=window.clearGachaHistory;
+    $('gcBtn1').onclick=()=>pull(1);$('gcBtn10').onclick=()=>pull(10);$('gcSave').onclick=window.saveGachaCfg;
+    const stg=$('gcStage');stg.onclick=e=>{if(e&&e.target&&e.target.closest&&e.target.closest('.gc-res'))return;if(skip)skip();else if(!busy&&!$('gcBtn1').disabled)pull(1);};
+    stg.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();stg.onclick(null);}};}
+  wire();
+})();
 
     </script>
 
