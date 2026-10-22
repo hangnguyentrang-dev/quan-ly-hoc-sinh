@@ -1682,7 +1682,7 @@ html.mx-dark .gr-pass{background:rgba(139,92,246,.28);color:#c4b5fd}
 html.mx-dark .gr-try{background:rgba(239,68,68,.24);color:#fca5a5}
 html.mx-dark .gr-poor{background:rgba(148,163,184,.24);color:#cbd5e1}
 #gradeLegend{display:none}
-#gradeLegend.open{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 1rem;padding:.75rem .9rem;border:1px solid #e2e8f0;border-radius:.9rem;background:#f8fafc;animation:grDrop .25s ease}
+#gradeLegend.open{animation:none!important;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 1rem;padding:.75rem .9rem;border:1px solid #e2e8f0;border-radius:.9rem;background:#f8fafc;animation:grDrop .25s ease}
 html.mx-dark #gradeLegend.open{background:rgba(30,41,59,.6);border-color:#334155}
 @keyframes grDrop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .gr-leg-title{font-size:.72rem;font-weight:800;color:#64748b;margin-right:.25rem;text-transform:uppercase;letter-spacing:.03em}
@@ -2378,6 +2378,77 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
 .vl-head.vl-tpl>*:not(.ct-fx){position:relative;z-index:1}
 .vio-list .vl-head.vl-tpl{padding:.45rem .65rem !important;margin-bottom:0}
 </style>
+<script id="global-slide-toggle">
+/* Hiệu ứng trượt lên/xuống cho mọi phần tử ẩn/hiện bằng class "hidden" (do người dùng bấm).
+   Không áp dụng cho: các tab chính (id bắt đầu bằng "view"), phần tử có data-no-slide, hoặc khi bật "giảm chuyển động". */
+(function(){
+  if(window.__slideToggle)return;window.__slideToggle=true;
+  var DUR=300,EASE='cubic-bezier(.4,0,.2,1)',owners=new WeakMap(),running=new WeakMap(),last=0;
+  var stamp=function(){last=Date.now();};
+  ['pointerdown','click','keydown','change','input'].forEach(function(t){document.addEventListener(t,stamp,true);});
+  var gesture=function(){return Date.now()-last<1500;};
+  var reduce=function(){try{return matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){return false;}};
+  var d=Object.getOwnPropertyDescriptor(Element.prototype,'classList');
+  if(!d||!d.get)return;
+  Object.defineProperty(Element.prototype,'classList',{configurable:true,enumerable:d.enumerable,get:function(){var l=d.get.call(this);owners.set(l,this);return l;},set:d.set});
+  function skip(el){
+    if(!el||el.nodeType!==1||el instanceof SVGElement)return true;
+    if(/^(BODY|HTML|MAIN|SCRIPT|STYLE|OPTION|SELECT)$/.test(el.tagName))return true;
+    if(/^view/.test(el.id||''))return true;
+    if(el.closest('[data-no-slide]'))return true;
+    return false;
+  }
+  var visible=function(el){return el.getClientRects().length>0;};
+  function cancel(el){
+    var r=running.get(el);if(!r)return;running.delete(el);
+    try{r.anim.cancel();}catch(e){}
+    r.restore();
+  }
+  function animate(el,collapsing,snap,restore){
+    var cs=snap||getComputedStyle(el);
+    var pos=cs.position,disp=cs.display;
+    var slide=!/^(inline|inline-block|inline-flex|inline-grid|table-cell|contents|none)$/.test(disp)&&!/^(fixed|absolute|sticky)$/.test(pos);
+    var prevOv=el.style.overflow,frames,
+        full={height:cs.height,paddingTop:cs.paddingTop,paddingBottom:cs.paddingBottom,marginTop:cs.marginTop,marginBottom:cs.marginBottom,borderTopWidth:cs.borderTopWidth,borderBottomWidth:cs.borderBottomWidth,opacity:1},
+        zero={height:'0px',paddingTop:'0px',paddingBottom:'0px',marginTop:'0px',marginBottom:'0px',borderTopWidth:'0px',borderBottomWidth:'0px',opacity:0};
+    if(slide){el.style.overflow='hidden';frames=collapsing?[full,zero]:[zero,full];}
+    else{frames=collapsing?[{opacity:1},{opacity:0}]:[{opacity:0},{opacity:1}];}
+    var anim=el.animate(frames,{duration:slide?DUR:Math.round(DUR*.6),easing:EASE,fill:collapsing?'forwards':'none'});
+    var done=function(){if(running.get(el)&&running.get(el).anim===anim){running.delete(el);}if(slide)el.style.overflow=prevOv;if(restore)restore();if(collapsing){try{anim.cancel();}catch(e){}}};
+    running.set(el,{anim:anim,restore:function(){if(slide)el.style.overflow=prevOv;if(restore)restore();}});
+    anim.onfinish=done;anim.oncancel=function(){};
+  }
+  function wrap(name){
+    var orig=DOMTokenList.prototype[name];
+    DOMTokenList.prototype[name]=function(){
+      var a=arguments,el=owners.get(this);
+      if(!el||name==='toggle'&&a[0]!=='hidden'||name!=='toggle'&&Array.prototype.indexOf.call(a,'hidden')<0)return orig.apply(this,a);
+      var had=this.contains('hidden'),want=name==='add'?true:name==='remove'?false:(a.length>1?!!a[1]:!had);
+      if(running.has(el))cancel(el);
+      if(want===had||!gesture()||reduce()||skip(el))return orig.apply(this,a);
+      if(want){ /* ẩn: giữ hiển thị trong lúc trượt */
+        if(!visible(el))return orig.apply(this,a);
+        var cs=getComputedStyle(el),snap={position:cs.position,display:cs.display,height:cs.height,paddingTop:cs.paddingTop,paddingBottom:cs.paddingBottom,marginTop:cs.marginTop,marginBottom:cs.marginBottom,borderTopWidth:cs.borderTopWidth,borderBottomWidth:cs.borderBottomWidth};
+        var pv=el.style.getPropertyValue('display'),pp=el.style.getPropertyPriority('display');
+        var r=orig.apply(this,a);
+        el.style.setProperty('display',snap.display,'important');
+        animate(el,true,snap,function(){if(pv)el.style.setProperty('display',pv,pp);else el.style.removeProperty('display');});
+        return r;
+      }
+      var r2=orig.apply(this,a);
+      if(visible(el))animate(el,false,null,null);
+      return r2;
+    };
+  }
+  ['add','remove','toggle'].forEach(wrap);
+  /* API cho các khối được vẽ lại bằng JS (tuần, thứ, kiểm tra cuối kỳ, xếp loại...) */
+  window.__slide={
+    find:function(key){var n=document.querySelectorAll('[data-sl]');for(var i=0;i<n.length;i++)if(n[i].getAttribute('data-sl')===key)return n[i];return null;},
+    expand:function(el){if(!el)return;cancel(el);if(reduce()||!visible(el))return;animate(el,false,null,null);},
+    collapse:function(el,cb){if(!el||reduce()||!visible(el)){if(cb)cb();return;}cancel(el);var cs=getComputedStyle(el),snap={position:cs.position,display:cs.display,height:cs.height,paddingTop:cs.paddingTop,paddingBottom:cs.paddingBottom,marginTop:cs.marginTop,marginBottom:cs.marginBottom,borderTopWidth:cs.borderTopWidth,borderBottomWidth:cs.borderBottomWidth};animate(el,true,snap,cb);}
+  };
+})();
+</script>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -6246,14 +6317,24 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             return { categories, accumulated, total: totalCategories.length ? totalCategories.reduce((a,b)=>a+b,0)/totalCategories.length : null };
         }
         window.toggleFinalExamGrammar = function(studentId) {
-            const id = String(studentId);
-            if (expandedFinalExamCards.has(id)) expandedFinalExamCards.delete(id); else expandedFinalExamCards.add(id);
+            const id = String(studentId), S = window.__slide;
+            if (expandedFinalExamCards.has(id)) {
+                const p = S && S.find('gv:' + id);
+                if (p) { S.collapse(p, () => { expandedFinalExamCards.delete(id); renderFinalExamView(); }); return; }
+                expandedFinalExamCards.delete(id);
+            } else expandedFinalExamCards.add(id);
             renderFinalExamView();
+            if (S && expandedFinalExamCards.has(id)) S.expand(S.find('gv:' + id));
         };
         window.toggleFinalExamBonus = function(studentId) {
-            const id = String(studentId);
-            if (expandedFinalExamBonus.has(id)) expandedFinalExamBonus.delete(id); else expandedFinalExamBonus.add(id);
+            const id = String(studentId), S = window.__slide;
+            if (expandedFinalExamBonus.has(id)) {
+                const p = S && S.find('bonus:' + id);
+                if (p) { S.collapse(p, () => { expandedFinalExamBonus.delete(id); renderFinalExamView(); }); return; }
+                expandedFinalExamBonus.delete(id);
+            } else expandedFinalExamBonus.add(id);
             renderFinalExamView();
+            if (S && expandedFinalExamBonus.has(id)) S.expand(S.find('bonus:' + id));
         };
         window.updateFinalExamField = function(studentId, field, value) {
             const r = finalExamRecord(studentId);
@@ -6293,14 +6374,14 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 const gvExpanded = expandedFinalExamCards.has(String(student.id));
                 const bonusExpanded = expandedFinalExamBonus.has(String(student.id));
                 const gvAvg = result.categories.grammarVocabulary === null ? '—' : result.categories.grammarVocabulary.toFixed(2);
-                const inputs = fields.map(([key,label]) => `<label data-no-hover class="block text-xs font-semibold text-slate-600">${label}<input type="number" min="0" max="10" step="0.1" value="${r[key] !== '' && r[key] !== null && r[key] !== undefined && r.bonusTo[key] ? ((Number(r[key]) + result.accumulated) / 2).toFixed(2) : (r[key] ?? '')}" placeholder="0–10" onchange="updateFinalExamField('${student.id}','${key}',this.value)" class="mt-1 w-full rounded-lg border border-slate-200 p-2 text-sm font-bold text-indigo-700 focus:ring-2 focus:ring-indigo-400 outline-none"></label>`).join('') + `<div class="col-span-2"><label class="block text-xs font-semibold text-slate-600 mb-1">${tr('Ngữ Pháp + Từ Vựng','Grammar + Vocabulary')}</label><button type="button" onclick="toggleFinalExamGrammar('${student.id}')" class="w-full rounded-lg border border-slate-200 bg-white p-2 text-left flex items-center justify-between gap-2 hover:border-indigo-300 hover:bg-indigo-50 transition"><span class="text-sm font-bold text-indigo-700">${gvAvg}</span><span class="text-[11px] font-semibold text-slate-500"><i class="fa-solid ${gvExpanded?'fa-chevron-up':'fa-chevron-down'} mr-1"></i>${gvExpanded?tr('Thu gọn','Collapse'):tr('Nhấp để nhập 2 điểm','Click to enter 2 scores')}</span></button>${gvExpanded ? `<div class="grid grid-cols-2 gap-2 mt-2 rounded-lg border border-slate-200 bg-slate-50 p-2"><label data-no-hover class="block text-xs font-semibold text-slate-600">${tr('Ngữ Pháp','Grammar')}<input type="number" min="0" max="10" step="0.1" value="${r.grammar !== '' && r.grammar !== null && r.grammar !== undefined && r.bonusTo.grammar ? ((Number(r.grammar) + result.accumulated) / 2).toFixed(2) : (r.grammar ?? '')}" placeholder="0–10" onchange="updateFinalExamField('${student.id}','grammar',this.value)" class="mt-1 w-full rounded-lg border border-slate-200 p-2 text-sm font-bold text-indigo-700"></label><label data-no-hover class="block text-xs font-semibold text-slate-600">${tr('Từ Vựng','Vocabulary')}<input type="number" min="0" max="10" step="0.1" value="${r.vocabulary !== '' && r.vocabulary !== null && r.vocabulary !== undefined && r.bonusTo.vocabulary ? ((Number(r.vocabulary) + result.accumulated) / 2).toFixed(2) : (r.vocabulary ?? '')}" placeholder="0–10" onchange="updateFinalExamField('${student.id}','vocabulary',this.value)" class="mt-1 w-full rounded-lg border border-slate-200 p-2 text-sm font-bold text-indigo-700"></label></div>`:''}</div>`;
+                const inputs = fields.map(([key,label]) => `<label data-no-hover class="block text-xs font-semibold text-slate-600">${label}<input type="number" min="0" max="10" step="0.1" value="${r[key] !== '' && r[key] !== null && r[key] !== undefined && r.bonusTo[key] ? ((Number(r[key]) + result.accumulated) / 2).toFixed(2) : (r[key] ?? '')}" placeholder="0–10" onchange="updateFinalExamField('${student.id}','${key}',this.value)" class="mt-1 w-full rounded-lg border border-slate-200 p-2 text-sm font-bold text-indigo-700 focus:ring-2 focus:ring-indigo-400 outline-none"></label>`).join('') + `<div class="col-span-2"><label class="block text-xs font-semibold text-slate-600 mb-1">${tr('Ngữ Pháp + Từ Vựng','Grammar + Vocabulary')}</label><button type="button" onclick="toggleFinalExamGrammar('${student.id}')" class="w-full rounded-lg border border-slate-200 bg-white p-2 text-left flex items-center justify-between gap-2 hover:border-indigo-300 hover:bg-indigo-50 transition"><span class="text-sm font-bold text-indigo-700">${gvAvg}</span><span class="text-[11px] font-semibold text-slate-500"><i class="fa-solid ${gvExpanded?'fa-chevron-up':'fa-chevron-down'} mr-1"></i>${gvExpanded?tr('Thu gọn','Collapse'):tr('Nhấp để nhập 2 điểm','Click to enter 2 scores')}</span></button>${gvExpanded ? `<div data-sl="gv:${student.id}" class="grid grid-cols-2 gap-2 mt-2 rounded-lg border border-slate-200 bg-slate-50 p-2"><label data-no-hover class="block text-xs font-semibold text-slate-600">${tr('Ngữ Pháp','Grammar')}<input type="number" min="0" max="10" step="0.1" value="${r.grammar !== '' && r.grammar !== null && r.grammar !== undefined && r.bonusTo.grammar ? ((Number(r.grammar) + result.accumulated) / 2).toFixed(2) : (r.grammar ?? '')}" placeholder="0–10" onchange="updateFinalExamField('${student.id}','grammar',this.value)" class="mt-1 w-full rounded-lg border border-slate-200 p-2 text-sm font-bold text-indigo-700"></label><label data-no-hover class="block text-xs font-semibold text-slate-600">${tr('Từ Vựng','Vocabulary')}<input type="number" min="0" max="10" step="0.1" value="${r.vocabulary !== '' && r.vocabulary !== null && r.vocabulary !== undefined && r.bonusTo.vocabulary ? ((Number(r.vocabulary) + result.accumulated) / 2).toFixed(2) : (r.vocabulary ?? '')}" placeholder="0–10" onchange="updateFinalExamField('${student.id}','vocabulary',this.value)" class="mt-1 w-full rounded-lg border border-slate-200 p-2 text-sm font-bold text-indigo-700"></label></div>`:''}</div>`;
                 const subjects = [['listening',tr('Nghe','Listening')],['speaking',tr('Nói','Speaking')],['reading',tr('Đọc','Reading')],['writing',tr('Viết','Writing')],['grammar',tr('Ngữ pháp','Grammar')],['vocabulary',tr('Từ vựng','Vocabulary')]];
                 const bonus = subjects.map(([key,label]) => `<label class="flex items-center justify-between gap-2 text-[11px] text-slate-600 py-1"><span>${tr('Cộng TB tích lũy vào ','Combine accumulated average with ')}${label}</span><select onchange="updateFinalExamField('${student.id}','bonus:${key}',this.value)" class="border rounded-md px-2 py-1 bg-white"><option value="no" ${!r.bonusTo[key]?'selected':''}>${tr('Không','No')}</option><option value="yes" ${r.bonusTo[key]?'selected':''}>${tr('Có','Yes')}</option></select></label>`).join('');
                 const fmt = n => n === null ? '—' : n.toFixed(2);
                 return `<article class="roster-card fe-card rounded-xl border border-slate-200 p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2 mb-3"><div class="flex items-center gap-3 min-w-0"><div class="roster-avatar"><span class="ra-ico" style="animation-delay:${raDelay(student.id)}">${student.icon||'🎓'}</span></div><div class="min-w-0"><h3 class="font-black text-slate-800 text-sm">${student.name}</h3><p class="text-[11px] text-slate-500">${tr('TB tích lũy Ma Trận Điểm:','Score Matrix accumulated average:')} <b>${result.accumulated.toFixed(1)}</b></p></div></div><button type="button" onclick="resetFinalExamStudent('${student.id}')" title="${tr('Reset điểm kiểm tra cuối kỳ của học sinh này','Reset this student’s final exam scores')}" class="shrink-0 inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2 py-1.5 text-[11px] font-bold text-rose-700 transition hover:bg-rose-100 hover:border-rose-300"><i class="fa-solid fa-rotate-left"></i><span>${tr('Reset điểm','Reset scores')}</span></button></div>
                     <div class="grid grid-cols-2 gap-2">${inputs}</div>
-                    <div class="mt-3 rounded-lg border border-slate-200 bg-slate-50 overflow-hidden"><button type="button" onclick="toggleFinalExamBonus('${student.id}')" class="w-full flex items-center justify-between gap-2 p-3 text-left hover:bg-slate-100 transition"><span class="text-[11px] font-black text-slate-700">${tr('ĐIỂM TÍCH LŨY ĐƯỢC CHỌN CỘNG','ACCUMULATED POINTS TO COMBINE')}</span><span class="text-[11px] font-semibold text-slate-500 whitespace-nowrap"><i class="fa-solid ${bonusExpanded?'fa-chevron-up':'fa-chevron-down'} mr-1"></i>${bonusExpanded?tr('Thu gọn','Collapse'):tr('Mở tùy chọn','Show options')}</span></button>${bonusExpanded ? `<div class="px-3 pb-3 border-t border-slate-200">${bonus}<p class="text-[10px] text-slate-500 mt-1">${tr('Khi chọn Có, ô điểm phía trên sẽ hiển thị điểm trung bình sau khi cộng TB tích lũy. Điểm gốc được lưu riêng để không bị tính cộng lặp.','When Yes is selected, the score field above displays the averaged score after combining with the accumulated average. The original score is stored separately to prevent repeated averaging.')}</p><p class="text-[10px] text-slate-400 mt-1">${tr('Chọn Có riêng cho Ngữ pháp hoặc Từ vựng để tính trung bình môn đó với TB tích lũy. TB Ngữ pháp + Từ vựng được tính từ hai điểm sau điều chỉnh.','Choose Yes for Grammar or Vocabulary individually to average that subject with the accumulated average. The Grammar + Vocabulary average is calculated from the two adjusted scores.')}</p></div>` : ''}</div>
+                    <div class="mt-3 rounded-lg border border-slate-200 bg-slate-50 overflow-hidden"><button type="button" onclick="toggleFinalExamBonus('${student.id}')" class="w-full flex items-center justify-between gap-2 p-3 text-left hover:bg-slate-100 transition"><span class="text-[11px] font-black text-slate-700">${tr('ĐIỂM TÍCH LŨY ĐƯỢC CHỌN CỘNG','ACCUMULATED POINTS TO COMBINE')}</span><span class="text-[11px] font-semibold text-slate-500 whitespace-nowrap"><i class="fa-solid ${bonusExpanded?'fa-chevron-up':'fa-chevron-down'} mr-1"></i>${bonusExpanded?tr('Thu gọn','Collapse'):tr('Mở tùy chọn','Show options')}</span></button>${bonusExpanded ? `<div data-sl="bonus:${student.id}" class="px-3 pb-3 border-t border-slate-200">${bonus}<p class="text-[10px] text-slate-500 mt-1">${tr('Khi chọn Có, ô điểm phía trên sẽ hiển thị điểm trung bình sau khi cộng TB tích lũy. Điểm gốc được lưu riêng để không bị tính cộng lặp.','When Yes is selected, the score field above displays the averaged score after combining with the accumulated average. The original score is stored separately to prevent repeated averaging.')}</p><p class="text-[10px] text-slate-400 mt-1">${tr('Chọn Có riêng cho Ngữ pháp hoặc Từ vựng để tính trung bình môn đó với TB tích lũy. TB Ngữ pháp + Từ vựng được tính từ hai điểm sau điều chỉnh.','Choose Yes for Grammar or Vocabulary individually to average that subject with the accumulated average. The Grammar + Vocabulary average is calculated from the two adjusted scores.')}</p></div>` : ''}</div>
                     <div class="mt-3 rounded-xl bg-indigo-600 text-white p-3 flex items-center justify-between"><span class="text-xs font-bold">${tr('ĐIỂM TRUNG BÌNH TỔNG','OVERALL AVERAGE')}</span><strong class="text-2xl">${fmt(result.total)}</strong></div>
                 </article>`;
             }).join('');
@@ -7765,12 +7846,19 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         // Nút "Xếp Loại": mở/đóng khung thang xếp loại + cấp sticker (luôn đóng mặc định)
         function grLegendSet(open) {
             const box = document.getElementById('gradeLegend'), btn = document.getElementById('gradeLegendToggle');
-            if (box) box.classList.toggle('open', !!open);
+            if (box) {
+                const S = window.__slide, isOpen = box.classList.contains('open');
+                box.dataset.want = open ? '1' : '0';
+                if (open && !isOpen) { box.classList.add('open'); if (S) S.expand(box); }
+                else if (open && isOpen) { if (S) S.expand(box); }
+                else if (!open && isOpen) { if (S) S.collapse(box, () => { if (box.dataset.want === '0') box.classList.remove('open'); }); else box.classList.remove('open'); }
+            }
             if (btn) { btn.classList.toggle('open', !!open); btn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
         }
         function toggleGradeLegend() {
             const box = document.getElementById('gradeLegend');
-            grLegendSet(!(box && box.classList.contains('open')));
+            const cur = box && box.dataset.want ? box.dataset.want === '1' : !!(box && box.classList.contains('open'));
+            grLegendSet(!cur);
         }
         window.toggleGradeLegend = toggleGradeLegend;
 
@@ -10261,7 +10349,7 @@ window.openStudentProfile=function(studentId){
                   <button type="button" onclick="deleteTeachingWeek('${w.id}')" class="fx-lift text-xs bg-rose-50 text-rose-700 rounded-md px-2 py-1">${moduleText('deleteBtn')}</button>
                 </div>
               </div>
-              ${expanded?`<div class="p-2">${weekScheduleHtml(w,weekLessons,filter,q)}</div>`:''}
+              ${expanded?`<div class="p-2" data-sl="w:${w.id}">${weekScheduleHtml(w,weekLessons,filter,q)}</div>`:''}
             </section>`;
           }).join('')||`<div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center"><p class="text-sm text-slate-600">${moduleText('noWeeks')}</p><button type="button" onclick="addTeachingWeek()" class="mt-3 rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-bold">${moduleText('addWeekBtn')}</button></div>`;
           if(autoFocusWeek)setTimeout(teachingFocusNext,120);
@@ -10306,7 +10394,7 @@ window.openStudentProfile=function(studentId){
               </div>`;
             }).filter(Boolean).join('');
             const noClass=`<div class="px-2 py-2 text-[10px] text-slate-400">${moduleText('noScheduledClasses')}</div>`;
-            return `<section class="teaching-day-card rounded-lg overflow-hidden bg-white" style="border:1px solid #94a3b8"><button type="button" onclick="toggleTeachingDay('${w.id}','${date}')" class="w-full px-2 py-1.5 flex items-center gap-2 text-left hover:brightness-95" style="background:#e2e8f0;border-bottom:1px solid #94a3b8"><span class="text-xs font-black text-slate-900" style="width:12px">${dayCollapsed?'▸':'▾'}</span><b class="text-xs font-black text-slate-900" style="letter-spacing:.02em;font-weight:900">${days[i]||''}</b><span class="text-[11px] font-extrabold text-slate-800">${date}</span>${isToday?`<span class="teaching-today-tag">${appData.language==='en'?'Today':'Hôm nay'}</span>`:''}<span class="ml-auto text-[10px] font-semibold text-slate-500">${dayCollapsed?(appData.language==='en'?'Expand day':'Mở ngày'):(appData.language==='en'?'Collapse day':'Thu gọn ngày')}</span></button>${dayCollapsed?'':`<div class="teaching-day-table-scroll">${rows||noClass}</div>`}</section>`;
+            return `<section class="teaching-day-card rounded-lg overflow-hidden bg-white" style="border:1px solid #94a3b8"><button type="button" onclick="toggleTeachingDay('${w.id}','${date}')" class="w-full px-2 py-1.5 flex items-center gap-2 text-left hover:brightness-95" style="background:#e2e8f0;border-bottom:1px solid #94a3b8"><span class="text-xs font-black text-slate-900" style="width:12px">${dayCollapsed?'▸':'▾'}</span><b class="text-xs font-black text-slate-900" style="letter-spacing:.02em;font-weight:900">${days[i]||''}</b><span class="text-[11px] font-extrabold text-slate-800">${date}</span>${isToday?`<span class="teaching-today-tag">${appData.language==='en'?'Today':'Hôm nay'}</span>`:''}<span class="ml-auto text-[10px] font-semibold text-slate-500">${dayCollapsed?(appData.language==='en'?'Expand day':'Mở ngày'):(appData.language==='en'?'Collapse day':'Thu gọn ngày')}</span></button>${dayCollapsed?'':`<div class="teaching-day-table-scroll" data-sl="d:${dayKey}">${rows||noClass}</div>`}</section>`;
           }).join('')}</div>`;
         }
         /* ===== Huy hiệu: số buổi học đã đến giờ nhưng chưa điền nội dung giảng dạy ===== */
@@ -10365,8 +10453,8 @@ window.openStudentProfile=function(studentId){
           saveData().then(ok=>{if(!ok)console.warn('Teaching content was not synced to Firebase.');});
         };
         window.teachingWeekHeadClick=function(ev,id){if(ev.target.closest('button,input,textarea,select,label,a,[data-no-hover]'))return;toggleTeachingWeek(id);};
-        window.toggleTeachingWeek=function(id){if(teachingExpandedWeeks.has(id))teachingExpandedWeeks.delete(id);else teachingExpandedWeeks.add(id);renderTeachingView();};
-        window.toggleTeachingDay=function(weekId,date){const key=`${weekId}_${date}`;if(teachingCollapsedDays.has(key))teachingCollapsedDays.delete(key);else teachingCollapsedDays.add(key);renderTeachingView();};
+        window.toggleTeachingWeek=function(id){const S=window.__slide;if(teachingExpandedWeeks.has(id)){const p=S&&S.find('w:'+id);if(p){S.collapse(p,()=>{teachingExpandedWeeks.delete(id);renderTeachingView();});return;}teachingExpandedWeeks.delete(id);renderTeachingView();return;}teachingExpandedWeeks.add(id);renderTeachingView();if(S)S.expand(S.find('w:'+id));};
+        window.toggleTeachingDay=function(weekId,date){const key=`${weekId}_${date}`,S=window.__slide;if(teachingCollapsedDays.has(key)){teachingCollapsedDays.delete(key);renderTeachingView();if(S)S.expand(S.find('d:'+key));return;}const p=S&&S.find('d:'+key);if(p){S.collapse(p,()=>{teachingCollapsedDays.add(key);renderTeachingView();});return;}teachingCollapsedDays.add(key);renderTeachingView();};
         window.updateTeachingWeek=function(id,key,value){const plans=appData.teachingPlans[appData.courseManager.activeCourseId]||[];const w=plans.find(x=>x.id===id);if(!w)return;const backup=deepCopy(w);if(key==='week'){const n=Math.max(1,Math.min(60,parseInt(value)||1));const conflict=plans.find(x=>x.id!==id&&Number(x.year||w.year)===Number(w.year)&&Number(x.week)===n);if(conflict){alert(appData.language==='en'?'That week number is already in use for this year.':'Số tuần này đã được dùng trong năm đó.');renderTeachingView();return;}w.week=n;}else if(key==='startDate'){if(!value)return;w.startDate=mondayOfDate(value);w.endDate=datePlus(w.startDate,6);w.year=Number(w.startDate.slice(0,4));document.getElementById('teachingYear').value=String(w.year);}else w[key]=value;renderTeachingView();saveData().then(ok=>{if(!ok){Object.assign(w,backup);renderTeachingView();}});};
         window.moveTeachingWeek=function(id,direction){const plans=appData.teachingPlans[appData.courseManager.activeCourseId]||[];const idx=plans.findIndex(w=>w.id===id);if(idx<0)return;const w=plans[idx];const peers=plans.map((x,i)=>({x,i})).filter(v=>Number(v.x.year||2026)===Number(w.year||2026));const pos=peers.findIndex(v=>v.x.id===id);const target=peers[pos+direction];if(!target)return;const temp=plans[idx];plans[idx]=plans[target.i];plans[target.i]=temp;const firstWeek=plans.filter(x=>Number(x.year||2026)===Number(w.year||2026)).sort((a,b)=>a.week-b.week);firstWeek.forEach((x,i)=>x.week=i+1);saveData();renderTeachingView();};
         window.addTeachingWeek=function(){ensureNewModules();const course=activeCourse();const plans=appData.teachingPlans[appData.courseManager.activeCourseId]||(appData.teachingPlans[appData.courseManager.activeCourseId]=[]);const selectedYear=Number(document.getElementById('teachingYear')?.value)||Number(course?.startDate?.slice(0,4))||2026;const relevant=plans.filter(w=>Number(w.year||String(w.startDate||'').slice(0,4)||selectedYear)===selectedYear);const latest=relevant.slice().sort((a,b)=>String(b.startDate||'').localeCompare(String(a.startDate||'')))[0];let startDate=latest?.startDate?datePlus(mondayOfDate(latest.startDate),7):'';if(!startDate){const base=course?.startDate||`${selectedYear}-01-01`;startDate=mondayOfDate(base);if(!startDate)startDate=mondayOfDate(`${selectedYear}-01-01`);}const year=selectedYear;const peers=plans.filter(w=>Number(w.year||String(w.startDate||'').slice(0,4)||year)===year);const weekNo=peers.reduce((m,w)=>Math.max(m,Number(w.week)||0),0)+1;const w={id:'week_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),year,week:weekNo,startDate,endDate:datePlus(startDate,6),lessons:[]};plans.push(w);document.getElementById('teachingYear').value=String(year);teachingExpandedWeeks.add(w.id);renderTeachingView();saveData().then(ok=>{if(!ok)console.warn('New teaching week is visible locally but could not be synced to Firebase.');});};
