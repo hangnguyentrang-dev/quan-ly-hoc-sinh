@@ -1622,7 +1622,7 @@ button:has(> :is(.fa-xmark,.fa-times):only-child):not([class*="rounded"]):not([c
 .rk-avgpill::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.7) 50%,transparent 65%);transform:translateX(-130%);animation:rkPillShine 3.4s ease-in-out infinite;pointer-events:none}
 @keyframes rkPillPulse{0%,100%{box-shadow:0 0 0 0 rgba(var(--c),.45)}50%{box-shadow:0 0 0 5px rgba(var(--c),0),0 0 12px 1px rgba(var(--c),.4)}}
 @keyframes rkPillShine{0%,55%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
-.rk-t-leg{--c:245,158,11;--cd:120,53,15;background:linear-gradient(110deg,#fef3c7,#fcd34d 55%,#f59e0b)}
+.rk-t-leg{--c:251,146,28;--cd:154,52,18;background:linear-gradient(110deg,#fff1b8,#ffc933 55%,#ff9a1f)}
 .rk-t-ex{--c:16,185,129;--cd:6,95,70}
 .rk-t-vg{--c:59,130,246;--cd:30,64,175}
 .rk-t-good{--c:234,179,8;--cd:133,77,14}
@@ -1632,7 +1632,7 @@ button:has(> :is(.fa-xmark,.fa-times):only-child):not([class*="rounded"]):not([c
 .rk-avgpill.rk-t-none{animation:none;background:transparent;border-style:dashed;border-color:#cbd5e1;color:#94a3b8}
 .rk-avgpill.rk-t-none::after{display:none}
 html.mx-dark .rk-avgpill{background:rgba(var(--c),.28);color:#f8fafc}
-html.mx-dark .rk-t-leg{background:linear-gradient(110deg,#78350f,#b45309 55%,#f59e0b);color:#fef3c7}
+html.mx-dark .rk-t-leg{background:linear-gradient(110deg,#7c2d12,#c2410c 55%,#fb923c);color:#ffedd5}
 html.mx-dark .rk-avgpill.rk-t-none{background:transparent;border-color:#475569;color:#64748b}
 @media (prefers-reduced-motion:reduce){.rk-avgpill,.rk-avgpill::after{animation:none !important}}
 /* ===== Huy hiệu xếp loại (animation nhẹ, mỗi loại một kiểu) ===== */
@@ -1660,7 +1660,7 @@ html.mx-dark .gr-stk small{color:#94a3b8}
 @keyframes gbBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 @keyframes gbShake{0%,86%,100%{transform:rotate(0)}90%{transform:rotate(-6deg)}94%{transform:rotate(6deg)}98%{transform:rotate(-3deg)}}
 /* ===== Màu xếp loại thi đua (7 bậc) – dùng cho pill ở Bảng xếp loại, cột ĐTB Ma trận điểm và chú thích ===== */
-.gr-legend{background:linear-gradient(110deg,#fef3c7 0%,#fcd34d 40%,#f59e0b 60%,#fef3c7 100%);background-size:220% 100%;animation:grShine 3.2s linear infinite;color:#78350f;box-shadow:inset 0 0 0 1px rgba(161,98,7,.5),0 0 8px rgba(245,158,11,.45)}
+.gr-legend{background:linear-gradient(110deg,#fff1b8 0%,#ffc933 40%,#ff9a1f 60%,#fff1b8 100%);background-size:220% 100%;animation:grShine 3.2s linear infinite;color:#9a3412;box-shadow:inset 0 0 0 1px rgba(234,88,12,.5),0 0 8px rgba(251,146,60,.55)}
 @keyframes grShine{0%{background-position:120% 0}100%{background-position:-100% 0}}
 .gr-ex{background:#d1fae5;color:#065f46}
 .gr-vg{background:#dbeafe;color:#1e40af}
@@ -1668,7 +1668,7 @@ html.mx-dark .gr-stk small{color:#94a3b8}
 .gr-pass{background:#ede9fe;color:#5b21b6}
 .gr-try{background:#fee2e2;color:#991b1b}
 .gr-poor{background:#e2e8f0;color:#475569}
-html.mx-dark .gr-legend{background:linear-gradient(110deg,#78350f 0%,#b45309 40%,#f59e0b 60%,#78350f 100%);background-size:220% 100%;color:#fef3c7}
+html.mx-dark .gr-legend{background:linear-gradient(110deg,#7c2d12 0%,#c2410c 40%,#fb923c 60%,#7c2d12 100%);background-size:220% 100%;color:#ffedd5}
 html.mx-dark .gr-ex{background:rgba(16,185,129,.22);color:#6ee7b7}
 html.mx-dark .gr-vg{background:rgba(59,130,246,.24);color:#93c5fd}
 html.mx-dark .gr-good{background:rgba(250,204,21,.22);color:#fde047}
@@ -2264,6 +2264,108 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
 .tf-streak.tf-hi.tf-t80 .tf-txt,.tf-streak.tf-hi.tf-t80 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t80 .tf-txt .tf-n{text-shadow:0 1px 0 #3a0a25,0 0 4px rgba(255,64,160,.8)!important}
 .tf-streak.tf-hi.tf-t90 .tf-txt,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-n{text-shadow:0 1px 0 #2E130E,0 0 4px rgba(123,56,40,.8)!important}
 </style>
+<style id="patch-2026-10-21-ui2">
+/* ===== Thẻ quà đặc biệt: +1 điểm bài kiểm tra / lượt quay may mắn ===== */
+@keyframes giftWmDrift{0%,100%{transform:rotate(-14deg) scale(1)}50%{transform:rotate(-6deg) scale(1.07)}}
+.gift-card.gift-special{overflow:hidden;isolation:isolate}
+.gift-card.gift-special .gift-body,.gift-card.gift-special .gift-redeem{position:relative;z-index:1}
+.gift-wm{position:absolute;right:-.7rem;bottom:-1rem;font-size:6.8rem;line-height:1;opacity:.2;z-index:0;pointer-events:none;transform:rotate(-14deg);animation:giftWmDrift 7s ease-in-out infinite}
+.gift-card.as-list .gift-wm{right:5rem;bottom:50%;margin-bottom:-3.2rem;font-size:5.6rem}
+.gift-card.gift-special{background:radial-gradient(circle at 12% 18%,rgba(255,255,255,.85) 0 2px,transparent 3px),linear-gradient(135deg,var(--g1),var(--g2) 55%,var(--g3)) !important;border-color:var(--gb) !important;box-shadow:0 4px 14px color-mix(in srgb,var(--wm) 22%,transparent)}
+.gift-card.gift-special .gift-wm{color:var(--wm)}
+.gift-sp-plus{--g1:#fff1f2;--g2:#ffe4e6;--g3:#fecdd3;--gb:#fda4af;--wm:#e11d48}
+.gift-sp-add{--g1:#f0f9ff;--g2:#e0f2fe;--g3:#bae6fd;--gb:#7dd3fc;--wm:#0284c7}
+.gift-sp-change{--g1:#eef2ff;--g2:#e0e7ff;--g3:#c7d2fe;--gb:#a5b4fc;--wm:#4f46e5}
+.gift-sp-delete_score{--g1:#f0fdf4;--g2:#dcfce7;--g3:#86efac;--gb:#4ade80;--wm:#16a34a}
+.gift-sp-plus_match{--g1:#fdf4ff;--g2:#fae8ff;--g3:#f5d0fe;--gb:#f0abfc;--wm:#c026d3}
+.gift-sp-plus_exam{--g1:#faf5ff;--g2:#ede9fe;--g3:#ddd6fe;--gb:#c4b5fd;--wm:#7c3aed}
+.gift-sp-lucky{--g1:#fff7ed;--g2:#ffedd5;--g3:#fde68a;--gb:#fdba74;--wm:#ea580c}
+.gift-sp-none{--g1:#fffbeb;--g2:#fef3c7;--g3:#fde68a;--gb:#fcd34d;--wm:#d97706}
+.gift-sp-streak_ten{--g1:#fef2f2;--g2:#fee2e2;--g3:#fecaca;--gb:#fca5a5;--wm:#dc2626}
+.gift-note{display:block;margin-top:.15rem;font-size:.68rem;font-weight:700;color:#7c3aed;line-height:1.3}
+html.mx-dark .gift-card.gift-special{background:linear-gradient(135deg,color-mix(in srgb,var(--wm) 20%,#0f172a),color-mix(in srgb,var(--wm) 40%,#0f172a)) !important;border-color:color-mix(in srgb,var(--wm) 70%,#0f172a) !important}
+html.mx-dark .gift-card.gift-special .gift-wm{opacity:.26}
+html.mx-dark .gift-note{color:#c4b5fd}
+/* ===== Icon học sinh lơ lửng (Danh sách lớp, Vi phạm, Bảng xếp hạng) ===== */
+@keyframes raBob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-4px) rotate(6deg) scale(1.1)}}
+@keyframes raBobHard{0%,100%{transform:translateY(0) rotate(-13deg) scale(1.05)}50%{transform:translateY(-10px) rotate(13deg) scale(1.32)}}
+.roster-avatar .ra-ico,.hl-row .hl-ico{display:inline-block;transform-origin:50% 100%;animation:raBob 1.6s ease-in-out infinite}
+.roster-card:hover .roster-avatar .ra-ico,.hl-row:hover .hl-ico{animation:raBobHard .55s ease-in-out infinite}
+.hl-row .hl-ico{font-size:1.35em;line-height:1}
+#rankingTableBody .hl-ico{font-size:1.62em;line-height:1}
+#rankingTableBody .tf-name-link{font-size:1.2em}
+@media (prefers-reduced-motion:reduce){.roster-avatar .ra-ico,.hl-row .hl-ico,.gift-wm{animation:none !important}}
+/* ===== Chế độ Danh sách: Danh sách lớp ===== */
+.roster-list .roster-card{padding:.9rem 1.15rem}
+.roster-list .roster-card>.flex.items-start{align-items:center;gap:1rem}
+.roster-list .roster-avatar{width:3.4rem;height:3.4rem;font-size:1.8rem}
+.roster-list .rs-body{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:1rem;align-items:center}
+.roster-list .rs-body>*{grid-column:1}
+.roster-list .rs-body>.rs-acts{grid-column:2;grid-row:1 / span 4;margin-top:0 !important}
+.roster-list .roster-card:hover{transform:translateY(-2px)}
+@media (max-width:640px){.roster-list .rs-body{grid-template-columns:1fr}.roster-list .rs-body>.rs-acts{grid-column:1;grid-row:auto;margin-top:.6rem !important}}
+/* ===== Chế độ Danh sách: Vi phạm ===== */
+.vio-list .roster-card{flex-direction:row !important;align-items:center;gap:1rem;padding:.9rem 1.15rem}
+.vio-list .roster-card:hover{transform:translateY(-2px)}
+.vio-list .vl-main{display:flex;align-items:center;gap:1rem;flex:1;min-width:0}
+.vio-list .vl-head{flex:0 0 17rem;max-width:42%;border-bottom:0 !important;padding-bottom:0 !important}
+.vio-list .vl-prev{flex:1;min-width:0;margin:0 !important;display:flex;flex-wrap:wrap;align-items:center;gap:.35rem}
+.vio-list .vl-prev>*{margin:0 !important}
+.vio-list .vl-acts{border-top:0 !important;padding-top:0 !important;margin-top:0 !important;flex:none}
+.vio-list .vl-acts button{flex:none;white-space:nowrap;padding-left:.9rem;padding-right:.9rem}
+@media (max-width:760px){.vio-list .roster-card{flex-wrap:wrap}.vio-list .vl-main{flex-wrap:wrap}.vio-list .vl-head{flex:1 1 100%;max-width:none}}
+</style>
+<style id="patch-2026-10-22-ui3">
+/* Icon tiêu đề tab đồng bộ với nút tab (nội dung do JS đặt lại nên dùng ::before) */
+#viewStudentsContainer>section>div>h2:first-child,#teachingHeading,#wheelTitle{display:flex;align-items:center;gap:.5rem}
+#viewStudentsContainer>section>div>h2:first-child::before,#teachingHeading::before,#wheelTitle::before{font-family:"Font Awesome 6 Free";font-weight:900;color:#4f46e5;font-size:.9em}
+#viewStudentsContainer>section>div>h2:first-child::before{content:"\f2bb"}
+#teachingHeading::before{content:"\f518"}
+#wheelTitle::before{content:"\f1ce"}
+/* Thẻ quà +1 điểm bài kiểm tra: nền đỏ (quà chuỗi 10 chuyển sang xanh ngọc để không trùng) */
+.gift-sp-plus_exam{--g1:#fef2f2;--g2:#fee2e2;--g3:#fecaca;--gb:#fca5a5;--wm:#dc2626}
+.gift-sp-streak_ten{--g1:#f0fdfa;--g2:#ccfbf1;--g3:#99f6e4;--gb:#5eead4;--wm:#0d9488}
+.gift-sp-plus_exam .gift-note{color:#b91c1c}
+html.mx-dark .gift-sp-plus_exam .gift-note{color:#fca5a5}
+/* Màu chữ điểm trong Score Matrix đồng bộ với màu ĐTB (không đổi màu nền, không áp cho ô vắng) */
+.score-row > td.grid-cell.cell-scored.cell-gt-leg{color:#ea580c}
+.score-row > td.grid-cell.cell-scored.cell-gt-ex{color:#065f46}
+.score-row > td.grid-cell.cell-scored.cell-gt-vg{color:#1e40af}
+.score-row > td.grid-cell.cell-scored.cell-gt-good{color:#854d0e}
+.score-row > td.grid-cell.cell-scored.cell-gt-pass{color:#5b21b6}
+.score-row > td.grid-cell.cell-scored.cell-gt-try{color:#991b1b}
+.score-row > td.grid-cell.cell-scored.cell-gt-poor{color:#475569}
+.score-row > td.grid-cell.cell-exam.cell-gt-leg{color:#c2410c !important}
+.score-row > td.grid-cell.cell-exam.cell-gt-ex{color:#065f46 !important}
+.score-row > td.grid-cell.cell-exam.cell-gt-vg{color:#1e40af !important}
+.score-row > td.grid-cell.cell-exam.cell-gt-good{color:#854d0e !important}
+.score-row > td.grid-cell.cell-exam.cell-gt-pass{color:#5b21b6 !important}
+.score-row > td.grid-cell.cell-exam.cell-gt-try{color:#991b1b !important}
+.score-row > td.grid-cell.cell-exam.cell-gt-poor{color:#475569 !important}
+html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.cell-exam){color:#78350f !important}
+/* Lửa trong chú thích Xếp loại: cháy mạnh khi rê chuột */
+.gr-flm{cursor:default;padding:.1rem .2rem;border-radius:.6rem}
+.gr-flm .tf-flame{transition:transform .25s cubic-bezier(.2,.9,.3,1.4),filter .25s}
+.gr-flm:hover .tf-flame{transform-origin:50% 85%}
+.gr-flm:hover .tf-streak:not(.tf-hi) .tf-flame{transform:scale(1.28)}
+.gr-flm:hover .tf-streak.tf-hi .tf-flame{transform:scale(calc(var(--fs,1.5) * 1.2))}
+.gr-flm:hover .tf-streak.tf-mini .tf-flame{transform:scale(1.3)}
+.gr-flm:hover .tf-streak:not(.tf-t100) .tf-flame{filter:drop-shadow(0 0 5px var(--fglow,rgba(249,115,22,.95))) drop-shadow(0 0 11px var(--fglow,rgba(249,115,22,.95))) brightness(1.18) saturate(1.25)}
+.gr-flm:hover .tf-flame .tf-l1{animation:tfFlickHot .4s ease-in-out infinite}
+.gr-flm:hover .tf-flame .tf-l2{animation:tfFlickHot .32s ease-in-out infinite -.1s}
+.gr-flm:hover .tf-flame .tf-l3{animation:tfFlickHot .25s ease-in-out infinite -.18s}
+.gr-flm:hover .tf-flame .tf-sp{animation:tfSparkHot .6s ease-out infinite}
+.gr-flm:hover .tf-flame .tf-sp2{animation-delay:.3s}
+.gr-flm:hover .tf-streak::after{animation:tfGlowHot .55s ease-in-out infinite}
+.gr-flm:hover .tf-streak:not(.tf-mini) .tf-txt{animation-duration:.7s!important}
+@media (prefers-reduced-motion:reduce){.gr-flm:hover .tf-flame *,.gr-flm:hover .tf-streak::after{animation:none!important}}
+</style>
+<style id="patch-2026-10-22-ra-out">
+/* Icon nhấp nhô nổi hẳn ra ngoài vòng tròn avatar (không bị cắt) */
+.roster-avatar{overflow:visible}
+.roster-avatar .ra-ico{position:relative;z-index:2}
+.roster-card:hover .roster-avatar .ra-ico{filter:drop-shadow(0 4px 3px rgba(15,23,42,.25))}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -2526,8 +2628,8 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
                         <span class="tab-group-label" data-i18n="grpClass">Quản lý lớp</span>
                         <div class="tab-pills">
                             <button id="btnViewStudents" onclick="switchViewMode('students')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-address-card mr-1"></i><span data-i18n="tabStudents">Danh sách lớp</span></button>
-                            <button id="btnViewTeaching" style="position:relative" onclick="switchViewMode('teaching')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-book-open mr-1"></i><span data-i18n="tabTeaching">Nội dung giảng dạy</span><span id="teachingPendingBadge" class="tp-badge hidden" role="status" onclick="window.__tpJump=true"></span></button>
                             <button id="btnViewViolation" onclick="switchViewMode('violation')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-triangle-exclamation mr-1"></i> <span data-i18n="tabViolation">Vi Phạm</span></button>
+                            <button id="btnViewTeaching" style="position:relative" onclick="switchViewMode('teaching')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-book-open mr-1"></i><span data-i18n="tabTeaching">Nội dung giảng dạy</span><span id="teachingPendingBadge" class="tp-badge hidden" role="status" onclick="window.__tpJump=true"></span></button>
                         </div>
                     </div>
                     <div class="tab-group">
@@ -2581,7 +2683,7 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
                 <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
                     <div>
                         <h2 class="text-lg font-black text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-list-ol text-indigo-600"></i> <span data-i18n="rankingHeader">Bảng Xếp Loại Thi Đua Tự Động</span>
+                            <i class="fa-solid fa-award text-indigo-600"></i> <span data-i18n="rankingHeader">Bảng Xếp Loại Thi Đua Tự Động</span>
                         </h2>
                     </div>
                     <div class="flex items-center gap-2 flex-wrap qs-pres-hide">
@@ -2678,9 +2780,11 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
                             <i class="fa-solid fa-triangle-exclamation text-rose-600"></i> <span data-i18n="violationHeader">Quản Lý & Lưu Trữ Vi Phạm</span>
                         </h2>
                     </div>
+                    <div class="flex items-center gap-2"><div id="violationViewSwitch" class="shop-view-switch" role="group"><button type="button" data-mode="grid" onclick="setRosterView('violation','grid')"><i class="fa-solid fa-table-cells-large"></i><span data-i18n="shopViewGrid">Lưới</span></button><button type="button" data-mode="list" onclick="setRosterView('violation','list')"><i class="fa-solid fa-list"></i><span data-i18n="shopViewList">Danh sách</span></button></div>
                     <button onclick="openManageViolationTypesModal()" class="fx-lift bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold shadow flex items-center gap-2">
                         <i class="fa-solid fa-circle-plus"></i> <span data-i18n="btnManageViolations">Tạo vi phạm</span>
                     </button>
+                    </div>
                 </div>
 
                 <!-- Student Cards Grid for Violation -->
@@ -2694,7 +2798,7 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
         <div id="viewFinalExamContainer" class="hidden flex-1 overflow-y-auto space-y-6">
             <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-5 qs-pres-hide">
                 <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
-                    <div><h2 class="text-lg font-black text-slate-800"><i class="fa-solid fa-file-circle-check text-indigo-600 mr-2"></i><span data-i18n="finalExamTitle">Kiểm Tra Cuối Kỳ</span></h2></div>
+                    <div><h2 class="text-lg font-black text-slate-800"><i class="fa-solid fa-file-pen text-indigo-600 mr-2"></i><span data-i18n="finalExamTitle">Kiểm Tra Cuối Kỳ</span></h2></div>
                     <div class="flex items-center gap-2 flex-wrap"><span id="finalExamClassLabel" class="rounded-lg bg-indigo-50 text-indigo-700 px-3 py-2 text-xs font-bold"></span><button type="button" onclick="qsPresent('finalExam')" class="qs-pres-btn"><i class="fa-solid fa-display"></i><span data-qs="present">Trình chiếu</span></button></div>
                 </div>
                 <div id="finalExamStudentGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
@@ -2707,7 +2811,7 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
         </div>
     <!-- COURSE / STUDENT / TEACHING WORKSPACES -->
     <div id="viewStudentsContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3">
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap items-center justify-between gap-3 mb-4"><h2 class="font-black text-lg text-slate-800" data-i18n="studentsTitle">Danh sách lớp & hồ sơ học sinh</h2><div class="flex items-center gap-2"><span id="studentCountBadge" class="scb" role="status"><i class="fa-solid fa-users"></i><span class="scb-lbl">Số lượng học sinh</span><b class="scb-num">0</b></span><button onclick="openStudentModal()" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-xs font-bold" data-i18n="btnAddStudent">Thêm Học Sinh</button></div></div><div id="studentRosterGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start"></div></section>
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap items-center justify-between gap-3 mb-4"><h2 class="font-black text-lg text-slate-800" data-i18n="studentsTitle">Danh sách lớp & hồ sơ học sinh</h2><div class="flex items-center gap-2"><div id="studentsViewSwitch" class="shop-view-switch" role="group"><button type="button" data-mode="grid" onclick="setRosterView('students','grid')"><i class="fa-solid fa-table-cells-large"></i><span data-i18n="shopViewGrid">Lưới</span></button><button type="button" data-mode="list" onclick="setRosterView('students','list')"><i class="fa-solid fa-list"></i><span data-i18n="shopViewList">Danh sách</span></button></div><span id="studentCountBadge" class="scb" role="status"><i class="fa-solid fa-users"></i><span class="scb-lbl">Số lượng học sinh</span><b class="scb-num">0</b></span><button onclick="openStudentModal()" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-xs font-bold" data-i18n="btnAddStudent">Thêm Học Sinh</button></div></div><div id="studentRosterGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start"></div></section>
     </div>
     <div id="viewTeachingContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3">
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap items-center justify-between gap-3 mb-3"><div><h2 id="teachingHeading" class="font-black text-lg text-slate-800" data-i18n="tabTeaching">Nội dung giảng dạy</h2></div><div class="flex flex-wrap gap-2 items-center"><select id="teachingYear" onchange="renderTeachingView()" class="border rounded-lg px-2 py-2 text-sm"></select><select id="teachingClassFilter" onchange="renderTeachingView()" class="border rounded-lg px-2 py-2 text-sm"></select><input id="teachingSearch" oninput="renderTeachingView()" class="border rounded-lg px-3 py-2 text-sm" placeholder="Tìm nội dung..."><button onclick="openClassSchedule()" class="rounded-lg bg-emerald-600 text-white px-3 py-2 text-xs font-bold" data-i18n="classScheduleBtn">Lịch học</button><button onclick="addTeachingWeek()" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-xs font-bold" data-i18n="addWeekBtn">+ Thêm tuần</button></div></div><div id="teachingWeeks" class="space-y-3"></div></section>
@@ -6161,7 +6265,7 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
                 const bonus = subjects.map(([key,label]) => `<label class="flex items-center justify-between gap-2 text-[11px] text-slate-600 py-1"><span>${tr('Cộng TB tích lũy vào ','Combine accumulated average with ')}${label}</span><select onchange="updateFinalExamField('${student.id}','bonus:${key}',this.value)" class="border rounded-md px-2 py-1 bg-white"><option value="no" ${!r.bonusTo[key]?'selected':''}>${tr('Không','No')}</option><option value="yes" ${r.bonusTo[key]?'selected':''}>${tr('Có','Yes')}</option></select></label>`).join('');
                 const fmt = n => n === null ? '—' : n.toFixed(2);
                 return `<article class="roster-card fe-card rounded-xl border border-slate-200 p-4 shadow-sm">
-                    <div class="flex items-start justify-between gap-2 mb-3"><div class="flex items-center gap-3 min-w-0"><div class="roster-avatar">${student.icon||'🎓'}</div><div class="min-w-0"><h3 class="font-black text-slate-800 text-sm">${student.name}</h3><p class="text-[11px] text-slate-500">${tr('TB tích lũy Ma Trận Điểm:','Score Matrix accumulated average:')} <b>${result.accumulated.toFixed(1)}</b></p></div></div><button type="button" onclick="resetFinalExamStudent('${student.id}')" title="${tr('Reset điểm kiểm tra cuối kỳ của học sinh này','Reset this student’s final exam scores')}" class="shrink-0 inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2 py-1.5 text-[11px] font-bold text-rose-700 transition hover:bg-rose-100 hover:border-rose-300"><i class="fa-solid fa-rotate-left"></i><span>${tr('Reset điểm','Reset scores')}</span></button></div>
+                    <div class="flex items-start justify-between gap-2 mb-3"><div class="flex items-center gap-3 min-w-0"><div class="roster-avatar"><span class="ra-ico" style="animation-delay:${raDelay(student.id)}">${student.icon||'🎓'}</span></div><div class="min-w-0"><h3 class="font-black text-slate-800 text-sm">${student.name}</h3><p class="text-[11px] text-slate-500">${tr('TB tích lũy Ma Trận Điểm:','Score Matrix accumulated average:')} <b>${result.accumulated.toFixed(1)}</b></p></div></div><button type="button" onclick="resetFinalExamStudent('${student.id}')" title="${tr('Reset điểm kiểm tra cuối kỳ của học sinh này','Reset this student’s final exam scores')}" class="shrink-0 inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2 py-1.5 text-[11px] font-bold text-rose-700 transition hover:bg-rose-100 hover:border-rose-300"><i class="fa-solid fa-rotate-left"></i><span>${tr('Reset điểm','Reset scores')}</span></button></div>
                     <div class="grid grid-cols-2 gap-2">${inputs}</div>
                     <div class="mt-3 rounded-lg border border-slate-200 bg-slate-50 overflow-hidden"><button type="button" onclick="toggleFinalExamBonus('${student.id}')" class="w-full flex items-center justify-between gap-2 p-3 text-left hover:bg-slate-100 transition"><span class="text-[11px] font-black text-slate-700">${tr('ĐIỂM TÍCH LŨY ĐƯỢC CHỌN CỘNG','ACCUMULATED POINTS TO COMBINE')}</span><span class="text-[11px] font-semibold text-slate-500 whitespace-nowrap"><i class="fa-solid ${bonusExpanded?'fa-chevron-up':'fa-chevron-down'} mr-1"></i>${bonusExpanded?tr('Thu gọn','Collapse'):tr('Mở tùy chọn','Show options')}</span></button>${bonusExpanded ? `<div class="px-3 pb-3 border-t border-slate-200">${bonus}<p class="text-[10px] text-slate-500 mt-1">${tr('Khi chọn Có, ô điểm phía trên sẽ hiển thị điểm trung bình sau khi cộng TB tích lũy. Điểm gốc được lưu riêng để không bị tính cộng lặp.','When Yes is selected, the score field above displays the averaged score after combining with the accumulated average. The original score is stored separately to prevent repeated averaging.')}</p><p class="text-[10px] text-slate-400 mt-1">${tr('Chọn Có riêng cho Ngữ pháp hoặc Từ vựng để tính trung bình môn đó với TB tích lũy. TB Ngữ pháp + Từ vựng được tính từ hai điểm sau điều chỉnh.','Choose Yes for Grammar or Vocabulary individually to average that subject with the accumulated average. The Grammar + Vocabulary average is calculated from the two adjusted scores.')}</p></div>` : ''}</div>
                     <div class="mt-3 rounded-xl bg-indigo-600 text-white p-3 flex items-center justify-between"><span class="text-xs font-bold">${tr('ĐIỂM TRUNG BÌNH TỔNG','OVERALL AVERAGE')}</span><strong class="text-2xl">${fmt(result.total)}</strong></div>
@@ -6453,7 +6557,13 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
             } else {
                 itemsToRender.forEach(item => {
                     const card = document.createElement("div");
-                    card.className = "gift-card border border-slate-200 rounded-xl p-4 bg-white text-center shadow-sm flex flex-col justify-between relative group" + (asList ? " as-list" : "");
+                    const _isExam = item.type === 'plus_exam' || item.id === 'fix_plus_exam_1';
+                    const _gk = (typeof qgKind === 'function') ? qgKind(item) : 'none';
+                    const _gIco = (typeof QG_ICON !== 'undefined' && QG_ICON[_gk]) || 'fa-gift';
+                    const _wmIco = _gk === 'lucky' ? 'fa-dharmachakra' : _gIco;
+                    card.className = "gift-card border border-slate-200 rounded-xl p-4 bg-white text-center shadow-sm flex flex-col justify-between relative group" + (asList ? " as-list" : "") + " gift-special gift-sp-" + _gk;
+                    const _wmHtml = `<span class="gift-wm" aria-hidden="true"><i class="fa-solid ${_wmIco}"></i></span>`;
+                    const _noteHtml = _isExam ? `<div class="gift-note">${en ? 'Only for regular tests' : 'Chỉ dùng cho bài kiểm tra thường xuyên'}</div>` : '';
                     card.dataset.id = item.id;
 
                     let deleteBtnHtml = "";
@@ -6471,6 +6581,7 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
                     const descHtml = item.description ? `<div class="gift-desc">${escapeHtml(String(item.description))}</div>` : '';
 
                     card.innerHTML = `
+                        ${_wmHtml}
                         <span class="gift-handle" title="${en ? 'Drag to reorder' : 'Kéo để di chuyển vị trí'}"><i class="fa-solid fa-ellipsis-vertical"></i></span>
                         <div class="gift-actions">
                             <button onclick="openEditItemModal('${item.id}')"
@@ -6485,7 +6596,7 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
                             <div class="gift-emoji-wrap text-2xl mb-1 mt-1"><span class="gift-emoji gift-type-ico">${giftTypeIconHtml(item)}</span></div>
                             <div class="gift-info">
                                 <div class="gift-name font-bold text-slate-800 text-sm mb-1">${displayName}</div>
-                                ${descHtml}
+                                ${descHtml}${_noteHtml}
                             </div>
                             <div class="gift-stats">
                                 <span class="gift-cost">${item.cost} Pts</span>
@@ -6551,6 +6662,19 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
             shopFxApply();
         };
         shopFxApply();
+
+        /* --- CHẾ ĐỘ XEM LƯỚI / DANH SÁCH CHO DANH SÁCH LỚP + VI PHẠM --- */
+        function rosterViewMode(k) { let m = 'grid'; try { m = localStorage.getItem('rosterView_' + k) === 'list' ? 'list' : 'grid'; } catch (e) {} return m; }
+        function rosterViewApply(k) {
+            const m = rosterViewMode(k);
+            document.querySelectorAll('#' + k + 'ViewSwitch button').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+        }
+        function raDelay(id) { let s = 0; String(id).split('').forEach(c => { s += c.charCodeAt(0); }); return '-' + ((s % 16) / 10).toFixed(1) + 's'; }
+        window.setRosterView = function (k, m) {
+            try { localStorage.setItem('rosterView_' + k, m === 'list' ? 'list' : 'grid'); } catch (e) {}
+            if (k === 'students') renderStudentRoster(); else renderViolationView();
+        };
+        window.rosterViewMode = rosterViewMode; window.rosterViewApply = rosterViewApply; window.raDelay = raDelay;
 
         /* --- CHẾ ĐỘ XEM (LƯỚI / DANH SÁCH) + KÉO THẢ SẮP XẾP THẺ QUÀ --- */
         function shopViewMode() { let m = 'grid'; try { m = localStorage.getItem('shopViewMode') === 'list' ? 'list' : 'grid'; } catch (e) {} return m; }
@@ -6811,6 +6935,8 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
 
             const gridContainer = document.getElementById("violationStudentGrid");
             gridContainer.innerHTML = "";
+            gridContainer.className = rosterViewMode('violation') === 'list' ? "vio-list grid grid-cols-1 gap-2" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4";
+            rosterViewApply('violation');
 
             const studentsInClass = appData.students.filter(s => s.classId === activeClass.id);
             const lang = appData.language || 'vi';
@@ -6830,10 +6956,10 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
 
                 let violationPreviewHtml = "";
                 if (count === 0) {
-                    violationPreviewHtml = `<p class='text-emerald-600 text-xs italic font-medium my-2'><i class='fa-solid fa-circle-check mr-1'></i> ${t.lblNoViolationsRecorded}</p>`;
+                    violationPreviewHtml = `<p class='text-emerald-600 text-xs italic font-medium my-2 vl-prev'><i class='fa-solid fa-circle-check mr-1'></i> ${t.lblNoViolationsRecorded}</p>`;
                 } else {
                     const latest = violations.slice(-2).reverse();
-                    violationPreviewHtml = "<div class='space-y-1 my-2'>";
+                    violationPreviewHtml = "<div class='space-y-1 my-2 vl-prev'>";
                     latest.forEach(v => {
                         violationPreviewHtml += `
                             <div class="bg-rose-50 text-rose-800 border border-rose-100 rounded-lg p-1.5 text-[11px] font-medium flex justify-between items-center">
@@ -6849,10 +6975,10 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
                 }
 
                 card.innerHTML = `
-                    <div>
-                        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-                            <div class="font-black text-slate-800 text-sm truncate flex items-center gap-1.5">
-                                <span class="roster-avatar roster-avatar-sm">${student.icon || '🎓'}</span>
+                    <div class="vl-main">
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-100 vl-head">
+                            <div class="font-black text-slate-800 text-sm min-w-0 flex items-center gap-1.5">
+                                <span class="roster-avatar roster-avatar-sm"><span class="ra-ico" style="animation-delay:${raDelay(student.id)}">${student.icon || '🎓'}</span></span>
                                 <span class="truncate">${getStudentDisplayName(student)}</span>
                             </div>
                             <span class="bg-rose-100 text-rose-800 text-[10px] font-black px-2 py-0.5 rounded-full border border-rose-200 whitespace-nowrap">
@@ -6862,7 +6988,7 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
                         ${violationPreviewHtml}
                     </div>
 
-                    <div class="pt-3 border-t border-slate-100 flex gap-2 mt-2">
+                    <div class="pt-3 border-t border-slate-100 flex gap-2 mt-2 vl-acts">
                         <button onclick="openAddViolationModal('${student.id}')" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-1.5 px-2 rounded-xl text-xs transition shadow flex items-center justify-center gap-1">
                             <i class="fa-solid fa-plus text-[10px]"></i> ${t.lblAddViolationBtn}
                         </button>
@@ -8566,6 +8692,7 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
                                 cellText = parseFloat(scoreItem.score).toFixed(1);
                                 cellClass = cellClass.replace(" cell-empty", "") + " text-slate-800 font-bold bg-amber-50 cell-scored";
                                 if (parseFloat(scoreItem.score) >= 10) cellClass += " cell-ten";
+                                cellClass += " cell-gt-" + gradeTierOf(parseFloat(scoreItem.score)).key;
                                 if (scoreItem.isExam) { cellClass += " cell-exam font-black text-purple-900"; examTag = ' ' + uiTr('exam_tag'); }
                                 if (scoreItem.manual) { cellClass += " cell-manual"; examTag += ' ✎ ' + qsT('editTag'); }
                                 if (scoreItem.sg) { const sgk = sgTierKey(scoreItem.sgTier); cellClass += " cell-sg sg-t" + sgk; sgFlame = sgFlameHtml(sgk); examTag += ' 🔥 ' + qgT('sg_cell_tag', { tier: sgk }); }
@@ -9914,7 +10041,7 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
           if(lbl)lbl.textContent=appData.language==='en'?'Students':'Số lượng học sinh';
           if(num&&num.textContent!==String(n)){num.textContent=String(n);num.classList.remove('scb-pop');void num.offsetWidth;num.classList.add('scb-pop');}
         }
-        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);scbUpdate(arr.length);box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':ctCls(st)}">${xfBdayFx(st)}${xfBdayToday(st)?'':ctFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar">${escapeHtml(st.icon||'🎓')}</div><div class="min-w-0 flex-1"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="ctOpenPicker('${st.id}')" aria-label="${appData.language==='en'?'Card template':'Mẫu thẻ'}" title="${appData.language==='en'?'Choose card template':'Chọn template thẻ'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 text-xs"><i class="fa-solid fa-palette"></i></button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
+        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);scbUpdate(arr.length);box.className=rosterViewMode('students')==='list'?'roster-list grid grid-cols-1 gap-2 content-start':'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start';rosterViewApply('students');box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':ctCls(st)}">${xfBdayFx(st)}${xfBdayToday(st)?'':ctFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar"><span class="ra-ico" style="animation-delay:${raDelay(st.id)}">${escapeHtml(st.icon||'🎓')}</span></div><div class="min-w-0 flex-1 rs-body"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3 rs-acts"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="ctOpenPicker('${st.id}')" aria-label="${appData.language==='en'?'Card template':'Mẫu thẻ'}" title="${appData.language==='en'?'Choose card template':'Chọn template thẻ'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 text-xs"><i class="fa-solid fa-palette"></i></button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
         window.openStudentProgress=function(studentId){ensureNewModules();const st=appData.students.find(x=>String(x.id)===String(studentId));if(!st)return;window.studentProgressViewingId=String(studentId);document.getElementById('studentProgressTitle').innerText=(st.icon||'🎓')+' '+getStudentDisplayName(st)+' · '+(appData.language==='en'?'Progress profile':'Hồ sơ tiến độ');window.renderStudentProgress();showModuleModal('studentProgressModal');};
 window.closeStudentProgress=function(){hideModuleModal('studentProgressModal');};
 window.renderStudentProgress=function(){
