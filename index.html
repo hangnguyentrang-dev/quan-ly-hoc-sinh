@@ -2939,7 +2939,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
     <div id="viewWheelContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3">
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
         <div class="flex flex-wrap items-start justify-between gap-3"><div><h2 id="wheelTitle" class="text-xl font-black text-slate-800">Vòng Quay May Mắn</h2></div><button id="wheelManageToggle" onclick="toggleWheelManager()" class="rounded-lg border px-3 py-2 text-sm font-bold">Quản lý phần thưởng</button></div>
-        <div id="wheelManager" class="hidden mt-4 rounded-xl bg-slate-50 border p-4 space-y-3"><div class="grid grid-cols-1 sm:grid-cols-3 gap-2"><input id="wheelPrizeName" class="border rounded-lg px-3 py-2" placeholder="Tên phần thưởng"><input id="wheelPrizeWeight" type="number" min="0.1" max="100" step="0.1" value="1" class="border rounded-lg px-3 py-2" placeholder="Trọng số"><button onclick="addWheelPrize()" class="rounded-lg bg-indigo-600 text-white font-bold px-3 py-2">Thêm vào vòng quay</button></div><div id="wheelPrizeList" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div><span id="wheelWeightHelp" class="block text-xs text-slate-500">Trọng số là tỷ lệ tương đối; xác suất được chuẩn hóa.</span><div class="rounded-xl border bg-white p-3"><div class="flex flex-wrap items-center justify-between gap-3"><div class="flex items-center gap-2"><button id="wheelProbabilityToggle" type="button" onclick="toggleWheelProbabilities()" class="fx-lift rounded-lg border px-3 py-1.5 text-xs font-bold bg-white">Hiện xác suất</button></div><button onclick="clearWheelPrizes()" class="fx-lift ml-auto sm:ml-24 rounded-lg border border-rose-300 text-rose-700 bg-white px-3 py-2 text-sm font-bold">Xóa toàn bộ cấu hình</button></div><div id="wheelProbabilities" class="grid grid-cols-1 md:grid-cols-2 gap-2 hidden mt-3"></div></div></div>
+        <div id="wheelManager" class="hidden mt-4 rounded-xl bg-slate-50 border p-4 space-y-3"><div class="flex flex-wrap gap-2"><button id="wheelCreateBtn" type="button" onclick="openWheelCreateModal()" class="rounded-lg bg-indigo-600 text-white font-bold px-3 py-2">Tạo quà vòng quay</button></div><div id="wheelPrizeList" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div><span id="wheelWeightHelp" class="block text-xs text-slate-500">Trọng số là tỷ lệ tương đối; xác suất được chuẩn hóa.</span><div class="rounded-xl border bg-white p-3"><div class="flex flex-wrap items-center justify-between gap-3"><div class="flex items-center gap-2"><button id="wheelProbabilityToggle" type="button" onclick="toggleWheelProbabilities()" class="fx-lift rounded-lg border px-3 py-1.5 text-xs font-bold bg-white">Hiện xác suất</button></div><button onclick="clearWheelPrizes()" class="fx-lift ml-auto sm:ml-24 rounded-lg border border-rose-300 text-rose-700 bg-white px-3 py-2 text-sm font-bold">Xóa toàn bộ cấu hình</button></div><div id="wheelProbabilities" class="grid grid-cols-1 md:grid-cols-2 gap-2 hidden mt-3"></div></div></div>
         <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.25fr)_minmax(320px,1fr)] gap-8 items-center mt-5"><div class="flex flex-col items-center gap-3"><div class="wheel-frame relative w-full max-w-[640px] aspect-square"><canvas id="wheelCanvas" width="700" height="700" class="w-full h-full" role="button" tabindex="0" aria-label="Spin the lucky wheel" title="Click the wheel to spin"></canvas><div class="absolute -top-3 left-1/2 -translate-x-1/2 z-10 text-rose-600 text-5xl drop-shadow-lg">▼</div></div><button id="wheelSpinBtn" onclick="spinLuckyWheel()" class="wheel-spin-btn disabled:opacity-50 text-white font-black tracking-wide text-lg px-10 py-3 shadow-lg">QUAY</button><p id="wheelStatus" aria-live="polite" class="text-sm text-center text-slate-600">Sẵn sàng</p><div id="wheelResult" class="text-center text-xl font-black text-indigo-700 min-h-7"></div></div>
         <div class="space-y-4"><div class="wheel-mode-card rounded-xl border p-4 space-y-3"><h3 id="wheelModeTitle" class="font-black">Chế độ quay</h3><div class="flex flex-wrap gap-3"><label class="flex items-center gap-2 text-sm"><input type="radio" name="wheelMode" value="free" checked onchange="renderWheelView()"> <span id="wheelFreeLabel">Quay tự do</span></label><label class="flex items-center gap-2 text-sm"><input type="radio" name="wheelMode" value="student" onchange="renderWheelView()"> <span id="wheelStudentLabel">Quay cho học sinh (dùng 1 lượt)</span></label></div><label id="wheelStudentPickerLabel" class="block text-sm font-semibold">Học sinh</label><select id="wheelStudentPicker" onchange="renderWheelView()" class="w-full border rounded-lg px-3 py-2"></select><div id="wheelTurns" class="text-sm font-bold text-emerald-700"></div></div></div></div>
       </section>
@@ -3247,6 +3247,14 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblRewardCost">Giá điểm đổi quà (Pts):</label>
                     <input type="number" id="inputItemCost" min="1" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
                 </div>
+                <div class="mb-3 hidden" id="inputItemWeightRow">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1" id="inputItemWeightLbl">Trọng số (tỷ lệ quay ra, 0,1–100):</label>
+                    <input type="number" id="inputItemWeight" min="0.1" max="100" step="0.1" value="1" class="w-full border border-amber-300 bg-amber-50/50 rounded-lg px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-amber-400">
+                </div>
+                <div class="mb-3 hidden" id="inputItemQtyRow">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1" id="inputItemQtyLbl">Số lượng nhận mỗi lần:</label>
+                    <input type="number" id="inputItemQty" min="1" max="99" step="1" value="1" class="w-full border border-amber-300 bg-amber-50/50 rounded-lg px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-amber-400">
+                </div>
                 
                 <div class="mb-3">
                     <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblRewardType">Tính năng áp dụng khi nhấn ô điểm:</label>
@@ -3302,6 +3310,14 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 <div class="mb-3" id="editItemCostRow">
                     <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblRewardCost">Giá điểm đổi quà (Pts):</label>
                     <input type="number" id="editItemCost" min="1" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
+                </div>
+                <div class="mb-3 hidden" id="editItemWeightRow">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1" id="editItemWeightLbl">Trọng số (tỷ lệ quay ra, 0,1–100):</label>
+                    <input type="number" id="editItemWeight" min="0.1" max="100" step="0.1" value="1" class="w-full border border-amber-300 bg-amber-50/50 rounded-lg px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-amber-400">
+                </div>
+                <div class="mb-3 hidden" id="editItemQtyRow">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1" id="editItemQtyLbl">Số lượng nhận mỗi lần:</label>
+                    <input type="number" id="editItemQty" min="1" max="99" step="1" value="1" class="w-full border border-amber-300 bg-amber-50/50 rounded-lg px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-amber-400">
                 </div>
 
                 <div id="editGiftTypeRow" class="mb-3">
@@ -5620,7 +5636,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 mn: deepCopy(d.matrixNotes || {}),
                 shop: (d.globalShopItems || []).map(i => ({ id: i.id, name: i.name || '', cost: i.cost })),
                 vt: (d.globalViolationTypes || []).map(v => ({ id: v.id, name: v.name || '' })),
-                wh: (Array.isArray(lw.history) ? lw.history : []).map(h => ({ id: h.spinId || h.at, sn: h.studentName || '', pn: h.prizeName || '' })),
+                wh: (Array.isArray(lw.history) ? lw.history : []).map(h => ({ id: h.spinId || h.at, sn: h.studentName || '', pn: (h.prizeName || '') + (Number(h.qty) > 1 ? ' ×' + Number(h.qty) : '') })),
                 wp: ehJson(lw.prizes),
                 gen: {
                     sched: ehJson(d.classSchedules), teach: ehJson(d.teachingPlans), trf: ehJson(d.classTransferHistory),
@@ -6700,7 +6716,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             const gridContainer = document.getElementById("shopItemsGrid");
             gridContainer.innerHTML = "";
 
-            const itemsToRender = (appData.globalShopItems || []).filter(i => !i.gachaOnly);
+            const itemsToRender = (appData.globalShopItems || []).filter(i => !i.gachaOnly && !i.wheelOnly);
             const lang = appData.language || 'vi';
             const t = translations[lang];
             const en = lang === 'en';
@@ -7451,6 +7467,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         window.gcCreateMode = false;
         function gcApplyCreateMode(on) {
             window.gcCreateMode = !!on;
+            window.wheelCreateMode = false; { const wr0 = document.getElementById('inputItemWeightRow'); if (wr0) wr0.classList.add('hidden'); const qr0 = document.getElementById('inputItemQtyRow'); if (qr0) qr0.classList.add('hidden'); }
             const row = document.getElementById('inputItemCostRow'), inp = document.getElementById('inputItemCost');
             const h = document.querySelector('#createItemModal h3');
             if (row) row.classList.toggle('hidden', !!on);
@@ -7493,8 +7510,12 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         window.saveNewItem = function(e) {
             e.preventDefault();
             const name = document.getElementById('inputItemName').value.trim();
-            const gachaMode = !!window.gcCreateMode;
-            const cost = gachaMode ? 0 : parseInt(document.getElementById('inputItemCost').value);
+            const gachaMode = !!window.gcCreateMode, wheelMode = !!window.wheelCreateMode;
+            const wheelW = parseFloat((document.getElementById('inputItemWeight') || {}).value);
+            if (wheelMode && (isNaN(wheelW) || wheelW < 0.1 || wheelW > 100)) { alert(appData.language === 'en' ? 'Enter a weight from 0.1 to 100.' : 'Nhập trọng số từ 0,1 đến 100.'); return; }
+            const wheelQ = parseInt((document.getElementById('inputItemQty') || {}).value, 10);
+            if (wheelMode && (isNaN(wheelQ) || wheelQ < 1 || wheelQ > 99)) { alert(appData.language === 'en' ? 'Enter a quantity from 1 to 99.' : 'Nhập số lượng từ 1 đến 99.'); return; }
+            const cost = (gachaMode || wheelMode) ? 0 : parseInt(document.getElementById('inputItemCost').value);
             const type = document.getElementById('inputItemType').value;
             const valueVal = parseFloat(document.getElementById('inputItemValue').value);
 
@@ -7510,6 +7531,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 type: type !== 'none' ? type : null
             };
             if (gachaMode) newItem.gachaOnly = true;
+            if (wheelMode) newItem.wheelOnly = true;
 
             if (type === 'plus' || type === 'plus_exam') {
                 newItem.deltaScore = !isNaN(valueVal) ? valueVal : 1;
@@ -7524,6 +7546,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             }
 
             appData.globalShopItems.push(newItem);
+            if (wheelMode && window.wheelAddPrizeForItem) window.wheelAddPrizeForItem(newItem, wheelW, wheelQ);
 
             saveData();
             closeCreateItemModal();
@@ -7553,9 +7576,12 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             costInput.min = isLuckySpinSpecial ? '0' : '1';
             costInput.step = '1';
             const _ecr = document.getElementById('editItemCostRow');
-            if (_ecr) _ecr.classList.toggle('hidden', !!item.gachaOnly);
-            costInput.required = !item.gachaOnly;
-            if (item.gachaOnly) { costInput.min = '0'; costInput.value = '0'; }
+            if (_ecr) _ecr.classList.toggle('hidden', !!(item.gachaOnly || item.wheelOnly));
+            costInput.required = !(item.gachaOnly || item.wheelOnly);
+            if (item.gachaOnly || item.wheelOnly) { costInput.min = '0'; costInput.value = '0'; }
+            { const wr = document.getElementById('editItemWeightRow'), wp = (item.wheelOnly && window.wheelPrizeOfItem) ? window.wheelPrizeOfItem(item.id) : null;
+              if (wr) { wr.classList.toggle('hidden', !wp); if (wp) { document.getElementById('editItemWeight').value = wp.weight; document.getElementById('editItemWeightLbl').textContent = appData.language === 'en' ? 'Weight (spin chance, 0.1–100):' : 'Trọng số (tỷ lệ quay ra, 0,1–100):'; }
+              const qr = document.getElementById('editItemQtyRow'); if (qr) { qr.classList.toggle('hidden', !wp); if (wp) { document.getElementById('editItemQty').value = Math.max(1, parseInt(wp.qty, 10) || 1); document.getElementById('editItemQtyLbl').textContent = appData.language === 'en' ? 'Quantity received per spin:' : 'Số lượng nhận mỗi lần:'; } } } }
             typeSelect.value = itemType;
 
             const valueInput = document.getElementById('editItemValue');
@@ -7617,8 +7643,15 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             const valueVal = parseFloat(document.getElementById('editItemValue').value);
 
             const item = (appData.globalShopItems || []).find(i => i.id === itemId);
-            if (isNaN(cost) && !(item && item.gachaOnly)) return;
+            if (isNaN(cost) && !(item && (item.gachaOnly || item.wheelOnly))) return;
 
+            let wheelEditW = null, wheelEditQ = null;
+            if (item && item.wheelOnly) {
+                wheelEditW = parseFloat(document.getElementById('editItemWeight').value);
+                wheelEditQ = parseInt(document.getElementById('editItemQty').value, 10);
+                if (isNaN(wheelEditQ) || wheelEditQ < 1 || wheelEditQ > 99) { alert(appData.language === 'en' ? 'Enter a quantity from 1 to 99.' : 'Nhập số lượng từ 1 đến 99.'); return; }
+                if (isNaN(wheelEditW) || wheelEditW < 0.1 || wheelEditW > 100) { alert(appData.language === 'en' ? 'Enter a weight from 0.1 to 100.' : 'Nhập trọng số từ 0,1 đến 100.'); return; }
+            }
             if (item) {
                 const isLuckySpinSpecial = String(item.id || '') === 'fix_lucky_spin' || String(item.type || '').toLowerCase() === 'lucky_spin';
                 if (isLuckySpinSpecial) {
@@ -7660,7 +7693,8 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                         item.matchOp = document.getElementById('editItemMatchOp').value || 'lte';
                     }
                 }
-                item.cost = item.gachaOnly ? 0 : cost;
+                item.cost = (item.gachaOnly || item.wheelOnly) ? 0 : cost;
+                if (item.wheelOnly && window.wheelUpdatePrizeForItem) window.wheelUpdatePrizeForItem(item, wheelEditW, wheelEditQ);
                 saveData();
                 if (item.gachaOnly) { try { window.gcRefresh && window.gcRefresh(); } catch (err) {} }
             }
@@ -10766,7 +10800,82 @@ window.openStudentProfile=function(studentId){
           if(!Array.isArray(appData.luckyWheel.prizes))appData.luckyWheel.prizes=[];
           if(!Array.isArray(appData.luckyWheel.history))appData.luckyWheel.history=[];
           if(!appData.luckyWheel.transactions || typeof appData.luckyWheel.transactions!=='object')appData.luckyWheel.transactions={};
+          wheelMigratePrizes();
         }
+        // ===== Phần thưởng vòng quay = quà theo định dạng hệ thống (appData.globalShopItems, cờ wheelOnly) =====
+        // prize = { id, name, weight, color, enabled, order, itemId }. Quà có type (plus/add/change/delete_score/plus_match/plus_exam/lucky_spin)
+        // được cộng vào túi quà (inventory) của học sinh khi quay cho học sinh; quà thường (type null) chỉ hiển thị, không vào túi.
+        function wheelNum(s){return parseFloat(String(s).replace(',','.'));}
+        function wheelQty(p){return Math.max(1,Math.floor(Number(p&&p.qty)||1));}
+        function wheelClassify(name){
+          const n=String(name||'').toLowerCase();
+          if(/(lượt\s*quay|luot\s*quay|free\s*spin|spin|quay\s*(miễn|may\s*mắn|thêm|lại))/.test(n))return {type:'lucky_spin'};
+          if(/(xóa|xoá|bỏ|delete|remove|erase)/.test(n)&&/(điểm|diem|score|point)/.test(n))return {type:'delete_score'};
+          const plus=n.match(/(?:\+|cộng|plus|add)\s*(\d+(?:[.,]\d+)?)/);
+          if(plus&&/(kiểm tra|bài test|test score|exam)/.test(n))return {type:'plus_exam',deltaScore:wheelNum(plus[1])};
+          if(plus)return {type:'plus',deltaScore:wheelNum(plus[1])};
+          const tgt=n.match(/(?:điểm|diem|score|point)s?\s*(\d+(?:[.,]\d+)?)/);
+          if(tgt){const v=wheelNum(tgt[1]);if(v>=0&&v<=10)return {type:'add',targetScore:v};}
+          const amt=n.match(/(\d+(?:[.,]\d+)?)\s*(?:điểm|diem|points?)/);
+          if(amt){const v=wheelNum(amt[1]);if(v>0&&v<=10)return {type:'plus',deltaScore:v};}
+          return {type:null};
+        }
+        function wheelLuckyName(){return appData.language==='en'?'1 Lucky Wheel spin':'1 lượt quay may mắn';}
+        function wheelItemOf(p){return p?((appData.globalShopItems||[]).find(i=>i&&i.id===p.itemId)||null):null;}
+        window.wheelPrizeOfItem=function(itemId){return (appData.luckyWheel&&appData.luckyWheel.prizes||[]).find(x=>x&&x.itemId===itemId)||null;};
+        function wheelMigratePrizes(){
+          if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId)return;
+          let n=0;
+          appData.luckyWheel.prizes.forEach((p,i)=>{
+            if(!p||p.itemId)return;
+            const c=wheelClassify(p.name);
+            if(c.type==='lucky_spin'){p.itemId=LUCKY_GIFT_ID;p.name=wheelLuckyName();}
+            else{
+              const it={id:'item_wheel_'+Date.now()+'_'+i+'_'+Math.random().toString(36).slice(2,6),name:p.name,cost:0,isFixed:false,type:c.type||null,wheelOnly:true};
+              if(c.deltaScore!==undefined)it.deltaScore=c.deltaScore;if(c.targetScore!==undefined)it.targetScore=c.targetScore;
+              appData.globalShopItems.push(it);p.itemId=it.id;
+            }
+            n++;
+          });
+          if(n&&!window.__wheelMigSaving){window.__wheelMigSaving=true;setTimeout(()=>{window.__wheelMigSaving=false;try{saveData();}catch(e){}if(window.showAppToast)window.showAppToast(wheelText(`Đã chuyển ${n} phần thưởng vòng quay sang quà hệ thống. Kiểm tra lại loại quà trong mục Quản lý phần thưởng.`,`Converted ${n} wheel prize(s) into system gifts. Please review their types in Manage prizes.`),'success');},400);}
+        }
+        window.wheelAddPrizeForItem=function(item,weight,qty){
+          ensureWheelData();const ps=appData.luckyWheel.prizes;
+          ps.push({id:'prize_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),name:item.name,weight:Number(weight),color:WHEEL_COLORS[ps.length%WHEEL_COLORS.length],enabled:true,order:ps.length,itemId:item.id,qty:Math.max(1,parseInt(qty,10)||1)});
+          renderWheelView();
+        };
+        window.wheelUpdatePrizeForItem=function(item,weight,qty){
+          const p=window.wheelPrizeOfItem(item.id);if(!p)return;
+          p.name=item.name;if(Number.isFinite(Number(weight)))p.weight=Number(weight);if(Number.isFinite(Number(qty))&&Number(qty)>=1)p.qty=Math.floor(Number(qty));renderWheelView();
+        };
+        function wheelTypeTag(p){
+          const it=wheelItemOf(p),en=appData.language==='en',t=it&&it.type;
+          const M={plus:['Cộng điểm','Add points'],add:['Tạo điểm','Set empty cell'],change:['Sửa điểm','Change score'],delete_score:['Xóa điểm','Delete score'],plus_match:['Cộng theo điều kiện','Conditional add'],plus_exam:['Cộng điểm kiểm tra','Add to exam score'],lucky_spin:['Lượt quay','Spin turn']};
+          if(!t)return en?'Regular gift (not added to bag)':'Quà thường (không vào túi)';
+          const v=it.deltaScore!==undefined?' '+(it.deltaScore>0?'+':'')+it.deltaScore:(it.targetScore!==undefined?' → '+it.targetScore:'');
+          return (M[t]||[t,t])[en?1:0]+v+(en?' · goes to bag':' · vào túi quà');
+        }
+        function wheelApplyCreateMode(on){
+          window.wheelCreateMode=!!on;
+          const en=appData.language==='en',row=document.getElementById('inputItemCostRow'),inp=document.getElementById('inputItemCost'),wr=document.getElementById('inputItemWeightRow'),h=document.querySelector('#createItemModal h3');
+          if(row)row.classList.toggle('hidden',!!on);if(inp)inp.required=!on;
+          if(wr){wr.classList.toggle('hidden',!on);document.getElementById('inputItemWeight').value='1';document.getElementById('inputItemWeightLbl').textContent=en?'Weight (spin chance, 0.1–100):':'Trọng số (tỷ lệ quay ra, 0,1–100):';}
+          {const qr=document.getElementById('inputItemQtyRow');if(qr){qr.classList.toggle('hidden',!on);const qi=document.getElementById('inputItemQty');if(qi)qi.value='1';const ql=document.getElementById('inputItemQtyLbl');if(ql)ql.textContent=en?'Quantity received per spin:':'Số lượng nhận mỗi lần:';}}
+          if(h&&on){h.removeAttribute('data-i18n');h.textContent=en?'Create Lucky Wheel Prize':'Tạo Quà Vòng Quay';}
+        }
+        window.openWheelCreateModal=function(){
+          if(wheelBusy)return;
+          if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(wheelText('Khóa đã lưu trữ chỉ được xem.','Archived course is read-only.'));return;}
+          window.openCreateItemModal();wheelApplyCreateMode(true);
+        };
+        window.addWheelLuckyPrize=async function(){
+          if(wheelBusy)return;ensureWheelData();
+          if(wheelPrizes().some(x=>x.itemId===LUCKY_GIFT_ID)){alert(wheelText('Vòng quay đã có phần thưởng lượt quay may mắn.','The wheel already has a Lucky Wheel spin prize.'));return;}
+          const w=await showAppPrompt(wheelText('Trọng số từ 0,1 đến 100:','Weight from 0.1 to 100:'),'1');if(w===null)return;
+          const weight=Number(w);if(!Number.isFinite(weight)||weight<0.1||weight>100){alert(wheelText('Trọng số không hợp lệ.','Invalid weight.'));return;}
+          const ps=wheelPrizes();ps.push({id:'prize_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),name:wheelLuckyName(),weight,color:WHEEL_COLORS[ps.length%WHEEL_COLORS.length],enabled:true,order:ps.length,itemId:LUCKY_GIFT_ID});
+          const ok=await saveData();if(!ok){ps.pop();alert(wheelText('Lưu phần thưởng thất bại.','Could not save the prize.'));}renderWheelView();
+        };
         function wheelPrizes(){ensureWheelData();return appData.luckyWheel.prizes;}
         function wheelEnabled(){return wheelPrizes().filter(p=>p.enabled!==false && Number.isFinite(Number(p.weight)) && Number(p.weight)>=0.1 && Number(p.weight)<=100);}
         function wheelProbabilityRows(){const ps=wheelEnabled(),sum=ps.reduce((n,p)=>n+Number(p.weight),0);return ps.map(p=>({...p,prob:sum>0?Number(p.weight)/sum*100:0}));}
@@ -10777,28 +10886,45 @@ window.openStudentProfile=function(studentId){
           ensureWheelData(); const en=appData.language==='en';
           const labels={tab:en?'Lucky Wheel':'Vòng Quay May Mắn',sub:en?'Weighted random selection with persistent Firebase history.':'Quay theo trọng số, lưu lịch sử trong Firebase.',manage:en?'Manage prizes':'Quản lý phần thưởng',name:en?'Prize name':'Tên phần thưởng',weight:en?'Weight':'Trọng số',add:en?'Add to wheel':'Thêm vào vòng quay',clear:en?'Clear all configuration':'Xóa toàn bộ cấu hình',help:en?'Weights are relative; probabilities are normalized.':'Trọng số là tỷ lệ tương đối; xác suất được chuẩn hóa.',mode:en?'Spin mode':'Chế độ quay',free:en?'Free spin':'Quay tự do',student:en?'Spin for student (uses 1 turn)':'Quay cho học sinh (dùng 1 lượt)',studentLabel:en?'Student':'Học sinh',classLabel:en?'Filter by class':'Lọc theo lớp',prob:en?'Current probabilities':'Xác suất hiện tại',history:en?'Spin history':'Lịch sử quay',clearHistory:en?'Clear visible history':'Xóa lịch sử hiển thị',spin:en?'SPIN':'QUAY',ready:en?'Ready':'Sẵn sàng',empty:en?'No prizes yet. Add prizes in Manage prizes.':'Chưa có phần thưởng. Hãy thêm trong mục Quản lý phần thưởng.',noValid:en?'No enabled prize has a valid weight.':'Không có phần thưởng đang bật với trọng số hợp lệ.',none:en?'No history yet.':'Chưa có lịch sử quay.',turns:en?'Available turns':'Số lượt còn lại',legend:en?'Green = student has Lucky Wheel turns (x = turns left; each spin uses 1)':'Xanh lá = học sinh còn lượt quay (x = số lượt còn lại; mỗi lần quay dùng 1)',edit:en?'Edit':'Sửa',disable:en?'Disable':'Tắt',enable:en?'Enable':'Bật',del:en?'Delete':'Xóa',emptyStudent:en?'Select a student':'Chọn học sinh',allClasses:en?'All classes':'Tất cả lớp',noTurn:en?'This student has no Lucky Wheel turn gift.':'Học sinh này không có quà lượt quay may mắn.',archived:en?'Archived course is read-only.':'Khóa đã lưu trữ chỉ được xem.',saved:en?'Spin saved successfully.':'Đã lưu kết quả quay thành công.',failed:en?'The spin could not be confirmed. Check Firebase before retrying.':'Chưa xác nhận được lượt quay. Hãy kiểm tra Firebase trước khi thử lại.'};
           const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-          put('wheelTabLabel',labels.tab);put('wheelTitle',labels.tab);put('wheelSubtitle',labels.sub);put('wheelManageToggle',labels.manage);put('wheelPrizeName',document.getElementById('wheelPrizeName').placeholder=labels.name);put('wheelPrizeWeight',document.getElementById('wheelPrizeWeight').placeholder=labels.weight);put('wheelWeightHelp',labels.help);put('wheelModeTitle',labels.mode);put('wheelFreeLabel',labels.free);put('wheelStudentLabel',labels.student);put('wheelStudentPickerLabel',labels.studentLabel);put('wheelProbabilityTitle',labels.prob);put('wheelHistoryTitle',labels.history);const clearBtn=document.querySelector('#viewWheelContainer button[onclick="clearWheelHistoryView()"]');if(clearBtn)clearBtn.textContent=labels.clearHistory;put('wheelSpinBtn',labels.spin);put('wheelProbabilityToggle',wheelText(wheelProbabilitiesVisible?'Ẩn xác suất':'Hiện xác suất',wheelProbabilitiesVisible?'Hide probabilities':'Show probabilities'));
+          put('wheelTabLabel',labels.tab);put('wheelTitle',labels.tab);put('wheelSubtitle',labels.sub);put('wheelManageToggle',labels.manage);put('wheelCreateBtn',wheelText('Tạo quà vòng quay','Create wheel prize'));put('wheelWeightHelp',labels.help);put('wheelModeTitle',labels.mode);put('wheelFreeLabel',labels.free);put('wheelStudentLabel',labels.student);put('wheelStudentPickerLabel',labels.studentLabel);put('wheelProbabilityTitle',labels.prob);put('wheelHistoryTitle',labels.history);const clearBtn=document.querySelector('#viewWheelContainer button[onclick="clearWheelHistoryView()"]');if(clearBtn)clearBtn.textContent=labels.clearHistory;put('wheelSpinBtn',labels.spin);put('wheelProbabilityToggle',wheelText(wheelProbabilitiesVisible?'Ẩn xác suất':'Hiện xác suất',wheelProbabilitiesVisible?'Hide probabilities':'Show probabilities'));
           const st=document.getElementById('wheelStudentPicker'),oldStudent=st.value;const eligible=(appData.students||[]).filter(x=>String(x.classId)===String(appData.activeClassId)&&wheelInventory(x).length>0);st.innerHTML=`<option value="" style="color:#334155;font-weight:400;background-color:#fff">${labels.emptyStudent}</option>`+eligible.map(x=>{const n=wheelInventory(x).length;return `<option value="${wheelEsc(x.id)}" style="color:#047857;font-weight:700;background-color:#fff">🎡 ${wheelEsc(x.name)}${n>0?' · x'+n:''}</option>`;}).join('');if([...st.options].some(o=>o.value===oldStudent))st.value=oldStudent;const selTurns=wheelInventory((appData.students||[]).find(x=>String(x.id)===st.value)).length;['text-emerald-700','font-bold','bg-emerald-50','border-emerald-400'].forEach(c=>st.classList.toggle(c,selTurns>0));
           const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';st.disabled=mode!=='student';document.getElementById('wheelTurns').textContent=mode==='student'?(labels.turns+': x'+wheelInventory((appData.students||[]).find(x=>String(x.id)===st.value)).length):'';
           const sum=wheelEnabled().reduce((n,p)=>n+Number(p.weight),0);put('wheelStatus',wheelEnabled().length?labels.ready:labels.noValid);
-          document.getElementById('wheelProbabilities').innerHTML=wheelProbabilityRows().map(p=>`<div class="wheel-fx flex items-center gap-2 text-sm rounded-lg border bg-white px-3 py-2"><span class="w-3 h-3 rounded-sm shrink-0" style="background:${wheelEsc(p.color||'#64748b')}"></span><span class="flex-1 break-words">${wheelEsc(p.name)}</span><b>${p.prob.toFixed(2)}%</b></div>`).join('')||`<p class="text-sm text-slate-500">${labels.empty}</p>`;
-          document.getElementById('wheelPrizeList').innerHTML=wheelPrizes().map(p=>`<div class="wheel-fx flex flex-wrap items-center gap-2 bg-white border rounded-lg p-2"><span class="w-4 h-4 rounded shrink-0" style="background:${wheelEsc(p.color||'#64748b')}"></span><span class="flex-1 min-w-28 text-sm font-semibold">${wheelEsc(p.name)}</span><span class="text-xs text-slate-500">${en?'Weight':'Trọng số'}: ${Number(p.weight)}</span><span class="text-xs">${p.enabled===false?(en?'Disabled':'Đã tắt'):(en?'Enabled':'Đang bật')}</span><button onclick="editWheelPrize('${p.id}')" class="border rounded px-2 py-1 text-xs">${labels.edit}</button><button onclick="toggleWheelPrize('${p.id}')" class="border rounded px-2 py-1 text-xs">${p.enabled===false?labels.enable:labels.disable}</button><button onclick="deleteWheelPrize('${p.id}')" class="border border-rose-200 text-rose-700 rounded px-2 py-1 text-xs">${labels.del}</button></div>`).join('')||`<p class="text-sm text-slate-500">${labels.empty}</p>`;
-          document.getElementById('wheelHistory').innerHTML=appData.luckyWheel.history.slice().reverse().slice(0,200).map(h=>`<div class="border rounded-lg p-3 flex flex-wrap gap-2 items-center text-sm"><span class="font-bold">${wheelEsc(h.prizeName)}</span><span class="text-slate-500">${wheelEsc(h.studentName|| (en?'Free spin':'Quay tự do'))}</span><span class="text-slate-400 text-xs">${wheelEsc(h.at||'')}</span><span class="ml-auto text-xs text-slate-500">${wheelEsc(h.spinId||'')}</span></div>`).join('')||`<p class="text-sm text-slate-500">${labels.none}</p>`;
+          document.getElementById('wheelProbabilities').innerHTML=wheelProbabilityRows().map(p=>`<div class="wheel-fx flex items-center gap-2 text-sm rounded-lg border bg-white px-3 py-2"><span class="w-3 h-3 rounded-sm shrink-0" style="background:${wheelEsc(p.color||'#64748b')}"></span><span class="flex-1 break-words">${wheelEsc(p.name)}${wheelQty(p)>1?' ×'+wheelQty(p):''}</span><b>${p.prob.toFixed(2)}%</b></div>`).join('')||`<p class="text-sm text-slate-500">${labels.empty}</p>`;
+          document.getElementById('wheelPrizeList').innerHTML=wheelPrizes().map(p=>`<div class="wheel-fx flex flex-wrap items-center gap-2 bg-white border rounded-lg p-2"><span class="w-4 h-4 rounded shrink-0" style="background:${wheelEsc(p.color||'#64748b')}"></span><span class="flex-1 min-w-28 text-sm font-semibold">${wheelEsc(p.name)}<small class="block text-[11px] font-normal text-slate-500">${wheelEsc(wheelTypeTag(p))}</small></span><span class="text-xs text-slate-500">${en?'Weight':'Trọng số'}: ${Number(p.weight)}</span><span class="text-xs text-slate-500">${en?'Qty / spin':'Số lượng/lần'}: ${wheelQty(p)}</span><span class="text-xs">${p.enabled===false?(en?'Disabled':'Đã tắt'):(en?'Enabled':'Đang bật')}</span><button onclick="editWheelPrize('${p.id}')" class="border rounded px-2 py-1 text-xs">${labels.edit}</button><button onclick="toggleWheelPrize('${p.id}')" class="border rounded px-2 py-1 text-xs">${p.enabled===false?labels.enable:labels.disable}</button><button onclick="deleteWheelPrize('${p.id}')" class="border border-rose-200 text-rose-700 rounded px-2 py-1 text-xs">${labels.del}</button></div>`).join('')||`<p class="text-sm text-slate-500">${labels.empty}</p>`;
+          document.getElementById('wheelHistory').innerHTML=appData.luckyWheel.history.slice().reverse().slice(0,200).map(h=>`<div class="border rounded-lg p-3 flex flex-wrap gap-2 items-center text-sm"><span class="font-bold">${wheelEsc(h.prizeName)}${Number(h.qty)>1?' ×'+Number(h.qty):''}</span><span class="text-slate-500">${wheelEsc(h.studentName|| (en?'Free spin':'Quay tự do'))}</span><span class="text-slate-400 text-xs">${wheelEsc(h.at||'')}</span><span class="ml-auto text-xs text-slate-500">${wheelEsc(h.spinId||'')}</span></div>`).join('')||`<p class="text-sm text-slate-500">${labels.none}</p>`;
           drawWheel();
         }
         // Expose the renderer because the wheel controls use inline onchange handlers.
         // This script is a JavaScript module, so function declarations are not global by default.
         window.renderWheelView = renderWheelView;
-        function drawWheel(){const canvas=document.getElementById('wheelCanvas');if(!canvas)return;const ctx=canvas.getContext('2d'),ps=wheelPrizes().filter(p=>p.enabled!==false);const w=canvas.width,c=w/2,r=w*.45;ctx.clearRect(0,0,w,w);if(!ps.length){ctx.beginPath();ctx.arc(c,c,r,0,Math.PI*2);ctx.fillStyle='#e2e8f0';ctx.fill();ctx.fillStyle='#475569';ctx.font='bold 24px sans-serif';ctx.textAlign='center';ctx.fillText(appData.language==='en'?'Add prizes':'Thêm phần thưởng',c,c);return;}const step=Math.PI*2/ps.length;ps.forEach((p,i)=>{const start=wheelAngle+i*step-Math.PI/2;ctx.beginPath();ctx.moveTo(c,c);ctx.arc(c,c,r,start,start+step);ctx.closePath();ctx.fillStyle=p.color||WHEEL_COLORS[i%WHEEL_COLORS.length];ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.stroke();ctx.save();ctx.translate(c,c);ctx.rotate(start+step/2);ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font='bold 22px sans-serif';let name=String(p.name||'');if(name.length>22)name=name.slice(0,20)+'…';ctx.fillText(name,r-22,8);ctx.restore();});ctx.beginPath();ctx.arc(c,c,35,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle='#cbd5e1';ctx.lineWidth=4;ctx.stroke();}
+        function drawWheel(){const canvas=document.getElementById('wheelCanvas');if(!canvas)return;const ctx=canvas.getContext('2d'),ps=wheelPrizes().filter(p=>p.enabled!==false);const w=canvas.width,c=w/2,r=w*.45;ctx.clearRect(0,0,w,w);if(!ps.length){ctx.beginPath();ctx.arc(c,c,r,0,Math.PI*2);ctx.fillStyle='#e2e8f0';ctx.fill();ctx.fillStyle='#475569';ctx.font='bold 24px sans-serif';ctx.textAlign='center';ctx.fillText(appData.language==='en'?'Add prizes':'Thêm phần thưởng',c,c);return;}const step=Math.PI*2/ps.length;ps.forEach((p,i)=>{const start=wheelAngle+i*step-Math.PI/2;ctx.beginPath();ctx.moveTo(c,c);ctx.arc(c,c,r,start,start+step);ctx.closePath();ctx.fillStyle=p.color||WHEEL_COLORS[i%WHEEL_COLORS.length];ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.stroke();ctx.save();ctx.translate(c,c);ctx.rotate(start+step/2);ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font='bold 22px sans-serif';let name=String(p.name||'')+(wheelQty(p)>1?' ×'+wheelQty(p):'');if(name.length>22)name=name.slice(0,20)+'…';ctx.fillText(name,r-22,8);ctx.restore();});ctx.beginPath();ctx.arc(c,c,35,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle='#cbd5e1';ctx.lineWidth=4;ctx.stroke();}
         window.toggleWheelManager=function(){document.getElementById('wheelManager').classList.toggle('hidden');};
-        window.addWheelPrize=async function(){if(wheelBusy)return;const name=document.getElementById('wheelPrizeName').value.trim(),weight=Number(document.getElementById('wheelPrizeWeight').value);if(!name||!Number.isFinite(weight)||weight<0.1||weight>100){alert(wheelText('Nhập tên và trọng số hợp lệ từ 0,1 đến 100.','Enter a name and a valid weight from 0.1 to 100.'));return;}ensureWheelData();const color=WHEEL_COLORS[wheelPrizes().length%WHEEL_COLORS.length];wheelPrizes().push({id:'prize_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),name,weight,color,enabled:true,order:wheelPrizes().length});const ok=await saveData();if(!ok){alert(wheelText('Lưu phần thưởng thất bại.','Could not save the prize.'));return;}document.getElementById('wheelPrizeName').value='';renderWheelView();};
-        window.editWheelPrize=async function(id){if(wheelBusy)return;const p=wheelPrizes().find(x=>x.id===id);if(!p)return;const name=await showAppPrompt(wheelText('Tên phần thưởng mới:','New prize name:'),p.name);if(name===null)return;const w=await showAppPrompt(wheelText('Trọng số từ 0,1 đến 100:','Weight from 0.1 to 100:'),p.weight);if(w===null)return;const weight=Number(w);if(!name.trim()||!Number.isFinite(weight)||weight<0.1||weight>100){alert(wheelText('Tên hoặc trọng số không hợp lệ.','Invalid name or weight.'));return;}p.name=name.trim();p.weight=weight;const ok=await saveData();if(!ok)alert(wheelText('Lưu thất bại.','Save failed.'));renderWheelView();};
         window.toggleWheelPrize=async function(id){if(wheelBusy)return;const p=wheelPrizes().find(x=>x.id===id);if(!p)return;p.enabled=p.enabled===false;const ok=await saveData();if(!ok)alert(wheelText('Lưu thất bại.','Save failed.'));renderWheelView();};
-        window.deleteWheelPrize=async function(id){if(wheelBusy)return;const p=wheelPrizes().find(x=>x.id===id);if(!p)return;if(!await showAppConfirm(wheelText(`Xóa phần thưởng “${p.name}”?` ,`Delete prize “${p.name}”?`)))return;const backup=deepCopy(appData.luckyWheel.prizes);appData.luckyWheel.prizes=wheelPrizes().filter(x=>x.id!==id);const ok=await saveData();if(!ok){appData.luckyWheel.prizes=backup;alert(wheelText('Xóa thất bại.','Delete failed.'));}renderWheelView();};
-        window.clearWheelPrizes=async function(){if(wheelBusy)return;if(!await showAppConfirm(wheelText('Xóa toàn bộ cấu hình vòng quay? Lịch sử sẽ được giữ nguyên.','Clear all wheel configuration? History will be preserved.')))return;const old=deepCopy(wheelPrizes());appData.luckyWheel.prizes=[];const ok=await saveData();if(!ok){appData.luckyWheel.prizes=old;alert(wheelText('Không thể lưu thay đổi.','Could not save changes.'));}renderWheelView();};
+        window.editWheelPrize=async function(id){
+          if(wheelBusy)return;const p=wheelPrizes().find(x=>x.id===id);if(!p)return;const it=wheelItemOf(p);
+          if(it&&it.wheelOnly){window.openEditItemModal(it.id);return;}
+          const w=await showAppPrompt(wheelText('Trọng số từ 0,1 đến 100:','Weight from 0.1 to 100:'),p.weight);if(w===null)return;
+          const weight=Number(w);if(!Number.isFinite(weight)||weight<0.1||weight>100){alert(wheelText('Trọng số không hợp lệ.','Invalid weight.'));return;}
+          const qIn=await showAppPrompt(wheelText('Số lượng nhận mỗi lần (1–99):','Quantity received per spin (1–99):'),wheelQty(p));if(qIn===null)return;const qn=parseInt(qIn,10);if(!Number.isFinite(qn)||qn<1||qn>99){alert(wheelText('Số lượng không hợp lệ.','Invalid quantity.'));return;}p.weight=weight;p.qty=qn;const ok=await saveData();if(!ok)alert(wheelText('Lưu thất bại.','Save failed.'));renderWheelView();
+        };
+        window.deleteWheelPrize=async function(id){
+          if(wheelBusy)return;const p=wheelPrizes().find(x=>x.id===id);if(!p)return;
+          if(!await showAppConfirm(wheelText(`Xóa phần thưởng “${p.name}”? Quà đã có trong túi học sinh vẫn được giữ nguyên.`,`Delete prize “${p.name}”? Gifts already in students' bags are kept.`)))return;
+          const bp=deepCopy(appData.luckyWheel.prizes),bi=deepCopy(appData.globalShopItems||[]),it=wheelItemOf(p);
+          appData.luckyWheel.prizes=wheelPrizes().filter(x=>x.id!==id);
+          if(it&&it.wheelOnly)appData.globalShopItems=appData.globalShopItems.filter(x=>x.id!==it.id);
+          const ok=await saveData();if(!ok){appData.luckyWheel.prizes=bp;appData.globalShopItems=bi;alert(wheelText('Xóa thất bại.','Delete failed.'));}renderWheelView();
+        };
+        window.clearWheelPrizes=async function(){
+          if(wheelBusy)return;if(!await showAppConfirm(wheelText('Xóa toàn bộ cấu hình vòng quay? Lịch sử và quà đã có trong túi học sinh được giữ nguyên.','Clear all wheel configuration? History and gifts already in students\' bags are kept.')))return;
+          const bp=deepCopy(wheelPrizes()),bi=deepCopy(appData.globalShopItems||[]),ids=new Set(bp.map(x=>x.itemId));
+          appData.luckyWheel.prizes=[];appData.globalShopItems=(appData.globalShopItems||[]).filter(x=>!(x&&x.wheelOnly&&ids.has(x.id)));
+          const ok=await saveData();if(!ok){appData.luckyWheel.prizes=bp;appData.globalShopItems=bi;alert(wheelText('Không thể lưu thay đổi.','Could not save changes.'));}renderWheelView();
+        };
         function selectWeightedPrize(){const ps=wheelEnabled(),total=ps.reduce((n,p)=>n+Number(p.weight),0);if(!ps.length||!Number.isFinite(total)||total<=0)return null;if(ps.length===1)return ps[0];let n=Math.random()*total;for(const p of ps){n-=Number(p.weight);if(n<0)return p;}return ps[ps.length-1];}
         function animateWheelToPrize(prize){return new Promise(resolve=>{const ps=wheelPrizes().filter(p=>p.enabled!==false),index=ps.findIndex(p=>p.id===prize.id);if(index<0){resolve(false);return;}const step=Math.PI*2/ps.length;const desired=(-(index*step+step/2))%(Math.PI*2);const start=wheelAngle;const end=desired+Math.PI*2*6;const t0=performance.now(),duration=4200,token=++wheelAnimationToken;const frame=now=>{if(token!==wheelAnimationToken){resolve(false);return;}const t=Math.min(1,(now-t0)/duration),ease=1-Math.pow(1-t,4);wheelAngle=start+(end-start)*ease;drawWheel();if(t<1)requestAnimationFrame(frame);else{wheelAngle=((desired%(Math.PI*2))+Math.PI*2)%(Math.PI*2);drawWheel();resolve(true);}};requestAnimationFrame(frame);});}
-        window.spinLuckyWheel=async function(){if(wheelBusy)return;if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(wheelText('Khóa đã lưu trữ chỉ được xem.','Archived course is read-only.'));return;}ensureWheelData();const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';const studentId=document.getElementById('wheelStudentPicker').value;const student=(appData.students||[]).find(x=>String(x.id)===String(studentId));if(mode==='student'&&(!student||!wheelInventory(student).length)){alert(wheelText('Học sinh này không có quà lượt quay may mắn.','This student has no Lucky Wheel turn gift.'));return;}const prize=selectWeightedPrize();if(!prize){alert(wheelText('Không có phần thưởng đang bật với trọng số hợp lệ.','No enabled prize has a valid weight.'));return;}const teacherAtStart=currentTeacherId||LEGACY_TEACHER_ID,courseId=appData.courseManager?.activeCourseId||null,spinId='spin_'+Date.now()+'_'+Math.random().toString(36).slice(2,10),studentName=student?.name||'',className=(appData.classes||[]).find(c=>String(c.id)===String(student?.classId))?.name||'';const record={spinId,teacherId:teacherAtStart,courseId,studentId:mode==='student'?student.id:null,studentName:mode==='student'?studentName:null,className:mode==='student'?className:null,mode,prizeId:prize.id,prizeName:prize.name,prizeColor:prize.color,prizeWeight:Number(prize.weight),prizeSnapshot:deepCopy(prize),status:'completed',at:new Date().toISOString()};wheelBusy=true;document.getElementById('wheelSpinBtn').disabled=true;try{const path=`appDataMultiTeacher/teacherData/${teacherAtStart}`;const result=await runTransaction(ref(db,path),current=>{if(!current||typeof current!=='object')return;current.luckyWheel=current.luckyWheel&&typeof current.luckyWheel==='object'?current.luckyWheel:{prizes:[],history:[],transactions:{}};current.luckyWheel.history=Array.isArray(current.luckyWheel.history)?current.luckyWheel.history:[];current.luckyWheel.transactions=current.luckyWheel.transactions||{};if(current.luckyWheel.transactions[spinId])return current;if(mode==='student'){const st=(current.students||[]).find(x=>String(x.id)===String(student.id));if(!st||!Array.isArray(st.inventory))return;const inv=st.inventory.findIndex(i=>isLuckyWheelGift(i));if(inv<0)return;const consumed=st.inventory.splice(inv,1)[0];record.giftInventoryId=consumed.invId||consumed.id||null;record.consumedGiftItemId=consumed.itemId||consumed.id||LUCKY_GIFT_ID;record.turnsBefore=st.inventory.length+1;record.turnsAfter=st.inventory.length;}current.luckyWheel.transactions[spinId]={spinId,status:'completed',at:record.at,studentId:record.studentId,giftInventoryId:record.giftInventoryId||null,prizeId:record.prizeId};current.luckyWheel.history.push(record);return current;},{applyLocally:false});if(!result.committed){throw new Error('transaction_not_committed');}const committed=result.snapshot.val();if(!committed?.luckyWheel?.transactions?.[spinId]){throw new Error('transaction_not_confirmed');}if(currentTeacherId!==teacherAtStart){return;}appData=committed;if(sessionViewMode)appData.activeViewMode=sessionViewMode;else appData.activeViewMode='wheel';ensureWheelData();lastPersistedSnapshot=deepCopy(appData);renderClassTabs();renderCurrentView();const animated=await animateWheelToPrize(prize);document.getElementById('wheelResult').textContent=prize.name;wheelApplyPrizeColor(prize);document.getElementById('wheelStatus').textContent=wheelText('Sẵn sàng','Ready');showWheelResultModal(prize.name,mode==='student'?studentName:'');wheelApplyPrizeColor(prize);renderWheelView();}catch(err){console.error('Lucky Wheel transaction failed or uncertain:',err);document.getElementById('wheelStatus').textContent=wheelText('Chưa xác nhận được lượt quay. Hãy tải lại dữ liệu/kiểm tra Firebase trước khi thử lại.','Spin status could not be confirmed. Refresh/check Firebase before retrying.');alert(wheelText('Không thể xác nhận giao dịch. Không tự động thử lại để tránh dùng lượt hai lần. Hãy kiểm tra lịch sử sau khi kết nối ổn định.','Could not confirm the transaction. It will not retry automatically to avoid using a turn twice. Check history when the connection is stable.'));}finally{wheelBusy=false;const b=document.getElementById('wheelSpinBtn');if(b)b.disabled=false;renderWheelView();}};
+        window.spinLuckyWheel=async function(){if(wheelBusy)return;if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(wheelText('Khóa đã lưu trữ chỉ được xem.','Archived course is read-only.'));return;}ensureWheelData();const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';const studentId=document.getElementById('wheelStudentPicker').value;const student=(appData.students||[]).find(x=>String(x.id)===String(studentId));if(mode==='student'&&(!student||!wheelInventory(student).length)){alert(wheelText('Học sinh này không có quà lượt quay may mắn.','This student has no Lucky Wheel turn gift.'));return;}const prize=selectWeightedPrize();if(!prize){alert(wheelText('Không có phần thưởng đang bật với trọng số hợp lệ.','No enabled prize has a valid weight.'));return;}const giftItem=wheelItemOf(prize),giftSnap=giftItem?deepCopy(giftItem):null,qty=wheelQty(prize),awardInvId='inv_'+Date.now()+'_wheel_'+Math.random().toString(36).slice(2,8);const teacherAtStart=currentTeacherId||LEGACY_TEACHER_ID,courseId=appData.courseManager?.activeCourseId||null,spinId='spin_'+Date.now()+'_'+Math.random().toString(36).slice(2,10),studentName=student?.name||'',className=(appData.classes||[]).find(c=>String(c.id)===String(student?.classId))?.name||'';const record={spinId,teacherId:teacherAtStart,courseId,studentId:mode==='student'?student.id:null,studentName:mode==='student'?studentName:null,className:mode==='student'?className:null,mode,prizeId:prize.id,prizeName:prize.name,prizeColor:prize.color,prizeWeight:Number(prize.weight),qty,prizeSnapshot:deepCopy(prize),status:'completed',at:new Date().toISOString()};wheelBusy=true;document.getElementById('wheelSpinBtn').disabled=true;try{const path=`appDataMultiTeacher/teacherData/${teacherAtStart}`;const result=await runTransaction(ref(db,path),current=>{if(!current||typeof current!=='object')return;current.luckyWheel=current.luckyWheel&&typeof current.luckyWheel==='object'?current.luckyWheel:{prizes:[],history:[],transactions:{}};current.luckyWheel.history=Array.isArray(current.luckyWheel.history)?current.luckyWheel.history:[];current.luckyWheel.transactions=current.luckyWheel.transactions||{};if(current.luckyWheel.transactions[spinId])return current;if(mode==='student'){const st=(current.students||[]).find(x=>String(x.id)===String(student.id));if(!st||!Array.isArray(st.inventory))return;const inv=st.inventory.findIndex(i=>isLuckyWheelGift(i));if(inv<0)return;const consumed=st.inventory.splice(inv,1)[0];record.giftInventoryId=consumed.invId||consumed.id||null;record.consumedGiftItemId=consumed.itemId||consumed.id||LUCKY_GIFT_ID;record.turnsBefore=st.inventory.length+1;record.turnsAfter=st.inventory.length;const itm=(current.globalShopItems||[]).find(x=>x&&x.id===prize.itemId)||giftSnap;if(itm&&itm.type){const awardedIds=[];for(let q=0;q<qty;q++){const invId=q===0?awardInvId:awardInvId+'_'+q;const inv={invId,itemId:itm.id,name:itm.name,itemName:itm.name,isFixed:!!itm.isFixed,type:itm.type,date:new Date().toISOString().split('T')[0],fromWheel:true};['targetScore','deltaScore','matchScore','matchOp'].forEach(k=>{if(itm[k]!==undefined)inv[k]=itm[k];});st.inventory.push(inv);awardedIds.push(invId);}record.awardedInvId=awardInvId;record.awardedInvIds=awardedIds;record.awardedQty=qty;record.awardedItemName=itm.name;}}current.luckyWheel.transactions[spinId]={spinId,status:'completed',at:record.at,studentId:record.studentId,giftInventoryId:record.giftInventoryId||null,prizeId:record.prizeId};current.luckyWheel.history.push(record);return current;},{applyLocally:false});if(!result.committed){throw new Error('transaction_not_committed');}const committed=result.snapshot.val();if(!committed?.luckyWheel?.transactions?.[spinId]){throw new Error('transaction_not_confirmed');}if(currentTeacherId!==teacherAtStart){return;}appData=committed;if(sessionViewMode)appData.activeViewMode=sessionViewMode;else appData.activeViewMode='wheel';ensureWheelData();lastPersistedSnapshot=deepCopy(appData);renderClassTabs();renderCurrentView();const shownName=prize.name+(qty>1?' ×'+qty:'');const animated=await animateWheelToPrize(prize);document.getElementById('wheelResult').textContent=shownName;wheelApplyPrizeColor(prize);document.getElementById('wheelStatus').textContent=wheelText('Sẵn sàng','Ready');showWheelResultModal(shownName,mode==='student'?studentName:'');if(window.showAppToast){if(mode==='student'&&record.awardedInvId)window.showAppToast(wheelText(`Đã cộng “${prize.name}”${qty>1?' ×'+qty:''} vào túi quà của ${studentName}.`,`Added “${prize.name}”${qty>1?' ×'+qty:''} to ${studentName}'s gift bag.`),'success');else if(mode!=='student'&&giftItem&&giftItem.type)window.showAppToast(wheelText('Quay tự do nên quà này không được cộng vào túi học sinh nào.','Free spin: this gift was not added to any student\'s bag.'),'info');}wheelApplyPrizeColor(prize);renderWheelView();}catch(err){console.error('Lucky Wheel transaction failed or uncertain:',err);document.getElementById('wheelStatus').textContent=wheelText('Chưa xác nhận được lượt quay. Hãy tải lại dữ liệu/kiểm tra Firebase trước khi thử lại.','Spin status could not be confirmed. Refresh/check Firebase before retrying.');alert(wheelText('Không thể xác nhận giao dịch. Không tự động thử lại để tránh dùng lượt hai lần. Hãy kiểm tra lịch sử sau khi kết nối ổn định.','Could not confirm the transaction. It will not retry automatically to avoid using a turn twice. Check history when the connection is stable.'));}finally{wheelBusy=false;const b=document.getElementById('wheelSpinBtn');if(b)b.disabled=false;renderWheelView();}};
         window.clearWheelHistoryView=async function(){if(wheelBusy)return;const en=appData.language==='en';const message=wheelText('Xóa lịch sử quay đang hiển thị? Các bản ghi giao dịch vẫn được giữ lại để ngăn sử dụng một lượt quay nhiều lần.','Clear the visible spin history? Transaction records will be retained to prevent the same turn from being used more than once.');if(!await showAppConfirm(message,wheelText('Xóa lịch sử hiển thị','Clear visible history')))return;const old=deepCopy(appData.luckyWheel.history);appData.luckyWheel.history=[];const ok=await saveData();if(!ok){appData.luckyWheel.history=old;await showAppNotice(wheelText('Không thể xóa lịch sử.','Could not clear history.'),wheelText('Lỗi lưu dữ liệu','Save error'));}renderWheelView();};
 
         // Multi-teacher routing on the existing Firebase Realtime Database.
@@ -11598,7 +11724,7 @@ window.openStudentProfile=function(studentId){
   function rate5(n,c){const soft=Math.max(1,c.hard5-16);if(n>=c.hard5)return 1;if(n>=soft)return Math.min(1,c.base5/100+0.06*(n-soft+1));return c.base5/100;}
   const DEL_ID='gacha_delete_low';
   function pool(){const out=[{id:DEL_ID,name:'Xóa điểm thấp nhất',type:'delete_score',isFixed:false,special:true}];
-    (appData.globalShopItems||[]).forEach(it=>{if(it&&it.id&&it.type!=='streak_ten')out.push(it);});return out;}
+    (appData.globalShopItems||[]).forEach(it=>{if(it&&it.id&&it.type!=='streak_ten'&&!it.wheelOnly)out.push(it);});return out;}
   const gname=it=>it.special?T('Xóa điểm thấp nhất','Delete lowest score'):getRewardName(it);
   const find=id=>pool().find(x=>x.id===id)||null;
   const gnameOf=(id,def)=>{const it=find(id)||find(def)||pool()[0];return it?gname(it):'?';};
@@ -11728,14 +11854,14 @@ html.mx-dark .gc-bar{background:#334155}
     const root=$('viewGachaContainer');if(!root)return;css();
     const ctx=(typeof currentTeacherId!=='undefined'&&currentTeacherId?currentTeacherId:'')+'|'+(appData.activeClassId||'');
     if(ctx!==lastCtx){const first=lastCtx===null;lastCtx=ctx;if(!first&&!busy){selId=null;selSig='';stageIdle();const m=$('gcManager');if(m)m.classList.add('hidden');}}
-    const c=cfg(),list=students().filter(s=>(s.rewardPoints||0)>=1);if(!list.some(s=>s.id===selId))selId=list[0]?list[0].id:null;
+    const c=cfg(),list=students();if(!list.some(s=>s.id===selId)){const first=list.find(s=>(s.rewardPoints||0)>=1)||list[0];selId=first?first.id:null;}
     $('gcTitle').innerHTML='<i class="fa-solid fa-box-open mr-2 text-violet-600"></i>'+T('Hộp Quà Bí Ẩn','Mystery Box');
     $('gcSub').textContent='';$('gcSub').classList.add('hidden');
     $('gcManageToggle').textContent=T('Cấu hình hộp quà','Box settings');
     $('gcCostL').textContent=T('Giá mỗi lần mở (pts)','Cost per box (pts)');$('gcHardL').textContent=T('Bảo hiểm 5★ (số lần)','5★ hard pity (pulls)');$('gcSave').textContent=T('Lưu','Save');
     $('gcModeT').textContent=T('Hộp quà của học sinh','Student mystery box');$('gcStuL').textContent=T('Học sinh','Student');$('gcHistT').textContent=T('Lịch sử mở hộp','Opening history');
     const sig=list.map(s=>s.id+'|'+s.name+'|'+(s.rewardPoints||0)).join(',')+'#'+selId;
-    if(sig!==selSig){selSig=sig;$('gcSel').innerHTML=list.length?list.map(s=>`<option value="${escapeHtml(s.id)}" style="color:#047857;font-weight:700;background-color:#fff"${s.id===selId?' selected':''}>🎁 ${escapeHtml(s.name)} — ${s.rewardPoints||0} pts</option>`).join(''):`<option value="" style="color:#334155;background-color:#fff">${T('Chưa có học sinh đủ điểm','No student with points')}</option>`;['text-emerald-700','font-bold','bg-emerald-50','border-emerald-400'].forEach(k=>$('gcSel').classList.toggle(k,list.length>0));}
+    if(sig!==selSig){selSig=sig;$('gcSel').innerHTML=list.length?list.map(s=>{const p=s.rewardPoints||0;return p>=1?`<option value="${escapeHtml(s.id)}" style="color:#047857;font-weight:700;background-color:#fff"${s.id===selId?' selected':''}>🎁 ${escapeHtml(s.name)} — ${p} pts</option>`:`<option value="${escapeHtml(s.id)}" style="color:#334155;font-weight:400;background-color:#fff"${s.id===selId?' selected':''}>${escapeHtml(s.name)} — ${p} pts</option>`;}).join(''):`<option value="" style="color:#334155;background-color:#fff">${T('Lớp chưa có học sinh','No students in this class')}</option>`;const sp=((list.find(s=>s.id===selId)||{}).rewardPoints)||0;['text-emerald-700','font-bold','bg-emerald-50','border-emerald-400'].forEach(k=>$('gcSel').classList.toggle(k,sp>=1));}
     const st=cur(),g=gs(st?st.id:''),pts=st?(st.rewardPoints||0):0;
     applyInfo();
     $('gcPts').textContent='💎 '+T('Điểm dư hiện có','Bonus points')+': '+pts+' pts';
@@ -11745,7 +11871,7 @@ html.mx-dark .gc-bar{background:#334155}
 <div class="text-xs text-slate-500 leading-5">${T('Tổng đã mở','Opened')}: <b>${g.total}</b><br><span class="gc-chip gc-c5">5★</span> ${c.base5}% (${T('tăng mạnh từ lần','soft pity from')} ${Math.max(1,c.hard5-16)}) → ${c.limitedN} × ${nmW} / ${c.standardN} × ${nmL}<br><span class="gc-chip gc-c4">4★</span> ${c.base4}% → ${escapeHtml(n4)}<br><span class="gc-chip gc-c3">3★</span> ${T('còn lại → ','rest → ')}${escapeHtml(n3)}</div>`;
     $('gcBtn1').textContent='🎁 '+T('MỞ 1','OPEN 1')+' · '+c.cost+' pts';$('gcBtn10').textContent='🎁 '+T('MỞ 10','OPEN 10')+' · '+c.cost*10+' pts';
     $('gcBtn1').disabled=busy||!st||pts<c.cost;$('gcBtn10').disabled=busy||!st||pts<c.cost*10;
-    if(!busy)$('gcStatus').textContent=!st?T('Chưa có học sinh nào có từ 1 pts trở lên.','No student has 1+ pts.'):pts<c.cost?T('Chưa đủ điểm dư để mở hộp.','Not enough bonus points.'):T('Sẵn sàng','Ready');
+    if(!busy)$('gcStatus').textContent=!st?T('Lớp chưa có học sinh.','No students in this class.'):pts<c.cost?T('Chưa đủ điểm dư để mở hộp.','Not enough bonus points.'):T('Sẵn sàng','Ready');
     if(document.activeElement!==$('gcCost')&&document.activeElement!==$('gcHard')){$('gcCost').value=c.cost;$('gcHard').value=c.hard5;}
     if(!$('gcStage').firstChild)stageIdle();
     const H=G().history.filter(h=>h.sid===selId).slice(-30).reverse();
