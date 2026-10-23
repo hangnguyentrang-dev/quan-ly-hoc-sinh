@@ -828,6 +828,41 @@ td.grid-cell.cell-sg .sg-cf{position:absolute;top:-2px;left:-1px;transform:scale
 .sgb-card .sg-x10{margin-left:auto}
 .sgb-use{background:var(--sg-a);color:#fff;font-size:10.5px;font-weight:900;border-radius:9999px;padding:.25rem .65rem}
 .sg-t100 .sgb-use{background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e,#06b6d4,#6366f1,#d946ef)}
+.sgb-revoke{display:flex;align-items:center;gap:10px;margin-top:10px;padding:8px 10px;border:1px dashed #fca5a5;background:#fef2f2;border-radius:10px}
+.sgb-revoke button{flex-shrink:0;background:#dc2626;color:#fff;font-size:11px;font-weight:900;border-radius:9999px;padding:.35rem .8rem;white-space:nowrap}
+.sgb-revoke button:hover:not(:disabled){background:#b91c1c}
+.sgb-revoke button:disabled{opacity:.4;cursor:not-allowed}
+.sgb-revoke p{font-size:11px;color:#991b1b;margin:0;line-height:1.35}
+html.mx-dark .sgb-revoke{background:#2a1215;border-color:#7f1d1d}
+html.mx-dark .sgb-revoke p{color:#fca5a5}
+.sgr-wrap{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.65);padding:12px}
+.sgr{width:min(440px,100%);max-height:88vh;display:flex;flex-direction:column;background:#fff;color:#0f172a;border-radius:16px;padding:16px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.sgr h3{font-size:15px;font-weight:900;margin:0 0 4px;color:#b91c1c}
+.sgr-hint{font-size:11.5px;color:#475569;margin:0 0 8px;line-height:1.4}
+.sgr-warn{margin:0 0 8px;padding:8px 10px;border:1.5px solid #dc2626;background:#fef2f2;color:#b91c1c;border-radius:10px;font-size:11.5px;font-weight:800;line-height:1.4}
+.sgr-warn i{margin-right:4px}
+.sgr-list{overflow-y:auto;min-height:3rem;max-height:40vh;border:1px solid #e2e8f0;border-radius:10px;padding:4px}
+.sgr-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;font-size:12.5px;cursor:pointer}
+.sgr-row:hover{background:#fef2f2}
+.sgr-row input{width:16px;height:16px;accent-color:#dc2626;flex-shrink:0}
+.sgr-d{font-weight:800}
+.sgr-t{color:#64748b;font-size:11.5px}
+.sgr-row em{margin-left:auto;font-style:normal;font-size:10px;font-weight:900;color:#fff;background:#dc2626;border-radius:9999px;padding:1px 7px}
+.sgr-sum{margin-top:8px;font-size:12px;font-weight:700;color:#166534;background:#f0fdf4;border-radius:8px;padding:7px 9px;line-height:1.4}
+.sgr-sum.bad{color:#991b1b;background:#fef2f2}
+.sgr-btns{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+.sgr-btns button{font-size:12px;font-weight:900;border-radius:9999px;padding:.45rem 1rem}
+.sgr-cancel{background:#e2e8f0;color:#334155}
+.sgr-ok{background:#dc2626;color:#fff}
+.sgr-ok:disabled{opacity:.4;cursor:not-allowed}
+html.mx-dark .sgr{background:#1e293b;color:#e2e8f0}
+html.mx-dark .sgr-hint,html.mx-dark .sgr-t{color:#94a3b8}
+html.mx-dark .sgr-list{border-color:#334155}
+html.mx-dark .sgr-warn{background:#2a1215;color:#fca5a5;border-color:#ef4444}
+html.mx-dark .sgr-row:hover{background:#2a1215}
+html.mx-dark .sgr-sum{background:#052e16;color:#86efac}
+html.mx-dark .sgr-sum.bad{background:#2a1215;color:#fca5a5}
+html.mx-dark .sgr-cancel{background:#334155;color:#e2e8f0}
 .sgb-row{display:flex;align-items:center;gap:9px;border-left:3px solid var(--sg-a);background:#fff;border-bottom:1px solid #f1f5f9;padding:6px 8px;font-size:12px;color:#334155}
 .sg-t100.sgb-row{border-image:linear-gradient(180deg,#ef4444,#f59e0b,#22c55e,#06b6d4,#6366f1,#d946ef) 1}
 .sgb-row>i{color:var(--sg-a)}
@@ -3831,8 +3866,8 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         Object.assign(translations.vi, {"quick_gift_title": "Túi quà", "quick_gift_button": "Quà", "no_gifts_available": "Học sinh này chưa có quà", "select_student_gift": "Chọn quà để sử dụng cho học sinh", "apply_gift_success": "Đã sử dụng quà {giftName} thành công cho {studentName}!", "no_valid_cell_for_gift": "Không tìm thấy ô điểm phù hợp để áp dụng quà này!", "confirm_use_quick_gift": "Bạn có chắc muốn dùng quà này ngay lập tức?", "lowest_score_improved": "Đã cải thiện ô điểm thấp nhất ({score}đ)!", "empty_cell_filled": "Đã điền điểm mới vào ô trống hợp lệ!", "score_deleted_quick": "Đã xóa ô điểm thấp nhất thành công!", "qg_use_btn": "Dùng", "qg_consume_btn": "Tiêu thụ", "qg_close": "Đóng", "qg_type_plus": "Cộng điểm", "qg_type_add": "Tạo điểm mới", "qg_type_change": "Đổi điểm", "qg_type_delete": "Xóa điểm", "qg_type_none": "Quà thông thường", "qg_type_wheel": "Vòng quay may mắn", "qg_wheel_note": "Dùng trong Vòng quay may mắn", "qg_gift_count": "{n} quà", "qg_only_gifts": "Chỉ hiện học sinh có quà", "qg_no_gift_in_class": "Chưa có học sinh nào trong lớp có quà", "qg_no_students": "Lớp chưa có học sinh nào.", "qg_detail_change": "{student} · ô {date}: {before} → {after}", "qg_detail_add": "{student} · điền ô trống {date} = {after}", "qg_detail_delete": "{student} · xóa ô {date} ({before})", "qg_detail_plain": "{student} · {giftName}", "qg_gift_missing": "Không tìm thấy quà này trong túi đồ"});
         Object.assign(translations.en, {"quick_gift_title": "Gift Bag", "quick_gift_button": "Gifts", "no_gifts_available": "No gifts available for this student", "select_student_gift": "Select a gift to use for student", "apply_gift_success": "Successfully applied {giftName} for {studentName}!", "no_valid_cell_for_gift": "No eligible score cell found to apply this gift!", "confirm_use_quick_gift": "Are you sure you want to use this gift immediately?", "lowest_score_improved": "Improved lowest score cell ({score} pts)!", "empty_cell_filled": "New score filled into valid empty cell!", "score_deleted_quick": "Lowest score cell deleted successfully!", "qg_use_btn": "Use", "qg_consume_btn": "Consume", "qg_close": "Close", "qg_type_plus": "Add Points", "qg_type_add": "New Score", "qg_type_change": "Change Score", "qg_type_delete": "Delete Score", "qg_type_none": "Regular Gift", "qg_type_wheel": "Lucky Wheel", "qg_wheel_note": "Use it in the Lucky Wheel", "qg_gift_count": "{n} gifts", "qg_only_gifts": "Only students with gifts", "qg_no_gift_in_class": "No student in this class has any gifts", "qg_no_students": "No students in this class.", "qg_detail_change": "{student} · cell {date}: {before} → {after}", "qg_detail_add": "{student} · fill empty cell {date} = {after}", "qg_detail_delete": "{student} · delete cell {date} ({before})", "qg_detail_plain": "{student} · {giftName}", "qg_gift_missing": "This gift was not found in the inventory"});
 
-        Object.assign(translations.vi, {"qg_type_streak": "Quà thưởng Chuỗi", "sg_name": "Quà Streak {tier}", "sg_type_desc": "Cộng {n} điểm 10 · ô được nâng lên 10 có tính streak", "sg_confirm": "cộng {used} điểm 10 cho {student}: {fills} ô trống trước hôm nay, {ups} ô điểm từ 9 trở xuống (không tính điểm test) chuyển thành 10.", "sg_confirm_rest": " Còn dư {left} điểm 10 trong quà.", "sg_done": "Đã cộng {used} điểm 10 cho {student}.", "sg_done_rest": " Còn dư {left} điểm 10 trong quà.", "sg_no_cell": "Không còn ô trống trước hôm nay hoặc ô điểm từ 9 trở xuống để dùng quà này.", "sg_award": "🎁 {student} đạt streak {tier}: nhận quà {n} điểm 10!", "sg_award_many": "🎁 Đã tặng quà thưởng streak cho {n} học sinh.", "sg_cell_tag": "Quà Chuỗi {tier} (khóa)"});
-        Object.assign(translations.en, {"qg_type_streak": "Streak reward", "sg_name": "Streak {tier} Gift", "sg_type_desc": "Adds {n} scores of 10 · raised cells count for streak", "sg_confirm": "add {used} scores of 10 for {student}: {fills} empty cells before today, {ups} cells scored 9 or lower (test scores excluded) become 10.", "sg_confirm_rest": " {left} score(s) of 10 stay in the gift.", "sg_done": "Added {used} scores of 10 for {student}.", "sg_done_rest": " {left} score(s) of 10 stay in the gift.", "sg_no_cell": "No empty cell before today or cell scored 9 or lower left to use this gift on.", "sg_award": "🎁 {student} hit a {tier} streak: earned a gift of {n} tens!", "sg_award_many": "🎁 Streak reward gifts given to {n} students.", "sg_cell_tag": "Streak {tier} gift (locked)"});
+        Object.assign(translations.vi, {"qg_type_streak": "Quà thưởng Chuỗi", "sg_name": "Quà Streak {tier}", "sg_type_desc": "Cộng {n} điểm 10 · ô dùng quà đều trung lập, không tính streak", "sg_confirm": "cộng {used} điểm 10 cho {student}: {fills} ô trống trước hôm nay, {ups} ô điểm từ 9 trở xuống (không tính điểm test) chuyển thành 10.", "sg_confirm_rest": " Còn dư {left} điểm 10 trong quà.", "sg_done": "Đã cộng {used} điểm 10 cho {student}.", "sg_done_rest": " Còn dư {left} điểm 10 trong quà.", "sg_no_cell": "Không còn ô trống trước hôm nay hoặc ô điểm từ 9 trở xuống để dùng quà này.", "sg_award": "🎁 {student} đạt streak {tier}: nhận quà {n} điểm 10!", "sg_award_many": "🎁 Đã tặng quà thưởng streak cho {n} học sinh.", "sg_cell_tag": "Quà Chuỗi {tier} (khóa)"});
+        Object.assign(translations.en, {"qg_type_streak": "Streak reward", "sg_name": "Streak {tier} Gift", "sg_type_desc": "Adds {n} scores of 10 · gift cells are neutral and never count for streak", "sg_confirm": "add {used} scores of 10 for {student}: {fills} empty cells before today, {ups} cells scored 9 or lower (test scores excluded) become 10.", "sg_confirm_rest": " {left} score(s) of 10 stay in the gift.", "sg_done": "Added {used} scores of 10 for {student}.", "sg_done_rest": " {left} score(s) of 10 stay in the gift.", "sg_no_cell": "No empty cell before today or cell scored 9 or lower left to use this gift on.", "sg_award": "🎁 {student} hit a {tier} streak: earned a gift of {n} tens!", "sg_award_many": "🎁 Streak reward gifts given to {n} students.", "sg_cell_tag": "Streak {tier} gift (locked)"});
         Object.assign(translations.vi, { menuEditHistory: 'Lịch sử chỉnh sửa' }); Object.assign(translations.en, { menuEditHistory: 'Edit history' });
         Object.assign(translations.vi, {"optTypePlusMatch": "Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)", "lblMatchCond": "Ô điểm quy định được cộng (điều kiện & mức điểm):", "optMatchLte": "Từ mức này trở xuống (≤)", "optMatchEq": "Bằng đúng mức này (=)", "optMatchGte": "Từ mức này trở lên (≥)", "phMatchScore": "VD: 7", "qg_type_plus_match": "Cộng điểm theo ô quy định", "pm_desc": "Ô có điểm {op} {score} → +{delta}", "qg_plus_match_done": "Đã cộng {delta} điểm vào ô {date} ({before}đ → {after}đ)!"});
         Object.assign(translations.en, {"optTypePlusMatch": "Add points to a cell with a specified score (e.g. +1 to a cell of 7 or lower)", "lblMatchCond": "Specified cell score to receive points (condition & score):", "optMatchLte": "This score or lower (≤)", "optMatchEq": "Exactly this score (=)", "optMatchGte": "This score or higher (≥)", "phMatchScore": "e.g. 7", "qg_type_plus_match": "Add Points to Specified Cell", "pm_desc": "Cell score {op} {score} → +{delta}", "qg_plus_match_done": "Added {delta} pts to cell {date} ({before} → {after} pts)!"});
@@ -5526,7 +5561,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 if (!Array.isArray(appData.deletedItems)) appData.deletedItems = [];
                 ensureNewModules();
                 applyLanguageUI();
-                let sgBootChanged = false; try { const sgE = sgEnforce(); sgBootChanged = sgSync() || sgE; } catch (e) { console.warn('sgSync skipped:', e); }
+                let sgBootChanged = false; try { const flE = tenFloorInit(); const sgE = sgEnforce(); sgBootChanged = sgSync() || sgE || flE; } catch (e) { console.warn('sgSync skipped:', e); }
                 renderClassTabs();
                 renderCurrentView();
                 try { ehFromListener(); } catch (e) { console.warn('ehFromListener skipped:', e); }
@@ -7956,10 +7991,49 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             const m = String(key).match(/_(\d{4})-(\d{1,2})-(\d{1,2})$/);
             return m ? Date.UTC(+m[1], +m[2] - 1, +m[3], 12) : 0;
         }
+        // ===== MỐC CHỐT CHUỖI (st.streakFloor, mili-giây) =====
+        // Lịch sử TRƯỚC mốc này không còn được tính vào chuỗi: sửa/xóa/đánh vắng/dùng quà ở ô cũ không thể nối lại các đoạn 10 cũ đã bị cắt.
+        // Mốc được đặt MỘT LẦN khi mở web sau bản cập nhật, bằng đúng đầu chuỗi đang hiển thị (nên không đổi chuỗi hiện tại);
+        // học sinh chuỗi 0 thì chốt sau ô nhập cuối. Học sinh thêm sau đó: mốc 0 (không chốt). XP/điểm trung bình vẫn tính mọi điểm.
+        let tenFloorBooted = false;
+        function tenFloorOf(studentId) {
+            const st = (appData.students || []).find(x => String(x.id) === String(studentId));
+            const f = st ? parseFloat(st.streakFloor) : 0;
+            return isNaN(f) ? 0 : f;
+        }
+        function tenFloorInit() {
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return false;
+            let changed = false;
+            (appData.students || []).forEach(st => {
+                if (st.streakFloor !== undefined && st.streakFloor !== null && !isNaN(parseFloat(st.streakFloor))) return;
+                const inf = tenStreakInfo(st.id), list = tenSeries(st.id);
+                st.streakFloor = (inf.cur > 0 && inf.startTs) ? inf.startTs : (list.length ? Math.max.apply(null, list.map(e => e.ts)) + 1 : 0);
+                changed = true;
+            });
+            tenFloorBooted = true;
+            return changed;
+        }
+        // Xem / tắt mốc chốt trong Console (F12): tenFloorReport(); tenFloorOff('Khánh') -> lịch sử cũ của bạn đó lại được nối như trước.
+        window.tenFloorReport = function () {
+            const rows = (appData.students || []).map(st => { const f = tenFloorOf(st.id); return { hocSinh: st.name, mocChot: f ? new Date(f).toLocaleString('vi-VN') : '(không chốt)', streak10: tenStreakInfo(st.id).cur }; });
+            console.table(rows); return rows;
+        };
+        window.tenFloorOff = function (kw) {
+            const k = String(kw || '').toLowerCase(); let n = 0;
+            (appData.students || []).forEach(st => { if (k && String(st.name || '').toLowerCase().indexOf(k) >= 0) { st.streakFloor = 0; n++; } });
+            if (n) saveData(); console.log('Đã tắt mốc chốt cho', n, 'học sinh'); return n;
+        };
+        // tenFloorOn('Khánh'): chốt lại ngay tại đầu chuỗi hiện tại của bạn đó (dùng sau khi đã tenFloorOff rồi chỉnh điểm cho đúng).
+        window.tenFloorOn = function (kw) {
+            const k = String(kw || '').toLowerCase(); let n = 0;
+            (appData.students || []).forEach(st => { if (k && String(st.name || '').toLowerCase().indexOf(k) >= 0) { delete st.streakFloor; n++; } });
+            tenFloorInit(); if (n) saveData(); console.log('Đã chốt lại cho', n, 'học sinh'); return n;
+        };
         // Gắn mốc thời gian nhập (ts) cho điểm mới/đổi giá trị mỗi lần lưu. Dữ liệu cũ chưa có ts
         // được gán tạm theo ngày trên bảng điểm (không vượt quá hiện tại) để vẫn có thứ tự gần đúng.
         function stampScoreTimes() {
             const now = Date.now(), prevScores = (lastPersistedSnapshot && lastPersistedSnapshot.scores) || {};
+            if (tenFloorBooted) (appData.students || []).forEach(st => { if (st.streakFloor === undefined) st.streakFloor = 0; });
             const sig = c => c ? (c.absent ? 'A' : String(c.score)) : '';
             const tenEvents = [], changedSids = new Set(); let changedCount = 0;
             Object.keys(appData.scores || {}).forEach(key => {
@@ -7973,7 +8047,28 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     // Khi sửa điểm ở một ô đã tồn tại, giữ thời điểm nhập ban đầu.
                     // Nếu gán lại Date.now() mỗi lần sửa, ô lịch sử sẽ nhảy lên cuối chuỗi
                     // và có thể làm streak tăng vọt (ví dụ 22 -> 30) chỉ vì sửa 8.3 thành 9.0.
-                    if (!restored && !cur.keepTs) cur.ts = (prev && prev.ts) ? prev.ts : now;
+                    if (!restored && !cur.keepTs) {
+                        cur.ts = (prev && prev.ts) ? prev.ts : now;
+                        // Sửa tay (gõ phím, hộp nhập điểm, hàng loạt, nhập phát biểu) một ô ĐÃ CÓ điểm dưới 10 lên 10:
+                        // điểm 10 mới chỉ được +1 ở CUỐI chuỗi (ts = bây giờ), còn lịch sử vẫn thấy điểm cũ ở đúng chỗ cũ (editOrig),
+                        // nên không nối lại các đoạn chuỗi đã gãy (ví dụ chuỗi 22 -> 31 chỉ vì sửa 9.3 thành 10).
+                        // Quà (gk / keepTs) và ô quà Streak (sg) không đi qua nhánh này.
+                        const flr = tenFloorOf(String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, ''));
+                        const nv = cur.absent ? NaN : parseFloat(cur.score);
+                        // Ô quà Streak thay ô cũ nằm trước mốc chốt: tính ở cuối chuỗi (không bị mốc chốt bỏ qua)
+                        if (cur.sg && flr && prev && prev.ts && prev.ts < flr) cur.ts = now;
+                        if (!gk && !cur.sg && prev && !prev.sg && !prev.absent && !isNaN(nv)) {
+                            const go = prev.giftStreakOrig && typeof prev.giftStreakOrig === 'object' && !isNaN(parseFloat(prev.giftStreakOrig.v)) ? prev.giftStreakOrig : null;
+                            const base = go ? { v: parseFloat(go.v), ts: go.ts || prev.ts || null, keep: !!go.keep } : { v: parseFloat(prev.score), ts: prev.ts || null, keep: !!prev.keep };
+                            if (nv >= 10 && !isNaN(base.v) && base.v < 10) { cur.editOrig = base; cur.ts = now; }
+                            else if (nv < 10 && prev.editOrig && prev.editOrig.ts) cur.ts = prev.editOrig.ts; // sửa lại thành điểm dưới 10: về đúng chỗ cũ trong chuỗi
+                        }
+                    }
+                    // Quà nâng ô CŨ (trước mốc chốt) lên 10: tính +1 ở cuối chuỗi như sửa tay, không nối lại đoạn cũ
+                    if (!restored && cur.keepTs && gk && cur.ts && !cur.absent) {
+                        const fl2 = tenFloorOf(String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, '')), gv = parseFloat(cur.score);
+                        if (fl2 && cur.ts < fl2 && !isNaN(gv) && gv >= 10) cur.ts = now;
+                    }
                     delete cur.keepTs; // cờ một lần: ô áp quà giữ ts gốc
                     // Nếu người dùng sửa điểm thủ công sau khi áp quà, bỏ mốc điểm gốc của quà;
                     // từ thời điểm này streak sẽ phản ánh đúng điểm mới do người dùng nhập.
@@ -8017,12 +8112,13 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     const ov = parseFloat(it.giftStreakOrig.v);
                     if (!isNaN(ov)) { list.push({ v: ov, ts: it.giftStreakOrig.ts || it.ts || Math.min(dms || now, now), dms, keep: !!it.giftStreakOrig.keep, sg: false, key }); return; }
                 }
-                // Ô quà Streak thay thế điểm cũ dưới 9 (sgOrig): với streak vẫn tính như điểm cũ (vẫn trừ/đứt như trước),
-                // nên streak không tăng và không nhận thêm quà do việc đổi thành 10.
-                if (it.sg && it.sgOrig && typeof it.sgOrig === 'object') {
-                    const ov = parseFloat(it.sgOrig.v);
-                    // Mọi ô điểm dưới 10 được quà nâng lên 10 đều tính là điểm 10 thật (+1 streak), bất kể điểm cũ.
-                    if (!isNaN(ov)) { list.push({ v: 10, ts: it.sgOrig.ts || Math.min(dms || now, now), dms, keep: !!it.sgOrig.keep, sg: false, key }); return; }
+                // Ô quà Streak (cả ô trống được điền lẫn ô điểm <=9 được nâng lên 10) LUÔN gắn cờ trung lập (sg: true):
+                // không cộng streak, không làm đứt/trừ streak. Điểm cũ (sgOrig) bị bỏ qua hoàn toàn trong chuỗi.
+                // Ô sửa tay từ dưới 10 lên 10 (editOrig): thêm điểm CŨ ở đúng chỗ cũ (ghost: chỉ dùng cho chuỗi, không tính XP/đếm điểm 10);
+                // điểm 10 mới (ts = lúc sửa) nằm cuối chuỗi nên chỉ +1.
+                if (it.editOrig && typeof it.editOrig === 'object' && !it.sg) {
+                    const eo = parseFloat(it.editOrig.v);
+                    if (!isNaN(eo)) list.push({ v: eo, ts: it.editOrig.ts || Math.min(dms || now, now), dms, keep: !!it.editOrig.keep, sg: false, ghost: true, key });
                 }
                 list.push({ v, ts: it.ts || Math.min(dms || now, now), dms, keep: !!it.keep, sg: !!it.sg, gn: !!it.giftNeutral, key });
             });
@@ -8035,15 +8131,17 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         const TEN_MISS_LIMIT = { 10: 3, 15: 4, 20: 5, 30: 10, 40: 15, 50: 20 };
         function tenMissTier(n) { return n >= 50 ? 50 : n >= 40 ? 40 : n >= 30 ? 30 : n >= 20 ? 20 : n >= 15 ? 15 : n >= 10 ? 10 : 0; }
         function tenStreakInfo(studentId, scores) {
-            let run = 0, best = 0, miss = 0, tier = 0, peak = 0, live = [], prot = false;
-            const all = [];
+            let run = 0, best = 0, miss = 0, tier = 0, peak = 0, live = [], prot = false, startTs = null;
+            const all = [], floorTs = tenFloorOf(studentId);
             // Đổi mốc (lên hay xuống) thì đếm lại số lần bị trừ từ đầu theo mốc mới, bỏ qua các lần trừ trước đó.
             // Chuỗi đã từng đạt >= 10 (prot): khi tụt xuống dưới 10 vẫn giữ mốc 10 và số lần đã bị trừ, không đếm lại.
             const retier = () => { const t = tenMissTier(run); if (t !== tier && !(prot && t === 0)) { tier = t; miss = 0; } };
             tenSeries(studentId, scores).forEach(e => {
+                if (floorTs && e.ts < floorTs) return; // trước mốc chốt: không tính vào chuỗi
                 if (e.sg) return; // Điểm từ quà Streak: trung lập, không cộng cũng không làm đứt/trừ streak
                 // Quà thường nâng ô lên 10: tính là điểm 10 thật (như sửa tay), kể cả dữ liệu cũ từng gắn cờ giftNeutral.
                 if (e.v >= 10) {
+                    if (run === 0) startTs = e.ts;
                     run++; if (run > best) best = run; if (run > peak) peak = run;
                     retier(); if (run >= TEN_PROTECT_MIN) prot = true;
                     if (SG_REWARDS[run]) { const h = { tier: run, key: e.key }; all.push(h); live.push(h); }
@@ -8058,10 +8156,10 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                         else { run = Math.max(0, run - 1); retier(); }
                     }
                 } else if (e.v < 9) { run = 0; miss = 0; tier = 0; } /* dưới streak 10: cũng chỉ điểm dưới 9 mới đứt; 9 đến dưới 10 giữ nguyên như từ streak 10 */
-                if (run === 0) { live = []; peak = 0; prot = false; tier = 0; miss = 0; }
+                if (run === 0) { live = []; peak = 0; prot = false; tier = 0; miss = 0; startTs = null; }
             });
             const st = appData.students.find(x => x.id === studentId);
-            return { cur: run, peak, hist: best, best: Math.max(best, (st && st.bestTenStreak) || 0), hits: all, liveHits: live.filter(h => h.tier <= run) };
+            return { cur: run, startTs, peak, hist: best, best: Math.max(best, (st && st.bestTenStreak) || 0), hits: all, liveHits: live.filter(h => h.tier <= run) };
         }
         // ===== Quà thưởng Streak: đạt mốc streak -> nhận quà điểm 10 (số lượng theo mốc) =====
         function sgTierKey(n) { return tfStepOf(n) || 5; }
@@ -8276,10 +8374,11 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 plan.cells.forEach(c => {
                     const key = `${studentId}_${c.key}`;
                     prevCells[key] = appData.scores[key] !== undefined ? deepCopy(appData.scores[key]) : undefined;
-                    const cellNew = { score: 10, absent: false, sg: true, sgTier: tier };
+                    const cellNew = { score: 10, absent: false, sg: true, sgTier: tier, sgInv: invId };
                     const po = prevCells[key];
                     if (c.before !== null && po && !po.absent && !isNaN(parseFloat(po.score))) {
                         cellNew.sgOrig = { v: parseFloat(po.score), ts: po.ts || null, keep: !!po.keep };
+                        cellNew.sgPrev = deepCopy(po); // điểm gốc đầy đủ để khôi phục khi thu hồi chuỗi
                     }
                     appData.scores[key] = cellNew;
                     L.cells[key] = deepCopy(cellNew);
@@ -8346,6 +8445,10 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             const prog = next
                 ? `<div class="sgb-prog${nextCls}"><div class="sgb-track"><div class="sgb-fill" style="width:${Math.min(100, Math.round(cur / next * 100))}%"></div></div><p>${T(`Còn ${next - cur} điểm 10 liên tiếp nữa để tới mốc ${next} (+${SG_REWARDS[next]} quà)`, `${next - cur} more consecutive 10s to reach the ${next} milestone (+${SG_REWARDS[next]} gift${SG_REWARDS[next] > 1 ? 's' : ''})`)}</p></div>`
                 : `<div class="sgb-prog"><p>${T('Đã nhận tất cả các mốc trong chuỗi hiện tại.', 'All milestones of the current chain have been received.')}</p></div>`;
+            const rp = sgRevokePlan(st.id);
+            const revHtml = `<div class="sgb-revoke"><button type="button" ${rp ? '' : 'disabled'} onclick="sgRevokeChain('${esc(st.id)}')"><i class="fa-solid fa-rotate-left"></i> ${T('Thu hồi chuỗi', 'Revoke chain')}</button><p>${rp
+                ? T(`Thu hồi mốc ${rp.T}: quà, mốc, màu lửa và các điểm 10 bạn chọn xóa (mặc định ${rp.removed.length} điểm nhập gần nhất). Chuỗi về ${rp.newCur}.`, `Revoke milestone ${rp.T}: gift, milestone, flame colour and the 10s you choose to delete (by default the ${rp.removed.length} most recently entered). Streak returns to ${rp.newCur}.`)
+                : T('Chưa đạt mốc nào (chuỗi dưới 5) nên chưa có gì để thu hồi.', 'No milestone reached yet (streak below 5), nothing to revoke.')}</p></div>`;
             const bagHtml = bag.length ? bag.map(g => { const t = sgTierKey(g.tier), n = parseInt(g.count) || 1;
                 return `<div class="sgb-card sg-t${t}"><i class="fa-solid fa-fire-flame-curved"></i><div><div class="sgb-t">${esc(sgGiftName(g))}</div><div class="sgb-s">${esc(qgT('sg_type_desc', { n }))}</div></div><span class="sg-x10">10 ×${n}</span><button type="button" class="sgb-use" onclick="sgBookUse('${esc(st.id)}','${esc(g.invId)}')">${qgT('qg_use_btn')}</button></div>`; }).join('')
                 : `<p class="sgb-empty">${T('Chưa có quà nào trong túi.', 'No gifts in the bag.')}</p>`;
@@ -8366,7 +8469,8 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 T('Hoàn tác (Ctrl+Z), phím Delete hoặc nút Xóa điểm làm mất một mốc: quà mốc đó chưa dùng sẽ bị thu hồi (mốc 5 cũng được tính là chưa nhận), kỷ lục hạ theo, và mốc được tặng lại khi đạt lại.', 'Undo (Ctrl+Z), the Delete key or the Delete Score button that removes a milestone: its unused gift is withdrawn (milestone 5 then counts as not received), the record drops accordingly, and the milestone is awarded again when reached again.'),
                 T('Dưới streak 10, điểm dưới 9 làm đứt streak (9 vẫn giữ). Từ streak 10, mỗi điểm dưới 9 chỉ bị trừ 1 streak (kể cả khi đã tụt xuống dưới 10 trong cùng chuỗi); quá 3 lần (mốc 10), 4 (mốc 15), 5 (mốc 20), 10 (mốc 30), 15 (mốc 40), 20 (mốc 50) thì mất hết. Đổi mốc thì đếm lại từ đầu.', 'Below streak 10, a score under 9 ends the streak (a 9 keeps it). From streak 10, each score below 9 costs only 1 streak (even after dropping under 10 within the same chain); more than 3 (tier 10), 4 (15), 5 (20), 10 (30), 15 (40) or 20 (50) wipes it out. Changing tier restarts the count.'),
                 T('Quà đã nhận không bị thu hồi khi streak bị trừ hay đứt, và không bị ảnh hưởng bởi việc sửa điểm bằng tay.', 'Received gifts are never taken back when the streak drops or ends, and manual score edits do not affect them.'),
-                T('Điểm từ quà không cộng và không bị trừ streak; ô điểm quà bị khóa. Ô điểm dưới 10 được nâng lên 10 đều tính là điểm 10 thật (+1 streak); ô trống được điền 10 thì không cộng streak.', 'Gift scores neither add to nor reduce the streak, and gift cells are locked. Any cell below 10 raised to 10 counts as a real 10 (+1 streak); an empty cell filled with 10 does not add to the streak.'),
+                T('Điểm từ quà không cộng và không bị trừ streak; ô điểm quà bị khóa. Cả ô trống được điền 10 lẫn ô điểm từ 9 trở xuống được nâng lên 10 đều gắn cờ trung lập: không cộng và không trừ streak.', 'Gift scores neither add to nor reduce the streak, and gift cells are locked. Both empty cells filled with 10 and cells of 9 or lower raised to 10 are flagged neutral: they neither add to nor reduce the streak.'),
+                T('Nút Thu hồi chuỗi: dùng khi nhập nhầm điểm 10 làm lên mốc. Hệ thống thu hồi quà và mốc vừa đạt (kể cả quà đã dùng: các ô điểm quà được trả về điểm cũ, miễn trừ streak), cho bạn tick chọn các điểm 10 cần xóa (mặc định là các điểm nhập gần nhất theo giờ nhập) để chuỗi về dưới mốc đó.', 'Revoke chain button: use it when a 10 was entered by mistake and pushed the streak to a milestone. It withdraws the gift and milestone just reached (even if already used: gift cells go back to their old scores, streak-exempt) and lets you tick which 10s to delete (the most recently entered ones are pre-selected) so the streak drops below that milestone.'),
                 T('Quà áp vào một ô vẫn dưới 10 (cộng điểm, đổi điểm 7-8-9...) được miễn trừ: ô đó không bao giờ bị trừ streak.', 'A gift applied to a cell that stays below 10 (plus points, 7-8-9 exchange...) is exempt: that cell never costs streak.')
             ].map(x => `<p>${x}</p>`).join('');
             const w = document.createElement('div'); w.id = 'sgBook'; w.className = 'sgb-wrap';
@@ -8377,13 +8481,164 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     <div class="sgb-head"><div class="sgb-ico">${st.icon || '🎓'}</div><div class="min-w-0"><div class="sgb-name">${esc(getStudentDisplayName(st))}</div><div class="sgb-sub">${esc(cls ? cls.name : '')} · ${T('Sổ quà Chuỗi', 'Streak Gift Book')}</div></div><div style="margin-left:auto">${tenStreakHtml(st.id)}</div></div>
                     <div class="sgb-stats"><div class="sgb-stat"><b>${cur}</b><span>${T('Chuỗi hiện tại', 'Current streak')}</span></div><div class="sgb-stat"><b>${inf.best}</b><span>${T('Kỷ lục', 'Record')}</span></div><div class="sgb-stat"><b>${leftTens}</b><span>${T('Điểm 10 còn lại', 'Tens left')}</span></div></div>
                     <div class="sgb-h"><i class="fa-solid fa-flag-checkered"></i>${T('Mốc của chuỗi hiện tại', 'Current chain milestones')}</div>
-                    ${ms}${prog}
+                    ${ms}${prog}${revHtml}
                     <div class="sgb-h"><i class="fa-solid fa-gift"></i>${T('Quà trong túi', 'Gifts in the bag')}</div>${bagHtml}
                     <div class="sgb-h"><i class="fa-solid fa-book"></i>${T('Lịch sử nhận quà', 'Gift history')}<em>${T(`${gifts.length} quà · ${totalTens} điểm 10`, `${gifts.length} gifts · ${totalTens} tens`)}</em></div><div class="sgb-scroll">${histHtml}</div>
                     <div class="sgb-h"><i class="fa-solid fa-table-cells"></i>${T('Ô điểm từ quà', 'Cells from gifts')}<em>${cellKeys.length}</em></div><div class="sgb-scroll">${cellHtml}</div>
                     <div class="sgb-notes" id="sgbNotes"><div class="sgb-nh"><span>${T('Cơ chế chuỗi', 'How chains work')}</span><button type="button" onclick="sgBookToggleNotes()"><span class="sgb-m">${T('Hiện thêm', 'Show more')}</span><span class="sgb-l">${T('Thu gọn', 'Show less')}</span><i class="fa-solid fa-chevron-down"></i></button></div>${notes}</div>
                 </div></div>`;
             document.body.appendChild(w);
+        };
+        // ===== Thu hồi chuỗi (nút trong Sổ quà Streak): hoàn tác việc nhập nhầm điểm 10 làm chuỗi lên mốc =====
+        // Mốc T = mốc cao nhất đang đạt (<= streak hiện tại). Xóa các điểm 10 nhập gần nhất (theo giờ nhập) cho tới khi streak < T,
+        // thu hồi quà + mốc của các mốc không còn đạt (kể cả quà đã dùng: ô điểm quà trả về điểm cũ, miễn trừ streak), hạ kỷ lục theo.
+        function sgRevokePlan(sid, sel) {
+            const st = (appData.students || []).find(x => String(x.id) === String(sid)); if (!st) return null;
+            const L = sgLedger(), inf = tenStreakInfo(st.id), cur = inf.cur;
+            const tiersAll = Object.keys(SG_REWARDS).map(Number).sort((a, b) => a - b);
+            const T = tiersAll.filter(t => t <= cur).pop(); if (!T) return null;
+            const floorTs = tenFloorOf(st.id), sc = Object.assign({}, appData.scores || {});
+            const cand = tenSeries(st.id).filter(e => !e.ghost && !e.sg && e.v >= 10 && !(floorTs && e.ts < floorTs) && !(inf.startTs && e.ts < inf.startTs)).reverse();
+            const removed = []; let ni = inf;
+            const takeOut = e => {
+                const c = sc[e.key]; if (!c) return;
+                const eo = (c.editOrig && !isNaN(parseFloat(c.editOrig.v))) ? c.editOrig : null;
+                let restoreTo = null;
+                if (eo) { restoreTo = { score: parseFloat(eo.v), absent: false }; if (eo.ts) restoreTo.ts = eo.ts; if (eo.keep) restoreTo.keep = true; if (c.isExam) restoreTo.isExam = true; sc[e.key] = restoreTo; }
+                else delete sc[e.key];
+                removed.push({ key: e.key, restoreTo });
+            };
+            if (Array.isArray(sel)) {
+                // Người dùng tự chọn các điểm 10 cần xóa
+                const pick = new Set(sel);
+                cand.forEach(e => { if (pick.has(e.key)) takeOut(e); });
+                if (removed.length) ni = tenStreakInfo(st.id, sc);
+            } else {
+                // Mặc định: xóa các điểm 10 nhập gần nhất cho tới khi streak < mốc T
+                const q = cand.slice();
+                while (ni.cur >= T && q.length) { takeOut(q.shift()); ni = tenStreakInfo(st.id, sc); }
+            }
+            const valid = removed.length > 0 && ni.cur < T;
+            if (!valid && !Array.isArray(sel)) return null;
+            const ch = L.chains[st.id], inChain = new Set((ch && ch.on && Array.isArray(ch.tiers)) ? ch.tiers : []);
+            const tsOf = id => parseInt(String(id).split('_')[2]) || 0;
+            const claimed = new Set(), gifts = [], cells = [], revTiers = [];
+            tiersAll.filter(t => t > ni.peak && t <= Math.max(inf.peak, cur)).forEach(t => {
+                let id = ch && ch.gifts && ch.gifts[t];
+                if (!id && t === 5 && L.claim5[st.id]) id = L.claim5[st.id].invId;
+                if (!id) {
+                    const ids = Object.keys(L.gifts).filter(i => { const e = L.gifts[i]; return e && String(e.sid) === String(st.id) && e.gift && parseInt(e.gift.tier) === t; }).sort((a, b) => tsOf(b) - tsOf(a));
+                    if (inChain.has(t) && ids.length) id = ids[0];
+                }
+                if (!id && !inChain.has(t)) return;
+                revTiers.push(t);
+                if (!id) return;
+                const e = L.gifts[id], total = e ? (parseInt(e.gift && e.gift.count) || 0) : 0, left = e ? Math.max(0, parseInt(e.left) || 0) : total, used = Math.max(0, total - left);
+                const g = { id, tier: t, left, used, cells: [] };
+                Object.keys(L.cells).forEach(k => { const c = L.cells[k]; if (k.indexOf(st.id + '_') === 0 && c && c.sgInv === id && !claimed.has(k)) { claimed.add(k); g.cells.push(k); } });
+                if (g.cells.length < used) {
+                    Object.keys(L.cells).filter(k => k.indexOf(st.id + '_') === 0 && L.cells[k] && !L.cells[k].sgInv && parseInt(L.cells[k].sgTier) === t && !claimed.has(k))
+                        .sort((a, b) => scoreKeyDateMs(b) - scoreKeyDateMs(a)).slice(0, used - g.cells.length).forEach(k => { claimed.add(k); g.cells.push(k); });
+                }
+                g.cells.forEach(k => {
+                    const c = L.cells[k]; let restore = null;
+                    const prev = c.sgPrev || (c.sgOrig && !isNaN(parseFloat(c.sgOrig.v)) ? { score: parseFloat(c.sgOrig.v), absent: false, ts: c.sgOrig.ts || undefined } : null);
+                    if (prev) { restore = deepCopy(prev); if (restore.ts === undefined) delete restore.ts; if (!(parseFloat(restore.score) >= 10)) restore.keep = true; }
+                    cells.push({ key: k, restore });
+                });
+                gifts.push(g);
+            });
+            return { sid: st.id, st, T, cur, newCur: ni.cur, removed, revTiers, gifts, cells, valid, cands: cand.map(e => ({ key: e.key, ts: e.ts })) };
+        }
+        function sgRevokeSummary(p) {
+            if (!p) return '';
+            if (!p.valid) return L2(`Chọn các điểm 10 cần xóa sao cho chuỗi xuống dưới mốc ${p.T} (đang là ${p.newCur}).`, `Select the 10s to delete so the streak drops below milestone ${p.T} (currently ${p.newCur}).`);
+            const unused = p.gifts.reduce((a, g) => a + g.left, 0), usedCells = p.cells.length;
+            return L2(`Chuỗi ${p.cur} → ${p.newCur}. Thu hồi quà mốc ${p.revTiers.join(', ') || '—'} (${unused} điểm 10 chưa dùng${usedCells ? `, ${usedCells} ô điểm quà đã dùng được trả về điểm cũ` : ''}).`,
+                `Streak ${p.cur} → ${p.newCur}. Withdraw gifts of milestone ${p.revTiers.join(', ') || '—'} (${unused} unused 10s${usedCells ? `, ${usedCells} used gift cell(s) return to old scores` : ''}).`);
+        }
+        // Hộp chọn điểm 10 cần xóa: mặc định tick sẵn các điểm nhập gần nhất. Trả về mảng key đã chọn, hoặc null nếu hủy.
+        function sgRevokeDialog(plan0) {
+            return new Promise(resolve => {
+                const prevDlg = document.getElementById('sgRevDlg'); if (prevDlg) prevDlg.remove();
+                const esc = escapeHtml, sid = plan0.sid, defSel = new Set(plan0.removed.map(r => r.key));
+                const p2 = n => String(n).padStart(2, '0');
+                const fmtT = ts => { try { const d = new Date(ts); return `${p2(d.getHours())}:${p2(d.getMinutes())} ${p2(d.getDate())}/${p2(d.getMonth() + 1)}`; } catch (e) { return ''; } };
+                const rows = plan0.cands.map((c, i) => `<label class="sgr-row"><input type="checkbox" value="${esc(c.key)}" ${defSel.has(c.key) ? 'checked' : ''}><span class="sgr-d">${esc(sgFmtDate(c.key.replace(sid + '_', '')))}</span><span class="sgr-t">10 · ${L2('nhập lúc', 'entered')} ${fmtT(c.ts)}</span>${i === 0 ? `<em>${L2('mới nhất', 'latest')}</em>` : ''}</label>`).join('');
+                // Cảnh báo: chuỗi đã vượt mốc T -> mốc T có thể là mốc nhận đúng, không phải mốc do điểm nhập nhầm tạo ra
+                const over = plan0.cur - plan0.T;
+                const warn = over > 0 ? `<div class="sgr-warn"><i class="fa-solid fa-triangle-exclamation"></i> ${L2(
+                    `Chuỗi hiện tại là ${plan0.cur}, đã vượt mốc ${plan0.T} ${over} điểm. Nếu điểm nhập nhầm không phải điểm đưa chuỗi lên mốc ${plan0.T}, quà mốc ${plan0.T} bạn nhận đúng sẽ bị thu hồi oan. Chỉ tiếp tục khi chắc chắn mốc ${plan0.T} là mốc nhận nhầm.`,
+                    `The current streak is ${plan0.cur}, already ${over} past milestone ${plan0.T}. If the mistaken entry is not what pushed the streak to milestone ${plan0.T}, the milestone-${plan0.T} gift you earned legitimately will be withdrawn by mistake. Continue only if you are sure milestone ${plan0.T} was awarded by mistake.`)}</div>` : '';
+                const w = document.createElement('div'); w.id = 'sgRevDlg'; w.className = 'sgr-wrap';
+                w.innerHTML = `<div class="sgr"><h3><i class="fa-solid fa-rotate-left"></i> ${L2('Thu hồi chuỗi', 'Revoke chain')} · ${esc(getStudentDisplayName(plan0.st))}</h3>
+                    <p class="sgr-hint">${L2(`Tick các điểm 10 nhập nhầm cần xóa (mặc định là các điểm nhập gần nhất). Mốc thu hồi: ${plan0.T}.`, `Tick the 10s entered by mistake to delete (the most recent ones are pre-selected). Milestone to revoke: ${plan0.T}.`)}</p>${warn}
+                    <div class="sgr-list">${rows}</div><div class="sgr-sum"></div>
+                    <div class="sgr-btns"><button type="button" class="sgr-cancel">${L2('Hủy', 'Cancel')}</button><button type="button" class="sgr-ok">${L2('Thu hồi', 'Revoke')}</button></div></div>`;
+                document.body.appendChild(w);
+                const sum = w.querySelector('.sgr-sum'), ok = w.querySelector('.sgr-ok');
+                const getSel = () => Array.from(w.querySelectorAll('input[type=checkbox]:checked')).map(i => i.value);
+                const onKey = e => { if (e.key === 'Escape') { e.stopPropagation(); done(null); } };
+                const done = v => { document.removeEventListener('keydown', onKey, true); w.remove(); resolve(v); };
+                const refresh = () => { const p = sgRevokePlan(sid, getSel()); sum.textContent = sgRevokeSummary(p); sum.classList.toggle('bad', !(p && p.valid)); ok.disabled = !(p && p.valid); };
+                w.addEventListener('change', refresh);
+                w.addEventListener('click', e => { if (e.target === w) done(null); });
+                w.querySelector('.sgr-cancel').onclick = () => done(null);
+                ok.onclick = () => { if (!ok.disabled) done(getSel()); };
+                document.addEventListener('keydown', onKey, true);
+                refresh();
+            });
+        }
+        let sgRevokeBusy = false;
+        window.sgRevokeChain = async function (sid) {
+            if (sgRevokeBusy || sgBusy) return;
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return;
+            let plan = sgRevokePlan(sid);
+            if (!plan) { qsToast(L2('Chưa đạt mốc nào để thu hồi.', 'No milestone to revoke.'), 'warning'); return; }
+            sgRevokeBusy = true;
+            try {
+                const picked = await sgRevokeDialog(plan);
+                if (!picked || !picked.length) return;
+                plan = sgRevokePlan(sid, picked);
+                if (!plan || !plan.valid) { qsToast(L2('Dữ liệu đã thay đổi hoặc lựa chọn không còn hợp lệ.', 'Data changed or the selection is no longer valid.'), 'warning'); return; }
+                const st = plan.st, L = sgLedger(), sc = appData.scores || (appData.scores = {});
+                const touched = new Set(plan.removed.map(r => r.key).concat(plan.cells.map(c => c.key)));
+                const prevCells = {}; touched.forEach(k => { prevCells[k] = sc[k] !== undefined ? deepCopy(sc[k]) : undefined; });
+                const prevLedger = deepCopy(L), prevInv = deepCopy(st.inventory || []), prevPts = st.rewardPoints || 0, prevBest = st.bestTenStreak;
+                let sgBefore = null; try { sgBefore = sgSnap([st.id]); } catch (e) {}
+                // 1) Xóa / khôi phục các điểm 10 nhập gần nhất
+                plan.removed.forEach(r => {
+                    const old = sc[r.key];
+                    if (old) st.rewardPoints = Math.max(0, (st.rewardPoints || 0) - qsOldExcess(old));
+                    if (r.restoreTo) sc[r.key] = deepCopy(r.restoreTo); else delete sc[r.key];
+                });
+                // 2) Thu hồi quà + ô điểm quà đã áp dụng
+                plan.cells.forEach(c => { delete L.cells[c.key]; if (c.restore) sc[c.key] = c.restore; else delete sc[c.key]; });
+                const ch = L.chains[st.id];
+                plan.gifts.forEach(g => {
+                    delete L.gifts[g.id];
+                    if (L.claim5[st.id] && L.claim5[st.id].invId === g.id) delete L.claim5[st.id];
+                    if (Array.isArray(st.inventory)) st.inventory = st.inventory.filter(i => i.invId !== g.id);
+                    if (ch && ch.gifts) delete ch.gifts[g.tier];
+                });
+                if (ch && Array.isArray(ch.tiers)) ch.tiers = ch.tiers.filter(t => plan.revTiers.indexOf(t) < 0);
+                if (plan.revTiers.indexOf(5) >= 0 && L.claim5[st.id] && !plan.gifts.some(g => g.tier === 5)) delete L.claim5[st.id];
+                // 3) Hạ kỷ lục theo lịch sử còn lại
+                try { sgTrimChains([st.id], sgBefore); } catch (e) {}
+                const saved = await saveData();
+                if (!saved) {
+                    Object.keys(prevCells).forEach(k => { if (prevCells[k] === undefined) delete sc[k]; else sc[k] = prevCells[k]; });
+                    appData.sgLedger = prevLedger; st.inventory = prevInv; st.rewardPoints = prevPts;
+                    if (prevBest === undefined) delete st.bestTenStreak; else st.bestTenStreak = prevBest;
+                    qsToast(qgT('dsToastError'), 'error');
+                    try { renderCurrentView(); } catch (e) {}
+                    return;
+                }
+                qsToast(L2(`Đã thu hồi mốc ${plan.T} của ${getStudentDisplayName(st)}: chuỗi về ${plan.newCur}.`, `Revoked milestone ${plan.T} of ${getStudentDisplayName(st)}: streak back to ${plan.newCur}.`), 'success');
+                try { renderCurrentView(); } catch (e) {}
+                try { qgRender(); } catch (e) {}
+                try { sgOpenBook(st.id); } catch (e) {}
+            } finally { sgRevokeBusy = false; }
         };
         function getTenStreak(studentId) { return tenStreakInfo(studentId).cur; }
         // Lưu kỷ lục vào dữ liệu học sinh mỗi lần lưu (chỉ tăng, không giảm).
@@ -8394,7 +8649,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         window.tenStreakReport = function () {
             const rows = appData.students.map(st => {
                 const cls = appData.classes.find(c => c.id === st.classId), inf = tenStreakInfo(st.id);
-                const total10 = tenSeries(st.id).filter(e => e.v >= 10).length;
+                const total10 = tenSeries(st.id).filter(e => !e.ghost && e.v >= 10).length;
                 return { lop: cls ? cls.name : '', hocSinh: st.name, streak10: inf.cur, kyLuc: inf.best, tongSoDiem10: total10 };
             }).sort((a, b) => b.streak10 - a.streak10);
             console.table(rows); return rows;
@@ -8507,7 +8762,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         const L2 = (vi, en) => ((appData.language || 'vi') === 'en' ? en : vi);
         // ===== Cấp độ & XP: XP = tổng điểm các buổi; mỗi XP_PER_LEVEL điểm lên 1 cấp =====
         const XP_PER_LEVEL = 50;
-        function xpOf(sid, scores) { return Math.round(tenSeries(sid, scores).reduce((a, e) => a + e.v, 0) * 10) / 10; }
+        function xpOf(sid, scores) { return Math.round(tenSeries(sid, scores).filter(e => !e.ghost).reduce((a, e) => a + e.v, 0) * 10) / 10; }
         function levelPillHtml(sid) {
             const xp = xpOf(sid), lv = Math.floor(xp / XP_PER_LEVEL) + 1, cur = xp % XP_PER_LEVEL;
             return `<span class="tf-lv" title="XP ${cur.toFixed(0)}/${XP_PER_LEVEL}"><b>Lv${lv}</b><i style="--p:${(cur / XP_PER_LEVEL * 100).toFixed(0)}%"></i></span>`;
@@ -11141,7 +11396,7 @@ window.openStudentProfile=function(studentId){
             pts.sort((a, b) => a.d - b.d);
             const last = pts.slice(-20), W = 260, H = 56;
             let inf;
-            if (opt.snap) { let run = 0, best = 0; tenSeries(sid, scores).forEach(e => { if (e.v >= 10) { run++; if (run > best) best = run; } else run = 0; }); inf = { cur: run, best }; }
+            if (opt.snap) { let run = 0, best = 0; tenSeries(sid, scores).forEach(e => { if (e.ghost) return; if (e.v >= 10) { run++; if (run > best) best = run; } else run = 0; }); inf = { cur: run, best }; }
             else inf = tenStreakInfo(sid);
             const xp = xpOf(sid, opt.snap ? scores : undefined), lv = Math.floor(xp / XP_PER_LEVEL) + 1, cur = xp % XP_PER_LEVEL;
             const stats = opt.snap ? { hasData: anyKey, avg: parseFloat((calculateSnapshotTotal(opt.snap, sid).avg || 0).toFixed(1)) } : calculateStudentStats(sid);
