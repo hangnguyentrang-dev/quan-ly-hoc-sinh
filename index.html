@@ -738,6 +738,23 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 /* ===== XF: trend toggle ===== */
 .qs-toggle.qs-toggle-tpl.on{background:#c026d3;border-color:#c026d3;box-shadow:0 2px 8px rgba(192,38,211,.4)}
 .qs-toggle.qs-toggle-trend.on{background:#059669;border-color:#059669;box-shadow:0 2px 8px rgba(5,150,105,.4)}
+.qs-toggle.qs-toggle-chain.on{background:#e11d48;border-color:#e11d48;box-shadow:0 2px 8px rgba(225,29,72,.42)}
+/* Điểm 10 Chuỗi: chỉ ô điểm 10 trong chuỗi nổi bật, màu theo mốc chuỗi của học sinh; ô khác mờ đi */
+#scoreMatrix.qs-chain-on td.cell-scored:not(.cell-chain),#scoreMatrix.qs-chain-on td.cell-absent{opacity:.2;filter:grayscale(.7)}
+#scoreMatrix.qs-chain-on td.cell-chain{position:relative;z-index:3;transform:translateY(-2px) scale(1.14);background:var(--ch-bg)!important;color:var(--ch-tx)!important;box-shadow:0 5px 12px -2px var(--ch-a),inset 0 0 0 2px var(--ch-a);border-radius:6px;font-weight:900}
+.ch-t1{--ch-a:#b5942f;--ch-bg:#f5e6b0;--ch-tx:#6b5316}
+.ch-t5{--ch-a:#f97316;--ch-bg:#ffedd5;--ch-tx:#9a3412}
+.ch-t10{--ch-a:#10b981;--ch-bg:#d1fae5;--ch-tx:#065f46}
+.ch-t15{--ch-a:#f59e0b;--ch-bg:#fef08a;--ch-tx:#92400e}
+.ch-t20{--ch-a:#6366f1;--ch-bg:#e0e7ff;--ch-tx:#3730a3}
+.ch-t30{--ch-a:#dc2626;--ch-bg:#fee2e2;--ch-tx:#7f1d1d}
+.ch-t40{--ch-a:#c026d3;--ch-bg:#fae8ff;--ch-tx:#701a75}
+.ch-t50{--ch-a:#68778B;--ch-bg:#e2e8f0;--ch-tx:#1e293b}
+.ch-t60{--ch-a:#00A9C7;--ch-bg:#cffafe;--ch-tx:#064559}
+.ch-t70{--ch-a:#5C9E16;--ch-bg:#ecfccb;--ch-tx:#2a4a0d}
+.ch-t80{--ch-a:#D62986;--ch-bg:#ffe0f0;--ch-tx:#6a1148}
+.ch-t90{--ch-a:#7B3828;--ch-bg:#fbe3ce;--ch-tx:#4B241C}
+.ch-t100{--ch-a:#6366f1;--ch-bg:linear-gradient(135deg,#fee2e2,#fef9c3,#dcfce7,#cffafe,#e0e7ff,#fae8ff);--ch-tx:#1e1b4b}
 .qs-toggle.qs-toggle-ten.on{background:#0891b2;border-color:#0891b2;box-shadow:0 2px 8px rgba(8,145,178,.45)}
 /* Chế độ Hiện điểm 10: điểm dưới 10 mờ đi, điểm 10 nhô nhẹ lên */
 #scoreMatrix td.grid-cell{transition:opacity .25s ease,transform .25s cubic-bezier(.2,.9,.3,1.3),box-shadow .25s ease,filter .25s ease}
@@ -1817,6 +1834,8 @@ body.qs-presenting .mx-clock{display:none !important}
 #qsToolbar .qs-full-btn:active{transform:scale(.94)}
 body.mx-fs-on{overflow:hidden}
 body.mx-fs-on > header,body.mx-fs-on > header + div{display:none !important}
+/* Toàn màn hình: ẩn thanh tab + nút lớp (đang sticky z-40, đè lên thanh công cụ); chỉ giữ bảng + thanh công cụ + các nút tròn */
+body.mx-fs-on #appNavBar{display:none !important}
 #viewMatrixContainer.mx-fs{position:fixed;inset:0;z-index:39;width:100%;height:100%;max-width:none;margin:0;border:0;border-radius:0;box-shadow:none}
 .mx-dark #qsToolbar .qs-full-btn{background:#e2e8f0;color:#0f172a}.mx-dark #qsToolbar .qs-full-btn:hover{background:#fff}
 </style>
@@ -2377,6 +2396,17 @@ html.mx-dark .gift-note{color:#c4b5fd}
 .gift-sp-plus_exam{--g1:#fef2f2;--g2:#fee2e2;--g3:#fecaca;--gb:#fca5a5;--wm:#dc2626}
 .gift-sp-streak_ten{--g1:#f0fdfa;--g2:#ccfbf1;--g3:#99f6e4;--gb:#5eead4;--wm:#0d9488}
 .gift-sp-plus_exam .gift-note{color:#b91c1c}
+/* Quà đặc biệt Khiên giữ chuỗi: nền thẻ riêng (xanh thép + viền vàng lửa), dùng chung cho cửa hàng, hộp bí ẩn và vòng quay */
+.gift-sp-streak_shield{--g1:#f8fafc;--g2:#f1f5f9;--g3:#cbd5e1;--gb:#94a3b8;--wm:#475569}
+.gift-sp-streak_shield .gift-note{color:#475569}
+html.mx-dark .gift-sp-streak_shield .gift-note{color:#cbd5e1}
+/* Túi quà (qg-gift) và chip kho quà: cùng màu xám */
+.qg-gift.qg-shield{background:linear-gradient(135deg,#f8fafc,#e2e8f0)!important;border-color:#94a3b8!important}
+.qg-gift.qg-shield>i{color:#475569}
+html.mx-dark .qg-gift.qg-shield{background:linear-gradient(135deg,#334155,#1e293b)!important;border-color:#64748b!important}
+html.mx-dark .qg-gift.qg-shield>i{color:#cbd5e1}
+.inv-shield{background:#f1f5f9!important;border-color:#94a3b8!important;color:#334155!important}
+html.mx-dark .inv-shield{background:#334155!important;border-color:#64748b!important;color:#e2e8f0!important}
 html.mx-dark .gift-sp-plus_exam .gift-note{color:#fca5a5}
 /* Màu chữ điểm trong Score Matrix đồng bộ với màu ĐTB (không đổi màu nền, không áp cho ô vắng) */
 .score-row > td.grid-cell.cell-scored.cell-gt-leg{color:#ea580c}
@@ -2734,7 +2764,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
     </div>
 
     <!-- Sticky bar: class tabs + grouped view tabs stay visible while scrolling -->
-    <div class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
+    <div id="appNavBar" class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4">
             <!-- Tier 3: class & course management -->
             <div class="flex flex-wrap items-end justify-between gap-2 pt-2">
@@ -3896,6 +3926,8 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
 
         Object.assign(translations.vi, {"qg_type_streak": "Quà thưởng Chuỗi", "sg_name": "Quà Streak {tier}", "sg_type_desc": "Cộng {n} điểm 10 · ô dùng quà đều trung lập, không tính streak", "sg_confirm": "cộng {used} điểm 10 cho {student}: {fills} ô trống trước hôm nay, {ups} ô điểm từ 9 trở xuống (không tính điểm test) chuyển thành 10.", "sg_confirm_rest": " Còn dư {left} điểm 10 trong quà.", "sg_done": "Đã cộng {used} điểm 10 cho {student}.", "sg_done_rest": " Còn dư {left} điểm 10 trong quà.", "sg_no_cell": "Không còn ô trống trước hôm nay hoặc ô điểm từ 9 trở xuống để dùng quà này.", "sg_award": "🎁 {student} đạt streak {tier}: nhận quà {n} điểm 10!", "sg_award_many": "🎁 Đã tặng quà thưởng streak cho {n} học sinh.", "sg_cell_tag": "Quà Chuỗi {tier} (khóa)"});
         Object.assign(translations.en, {"qg_type_streak": "Streak reward", "sg_name": "Streak {tier} Gift", "sg_type_desc": "Adds {n} scores of 10 · gift cells are neutral and never count for streak", "sg_confirm": "add {used} scores of 10 for {student}: {fills} empty cells before today, {ups} cells scored 9 or lower (test scores excluded) become 10.", "sg_confirm_rest": " {left} score(s) of 10 stay in the gift.", "sg_done": "Added {used} scores of 10 for {student}.", "sg_done_rest": " {left} score(s) of 10 stay in the gift.", "sg_no_cell": "No empty cell before today or cell scored 9 or lower left to use this gift on.", "sg_award": "🎁 {student} hit a {tier} streak: earned a gift of {n} tens!", "sg_award_many": "🎁 Streak reward gifts given to {n} students.", "sg_cell_tag": "Streak {tier} gift (locked)"});
+        Object.assign(translations.vi, { qg_type_shield: 'Khiên giữ chuỗi', qg_shield_note: 'Tự dùng khi bị điểm dưới 9', shield_lost: '{student} bị mất 1 {gift} (còn {n}).', shield_refund: 'Đã hoàn lại 1 {gift} cho {student}.', shield_card_note: 'Tự chặn trừ chuỗi khi bị điểm dưới 9' });
+        Object.assign(translations.en, { qg_type_shield: 'Streak Shield', qg_shield_note: 'Used automatically on a score below 9', shield_lost: '{student} lost 1 {gift} ({n} left).', shield_refund: 'Returned 1 {gift} to {student}.', shield_card_note: 'Auto-blocks the streak loss on a score below 9' });
         Object.assign(translations.vi, { menuEditHistory: 'Lịch sử chỉnh sửa' }); Object.assign(translations.en, { menuEditHistory: 'Edit history' });
         Object.assign(translations.vi, { menuScoreArchive: 'Lưu Trữ điểm' }); Object.assign(translations.en, { menuScoreArchive: 'Score Archive' });
         Object.assign(translations.vi, {"optTypePlusMatch": "Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)", "lblMatchCond": "Ô điểm quy định được cộng (điều kiện & mức điểm):", "optMatchLte": "Từ mức này trở xuống (≤)", "optMatchEq": "Bằng đúng mức này (=)", "optMatchGte": "Từ mức này trở lên (≥)", "phMatchScore": "VD: 7", "qg_type_plus_match": "Cộng điểm theo ô quy định", "pm_desc": "Ô có điểm {op} {score} → +{delta}", "qg_plus_match_done": "Đã cộng {delta} điểm vào ô {date} ({before}đ → {after}đ)!"});
@@ -3929,7 +3961,8 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             fix_change_10: { vi: 'Đổi một điểm có sẵn thành 10', en: 'Change existing score to 10' },
             fix_change_9:  { vi: 'Đổi một điểm có sẵn thành 9',  en: 'Change existing score to 9' },
             fix_change_8:  { vi: 'Đổi một điểm có sẵn thành 8',  en: 'Change existing score to 8' },
-            fix_lucky_spin: { vi: '1 lượt quay may mắn', en: '1 Lucky Wheel spin' }
+            fix_lucky_spin: { vi: '1 lượt quay may mắn', en: '1 Lucky Wheel spin' },
+            fix_streak_shield: { vi: 'Khiên giữ chuỗi', en: 'Streak Shield' }
         };
 
         const DEFAULT_FIXED_ITEMS = [
@@ -3940,11 +3973,15 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             { id: 'fix_change_9',  name: 'Đổi một điểm có sẵn thành 9',  cost: 10, isFixed: true, targetScore: 9,  type: 'change' },
             { id: 'fix_change_8',  name: 'Đổi một điểm có sẵn thành 8',  cost: 8,  isFixed: true, targetScore: 8,  type: 'change' },
             { id: 'fix_lucky_spin', name: '1 lượt quay may mắn', cost: 0, isFixed: true, type: 'lucky_spin' },
-            { id: 'fix_plus_exam_1', name: 'Cộng 1 điểm vào bài kiểm tra', nameEn: '+1 point to Test score', cost: 10, isFixed: true, type: 'plus_exam', deltaScore: 1 }
+            { id: 'fix_plus_exam_1', name: 'Cộng 1 điểm vào bài kiểm tra', nameEn: '+1 point to Test score', cost: 10, isFixed: true, type: 'plus_exam', deltaScore: 1 },
+            { id: 'fix_streak_shield', name: 'Khiên giữ chuỗi', nameEn: 'Streak Shield', cost: 10, isFixed: true, type: 'streak_shield' }
         ];
         // Quà cố định cộng 1 điểm Test score: cho phép sửa tên (theo từng ngôn ngữ) và giá; luôn +1, luôn quét ô Test score thấp nhất
         const EXAM_PLUS_ID = 'fix_plus_exam_1';
         const EXAM_PLUS_DEFAULT = { vi: 'Cộng 1 điểm vào bài kiểm tra', en: '+1 point to Test score' };
+        // Quà cố định Khiên giữ chuỗi: bị điểm dưới 9 thì tự tiêu 1 khiên và miễn trừ chuỗi. Sửa được tên (theo ngôn ngữ) và giá, không xóa khỏi cửa hàng.
+        const SHIELD_ID = 'fix_streak_shield';
+        const SHIELD_DEFAULT = { vi: 'Khiên giữ chuỗi', en: 'Streak Shield' };
 
         const FIXED_VIOLATION_NAMES = {
             vt_1: { vi: 'Không làm bài tập về nhà', en: 'Did not complete homework' },
@@ -4014,6 +4051,10 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         function getRewardName(item) {
             if (item && item.type === 'streak_ten') return sgGiftName(item);
             const lang = appData.language || 'vi';
+            if (String(item.itemId || item.id || '') === SHIELD_ID) {
+                const live = (appData.globalShopItems || []).find(i => i.id === SHIELD_ID) || item;
+                return lang === 'en' ? (live.nameEn || SHIELD_DEFAULT.en) : (live.name || SHIELD_DEFAULT.vi);
+            }
             if (String(item.itemId || item.id || '') === EXAM_PLUS_ID) {
                 const live = (appData.globalShopItems || []).find(i => i.id === EXAM_PLUS_ID) || item;
                 return lang === 'en' ? (live.nameEn || EXAM_PLUS_DEFAULT.en) : (live.name || EXAM_PLUS_DEFAULT.vi);
@@ -4078,6 +4119,9 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 tenLbl: 'Hiện điểm 10',
                 tenHint: 'Làm mờ các điểm dưới 10 và nhô các điểm 10 lên cho dễ thấy (luôn tắt khi mở trang).',
                 tenOn: 'Đã bật Hiện điểm 10: điểm dưới 10 mờ đi, điểm 10 nổi bật.',
+                chainLbl: 'Điểm 10 Chuỗi',
+                chainHint: 'Chỉ nổi bật các điểm 10 đang được tính vào chuỗi của từng bạn, tô đúng màu chuỗi; các ô còn lại mờ đi, không gồm điểm 10 từ quà chuỗi (luôn tắt khi mở trang).',
+                chainOn: 'Đã bật Điểm 10 Chuỗi: chỉ các điểm 10 nằm trong chuỗi được tô màu theo chuỗi của từng bạn, các ô khác mờ đi.',
                 tplLbl: 'Mẫu tên',
                 tplHint: 'Hiện nền mẫu của Danh sách lớp ở cột Họ & Tên (bật/tắt, được nhớ cho lần mở sau).',
                 tplOn: 'Đã bật Mẫu tên: cột Họ & Tên dùng nền mẫu của từng học sinh.',
@@ -4107,10 +4151,10 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 rankUp: n => `Lên ${n} hạng`, rankDown: n => `Xuống ${n} hạng`,
                 trendLbl: 'Xu hướng điểm',
                 sgLocked: 'Điểm quà Chuỗi đã bị khóa: không thể sửa hoặc xóa.',
-                keepLbl: 'Không trừ chuỗi',
+                keepLbl: 'Bảo Vệ chuỗi',
                 keepHint: 'Khi BẬT, điểm dưới 10 nhập vào lúc này sẽ không trừ/đứt chuỗi (điểm 10 vẫn cộng chuỗi). Những điểm đó được miễn trừ vĩnh viễn, kể cả sau khi tắt nút. Điểm nhập khi TẮT vẫn tính chuỗi bình thường.',
-                keepOn: 'Đã bật Không trừ chuỗi: các điểm dưới 10 nhập từ bây giờ (vòng quay, quà đổi điểm 7-8-9...) sẽ không trừ chuỗi; điểm 10 vẫn cộng chuỗi bình thường.',
-                keepOff: 'Đã tắt Không trừ chuỗi: điểm nhập từ giờ tính chuỗi bình thường. Các điểm đã nhập lúc bật vẫn được miễn trừ.',
+                keepOn: 'Đã bật Bảo Vệ chuỗi: các điểm dưới 10 nhập từ bây giờ (vòng quay, quà đổi điểm 7-8-9...) sẽ không trừ chuỗi; điểm 10 vẫn cộng chuỗi bình thường.',
+                keepOff: 'Đã tắt Bảo Vệ chuỗi: điểm nhập từ giờ tính chuỗi bình thường. Các điểm đã nhập lúc bật vẫn được miễn trừ.',
                 trendHint: 'Hiện mũi tên ▲▼ cạnh ĐTB: so sánh TB 5 điểm gần nhất với 5 điểm trước đó (luôn tắt khi mở trang).',
                 bdayLbl: 'Ngày sinh nhật (không bắt buộc):',
                 bdayHint: 'Đến ngày này hệ thống sẽ thông báo và thẻ học sinh có hiệu ứng sinh nhật.'
@@ -4150,6 +4194,9 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 tenLbl: 'Show 10s',
                 tenHint: 'Fades scores below 10 and lifts the 10s so they stand out (always off when the page opens).',
                 tenOn: 'Show 10s on: scores below 10 are faded, 10s stand out.',
+                chainLbl: '10s Streak',
+                chainHint: 'Highlights only the 10s currently counted in each student\'s streak, in that streak\'s colour; every other cell fades, and 10s from streak gifts are excluded (always off when the page opens).',
+                chainOn: '10s Streak on: only the 10s inside each student\'s streak are highlighted in their streak colour; other cells are faded.',
                 tplLbl: 'Name template',
                 tplHint: 'Show the Class list card template as the Student Full Name background (on/off, remembered next time).',
                 tplOn: 'Name template on: the Student Full Name column uses each student\'s card template.',
@@ -4179,10 +4226,10 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 rankUp: n => `Up ${n} place${n === 1 ? '' : 's'}`, rankDown: n => `Down ${n} place${n === 1 ? '' : 's'}`,
                 trendLbl: 'Score trend',
                 sgLocked: 'Streak gift scores are locked: they cannot be edited or deleted.',
-                keepLbl: 'No streak loss',
+                keepLbl: 'Protect streak',
                 keepHint: 'When ON, scores below 10 entered now will not reduce or break the streak (a 10 still adds to it). Those scores stay exempt even after turning it off. Scores entered while OFF count normally.',
-                keepOn: 'No streak loss on: scores below 10 entered from now on (lucky wheel, gift-exchange points 7-8-9...) will not reduce streaks; a 10 still adds to the streak.',
-                keepOff: 'No streak loss off: new scores count toward streaks normally. Scores entered while it was on stay exempt.',
+                keepOn: 'Protect streak on: scores below 10 entered from now on (lucky wheel, gift-exchange points 7-8-9...) will not reduce streaks; a 10 still adds to the streak.',
+                keepOff: 'Protect streak off: new scores count toward streaks normally. Scores entered while it was on stay exempt.',
                 trendHint: 'Shows a ▲▼ arrow next to the average: last 5 scores vs the 5 before (always off when the page opens).',
                 bdayLbl: 'Birthday (optional):',
                 bdayHint: 'On this day the system will notify you and the student card gets a birthday effect.'
@@ -4197,6 +4244,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         const QS_TTL = 60000;
         const qsQuick = true; // Nhập nhanh bằng bàn phím: luôn bật cố định
         let qsSelCell = null, qsBuf = '', qsFlashCell = null, qsToolbarSig = '', qsPresKind = null;
+        let qsChain = false; // Điểm 10 Chuỗi: luôn TẮT mỗi lần mở trang (không lưu)
         let qsTen = false; // Hiện điểm 10: luôn TẮT mỗi lần mở trang (không lưu)
         let qsTrend = false; // Xu hướng điểm: luôn TẮT mỗi lần mở trang (không lưu)
         let qsEdit = false; // chế độ Sửa điểm: sửa tay, gỡ liên kết số lần phát biểu (không lưu giữa các lần mở trang)
@@ -4792,7 +4840,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
 
         /* ===== Tách riêng dữ liệu/cơ chế theo từng giáo viên: mỗi lần đổi không gian giáo viên đều đặt lại trạng thái Bảng điểm ===== */
         function qsTeacherSwitch(id) {
-            qsTest = false; qsEdit = false; qsSpeak = false; qsTrend = false; qsTen = false;
+            qsTest = false; qsEdit = false; qsSpeak = false; qsTrend = false; qsTen = false; qsChain = false;
             try { qsTpl = id ? localStorage.getItem(QS_TPL_KEY + ':' + id) !== '0' : true; } catch (e) { qsTpl = true; }
             qsSelCell = null; qsBuf = ''; qsFlashCell = null; qsToolbarSig = '';
             mxSel = []; mxEnd = null; mxBatch = null;
@@ -4888,8 +4936,16 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             renderCurrentView();
             if (qsTrend) qsToast(qsT('trendOn'), 'info');
         };
+        window.qsToggleChain = function () {
+            qsChain = !qsChain;
+            if (qsChain) qsTen = false; // hai chế độ làm mờ không dùng chung một lúc
+            qsToolbarSig = ''; qsRefreshToolbar();
+            renderCurrentView();
+            if (qsChain) qsToast(qsT('chainOn'), 'info');
+        };
         window.qsToggleTen = function () {
             qsTen = !qsTen;
+            if (qsTen && qsChain) { qsChain = false; renderCurrentView(); }
             qsToolbarSig = ''; qsRefreshToolbar();
             if (qsTen) qsToast(qsT('tenOn'), 'info');
         };
@@ -4909,13 +4965,13 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         };
         function qsRefreshToolbar() {
             const tb = qsEl('qsToolbar'); if (!tb) return;
-            const sig = (appData.language || 'vi') + '|' + qsSpeak + '|' + qsTest + '|' + qsEdit + '|' + qsTrend + '|' + !!appData.keepStreak + '|' + qsTpl + '|' + qsTen + '|' + !!window.__mxFs;
+            const sig = (appData.language || 'vi') + '|' + qsSpeak + '|' + qsTest + '|' + qsEdit + '|' + qsTrend + '|' + !!appData.keepStreak + '|' + qsTpl + '|' + qsTen + '|' + qsChain + '|' + !!window.__mxFs;
             if (sig === qsToolbarSig) return;
             qsToolbarSig = sig;
             const collapsed = !!window.__qsToolbarCollapsed;
-            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-full-btn" onclick="mxToggleFullscreen()" aria-pressed="${!!window.__mxFs}" aria-label="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}" title="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}"><i class="fa-solid ${window.__mxFs ? 'fa-compress' : 'fa-expand'}"></i></button><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle qs-toggle-speak ${qsSpeak ? 'on' : ''}" onclick="qsToggleSpeak()" aria-pressed="${qsSpeak}" title="${qsT('speakTitle')}"><i class="fa-solid fa-comments"></i><span class=\"qs-lbl\">${qsT('speakLbl')}<b>${qsOnOff(qsSpeak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i><span class=\"qs-lbl\">${qsT('testLbl')}<b>${qsOnOff(qsTest)}</b></span></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i><span class=\"qs-lbl\">${qsT('editLbl')}<b>${qsOnOff(qsEdit)}</b></span></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i><span class=\"qs-lbl\">${qsT('trendLbl')}<b>${qsOnOff(qsTrend)}</b></span></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-fire-flame-curved"></i><span class=\"qs-lbl\">${qsT('keepLbl')}<b>${qsOnOff(appData.keepStreak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i><span class=\"qs-lbl\">${qsT('tplLbl')}<b>${qsOnOff(qsTpl)}</b></span></button><button type="button" class="qs-toggle qs-toggle-ten ${qsTen ? 'on' : ''}" onclick="qsToggleTen()" aria-pressed="${qsTen}" title="${qsT('tenHint')}"><i class="fa-solid fa-star"></i><span class=\"qs-lbl\">${qsT('tenLbl')}<b>${qsOnOff(qsTen)}</b></span></button><span class="mx-today-group" role="group"><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i><span class="qs-lbl">${qsT('todayLbl')}</span></button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button></span><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsSpeakPrev" class="qs-speak-prev" style="display:none"></span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span><div class="qs-legend" role="group"><span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>${qsT('legAbsent')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>${qsT('legScored')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>${qsT('legExam')}</span><span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>${qsT('legManual')}</span><span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>${qsT('legStreak')}</span></div></div>`;
+            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-full-btn" onclick="mxToggleFullscreen()" aria-pressed="${!!window.__mxFs}" aria-label="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}" title="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}"><i class="fa-solid ${window.__mxFs ? 'fa-compress' : 'fa-expand'}"></i></button><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle qs-toggle-speak ${qsSpeak ? 'on' : ''}" onclick="qsToggleSpeak()" aria-pressed="${qsSpeak}" title="${qsT('speakTitle')}"><i class="fa-solid fa-comments"></i><span class=\"qs-lbl\">${qsT('speakLbl')}<b>${qsOnOff(qsSpeak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i><span class=\"qs-lbl\">${qsT('testLbl')}<b>${qsOnOff(qsTest)}</b></span></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i><span class=\"qs-lbl\">${qsT('editLbl')}<b>${qsOnOff(qsEdit)}</b></span></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i><span class=\"qs-lbl\">${qsT('trendLbl')}<b>${qsOnOff(qsTrend)}</b></span></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-shield-halved"></i><span class=\"qs-lbl\">${qsT('keepLbl')}<b>${qsOnOff(appData.keepStreak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i><span class=\"qs-lbl\">${qsT('tplLbl')}<b>${qsOnOff(qsTpl)}</b></span></button><button type="button" class="qs-toggle qs-toggle-ten ${qsTen ? 'on' : ''}" onclick="qsToggleTen()" aria-pressed="${qsTen}" title="${qsT('tenHint')}"><i class="fa-solid fa-star"></i><span class=\"qs-lbl\">${qsT('tenLbl')}<b>${qsOnOff(qsTen)}</b></span></button><button type="button" class="qs-toggle qs-toggle-chain ${qsChain ? 'on' : ''}" onclick="qsToggleChain()" aria-pressed="${qsChain}" title="${qsT('chainHint')}"><i class="fa-solid fa-fire"></i><span class="qs-lbl">${qsT('chainLbl')}<b>${qsOnOff(qsChain)}</b></span></button><span class="mx-today-group" role="group"><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i><span class="qs-lbl">${qsT('todayLbl')}</span></button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button></span><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsSpeakPrev" class="qs-speak-prev" style="display:none"></span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span><div class="qs-legend" role="group"><span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>${qsT('legAbsent')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>${qsT('legScored')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>${qsT('legExam')}</span><span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>${qsT('legManual')}</span><span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>${qsT('legStreak')}</span></div></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
-            const mt = qsEl('scoreMatrix'); if (mt) { mt.classList.toggle('qs-edit-on', qsEdit); mt.classList.toggle('qs-test-on', qsTest); mt.classList.toggle('qs-speak-on', qsSpeak); mt.classList.toggle('qs-ten-on', qsTen); }
+            const mt = qsEl('scoreMatrix'); if (mt) { mt.classList.toggle('qs-edit-on', qsEdit); mt.classList.toggle('qs-test-on', qsTest); mt.classList.toggle('qs-speak-on', qsSpeak); mt.classList.toggle('qs-ten-on', qsTen); mt.classList.toggle('qs-chain-on', qsChain); }
             mxUpdateTodayBadge(); mxUpdateMultiInfo(); qsSpeakPreview();
         }
 
@@ -5232,11 +5288,11 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         function qgKind(g) {
             const t = String(g.type || '').toLowerCase();
             if (t === 'lucky_spin' || String(g.itemId || g.id || '') === 'fix_lucky_spin') return 'lucky';
-            if (t === 'plus' || t === 'add' || t === 'change' || t === 'delete_score' || t === 'plus_match' || t === 'plus_exam' || t === 'streak_ten') return t;
+            if (t === 'plus' || t === 'add' || t === 'change' || t === 'delete_score' || t === 'plus_match' || t === 'plus_exam' || t === 'streak_ten' || t === 'streak_shield') return t;
             return 'none';
         }
-        const QG_ICON = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', none: 'fa-gift', lucky: 'fa-dice' };
-        const QG_TYPE_KEY = { plus: 'qg_type_plus', add: 'qg_type_add', change: 'qg_type_change', delete_score: 'qg_type_delete', plus_match: 'qg_type_plus_match', plus_exam: 'qg_type_plus_exam', streak_ten: 'qg_type_streak', none: 'qg_type_none', lucky: 'qg_type_wheel' };
+        const QG_ICON = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', streak_shield: 'fa-shield-halved', none: 'fa-gift', lucky: 'fa-dice' };
+        const QG_TYPE_KEY = { plus: 'qg_type_plus', add: 'qg_type_add', change: 'qg_type_change', delete_score: 'qg_type_delete', plus_match: 'qg_type_plus_match', plus_exam: 'qg_type_plus_exam', streak_ten: 'qg_type_streak', streak_shield: 'qg_type_shield', none: 'qg_type_none', lucky: 'qg_type_wheel' };
         const PM_OPS = { lte: '≤', eq: '=', gte: '≥' };
         function matchGiftCond(g, v) {
             const m = parseFloat(g.matchScore);
@@ -5250,7 +5306,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         // Tìm ô áp dụng quà. Thứ tự "gần nhất" = ngày muộn hơn trên thanh lịch của Matrix Score.
         function qgPlan(studentId, gift) {
             const kind = qgKind(gift);
-            if (kind === 'none' || kind === 'lucky' || kind === 'streak_ten') return null;
+            if (kind === 'none' || kind === 'lucky' || kind === 'streak_ten' || kind === 'streak_shield') return null;
             const dates = qsDateOptions().map(o => o.key), sc = appData.scores || {};
             const lowest = includeAbsent => {
                 let best = null;
@@ -5357,6 +5413,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             if (!student || !gift) { qsToast(qgT('qg_gift_missing'), 'warning'); qgRender(); return; }
             const kind = qgKind(gift);
             if (kind === 'lucky') { qsToast(qgT('qg_wheel_note'), 'info'); return; }
+            if (kind === 'streak_shield') { qsToast(qgT('qg_shield_note'), 'info'); return; }
             if (kind === 'streak_ten') { return sgUseGift(studentId, invId); }
             const sName = getStudentDisplayName(student), gName = getRewardName(gift);
             let plan = null;
@@ -5448,8 +5505,9 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     const kind = qgKind(g);
                     if (kind === 'streak_ten') { gifts += sgGiftCardHtml(st.id, g); return; }
                     const action = kind === 'lucky' ? `<span class="qg-note">${qgT('qg_wheel_note')}</span>`
+                        : kind === 'streak_shield' ? `<span class="qg-note">${qgT('qg_shield_note')}</span>`
                         : `<button type="button" class="qg-use" onclick="qgUse('${st.id}','${g.invId}')">${kind === 'none' ? qgT('qg_consume_btn') : qgT('qg_use_btn')}</button>`;
-                    gifts += `<div class="qg-gift"><i class="fa-solid ${QG_ICON[kind]}"></i><div class="min-w-0"><div class="qg-gn">${escapeHtml(getRewardName(g))}</div><div class="qg-gt">${qgT(QG_TYPE_KEY[kind])}${kind === 'plus_match' ? ' · ' + pmDesc(g) : (kind === 'plus_exam' ? ' · +' + g.deltaScore : '')}</div></div><div class="qg-acts">${action}<button type="button" class="qg-del" onclick="qgDelete('${st.id}','${g.invId}')" title="${appData.language === 'en' ? 'Delete gift' : 'Xóa quà'}" aria-label="${appData.language === 'en' ? 'Delete gift' : 'Xóa quà'}"><i class="fa-solid fa-trash-can"></i></button></div></div>`;
+                    gifts += `<div class="qg-gift${kind === 'streak_shield' ? ' qg-shield' : ''}"><i class="fa-solid ${QG_ICON[kind]}"></i><div class="min-w-0"><div class="qg-gn">${escapeHtml(getRewardName(g))}</div><div class="qg-gt">${qgT(QG_TYPE_KEY[kind])}${kind === 'plus_match' ? ' · ' + pmDesc(g) : (kind === 'plus_exam' ? ' · +' + g.deltaScore : '')}</div></div><div class="qg-acts">${action}<button type="button" class="qg-del" onclick="qgDelete('${st.id}','${g.invId}')" title="${appData.language === 'en' ? 'Delete gift' : 'Xóa quà'}" aria-label="${appData.language === 'en' ? 'Delete gift' : 'Xóa quà'}"><i class="fa-solid fa-trash-can"></i></button></div></div>`;
                 });
                 if (!inv.length) gifts = `<p class="text-xs italic text-slate-400">${qgT('no_gifts_available')}</p>`;
                 rows += `<div class="qg-stu"><div class="qg-stu-h"><span>${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}</span><span class="qg-pts">${inv.length ? qgT('qg_gift_count', { n: inv.length }) : ''}</span></div>${gifts}</div>`;
@@ -5595,6 +5653,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                                 if (fix.targetScore !== undefined) exists.targetScore = fix.targetScore;
                                 else delete exists.targetScore;
                                 if (fix.id === EXAM_PLUS_ID) { exists.deltaScore = fix.deltaScore; if (exists.nameEn === undefined) exists.nameEn = fix.nameEn; if (!exists.name) exists.name = fix.name; }
+                                if (fix.id === SHIELD_ID) { if (exists.nameEn === undefined) exists.nameEn = fix.nameEn; if (!exists.name) exists.name = fix.name; }
                                 exists.type = fix.type;
                             }
                         });
@@ -7007,7 +7066,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     const _wmIco = _gk === 'lucky' ? 'fa-dharmachakra' : _gIco;
                     card.className = "gift-card border border-slate-200 rounded-xl p-4 bg-white text-center shadow-sm flex flex-col justify-between relative group" + (asList ? " as-list" : "") + " gift-special gift-sp-" + _gk;
                     const _wmHtml = `<span class="gift-wm" aria-hidden="true"><i class="fa-solid ${_wmIco}"></i></span>`;
-                    const _noteHtml = _isExam ? `<div class="gift-note">${en ? 'Only for regular tests' : 'Chỉ dùng cho bài kiểm tra thường xuyên'}</div>` : '';
+                    const _noteHtml = _isExam ? `<div class="gift-note">${en ? 'Only for regular tests' : 'Chỉ dùng cho bài kiểm tra thường xuyên'}</div>` : (_gk === 'streak_shield' ? `<div class="gift-note">${qgT('shield_card_note')}</div>` : '');
                     card.dataset.id = item.id;
 
                     let deleteBtnHtml = "";
@@ -7072,7 +7131,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                             const itemName = getRewardName(invItem);
                             if (invItem.type === 'streak_ten') { giftsHtml += sgGiftChipHtml(student.id, invItem); return; }
                             giftsHtml += `
-                                <span class="inline-flex items-center bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-semibold px-2.5 py-1 rounded-full mr-1.5 mb-1">
+                                <span class="inline-flex items-center bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-semibold px-2.5 py-1 rounded-full mr-1.5 mb-1${invItem.type === 'streak_shield' ? ' inv-shield' : ''}">
                                     <i class="fa-solid ${(typeof QG_ICON !== 'undefined' && typeof qgKind === 'function' && QG_ICON[qgKind(invItem)]) || 'fa-gift'} gift-type-ico mr-1.5"></i>${itemName}
                                     <button title="Đã dùng / Xóa quà" onclick="deleteStudentGift('${student.id}', '${invItem.invId}')" class="ml-1.5 w-4 h-4 bg-rose-500 hover:bg-rose-600 text-white rounded-full flex items-center justify-center text-[10px] leading-none transition">✕</button>
                                 </span>
@@ -7194,11 +7253,11 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         }
         /* Icon theo loại quà: dùng chung bộ icon với Túi quà ở Matrix Score (QG_ICON) */
         function giftTypeIconHtml(item) {
-            const MAP = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', none: 'fa-gift', lucky: 'fa-dice' };
+            const MAP = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', streak_shield: 'fa-shield-halved', none: 'fa-gift', lucky: 'fa-dice' };
             const t = String((item && item.type) || '').toLowerCase();
             let k = 'none';
             if (t === 'lucky_spin' || String((item && (item.itemId || item.id)) || '') === 'fix_lucky_spin') k = 'lucky';
-            else if (['plus', 'add', 'change', 'delete_score', 'plus_match', 'plus_exam', 'streak_ten'].includes(t)) k = t;
+            else if (['plus', 'add', 'change', 'delete_score', 'plus_match', 'plus_exam', 'streak_ten', 'streak_shield'].includes(t)) k = t;
             return `<i class="fa-solid ${MAP[k]}"></i>`;
         }
 
@@ -7839,7 +7898,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             const typeSelect = document.getElementById('editItemType');
             const itemType = item.type || 'none';
             const isLuckySpinSpecial = String(item.id || '') === 'fix_lucky_spin' || String(item.type || '').toLowerCase() === 'lucky_spin';
-            const isExamPlusSpecial = String(item.id || '') === EXAM_PLUS_ID;
+            const isExamPlusSpecial = String(item.id || '') === EXAM_PLUS_ID || String(item.id || '') === SHIELD_ID;
             const editTypeRow = document.getElementById('editGiftTypeRow');
             const editValueRow = document.getElementById('editGiftValueInputContainer');
             if (editTypeRow) editTypeRow.classList.toggle('hidden', isLuckySpinSpecial || isExamPlusSpecial);
@@ -7940,6 +7999,15 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     item.cost = Math.max(1, cost);
                     item.type = 'plus_exam';
                     item.deltaScore = 1;
+                    saveData();
+                    closeEditItemModal();
+                    return;
+                }
+                if (String(item.id || '') === SHIELD_ID) {
+                    // Chỉ sửa tên (theo ngôn ngữ đang dùng) và giá; loại quà luôn là Khiên giữ chuỗi
+                    if (name) { if (appData.language === 'en') item.nameEn = name; else item.name = name; }
+                    item.cost = Math.max(1, cost);
+                    item.type = 'streak_shield';
                     saveData();
                     closeEditItemModal();
                     return;
@@ -8337,7 +8405,32 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         };
         // Gắn mốc thời gian nhập (ts) cho điểm mới/đổi giá trị mỗi lần lưu. Dữ liệu cũ chưa có ts
         // được gán tạm theo ngày trên bảng điểm (không vượt quá hiện tại) để vẫn có thứ tự gần đúng.
+        // ===== Khiên giữ chuỗi: bị điểm dưới 9 mà sẽ bị trừ chuỗi thì tự tiêu 1 khiên trong túi và miễn trừ ô điểm đó =====
+        function shieldConsume(sid, invId) {
+            const st = (appData.students || []).find(x => x.id === sid);
+            if (!st || !Array.isArray(st.inventory)) return null;
+            // Có invId: chỉ lấy đúng khiên đó (tránh tiêu thêm khi lưu liên tiếp); không có: lấy khiên đầu tiên
+            const i = invId ? st.inventory.findIndex(g => g && g.invId === invId && g.type === 'streak_shield') : st.inventory.findIndex(g => g && g.type === 'streak_shield');
+            if (i < 0) return null;
+            return deepCopy(st.inventory.splice(i, 1)[0]);
+        }
+        function shieldRefund(st, snap) {
+            if (!st || !snap) return false;
+            if (!Array.isArray(st.inventory)) st.inventory = [];
+            if (snap.invId && st.inventory.some(g => g && g.invId === snap.invId)) return false;
+            st.inventory.push(deepCopy(snap));
+            return true;
+        }
+        function shieldNotify(list) {
+            list.forEach(f => {
+                const st = (appData.students || []).find(x => x.id === f.sid); if (!st) return;
+                const left = (st.inventory || []).filter(g => g && g.type === 'streak_shield').length;
+                const msg = qgT('shield_lost', { student: getStudentDisplayName(st), gift: getRewardName(f.gift), n: left });
+                try { if (window.showAppToast) window.showAppToast(msg, 'warning'); } catch (e) {}
+            });
+        }
         function stampScoreTimes() {
+            const shieldFx = [];
             const now = Date.now(), prevScores = (lastPersistedSnapshot && lastPersistedSnapshot.scores) || {};
             if (tenFloorBooted) (appData.students || []).forEach(st => { if (st.streakFloor === undefined) st.streakFloor = 0; });
             const sig = c => c ? (c.absent ? 'A' : String(c.score)) : '';
@@ -8383,12 +8476,34 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     const curV = parseFloat(cur.score);
                     if (gk && !cur.absent && !isNaN(curV) && curV < 10) cur.keep = true; /* quà áp vào ô dưới 10: luôn miễn trừ streak */
                     else if (!restored) { if (appData.keepStreak && !cur.absent && !isNaN(curV) && curV < 10) cur.keep = true; else delete cur.keep; }
+                    // Khiên giữ chuỗi: điểm dưới 9 (không phải ô quà) mà sẽ trừ chuỗi -> tiêu 1 khiên, ô được miễn trừ
+                    {
+                        const _shSid = String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, '');
+                        if (!restored) {
+                            const _shOk = !gk && !cur.sg && !cur.absent && !isNaN(curV) && curV < 9;
+                            if (!_shOk) { delete cur.shield; }
+                            else if (prev && prev.shield) { cur.shield = prev.shield; cur.keep = true; } // sửa lại ô đã có khiên (vẫn dưới 9): giữ khiên, không tốn thêm
+                            else {
+                                delete cur.shield;
+                                if (!cur.keep && lastPersistedSnapshot) {
+                                    const _bf = tenStreakInfo(_shSid).cur; cur.keep = true; const _af = tenStreakInfo(_shSid).cur;
+                                    const _used = _af > _bf ? shieldConsume(_shSid) : null;
+                                    if (_used) { cur.shield = _used; shieldFx.push({ sid: _shSid, t: 'lost', gift: _used }); } else delete cur.keep;
+                                }
+                            }
+                        } else if (cur.shield && (!prev || !prev.shield)) {
+                            // Ô khôi phục (Ctrl+Z / Ctrl+Y) mang theo khiên: tiêu lại đúng khiên đó, hết khiên thì bỏ miễn trừ
+                            const _used2 = cur.shield.invId ? shieldConsume(_shSid, cur.shield.invId) : null;
+                            if (_used2) cur.shield = _used2; // không thấy khiên trong túi = đã tiêu rồi (lưu liên tiếp): giữ nguyên
+                        }
+                    }
                     changedCount++; changedSids.add(String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, ''));
                     if (!cur.absent && !cur.sg && parseFloat(cur.score) >= 10) tenEvents.push(key);
                 } else if (!cur.ts) {
                     cur.ts = (prev && prev.ts) || Math.min(scoreKeyDateMs(key) || now, now);
                 }
             });
+            if (shieldFx.length) setTimeout(() => shieldNotify(shieldFx), 250);
             // Pháo giấy: chỉ khi nhập tay vài ô (không bắn khi tải/nhập dữ liệu hàng loạt hoặc hoàn tác)
             if (tenEvents.length && changedCount <= 3 && lastPersistedSnapshot && !suppressUndoCapture) setTimeout(() => tfCelebrate(tenEvents), 150);
             if (changedCount && changedCount <= 3 && lastPersistedSnapshot && !suppressUndoCapture) {
@@ -8437,7 +8552,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         const TEN_MISS_LIMIT = { 10: 3, 15: 4, 20: 5, 30: 10, 40: 15, 50: 20 };
         function tenMissTier(n) { return n >= 50 ? 50 : n >= 40 ? 40 : n >= 30 ? 30 : n >= 20 ? 20 : n >= 15 ? 15 : n >= 10 ? 10 : 0; }
         function tenStreakInfo(studentId, scores) {
-            let run = 0, best = 0, miss = 0, tier = 0, peak = 0, live = [], prot = false, startTs = null;
+            let run = 0, best = 0, miss = 0, tier = 0, peak = 0, live = [], prot = false, startTs = null, chain = [];
             const all = [], floorTs = tenFloorOf(studentId);
             // Đổi mốc (lên hay xuống) thì đếm lại số lần bị trừ từ đầu theo mốc mới, bỏ qua các lần trừ trước đó.
             // Chuỗi đã từng đạt >= 10 (prot): khi tụt xuống dưới 10 vẫn giữ mốc 10 và số lần đã bị trừ, không đếm lại.
@@ -8448,7 +8563,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 // Quà thường nâng ô lên 10: tính là điểm 10 thật (như sửa tay), kể cả dữ liệu cũ từng gắn cờ giftNeutral.
                 if (e.v >= 10) {
                     if (run === 0) startTs = e.ts;
-                    run++; if (run > best) best = run; if (run > peak) peak = run;
+                    run++; chain.push(e.key); if (run > best) best = run; if (run > peak) peak = run;
                     retier(); if (run >= TEN_PROTECT_MIN) prot = true;
                     if (SG_REWARDS[run]) { const h = { tier: run, key: e.key }; all.push(h); live.push(h); }
                 }
@@ -8459,13 +8574,13 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     if (e.v < 9) {
                         miss++;
                         if (miss > (TEN_MISS_LIMIT[tier] || 3)) { run = 0; miss = 0; tier = 0; prot = false; }
-                        else { run = Math.max(0, run - 1); retier(); }
+                        else { run = Math.max(0, run - 1); chain.pop(); retier(); }
                     }
                 } else if (e.v < 9) { run = 0; miss = 0; tier = 0; } /* dưới streak 10: cũng chỉ điểm dưới 9 mới đứt; 9 đến dưới 10 giữ nguyên như từ streak 10 */
-                if (run === 0) { live = []; peak = 0; prot = false; tier = 0; miss = 0; startTs = null; }
+                if (run === 0) { live = []; peak = 0; prot = false; tier = 0; miss = 0; startTs = null; chain = []; }
             });
             const st = appData.students.find(x => x.id === studentId);
-            return { cur: run, startTs, peak, hist: best, best: Math.max(best, (st && st.bestTenStreak) || 0), hits: all, liveHits: live.filter(h => h.tier <= run) };
+            return { cur: run, chain, startTs, peak, hist: best, best: Math.max(best, (st && st.bestTenStreak) || 0), hits: all, liveHits: live.filter(h => h.tier <= run) };
         }
         // ===== Quà thưởng Streak: đạt mốc streak -> nhận quà điểm 10 (số lượng theo mốc) =====
         function sgTierKey(n) { return tfStepOf(n) || 5; }
@@ -9186,6 +9301,12 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 flame: `<span class="tf-streak tf-mini ${k >= 20 ? 'tf-hi ' : ''}tf-t${k}" title="${tip}" aria-label="${tip}"><span class="tf-flame" aria-hidden="true"><i class="tf-l tf-l1"></i><i class="tf-l tf-l2"></i><i class="tf-l tf-l3"></i></span></span>`
             };
         }
+        // Điểm 10 Chuỗi: các ô điểm 10 đang được tính vào chuỗi hiện tại (không gồm ô từ quà Streak) + mốc màu của chuỗi
+        function tenChainMap(studentId) {
+            const inf = tenStreakInfo(studentId), n = inf.cur;
+            if (n < 1 || !inf.chain || !inf.chain.length) return null;
+            return { keys: new Set(inf.chain), tier: n < 5 ? 1 : (n < 10 ? 5 : tfStepOf(n)), n };
+        }
         function tenStreakHtml(studentId) {
             const inf = tenStreakInfo(studentId), n = inf.cur;
             if (n < TEN_STREAK_MIN) return '';
@@ -9419,6 +9540,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     if (stats.hasData && qsTrend) html += trendHtml(student.id);
                     html += `</td>`;
 
+                    const chM = qsChain ? tenChainMap(student.id) : null;
                     daysHeader.forEach(d => {
                         const key = `${student.id}_${d.dateStr}`;
                         const scoreItem = appData.scores[key];
@@ -9435,6 +9557,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                                 cellText = parseFloat(scoreItem.score).toFixed(1);
                                 cellClass = cellClass.replace(" cell-empty", "") + " text-slate-800 font-bold bg-amber-50 cell-scored";
                                 if (parseFloat(scoreItem.score) >= 10) cellClass += " cell-ten";
+                                if (chM && !scoreItem.sg && chM.keys.has(key)) cellClass += " cell-chain ch-t" + chM.tier;
                                 cellClass += " cell-gt-" + gradeTierOf(parseFloat(scoreItem.score)).key;
                                 if (scoreItem.isExam) { cellClass += " cell-exam font-black text-purple-900"; examTag = ' ' + uiTr('exam_tag'); }
                                 if (scoreItem.manual) { cellClass += " cell-manual"; examTag += ' ✎ ' + qsT('editTag'); }
@@ -11084,6 +11207,20 @@ window.openStudentProfile=function(studentId){
           if(!Array.isArray(appData.luckyWheel.history))appData.luckyWheel.history=[];
           if(!appData.luckyWheel.transactions || typeof appData.luckyWheel.transactions!=='object')appData.luckyWheel.transactions={};
           wheelMigratePrizes();
+          wheelSeedShield();
+        }
+        // Quà cố định Khiên giữ chuỗi: tự thêm 1 lần vào vòng quay (trọng số mặc định 1, chỉnh lại trong Quản lý phần thưởng); xóa đi thì không tự thêm lại
+        function wheelSeedShield(){
+          if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId)return;
+          const W=appData.luckyWheel;let item=(appData.globalShopItems||[]).find(x=>x&&x.id===SHIELD_ID);
+          if(!item){const d=DEFAULT_FIXED_ITEMS.find(x=>x.id===SHIELD_ID);if(d){item=deepCopy(d);appData.globalShopItems.push(item);}}
+          if(!item)return;
+          if(!W.shieldSeeded){
+            if(!W.prizes.some(x=>x&&x.itemId===SHIELD_ID))W.prizes.push({id:'prize_'+Date.now()+'_shield',name:getRewardName(item),weight:1,color:WHEEL_COLORS[W.prizes.length%WHEEL_COLORS.length],enabled:true,order:W.prizes.length,itemId:SHIELD_ID,qty:1});
+            W.shieldSeeded=true;
+            if(!window.__shieldSeedSaving){window.__shieldSeedSaving=true;setTimeout(()=>{window.__shieldSeedSaving=false;try{saveData();}catch(e){}},600);}
+          }
+          W.prizes.forEach(x=>{if(x&&x.itemId===SHIELD_ID)x.name=getRewardName(item);});
         }
         // ===== Phần thưởng vòng quay = quà theo định dạng hệ thống (appData.globalShopItems, cờ wheelOnly) =====
         // prize = { id, name, weight, color, enabled, order, itemId }. Quà có type (plus/add/change/delete_score/plus_match/plus_exam/lucky_spin)
@@ -11133,7 +11270,7 @@ window.openStudentProfile=function(studentId){
         };
         function wheelTypeTag(p){
           const it=wheelItemOf(p),en=appData.language==='en',t=it&&it.type;
-          const M={plus:['Cộng điểm','Add points'],add:['Tạo điểm','Set empty cell'],change:['Sửa điểm','Change score'],delete_score:['Xóa điểm','Delete score'],plus_match:['Cộng theo điều kiện','Conditional add'],plus_exam:['Cộng điểm kiểm tra','Add to exam score'],lucky_spin:['Lượt quay','Spin turn']};
+          const M={plus:['Cộng điểm','Add points'],add:['Tạo điểm','Set empty cell'],change:['Sửa điểm','Change score'],delete_score:['Xóa điểm','Delete score'],plus_match:['Cộng theo điều kiện','Conditional add'],plus_exam:['Cộng điểm kiểm tra','Add to exam score'],lucky_spin:['Lượt quay','Spin turn'],streak_shield:['Khiên giữ chuỗi','Streak shield']};
           if(!t)return en?'Regular gift (not added to bag)':'Quà thường (không vào túi)';
           const v=it.deltaScore!==undefined?' '+(it.deltaScore>0?'+':'')+it.deltaScore:(it.targetScore!==undefined?' → '+it.targetScore:'');
           return (M[t]||[t,t])[en?1:0]+v+(en?' · goes to bag':' · vào túi quà');
