@@ -1804,11 +1804,21 @@ body.qs-presenting .mx-clock{display:none !important}
 #qsToolbar{position:relative}
 #qsToolbar .qs-toolbar-head{position:absolute;top:2px;right:.4rem;padding:0;z-index:2}
 #qsToolbar .qs-collapse-btn{height:16px}
-#qsToolbar .qs-toolbar-content{gap:.3rem .4rem;padding:.25rem 2rem .25rem .6rem}
+#qsToolbar .qs-toolbar-content{gap:.3rem .4rem;padding:.25rem 3.6rem .25rem .6rem}
 #qsToolbar .qs-toggle{padding:.1rem .5rem}
 #qsToolbar .qs-legend{padding-top:.15rem}
 #qsToolbar.qs-toolbar-collapsed{min-height:20px}
 #qsToolbar.qs-toolbar-collapsed .qs-toolbar-content{padding-top:0;padding-bottom:0}
+</style>
+<style id="mx-fullscreen">
+/* Toàn màn hình Score Matrix: chỉ phóng to bảng + thanh công cụ; mọi thao tác vẫn hoạt động, các nút bong bóng/ngăn kéo/hộp điểm vẫn nổi phía trên */
+#qsToolbar .qs-full-btn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:16px;margin-right:4px;border:0;border-radius:5px;background:#0f172a;color:#fff;font-size:9px;cursor:pointer;transition:transform .15s ease,background .15s ease,box-shadow .15s ease}
+#qsToolbar .qs-full-btn:hover{background:#000;transform:translateY(-1px) scale(1.1);box-shadow:0 3px 8px rgba(0,0,0,.4)}
+#qsToolbar .qs-full-btn:active{transform:scale(.94)}
+body.mx-fs-on{overflow:hidden}
+body.mx-fs-on > header,body.mx-fs-on > header + div{display:none !important}
+#viewMatrixContainer.mx-fs{position:fixed;inset:0;z-index:39;width:100%;height:100%;max-width:none;margin:0;border:0;border-radius:0;box-shadow:none}
+.mx-dark #qsToolbar .qs-full-btn{background:#e2e8f0;color:#0f172a}.mx-dark #qsToolbar .qs-full-btn:hover{background:#fff}
 </style>
 <style id="mx-qg-hover">
 /* Nhập quà nhanh: hiệu ứng hover từng học sinh */
@@ -2655,6 +2665,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openCourseManager()"><span class="menu-ico bg-violet-100 text-violet-600"><i class="fa-solid fa-folder-open"></i></span><span data-i18n="courseManagerBtn">Quản lý khóa học</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openClassModal()"><span class="menu-ico bg-emerald-100 text-emerald-600"><i class="fa-solid fa-folder-plus"></i></span><span data-i18n="btnAddClass">Thêm Lớp Mới</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openEditHistory()"><span class="menu-ico bg-amber-100 text-amber-600"><i class="fa-solid fa-clock-rotate-left"></i></span><span data-i18n="menuEditHistory">Lịch sử chỉnh sửa</span></button>
+                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openScoreArchive()"><span class="menu-ico bg-teal-100 text-teal-600"><i class="fa-solid fa-box-archive"></i></span><span data-i18n="menuScoreArchive">Lưu Trữ điểm</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openDeletedStudents()"><span class="menu-ico bg-fuchsia-100 text-fuchsia-600"><i class="fa-solid fa-trash-arrow-up"></i></span><span data-i18n="menuRestoreStudents">Khôi phục học sinh đã xóa</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();exportData()" data-i18n-title="backupTitle" title="Tải bản sao lưu dữ liệu ra file JSON"><span class="menu-ico bg-slate-100 text-slate-600"><i class="fa-solid fa-download"></i></span><span data-i18n="btnBackup">Sao lưu dữ liệu</span></button>
                             <label role="menuitem" class="menu-item"><span class="menu-ico bg-sky-100 text-sky-600"><i class="fa-solid fa-cloud-arrow-up"></i></span><span data-i18n="btnRestoreData">Phục hồi dữ liệu</span>
@@ -3033,6 +3044,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 <div class="mb-4 bg-indigo-50 p-3 rounded-lg border border-indigo-100 flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5">
                     <p class="text-sm font-bold text-indigo-900" id="modalStudentName">Học sinh: --</p>
                     <p class="text-xs text-indigo-600 font-medium" id="modalDateLabel">Ngày: --</p>
+                    <p class="w-full text-xs font-extrabold text-slate-900 mt-1 pt-1.5 border-t border-indigo-200" id="modalEntryTime"></p>
                 </div>
 
                 <div class="mx-sc-grid">
@@ -3885,6 +3897,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         Object.assign(translations.vi, {"qg_type_streak": "Quà thưởng Chuỗi", "sg_name": "Quà Streak {tier}", "sg_type_desc": "Cộng {n} điểm 10 · ô dùng quà đều trung lập, không tính streak", "sg_confirm": "cộng {used} điểm 10 cho {student}: {fills} ô trống trước hôm nay, {ups} ô điểm từ 9 trở xuống (không tính điểm test) chuyển thành 10.", "sg_confirm_rest": " Còn dư {left} điểm 10 trong quà.", "sg_done": "Đã cộng {used} điểm 10 cho {student}.", "sg_done_rest": " Còn dư {left} điểm 10 trong quà.", "sg_no_cell": "Không còn ô trống trước hôm nay hoặc ô điểm từ 9 trở xuống để dùng quà này.", "sg_award": "🎁 {student} đạt streak {tier}: nhận quà {n} điểm 10!", "sg_award_many": "🎁 Đã tặng quà thưởng streak cho {n} học sinh.", "sg_cell_tag": "Quà Chuỗi {tier} (khóa)"});
         Object.assign(translations.en, {"qg_type_streak": "Streak reward", "sg_name": "Streak {tier} Gift", "sg_type_desc": "Adds {n} scores of 10 · gift cells are neutral and never count for streak", "sg_confirm": "add {used} scores of 10 for {student}: {fills} empty cells before today, {ups} cells scored 9 or lower (test scores excluded) become 10.", "sg_confirm_rest": " {left} score(s) of 10 stay in the gift.", "sg_done": "Added {used} scores of 10 for {student}.", "sg_done_rest": " {left} score(s) of 10 stay in the gift.", "sg_no_cell": "No empty cell before today or cell scored 9 or lower left to use this gift on.", "sg_award": "🎁 {student} hit a {tier} streak: earned a gift of {n} tens!", "sg_award_many": "🎁 Streak reward gifts given to {n} students.", "sg_cell_tag": "Streak {tier} gift (locked)"});
         Object.assign(translations.vi, { menuEditHistory: 'Lịch sử chỉnh sửa' }); Object.assign(translations.en, { menuEditHistory: 'Edit history' });
+        Object.assign(translations.vi, { menuScoreArchive: 'Lưu Trữ điểm' }); Object.assign(translations.en, { menuScoreArchive: 'Score Archive' });
         Object.assign(translations.vi, {"optTypePlusMatch": "Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)", "lblMatchCond": "Ô điểm quy định được cộng (điều kiện & mức điểm):", "optMatchLte": "Từ mức này trở xuống (≤)", "optMatchEq": "Bằng đúng mức này (=)", "optMatchGte": "Từ mức này trở lên (≥)", "phMatchScore": "VD: 7", "qg_type_plus_match": "Cộng điểm theo ô quy định", "pm_desc": "Ô có điểm {op} {score} → +{delta}", "qg_plus_match_done": "Đã cộng {delta} điểm vào ô {date} ({before}đ → {after}đ)!"});
         Object.assign(translations.en, {"optTypePlusMatch": "Add points to a cell with a specified score (e.g. +1 to a cell of 7 or lower)", "lblMatchCond": "Specified cell score to receive points (condition & score):", "optMatchLte": "This score or lower (≤)", "optMatchEq": "Exactly this score (=)", "optMatchGte": "This score or higher (≥)", "phMatchScore": "e.g. 7", "qg_type_plus_match": "Add Points to Specified Cell", "pm_desc": "Cell score {op} {score} → +{delta}", "qg_plus_match_done": "Added {delta} pts to cell {date} ({before} → {after} pts)!"});
 
@@ -4896,17 +4909,46 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         };
         function qsRefreshToolbar() {
             const tb = qsEl('qsToolbar'); if (!tb) return;
-            const sig = (appData.language || 'vi') + '|' + qsSpeak + '|' + qsTest + '|' + qsEdit + '|' + qsTrend + '|' + !!appData.keepStreak + '|' + qsTpl + '|' + qsTen;
+            const sig = (appData.language || 'vi') + '|' + qsSpeak + '|' + qsTest + '|' + qsEdit + '|' + qsTrend + '|' + !!appData.keepStreak + '|' + qsTpl + '|' + qsTen + '|' + !!window.__mxFs;
             if (sig === qsToolbarSig) return;
             qsToolbarSig = sig;
             const collapsed = !!window.__qsToolbarCollapsed;
-            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle qs-toggle-speak ${qsSpeak ? 'on' : ''}" onclick="qsToggleSpeak()" aria-pressed="${qsSpeak}" title="${qsT('speakTitle')}"><i class="fa-solid fa-comments"></i><span class=\"qs-lbl\">${qsT('speakLbl')}<b>${qsOnOff(qsSpeak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i><span class=\"qs-lbl\">${qsT('testLbl')}<b>${qsOnOff(qsTest)}</b></span></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i><span class=\"qs-lbl\">${qsT('editLbl')}<b>${qsOnOff(qsEdit)}</b></span></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i><span class=\"qs-lbl\">${qsT('trendLbl')}<b>${qsOnOff(qsTrend)}</b></span></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-fire-flame-curved"></i><span class=\"qs-lbl\">${qsT('keepLbl')}<b>${qsOnOff(appData.keepStreak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i><span class=\"qs-lbl\">${qsT('tplLbl')}<b>${qsOnOff(qsTpl)}</b></span></button><button type="button" class="qs-toggle qs-toggle-ten ${qsTen ? 'on' : ''}" onclick="qsToggleTen()" aria-pressed="${qsTen}" title="${qsT('tenHint')}"><i class="fa-solid fa-star"></i><span class=\"qs-lbl\">${qsT('tenLbl')}<b>${qsOnOff(qsTen)}</b></span></button><span class="mx-today-group" role="group"><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i><span class="qs-lbl">${qsT('todayLbl')}</span></button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button></span><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsSpeakPrev" class="qs-speak-prev" style="display:none"></span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span><div class="qs-legend" role="group"><span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>${qsT('legAbsent')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>${qsT('legScored')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>${qsT('legExam')}</span><span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>${qsT('legManual')}</span><span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>${qsT('legStreak')}</span></div></div>`;
+            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-full-btn" onclick="mxToggleFullscreen()" aria-pressed="${!!window.__mxFs}" aria-label="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}" title="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}"><i class="fa-solid ${window.__mxFs ? 'fa-compress' : 'fa-expand'}"></i></button><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle qs-toggle-speak ${qsSpeak ? 'on' : ''}" onclick="qsToggleSpeak()" aria-pressed="${qsSpeak}" title="${qsT('speakTitle')}"><i class="fa-solid fa-comments"></i><span class=\"qs-lbl\">${qsT('speakLbl')}<b>${qsOnOff(qsSpeak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i><span class=\"qs-lbl\">${qsT('testLbl')}<b>${qsOnOff(qsTest)}</b></span></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i><span class=\"qs-lbl\">${qsT('editLbl')}<b>${qsOnOff(qsEdit)}</b></span></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i><span class=\"qs-lbl\">${qsT('trendLbl')}<b>${qsOnOff(qsTrend)}</b></span></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-fire-flame-curved"></i><span class=\"qs-lbl\">${qsT('keepLbl')}<b>${qsOnOff(appData.keepStreak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i><span class=\"qs-lbl\">${qsT('tplLbl')}<b>${qsOnOff(qsTpl)}</b></span></button><button type="button" class="qs-toggle qs-toggle-ten ${qsTen ? 'on' : ''}" onclick="qsToggleTen()" aria-pressed="${qsTen}" title="${qsT('tenHint')}"><i class="fa-solid fa-star"></i><span class=\"qs-lbl\">${qsT('tenLbl')}<b>${qsOnOff(qsTen)}</b></span></button><span class="mx-today-group" role="group"><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i><span class="qs-lbl">${qsT('todayLbl')}</span></button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button></span><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsSpeakPrev" class="qs-speak-prev" style="display:none"></span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span><div class="qs-legend" role="group"><span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>${qsT('legAbsent')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>${qsT('legScored')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>${qsT('legExam')}</span><span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>${qsT('legManual')}</span><span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>${qsT('legStreak')}</span></div></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
             const mt = qsEl('scoreMatrix'); if (mt) { mt.classList.toggle('qs-edit-on', qsEdit); mt.classList.toggle('qs-test-on', qsTest); mt.classList.toggle('qs-speak-on', qsSpeak); mt.classList.toggle('qs-ten-on', qsTen); }
             mxUpdateTodayBadge(); mxUpdateMultiInfo(); qsSpeakPreview();
         }
 
         window.__qsToolbarCollapsed = !!window.__qsToolbarCollapsed;
+        /* ===== Toàn màn hình Score Matrix (nút đen cạnh mũi tên thu gọn thanh công cụ) ===== */
+        let mxFsObs = null;
+        function mxFsApply(on) {
+            window.__mxFs = !!on;
+            document.body.classList.toggle('mx-fs-on', !!on);
+            const c = document.getElementById('viewMatrixContainer'); if (c) c.classList.toggle('mx-fs', !!on);
+            if (on && c && !mxFsObs && window.MutationObserver) {
+                mxFsObs = new MutationObserver(() => { if (window.__mxFs && c.classList.contains('hidden')) window.mxToggleFullscreen(); });
+                mxFsObs.observe(c, { attributes: true, attributeFilter: ['class'] });
+            }
+            try { qsToolbarSig = ''; qsRefreshToolbar(); } catch (e) {}
+        }
+        window.mxToggleFullscreen = function () {
+            if (!window.__mxFs) {
+                mxFsApply(true);
+                try { const r = document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); if (r && r.catch) r.catch(() => {}); } catch (e) {}
+            } else {
+                mxFsApply(false);
+                try { if (document.fullscreenElement && document.exitFullscreen) { const r = document.exitFullscreen(); if (r && r.catch) r.catch(() => {}); } } catch (e) {}
+            }
+        };
+        document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && window.__mxFs) mxFsApply(false); });
+        // Khi trình duyệt không cho toàn màn hình thật (chế độ phóng to giả): Esc thoát, nhưng nhường Esc cho hộp/ngăn kéo đang mở
+        document.addEventListener('keydown', ev => {
+            if (ev.key !== 'Escape' || ev.defaultPrevented || !window.__mxFs) return;
+            const open = ['scoreModal', 'mxNotesDrawer', 'qgDrawer', 'qsBulkModal', 'qsBagModal', 'appConfirmModal', 'scoreArchiveModal', 'editHistoryModal'].some(id => { const e = document.getElementById(id); return e && !e.classList.contains('hidden') && getComputedStyle(e).display !== 'none'; });
+            if (!open) window.mxToggleFullscreen();
+        });
+
         window.qsToggleToolbar = function() {
             window.__qsToolbarCollapsed = !window.__qsToolbarCollapsed;
             const tb = qsEl('qsToolbar'); if (!tb) return;
@@ -5917,6 +5959,236 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             const chips = [['all', T('Tất cả', 'All'), 'fa-layer-group'], ['score', T('Điểm số', 'Scores'), 'fa-pen-to-square'], ['gift', T('Quà & điểm thưởng', 'Gifts & points'), 'fa-gift'], ['student', T('Học sinh & lớp', 'Students & classes'), 'fa-user-graduate'], ['other', T('Khác', 'Other'), 'fa-sliders']];
             document.getElementById('editHistoryChips').innerHTML = chips.map(c => `<button type="button" class="eh-chip${ehFilter === c[0] ? ' on' : ''}" data-f="${c[0]}" onclick="ehSetFilter('${c[0]}')"><i class="fa-solid ${c[2]}"></i>${c[1]}</button>`).join('');
             ehLimit = 120; ehRender();
+            m.classList.remove('hidden'); m.classList.add('flex');
+        };
+
+        /* ===== Lưu Trữ điểm (menu Tiện ích): xem / sửa / xóa lịch sử điểm của từng học sinh theo thời điểm nhập (mới nhất → cũ nhất) =====
+           Dữ liệu lấy TRỰC TIẾP từ appData.scores nên luôn đồng bộ với Score Matrix, Thu hồi chuỗi và túi quà chuỗi (điểm 10 bị thu hồi sẽ biến mất ở đây).
+           Sửa = nhập điểm tay (manual), Xóa = xóa ô như phím Delete; đều đi qua saveData() nên bộ tính chuỗi / quà streak chạy như bình thường. */
+        let saMode = 'ten', saSid = '', saEditKey = null, saLimit = 80, saBusy = false;
+        const saEn = () => (appData.language || 'vi') === 'en';
+        const saT = (v, n) => saEn() ? n : v;
+        const saArchived = () => typeof viewingArchivedCourseId !== 'undefined' && !!viewingArchivedCourseId;
+        function saClassStudents() {
+            const cls = (appData.classes || []).find(c => c.id === appData.activeClassId);
+            return cls ? (appData.students || []).filter(s => s.classId === cls.id) : [];
+        }
+        function saFmt(ts) {
+            const d = new Date(ts), p = n => String(n).padStart(2, '0');
+            return { date: `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`, time: `${p(d.getHours())}:${p(d.getMinutes())}` };
+        }
+        function saEntries(sid) {
+            const sc = appData.scores || {}, prefix = sid + '_', now = Date.now();
+            const inf = tenStreakInfo(sid), floor = tenFloorOf(sid), chain = new Set();
+            if (inf.cur > 0 && inf.startTs) tenSeries(sid).forEach(e => { if (!e.ghost && !e.sg && e.v >= 10 && e.ts >= inf.startTs && !(floor && e.ts < floor)) chain.add(e.key); });
+            const out = [];
+            Object.keys(sc).forEach(key => {
+                if (key.indexOf(prefix) !== 0) return;
+                const it = sc[key]; if (!it || it.absent) return;
+                if (it.score === null || it.score === undefined || it.score === '') return;
+                const v = parseFloat(it.score); if (isNaN(v)) return;
+                const dms = scoreKeyDateMs(key);
+                out.push({ key, v, ts: it.ts || Math.min(dms || now, now), dms, date: key.slice(prefix.length), exam: !!it.isExam, sg: !!it.sg, chain: chain.has(key), manual: !!(it.manual || it.editOrig) });
+            });
+            out.sort((a, b) => (b.ts - a.ts) || (b.dms - a.dms));
+            return { list: out, cur: inf.cur };
+        }
+        function saFillSelect() {
+            const sel = document.getElementById('saStudent'); if (!sel) return;
+            const studs = saClassStudents();
+            if (!studs.some(s => String(s.id) === String(saSid))) saSid = studs.length ? String(studs[0].id) : '';
+            sel.innerHTML = studs.map(s => `<option value="${escapeHtml(String(s.id))}"${String(s.id) === String(saSid) ? ' selected' : ''}>${escapeHtml(getStudentDisplayName(s))}</option>`).join('');
+            sel.disabled = !studs.length;
+        }
+        function saRender() {
+            const el = document.getElementById('scoreArchiveList'); if (!el) return;
+            const cnt = document.getElementById('scoreArchiveCount');
+            const st = saClassStudents().find(s => String(s.id) === String(saSid));
+            if (!st) {
+                if (cnt) cnt.textContent = '';
+                el.innerHTML = `<div class="sa-empty"><i class="fa-solid fa-box-archive"></i><p>${saT('Lớp này chưa có học sinh nào.', 'This class has no students yet.')}</p></div>`; return;
+            }
+            const { list: all, cur } = saEntries(st.id), tk = sgTierKey(cur);
+            const rows = saMode === 'ten' ? all.filter(e => e.v >= 10) : all;
+            if (cnt) cnt.textContent = saT(`${rows.length} điểm${saMode === 'ten' ? ' 10' : ''} · Chuỗi hiện tại: ${cur}`, `${rows.length} ${saMode === 'ten' ? 'scores of 10' : 'scores'} · Current streak: ${cur}`);
+            if (!rows.length) {
+                el.innerHTML = `<div class="sa-empty"><i class="fa-solid fa-box-archive"></i><p>${saMode === 'ten' ? saT('Học sinh này chưa có điểm 10 nào.', 'This student has no scores of 10 yet.') : saT('Học sinh này chưa có điểm nào được lưu.', 'This student has no saved scores yet.')}</p></div>`; return;
+            }
+            const ro = saArchived();
+            let html = rows.some(e => e.chain) ? `<div class="sa-legend"><span><i class="sa-dot sa-dot-chain sg-t${tk}"></i>${saT('Điểm 10 đang nằm trong chuỗi', 'Score of 10 inside the current streak')}</span><span><i class="sa-dot sa-dot-ten"></i>${saT('Điểm 10 ngoài chuỗi', 'Score of 10 outside the streak')}</span></div>` : '';
+            rows.slice(0, saLimit).forEach(e => {
+                const f = saFmt(e.ts), vTxt = String(Math.round(e.v * 100) / 100);
+                const tone = e.v >= 10 ? (e.chain ? 'chain' : 'ten') : e.v >= 8 ? 'hi' : e.v >= 5 ? 'mid' : 'low';
+                const bd = [];
+                if (e.chain) bd.push(`<span class="sa-bd sa-bd-chain"><i class="fa-solid fa-fire-flame-curved"></i>${saT('Trong chuỗi', 'In streak')}</span>`);
+                if (e.sg) bd.push(`<span class="sa-bd sa-bd-sg"><i class="fa-solid fa-gift"></i>${saT('Quà Streak', 'Streak gift')}</span>`);
+                if (e.exam) bd.push(`<span class="sa-bd sa-bd-ex"><i class="fa-solid fa-file-pen"></i>${saT('Bài kiểm tra', 'Test')}</span>`);
+                if (e.manual && !e.sg) bd.push(`<span class="sa-bd sa-bd-man"><i class="fa-solid fa-pen"></i>${saT('Sửa tay', 'Manual')}</span>`);
+                const k = escapeHtml(e.key);
+                const when = `<div class="sa-when"><i class="fa-regular fa-clock"></i>${f.date} · ${f.time}</div>`;
+                const sub = `<div class="sa-sub"><span>${saT('Ô điểm ngày', 'Score cell of')} ${escapeHtml(sgFmtDate(e.date) || e.date)}</span>${bd.join('')}</div>`;
+                if (saEditKey === e.key && !e.sg && !ro) {
+                    html += `<div class="sa-row editing sa-${tone}${e.chain ? ' sg-t' + tk : ''}" data-key="${k}"><span class="sa-score">${vTxt}</span><div class="sa-main">${when}<div class="sa-sub"><span>${saT('Nhập điểm mới (0 – 10)', 'Enter the new score (0 – 10)')}</span></div></div><div class="sa-act"><input type="number" class="sa-inp" min="0" max="10" step="0.1" value="${vTxt}" inputmode="decimal"><button type="button" class="sa-btn sa-ok" data-act="save" title="${saT('Lưu', 'Save')}"><i class="fa-solid fa-check"></i></button><button type="button" class="sa-btn sa-no" data-act="cancel" title="${saT('Hủy', 'Cancel')}"><i class="fa-solid fa-xmark"></i></button></div></div>`;
+                    return;
+                }
+                let act = '';
+                if (e.sg) act = `<span class="sa-lock" title="${saT('Ô quà Streak được khóa, không sửa/xóa được', 'Streak gift cells are locked and cannot be edited or deleted')}"><i class="fa-solid fa-lock"></i></span>`;
+                else if (!ro) act = `<button type="button" class="sa-btn sa-edit" data-act="edit" title="${saT('Sửa điểm', 'Edit score')}"><i class="fa-solid fa-pen"></i></button><button type="button" class="sa-btn sa-del" data-act="del" title="${saT('Xóa điểm', 'Delete score')}"><i class="fa-solid fa-trash"></i></button>`;
+                html += `<div class="sa-row sa-${tone}${e.chain ? ' sg-t' + tk : ''}" data-key="${k}"><span class="sa-score">${vTxt}</span><div class="sa-main">${when}${sub}</div><div class="sa-act">${act}</div></div>`;
+            });
+            if (rows.length > saLimit) html += `<button type="button" class="sa-more" onclick="saMore()">${saT('Xem thêm', 'Show more')} (${rows.length - saLimit})</button>`;
+            el.innerHTML = html;
+            const inp = el.querySelector('.sa-inp'); if (inp) { inp.focus(); inp.select(); }
+        }
+        window.saMore = function () { saLimit += 80; saRender(); };
+        window.saPick = function (sid) { saSid = String(sid); saEditKey = null; saLimit = 80; saRender(); };
+        window.saSetMode = function (m) {
+            saMode = m === 'all' ? 'all' : 'ten'; saEditKey = null; saLimit = 80;
+            document.querySelectorAll('#scoreArchiveModal .sa-chip').forEach(b => b.classList.toggle('on', b.dataset.m === saMode));
+            saRender();
+        };
+        function saAfterChange() {
+            try { renderCurrentView(); } catch (e) {}
+            try { if (typeof qgRender === 'function') qgRender(); } catch (e) {}
+            saRender();
+        }
+        async function saSaveEdit(key) {
+            if (saBusy || saArchived()) return;
+            const row = document.querySelector('#scoreArchiveList .sa-row.editing'), inp = row && row.querySelector('.sa-inp');
+            const raw = inp ? String(inp.value).replace(',', '.').trim() : '', val = parseFloat(raw);
+            if (raw === '' || isNaN(val) || val < 0 || val > 10) {
+                qsToast(saT('Điểm phải là số từ 0 đến 10.', 'The score must be a number from 0 to 10.'), 'warning');
+                if (inp) { inp.classList.remove('sa-shake'); void inp.offsetWidth; inp.classList.add('sa-shake'); inp.focus(); }
+                return;
+            }
+            const old = appData.scores && appData.scores[key], sid = key.replace(/_\d{4}-\d{1,2}-\d{1,2}$/, '');
+            if (!old || old.absent) { saEditKey = null; saRender(); return; }
+            if (old.sg) { qsToast(qsT('sgLocked'), 'warning'); saEditKey = null; saRender(); return; }
+            const nv = Math.round(val * 100) / 100;
+            if (nv === parseFloat(old.score)) { saEditKey = null; saRender(); return; }
+            saBusy = true;
+            const prev = deepCopy(old), st = (appData.students || []).find(s => String(s.id) === sid);
+            const prevLedger = deepCopy(sgLedger()), prevInv = st ? deepCopy(st.inventory || []) : null, prevBest = st ? st.bestTenStreak : undefined;
+            // Sửa tay: gỡ liên kết số lần phát biểu, giữ nguyên điểm dư trong túi quà (giống chế độ Sửa điểm của Score Matrix)
+            appData.scores[key] = { score: nv, absent: false, manual: true, isExam: !!prev.isExam };
+            const ok = await saveData();
+            saBusy = false;
+            if (!ok) {
+                appData.scores[key] = prev; appData.sgLedger = prevLedger;
+                if (st) { st.inventory = prevInv; if (prevBest === undefined) delete st.bestTenStreak; else st.bestTenStreak = prevBest; }
+                qsToast(saT('Không thể lưu thay đổi.', 'Could not save the change.'), 'error'); saRender(); return;
+            }
+            saEditKey = null;
+            qsToast(saT('Đã sửa điểm.', 'Score updated.'), 'success');
+            saAfterChange();
+        }
+        async function saDeleteCell(key) {
+            if (saBusy || saArchived()) return;
+            const old = appData.scores && appData.scores[key], sid = key.replace(/_\d{4}-\d{1,2}-\d{1,2}$/, '');
+            const st = (appData.students || []).find(s => String(s.id) === sid);
+            if (!old || !st) return;
+            if (old.sg) { qsToast(qsT('sgLocked'), 'warning'); return; }
+            const dt = sgFmtDate(key.slice(sid.length + 1)) || key.slice(sid.length + 1);
+            const okAsk = await showAppConfirm(saT(`Xóa điểm ${old.score} của ${getStudentDisplayName(st)} (ngày ${dt})? Thao tác này giống xóa điểm trên Score Matrix.`, `Delete score ${old.score} of ${getStudentDisplayName(st)} (${dt})? This works like deleting a cell in the Score Matrix.`));
+            if (!okAsk) return;
+            if (!appData.scores[key]) return;
+            saBusy = true;
+            const prev = deepCopy(appData.scores[key]), prevPts = st.rewardPoints || 0, prevLedger = deepCopy(sgLedger()), prevInv = deepCopy(st.inventory || []), prevBest = st.bestTenStreak;
+            let sgBefore = null; try { sgBefore = sgSnap([sid]); } catch (e) {}
+            st.rewardPoints = Math.max(0, prevPts - qsOldExcess(prev));
+            delete appData.scores[key];
+            try { sgTrimChains([sid], sgBefore); } catch (e) {}
+            const ok = await saveData();
+            saBusy = false;
+            if (!ok) {
+                appData.scores[key] = prev; st.rewardPoints = prevPts; appData.sgLedger = prevLedger; st.inventory = prevInv;
+                if (prevBest === undefined) delete st.bestTenStreak; else st.bestTenStreak = prevBest;
+                qsToast(saT('Không thể lưu thay đổi.', 'Could not save the change.'), 'error'); saRender(); return;
+            }
+            saEditKey = null;
+            qsToast(saT('Đã xóa điểm.', 'Score deleted.'), 'success');
+            saAfterChange();
+        }
+        window.closeScoreArchive = function () { const m = document.getElementById('scoreArchiveModal'); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); } saEditKey = null; };
+        window.openScoreArchive = function () {
+            let m = document.getElementById('scoreArchiveModal');
+            if (!m) {
+                if (!document.getElementById('scoreArchiveStyle')) {
+                    const st = document.createElement('style'); st.id = 'scoreArchiveStyle';
+                    st.textContent = `#scoreArchiveModal .sa-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.35rem .75rem;border-radius:9999px;font-size:.72rem;font-weight:800;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;transition:background .15s,color .15s,transform .15s ease,box-shadow .15s ease;cursor:pointer}
+#scoreArchiveModal .sa-chip:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(79,70,229,.16);background:#eef2ff;color:#3730a3}
+#scoreArchiveModal .sa-chip.on{background:#4f46e5;color:#fff;border-color:#4f46e5}
+#scoreArchiveModal .sa-select{flex:1;min-width:0;border-radius:.75rem;border:1px solid #e2e8f0;padding:.5rem .75rem;font-size:.85rem;font-weight:800;color:#334155;background:#fff;cursor:pointer;outline:none;transition:border-color .15s,box-shadow .15s,transform .15s ease}
+#scoreArchiveModal .sa-select:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(79,70,229,.14);border-color:#a5b4fc}
+#scoreArchiveModal .sa-select:focus{box-shadow:0 0 0 2px #c7d2fe;border-color:#818cf8}
+#scoreArchiveModal .sa-legend{display:flex;flex-wrap:wrap;gap:.4rem .9rem;padding:.2rem .4rem .5rem;font-size:.68rem;font-weight:800;color:#64748b}
+#scoreArchiveModal .sa-legend span{display:inline-flex;align-items:center;gap:.35rem}
+#scoreArchiveModal .sa-dot{display:inline-block;width:.75rem;height:.75rem;border-radius:9999px}
+#scoreArchiveModal .sa-dot-chain{background:var(--sg-a)}#scoreArchiveModal .sa-dot-ten{background:#fcd34d}
+#scoreArchiveModal .sa-row{display:flex;align-items:center;gap:.7rem;padding:.5rem .6rem;margin-bottom:.2rem;border-radius:.85rem;border:1px solid transparent;transition:background .15s,transform .15s ease,box-shadow .15s ease}
+#scoreArchiveModal .sa-row:hover{background:#eef2ff;transform:translateX(4px);box-shadow:0 4px 12px rgba(79,70,229,.14)}
+#scoreArchiveModal .sa-row.sa-ten{background:#fffbeb;border-color:#fde68a}#scoreArchiveModal .sa-row.sa-ten:hover{background:#fef3c7;box-shadow:0 4px 12px rgba(245,158,11,.2)}
+#scoreArchiveModal .sa-row.sa-chain{background:var(--sg-bg);border-color:var(--sg-bd)}#scoreArchiveModal .sa-row.sa-chain:hover{background:var(--sg-bg);filter:brightness(.97);box-shadow:0 4px 14px var(--sg-bd)}#scoreArchiveModal .sa-chain .sa-when,#scoreArchiveModal .sa-chain .sa-sub{color:var(--sg-tx)}#scoreArchiveModal .sa-chain .sa-when i{color:var(--sg-a)}
+#scoreArchiveModal .sa-row.editing{background:#eef2ff;border-color:#a5b4fc}
+#scoreArchiveModal .sa-score{display:flex;align-items:center;justify-content:center;min-width:2.4rem;height:2.4rem;padding:0 .3rem;border-radius:9999px;font-size:.9rem;font-weight:900;flex:0 0 auto;transition:transform .2s cubic-bezier(.2,.9,.3,1.4),box-shadow .2s ease}
+#scoreArchiveModal .sa-row:hover .sa-score{transform:scale(1.12) rotate(-6deg);box-shadow:0 3px 8px rgba(15,23,42,.2)}
+#scoreArchiveModal .sa-ten .sa-score{background:#fde68a;color:#92400e}
+#scoreArchiveModal .sa-chain .sa-score{background:var(--sg-a);color:#fff;box-shadow:0 0 0 3px var(--sg-bd)}
+#scoreArchiveModal .sa-hi .sa-score{background:#d1fae5;color:#059669}#scoreArchiveModal .sa-mid .sa-score{background:#e0e7ff;color:#4f46e5}#scoreArchiveModal .sa-low .sa-score{background:#ffe4e6;color:#e11d48}
+#scoreArchiveModal .sa-main{flex:1;min-width:0}
+#scoreArchiveModal .sa-when{display:flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:800;color:#334155;font-variant-numeric:tabular-nums}#scoreArchiveModal .sa-when i{font-size:.7rem;color:#94a3b8}
+#scoreArchiveModal .sa-sub{display:flex;flex-wrap:wrap;align-items:center;gap:.25rem .4rem;margin-top:.15rem;font-size:.68rem;font-weight:700;color:#94a3b8}
+#scoreArchiveModal .sa-bd{display:inline-flex;align-items:center;gap:.25rem;padding:.05rem .45rem;border-radius:9999px;font-size:.62rem;font-weight:900}
+#scoreArchiveModal .sa-bd-chain{background:var(--sg-a);color:#fff}#scoreArchiveModal .sa-bd-sg{background:#fce7f3;color:#db2777}#scoreArchiveModal .sa-bd-ex{background:#ede9fe;color:#7c3aed}#scoreArchiveModal .sa-bd-man{background:#e2e8f0;color:#475569}
+#scoreArchiveModal .sa-act{display:flex;align-items:center;gap:.3rem;flex:0 0 auto}
+#scoreArchiveModal .sa-btn{display:inline-flex;align-items:center;justify-content:center;width:1.9rem;height:1.9rem;border-radius:9999px;font-size:.75rem;cursor:pointer;border:0;transition:background .15s,color .15s,transform .15s ease,box-shadow .15s ease}
+#scoreArchiveModal .sa-edit{background:#e0e7ff;color:#4f46e5}#scoreArchiveModal .sa-edit:hover{background:#4f46e5;color:#fff;transform:translateY(-1px) scale(1.1);box-shadow:0 4px 10px rgba(79,70,229,.35)}
+#scoreArchiveModal .sa-del{background:#ffe4e6;color:#e11d48}#scoreArchiveModal .sa-del:hover{background:#e11d48;color:#fff;transform:translateY(-1px) scale(1.1);box-shadow:0 4px 10px rgba(225,29,72,.35)}
+#scoreArchiveModal .sa-ok{background:#d1fae5;color:#059669}#scoreArchiveModal .sa-ok:hover{background:#059669;color:#fff;transform:translateY(-1px) scale(1.1);box-shadow:0 4px 10px rgba(5,150,105,.35)}
+#scoreArchiveModal .sa-no{background:#e2e8f0;color:#475569}#scoreArchiveModal .sa-no:hover{background:#475569;color:#fff;transform:translateY(-1px) scale(1.1)}
+#scoreArchiveModal .sa-btn:active{transform:scale(.94)}
+#scoreArchiveModal .sa-lock{display:inline-flex;align-items:center;justify-content:center;width:1.9rem;height:1.9rem;color:#cbd5e1;font-size:.8rem}
+#scoreArchiveModal .sa-inp{width:4.6rem;border-radius:.6rem;border:1px solid #a5b4fc;padding:.3rem .45rem;font-size:.85rem;font-weight:900;text-align:center;color:#3730a3;outline:none;background:#fff;transition:box-shadow .15s}
+#scoreArchiveModal .sa-inp:focus{box-shadow:0 0 0 2px #c7d2fe}
+#scoreArchiveModal .sa-inp.sa-shake{animation:saShake .35s}@keyframes saShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+#scoreArchiveModal .sa-empty{display:flex;flex-direction:column;align-items:center;gap:.6rem;padding:2.5rem 1rem;color:#94a3b8;font-size:.8rem;font-weight:700}#scoreArchiveModal .sa-empty i{font-size:2rem}
+#scoreArchiveModal .sa-more{display:block;margin:.6rem auto 0;padding:.45rem 1rem;border-radius:9999px;font-size:.75rem;font-weight:800;background:#eef2ff;color:#3730a3;transition:transform .15s ease,box-shadow .15s ease}#scoreArchiveModal .sa-more:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(79,70,229,.18)}
+.mx-dark #scoreArchiveModal .sa-chip{background:#1e293b;color:#cbd5e1;border-color:#334155}.mx-dark #scoreArchiveModal .sa-chip.on{background:#6366f1;color:#fff;border-color:#6366f1}
+.mx-dark #scoreArchiveModal .sa-select{background:#1e293b;color:#e2e8f0;border-color:#334155}.mx-dark #scoreArchiveModal .sa-when{color:#e2e8f0}
+.mx-dark #scoreArchiveModal .sa-row:hover{background:#1e1b4b}.mx-dark #scoreArchiveModal .sa-row.sa-ten{background:#422006;border-color:#854d0e}.mx-dark #scoreArchiveModal .sa-row.sa-chain,.mx-dark #scoreArchiveModal .sa-row.sa-chain:hover{background:var(--sg-bg);border-color:var(--sg-bd)}.mx-dark #scoreArchiveModal .sa-row.sa-chain .sa-when,.mx-dark #scoreArchiveModal .sa-row.sa-chain .sa-sub{color:var(--sg-tx)}.mx-dark #scoreArchiveModal .sa-row.editing{background:#1e1b4b}
+.mx-dark #scoreArchiveModal .sa-legend{color:#94a3b8}`;
+                    document.head.appendChild(st);
+                }
+                m = document.createElement('div'); m.id = 'scoreArchiveModal';
+                m.className = 'fixed inset-0 z-[110] hidden items-center justify-center bg-slate-900/60 p-3';
+                m.addEventListener('click', ev => { if (ev.target === m) closeScoreArchive(); });
+                m.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden"><div class="px-5 py-3 bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 text-white flex items-center gap-3"><i class="fa-solid fa-box-archive text-xl leading-none shrink-0"></i><div class="flex-1 min-w-0"><h2 class="font-black text-base leading-tight" data-sa-title></h2><p class="text-[11px] opacity-80 font-bold" id="scoreArchiveCount"></p></div><button type="button" onclick="closeScoreArchive()" class="text-xl px-2 opacity-90 hover:opacity-100" aria-label="Close">×</button></div><div class="px-4 pt-3 pb-2 space-y-2 border-b border-slate-100"><div class="flex items-center gap-2"><i class="fa-solid fa-user-graduate text-indigo-500"></i><select id="saStudent" class="sa-select" onchange="saPick(this.value)"></select></div><div class="flex flex-wrap gap-1.5" id="scoreArchiveChips"></div></div><div id="scoreArchiveList" class="flex-1 overflow-y-auto px-3 py-2"></div></div>`;
+                document.body.appendChild(m);
+                const lst = m.querySelector('#scoreArchiveList');
+                lst.addEventListener('click', ev => {
+                    const b = ev.target.closest('[data-act]'); if (!b) return;
+                    const row = b.closest('.sa-row'); if (!row) return;
+                    const key = row.dataset.key, act = b.dataset.act;
+                    if (act === 'edit') { saEditKey = key; saRender(); }
+                    else if (act === 'cancel') { saEditKey = null; saRender(); }
+                    else if (act === 'save') saSaveEdit(key);
+                    else if (act === 'del') saDeleteCell(key);
+                });
+                lst.addEventListener('keydown', ev => {
+                    if (ev.key === 'Enter' && ev.target.classList && ev.target.classList.contains('sa-inp')) { ev.preventDefault(); const r = ev.target.closest('.sa-row'); if (r) saSaveEdit(r.dataset.key); }
+                });
+                document.addEventListener('keydown', ev => {
+                    if (ev.key !== 'Escape') return;
+                    const mm = document.getElementById('scoreArchiveModal'); if (!mm || mm.classList.contains('hidden')) return;
+                    const ac = document.getElementById('appConfirmModal'); if (ac && !ac.classList.contains('hidden')) return;
+                    if (saEditKey) { saEditKey = null; saRender(); } else closeScoreArchive();
+                });
+            }
+            m.querySelector('[data-sa-title]').textContent = saT('Lưu Trữ điểm', 'Score Archive');
+            saEditKey = null; saLimit = 80;
+            const chips = [['ten', saT('Điểm 10', 'Scores of 10'), 'fa-star'], ['all', saT('Toàn bộ', 'All scores'), 'fa-layer-group']];
+            document.getElementById('scoreArchiveChips').innerHTML = chips.map(c => `<button type="button" class="sa-chip${saMode === c[0] ? ' on' : ''}" data-m="${c[0]}" onclick="saSetMode('${c[0]}')"><i class="fa-solid ${c[2]}"></i>${c[1]}</button>`).join('');
+            saFillSelect(); saRender();
             m.classList.remove('hidden'); m.classList.add('flex');
         };
 
@@ -9227,6 +9499,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             renderInventoryGiftsForModal(student, existing);
 
             toggleAbsentMode(absentCheckbox.checked);
+            smUpdateEntryTime();
             document.getElementById('scoreModal').classList.remove('hidden');
             document.getElementById('scoreModal').classList.add('flex');
             // Ô nhập số lần phát biểu nổi bật ngay và nhận bàn phím luôn (không cần click chuột)
@@ -9398,6 +9671,15 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
         }
 
         /* --- Nạp lại cửa sổ "Cập nhật điểm" từ dữ liệu đã lưu (cửa sổ KHÔNG tự đóng sau khi dùng quà / lưu / xóa) --- */
+        /* Ngày/Giờ nhập điểm của ô đang mở: cùng nguồn thời gian (ts) với mục Lưu Trữ điểm */
+        function smUpdateEntryTime() {
+            const el = document.getElementById('modalEntryTime'); if (!el) return;
+            const sid = (document.getElementById('modalStudentId') || {}).value, ds = (document.getElementById('modalDateStr') || {}).value;
+            const key = `${sid}_${ds}`, it = (appData.scores || {})[key], en = (appData.language || 'vi') === 'en';
+            let d = '—', t = '—';
+            if (it && typeof it === 'object') { const f = saFmt(it.ts || Math.min(scoreKeyDateMs(key) || Date.now(), Date.now())); d = f.date; t = f.time; }
+            el.innerHTML = `<span class="text-slate-900">${en ? 'Entry Date' : 'Ngày Nhập'}:</span> <span class="font-black text-black">${d}</span> <span class="text-slate-400 mx-1">|</span> <span class="text-slate-900">${en ? 'Time' : 'Giờ'}:</span> <span class="font-black text-black">${t}</span>`;
+        }
         function refreshScoreModalData() {
             const sm = document.getElementById('scoreModal');
             if (!sm || sm.classList.contains('hidden')) return;
@@ -9418,6 +9700,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
             if (existing && !existing.absent && existing.score !== undefined && existing.score !== null) scoreInput.value = existing.score;
             renderInventoryGiftsForModal(student, existing);
             toggleAbsentMode(absentCheckbox.checked);
+            smUpdateEntryTime();
         }
 
         /* --- QUÀ XÓA ĐIỂM (delete_score): xóa đúng 1 ô điểm của đúng học sinh, chỉ tiêu thụ quà khi lưu thành công --- */
@@ -12298,7 +12581,7 @@ html.mx-dark .gc-bar{background:#334155}
     ['deletedStudentsModal', 'closeDeletedStudents', false, false]
   ];
   // Cửa sổ đã tự xử lý Esc / click ngoài: nếu đang mở thì để chúng tự đóng, không chen vào
-  var SELF = ['scoreModal', 'wheelResultModal', 'editHistoryModal', 'tfProfile', 'ctPicker', 'xfBdayPop', 'xfGift', 'appConfirmModal', 'appNoticeModal', 'teacherGate'];
+  var SELF = ['scoreModal', 'wheelResultModal', 'editHistoryModal', 'scoreArchiveModal', 'tfProfile', 'ctPicker', 'xfBdayPop', 'xfGift', 'appConfirmModal', 'appNoticeModal', 'teacherGate'];
   function shown(el) {
     if (!el || el.classList.contains('hidden')) return false;
     var cs = getComputedStyle(el); return cs.display !== 'none' && cs.visibility !== 'hidden';
