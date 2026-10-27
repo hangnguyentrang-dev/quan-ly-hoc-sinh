@@ -2647,6 +2647,29 @@ html.mx-dark #viewPetContainer .text-slate-800{color:#f1f5f9}
 .pet-st.a{top:10%;left:12%}.pet-st.b{top:22%;right:10%;animation-delay:.7s}.pet-st.c{bottom:18%;left:16%;animation-delay:1.3s}.pet-st.d{top:6%;left:48%;animation-delay:.3s}.pet-st.e{bottom:24%;right:12%;animation-delay:1s}
 @media (prefers-reduced-motion:reduce){.pet-art svg,.pet-art svg *,.pet-st{animation:none!important;transition:none!important}}
 </style>
+<style id="patch-pet-bless-claim">
+/* Chúc phúc thú cưng: thẻ chuyển vàng, thú nhảy múa, bấm để nhận */
+@keyframes petDance{0%,100%{transform:translateY(0) rotate(0) scale(1)}12%{transform:translateY(-10px) rotate(-9deg)}25%{transform:translateY(0) rotate(0) scale(1.04,.93)}37%{transform:translateY(-10px) rotate(9deg)}50%{transform:translateY(0) rotate(0) scale(1.04,.93)}62%{transform:translateY(-6px) rotate(-5deg) scale(1.07)}75%{transform:translateY(-6px) rotate(5deg) scale(1.07)}88%{transform:translateY(0) rotate(0)}}
+@keyframes petBlessGlow{0%,100%{box-shadow:0 0 0 0 rgba(250,204,21,.6),0 8px 22px rgba(245,158,11,.32)}50%{box-shadow:0 0 0 7px rgba(250,204,21,0),0 12px 30px rgba(245,158,11,.55)}}
+@keyframes petBlessShine{0%{transform:translateX(-130%) skewX(-18deg)}55%,100%{transform:translateX(230%) skewX(-18deg)}}
+@keyframes petClaimBlink{0%,100%{opacity:1}50%{opacity:.4}}
+.pet-card.pet-bless{cursor:pointer;background:linear-gradient(160deg,#fffbeb,#fde68a 55%,#fbbf24);border:2px solid #f59e0b;animation:petBlessGlow 1.6s ease-in-out infinite}
+.pet-card.pet-bless::after{content:"";position:absolute;top:0;bottom:0;left:0;width:45%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.7),transparent);animation:petBlessShine 2.8s ease-in-out infinite;pointer-events:none}
+.pet-card.pet-bless:hover{transform:translateY(-3px) scale(1.03);border-color:#d97706;box-shadow:0 14px 30px rgba(245,158,11,.5)}
+.pet-card.pet-bless:focus-visible{outline:3px solid #d97706;outline-offset:2px}
+.pet-card.pet-bless .pet-art{animation:petDance 1.1s ease-in-out infinite !important;transform-origin:50% 90%}
+.pet-card.pet-bless .p3-idle{animation:p3Hop .7s ease-in-out infinite}
+.pet-card.pet-bless .pet-st{z-index:2}
+.pet-claim{margin-top:.35rem;border-radius:.75rem;background:rgba(255,255,255,.72);border:1.5px dashed #d97706;padding:.3rem .4rem}
+.pet-claim-t{font-size:12px;font-weight:900;color:#92400e;line-height:1.25;word-break:break-word}
+.pet-claim-s{font-size:10px;font-weight:800;color:#b45309;margin-top:1px;animation:petClaimBlink 1.2s ease-in-out infinite}
+html.mx-dark .pet-card.pet-bless{background:linear-gradient(160deg,#78350f,#451a03 60%,#713f12);border-color:#fbbf24}
+html.mx-dark .pet-card.pet-bless .pet-claim{background:rgba(0,0,0,.35);border-color:#fbbf24}
+html.mx-dark .pet-card.pet-bless .pet-claim-t{color:#fde68a}
+html.mx-dark .pet-card.pet-bless .pet-claim-s{color:#fcd34d}
+html.mx-dark #viewPetContainer .pet-card.pet-bless .text-slate-800{color:#fef3c7}
+@media (prefers-reduced-motion:reduce){.pet-card.pet-bless,.pet-card.pet-bless::after,.pet-card.pet-bless .pet-art,.pet-card.pet-bless .p3-idle,.pet-claim-s{animation:none!important}}
+</style>
 <style id="patch-nav-nowrap">
 #appNavBar > .max-w-7xl{max-width:none !important}
 .view-tabs{overflow:visible !important;flex-wrap:wrap !important;row-gap:.45rem;column-gap:.7rem;scroll-snap-type:none !important;scroll-behavior:auto !important}
@@ -3003,7 +3026,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                             <button id="btnViewShop" onclick="switchViewMode('shop')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-gift mr-1"></i> <span data-i18n="tabShop">Cửa Hàng Quà</span></button>
                             <button id="btnViewWheel" onclick="switchViewMode('wheel')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-circle-notch mr-1"></i><span id="wheelTabLabel">Vòng Quay May Mắn</span></button>
                             <button id="btnViewGacha" onclick="switchViewMode('gacha')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-box-open mr-1"></i> <span data-i18n="tabGacha">Hộp Quà Bí Ẩn</span></button>
-                            <button id="btnViewPet" onclick="switchViewMode('pet')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-egg mr-1"></i> <span data-i18n="tabPet">Thú Cưng</span></button>
+                            <button id="btnViewPet" style="position:relative" onclick="switchViewMode('pet')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-egg mr-1"></i> <span data-i18n="tabPet">Thú Cưng</span><span id="petPendingBadge" class="tp-badge hidden" role="status"></span></button>
                         </div>
                     </div>
                 </div>
@@ -12432,9 +12455,10 @@ window.openStudentProfile=function(studentId){
                 body = `<div class="grid gap-3 mt-4" style="grid-template-columns:repeat(auto-fill,minmax(214px,1fr))">` + list.map(st => {
                     const pk = petPeakOf(st), f = petFormOf(pk), has = st.petSp !== undefined && PET_SP[st.petSp], nxt = PET_MS.find(m => m > pk), cur = (() => { try { return tenStreakInfo(st.id).cur; } catch (e) { return 0; } })();
                     const isEvo = has && f > (st.petShown || 1); if (isEvo) evo.push(st);
+                    const pbl = (has && appData.petBless && appData.petBless.pend && appData.petBless.pend[st.id]) || [], pbn = pbl.length && PET_B[st.petSp] ? PET_B[st.petSp].n[(appData.language || 'vi') === 'en' ? 1 : 0] : '';
                     const art = has ? petArt(st.petSp, f, pk >= 1) : `<div class="pet-art" style="display:flex;align-items:center;justify-content:center;font-size:64px;opacity:.45">🥚</div>`;
                     const pct = nxt ? Math.round(((pk - PET_MS[PET_MS.indexOf(nxt) - 1]) / (nxt - PET_MS[PET_MS.indexOf(nxt) - 1])) * 100) : 100;
-                    return `<div class="pet-card ${f === 8 && has ? 'pet-f8' : ''} ${isEvo ? 'pet-evo' : ''}" data-sid="${st.id}"><div class="text-xs font-black text-slate-800 truncate">${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}</div>${art}<div class="text-[11px] font-extrabold text-violet-700 mt-1 min-h-[1.2em]">${has ? escapeHtml(petFormName(st.petSp, f)) : L2('Chưa chọn trứng', 'No egg chosen')}</div><div class="mt-1"><span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span></div>${petBlessLine(st)}<div class="pet-bar mt-2"><i style="width:${pct}%"></i></div><div class="text-[10px] text-slate-500 mt-1">${nxt ? L2('Mốc tiếp theo: ', 'Next milestone: ') + nxt : L2('Đã đạt dạng cuối!', 'Final form reached!')}</div>${!has || f === 1 ? `<button class="pet-tabbtn mt-2" onclick="petGoPick('${st.id}')">${has ? L2('Đổi trứng', 'Change egg') : L2('Chọn trứng', 'Pick egg')}</button>` : ''}</div>`;
+                    return `<div class="pet-card ${f === 8 && has ? 'pet-f8' : ''} ${isEvo ? 'pet-evo' : ''} ${pbl.length ? 'pet-bless' : ''}" data-sid="${st.id}"${pbl.length ? ` role="button" tabindex="0" onclick="petClaim('${st.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();petClaim('${st.id}')}"` : ''}>${pbl.length ? '<i class="pet-st a">✦</i><i class="pet-st b">✨</i><i class="pet-st c">✦</i><i class="pet-st e">✨</i>' : ''}<div class="text-xs font-black text-slate-800 truncate">${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}</div>${art}<div class="text-[11px] font-extrabold text-violet-700 mt-1 min-h-[1.2em]">${has ? escapeHtml(petFormName(st.petSp, f)) : L2('Chưa chọn trứng', 'No egg chosen')}</div>${pbl.length ? `<div class="pet-claim"><div class="pet-claim-t">🎁 ${L2('Đã nhận', 'Received')} ${escapeHtml(pbn)}${pbl.length > 1 ? ' ×' + pbl.length : ''}</div><div class="pet-claim-s">${L2('(bấm để nhận)', '(tap to claim)')}</div></div>` : ''}<div class="mt-1"><span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span></div>${petBlessLine(st)}<div class="pet-bar mt-2"><i style="width:${pct}%"></i></div><div class="text-[10px] text-slate-500 mt-1">${nxt ? L2('Mốc tiếp theo: ', 'Next milestone: ') + nxt : L2('Đã đạt dạng cuối!', 'Final form reached!')}</div>${!has || f === 1 ? `<button class="pet-tabbtn mt-2" onclick="event.stopPropagation();petGoPick('${st.id}')">${has ? L2('Đổi trứng', 'Change egg') : L2('Chọn trứng', 'Pick egg')}</button>` : ''}</div>`;
                 }).join('') + `</div>`;
             } else {
                 const sp = PET_SP[petSel], tgt = list.find(s => s.id === petTarget), locked = tgt && tgt.petSp !== undefined && petFormOf(petPeakOf(tgt)) > 1;
@@ -12453,7 +12477,7 @@ window.openStudentProfile=function(studentId){
         };
         // Cập nhật lại khi dữ liệu thay đổi (đồng bộ Firebase / nhập điểm)
         let _petSig = '';
-        setInterval(() => { try { if (appData && appData.activeViewMode === 'pet' && !document.hidden && !document.querySelector('#viewPetContainer select:focus')) { const sg = (appData.students || []).filter(s => s.classId === appData.activeClassId).map(s => s.id + ':' + s.petSp + ':' + petPeakOf(s) + ':' + (s.petShown || 0) + ':' + getStudentDisplayName(s)).join('|') + '#' + appData.activeClassId; if (sg !== _petSig) { _petSig = sg; window.renderPetView(); } } } catch (e) {} }, 15000);
+        setInterval(() => { try { if (appData && appData.activeViewMode === 'pet' && !document.hidden && !document.querySelector('#viewPetContainer select:focus')) { const sg = (appData.students || []).filter(s => s.classId === appData.activeClassId).map(s => s.id + ':' + s.petSp + ':' + petPeakOf(s) + ':' + (s.petShown || 0) + ':' + getStudentDisplayName(s) + ':' + ((appData.petBless && appData.petBless.pend && appData.petBless.pend[s.id]) || []).length).join('|') + '#' + appData.activeClassId + '#' + (appData.language || 'vi'); if (sg !== _petSig) { _petSig = sg; window.renderPetView(); } } } catch (e) {} }, 15000);
         /* ===== Leaderboard: cột Thú cưng + bấm xem nội tại ===== */
         try { Object.assign(translations.vi, { thPet: 'THÚ CƯNG' }); Object.assign(translations.en, { thPet: 'PET' }); } catch (e) {}
         window.petLbCell = sid => {
@@ -12539,7 +12563,7 @@ window.openStudentProfile=function(studentId){
         const petAdd = (ds, n) => { const t = new Date(ds + 'T12:00:00Z'); t.setUTCDate(t.getUTCDate() + n); return t.toISOString().slice(0, 10); };
         const petDow = ds => new Date(ds + 'T12:00:00Z').getUTCDay();
         let _petChanged = false;
-        const petP = () => { const P = appData.petBless = (appData.petBless && typeof appData.petBless === 'object') ? appData.petBless : {}; P.led = P.led || {}; P.log = P.log || []; P.recv = P.recv || {}; return P; };
+        const petP = () => { const P = appData.petBless = (appData.petBless && typeof appData.petBless === 'object') ? appData.petBless : {}; P.led = P.led || {}; P.log = P.log || []; P.recv = P.recv || {}; P.pend = (P.pend && typeof P.pend === 'object') ? P.pend : {}; return P; };
         const PET_GIFT = {
             spin: { itemId: 'fix_lucky_spin', type: 'lucky_spin', isFixed: true, vi: '1 lượt quay may mắn', en: '1 Lucky Wheel spin' },
             plus2: { itemId: 'pet_plus_2', type: 'plus', deltaScore: 2, isFixed: false, vi: 'Cộng 2 điểm', en: '+2 points' },
@@ -12548,23 +12572,71 @@ window.openStudentProfile=function(studentId){
         };
         const petLog = (P, st, vi, en) => { P.log.push({ d: petPd(new Date()), sid: st.id, vi: `${st.petName || getStudentDisplayName(st)} · ${PET_SP[st.petSp][0]}: ${vi}`, en: `${getStudentDisplayName(st)} · ${PET_SP[st.petSp][1]}: ${en}` }); if (P.log.length > 200) P.log.splice(0, P.log.length - 200); };
         const petToast = (vi, en) => { try { if (window.showAppToast) window.showAppToast(L2(vi, en), 'success'); } catch (e) {} };
+        // Chúc phúc KHÔNG cộng ngay và KHÔNG báo ra màn hình: xếp hàng chờ ở thẻ thú cưng, học sinh bấm vào thẻ mới nhận quà
+        let _petUiT = 0;
+        const petQueue = (st, o) => {
+            const P = petP(); (P.pend[st.id] = P.pend[st.id] || []).push(Object.assign({ id: 'pb_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), d: petPd(new Date()) }, o));
+            _petChanged = true;
+            clearTimeout(_petUiT);
+            _petUiT = setTimeout(() => { try { if (window.petUpdateBadge) window.petUpdateBadge(); if (appData && appData.activeViewMode === 'pet' && window.renderPetView) window.renderPetView(); } catch (e) {} }, 60);
+        };
         const petGive = (st, key, pts, vi, en, to) => {
             const P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led[key]) return; led[key] = 1; _petChanged = true;
             pts = Math.round(pts); if (!(pts > 0)) return;
             if (to) { const rk = to.id + '|' + petPd(new Date()).slice(0, 7); P.recv[rk] = P.recv[rk] || 0; if (P.recv[rk] + pts > 8) return; P.recv[rk] += pts; }
-            const tg = to || st; tg.rewardPoints = (tg.rewardPoints || 0) + pts;
-            const toTxt = to ? ' → ' + getStudentDisplayName(to) : '';
-            petLog(P, st, `${vi} (+${pts} pts${toTxt})`, `${en} (+${pts} pts${toTxt})`);
-            if (!to) petToast(`${PET_SP[st.petSp][0]} của ${getStudentDisplayName(st)} ban phúc +${pts} pts!`, `${getStudentDisplayName(st)}'s ${PET_SP[st.petSp][1]} blessed +${pts} pts!`);
+            petQueue(st, { k: 'pts', pts, to: to ? to.id : '', vi, en });
         };
         const petGiveInv = (st, key, kind, n, vi, en) => {
             const P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led[key]) return; led[key] = 1; _petChanged = true;
-            const g = PET_GIFT[kind], nm = (appData.language || 'vi') === 'en' ? g.en : g.vi;
-            st.inventory = st.inventory || [];
-            for (let k = 0; k < n; k++) { const o = { invId: 'inv_' + Date.now() + '_pet' + k + '_' + Math.random().toString(36).slice(2, 8), itemId: g.itemId, name: nm, itemName: nm, isFixed: g.isFixed, type: g.type, date: petPd(new Date()), fromPet: true }; if (g.deltaScore !== undefined) o.deltaScore = g.deltaScore; st.inventory.push(o); }
-            petLog(P, st, `${vi} (+${n} ${g.vi})`, `${en} (+${n} ${g.en})`);
-            petToast(`${PET_SP[st.petSp][0]} của ${getStudentDisplayName(st)} ban phúc: ${n} × ${g.vi}!`, `${getStudentDisplayName(st)}'s ${PET_SP[st.petSp][1]} blessed: ${n} × ${g.en}!`);
+            petQueue(st, { k: 'inv', kind, n, vi, en });
         };
+        // Học sinh bấm vào thẻ thú cưng đang vàng → nhận toàn bộ chúc phúc đang chờ, thẻ về trạng thái mặc định
+        window.petClaim = function petClaim(sid) {
+            try {
+                if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return;
+                const P = petP(), list = P.pend[sid]; if (!list || !list.length) return;
+                const st = (appData.students || []).find(x => x.id === sid); delete P.pend[sid];
+                if (!st || st.petSp === undefined || !PET_SP[st.petSp]) { Promise.resolve(saveData()).catch(() => {}); window.petUpdateBadge && window.petUpdateBadge(); window.renderPetView && window.renderPetView(); return; }
+                const en = (appData.language || 'vi') === 'en', parts = [];
+                list.forEach(it => {
+                    if (it.k === 'pts') {
+                        const tg = it.to ? (appData.students || []).find(x => x.id === it.to) : st; if (!tg) return;
+                        tg.rewardPoints = (tg.rewardPoints || 0) + it.pts;
+                        const toTxt = it.to ? ' → ' + getStudentDisplayName(tg) : '';
+                        petLog(P, st, `${it.vi} (+${it.pts} pts${toTxt})`, `${it.en} (+${it.pts} pts${toTxt})`);
+                        parts.push(`+${it.pts} pts${toTxt}`);
+                    } else if (it.k === 'inv') {
+                        const g = PET_GIFT[it.kind]; if (!g) return; const nm = en ? g.en : g.vi;
+                        st.inventory = st.inventory || [];
+                        for (let k = 0; k < it.n; k++) { const o = { invId: 'inv_' + Date.now() + '_pet' + k + '_' + Math.random().toString(36).slice(2, 8), itemId: g.itemId, name: nm, itemName: nm, isFixed: g.isFixed, type: g.type, date: petPd(new Date()), fromPet: true }; if (g.deltaScore !== undefined) o.deltaScore = g.deltaScore; st.inventory.push(o); }
+                        petLog(P, st, `${it.vi} (+${it.n} ${g.vi})`, `${it.en} (+${it.n} ${g.en})`);
+                        parts.push(`${it.n} × ${nm}`);
+                    }
+                });
+                try { const el = document.querySelector('#viewPetContainer .pet-card[data-sid="' + sid + '"]'); if (el && !xfRM()) { const r = el.getBoundingClientRect(); tfBurst(r.left + r.width / 2, r.top + 70, 50, 260); [659, 784, 988, 1319].forEach((f, k) => tfBeep(f, .12, .18, k * .09)); } } catch (e) {}
+                petToast(`${PET_SP[st.petSp][0]} của ${getStudentDisplayName(st)}: ${parts.join(', ')}`, `${getStudentDisplayName(st)}'s ${PET_SP[st.petSp][1]}: ${parts.join(', ')}`);
+                Promise.resolve(saveData()).catch(() => {});
+                window.petUpdateBadge && window.petUpdateBadge();
+                window.renderPetView && window.renderPetView();
+            } catch (e) { console.warn('petClaim', e); }
+        };
+        // Số chúc phúc đang chờ nhận của lớp đang xem → huy hiệu đỏ trên tab Thú cưng
+        window.petPendingCount = function () {
+            try {
+                const pd = (appData && appData.petBless && appData.petBless.pend) || {}; let n = 0;
+                (appData.students || []).forEach(s => { if (s.classId === appData.activeClassId && pd[s.id]) n += pd[s.id].length; });
+                return n;
+            } catch (e) { return 0; }
+        };
+        window.petUpdateBadge = function () {
+            const el = document.getElementById('petPendingBadge'); if (!el) return;
+            const n = window.petPendingCount(), tx = n > 99 ? '99+' : String(n);
+            el.classList.toggle('hidden', n <= 0);
+            if (el.textContent !== tx) el.textContent = tx;
+            el.title = L2(`${n} chúc phúc thú cưng đang chờ nhận`, `${n} pet blessing(s) waiting to be claimed`);
+        };
+        setInterval(() => { try { window.petUpdateBadge(); } catch (e) {} }, 1000);
+        setTimeout(() => { try { window.petUpdateBadge(); } catch (e) {} }, 1500);
         // Cáo Tuyết: hoàn pts cho giao dịch đầu tiên trong tuần; ghi chi tiêu theo ngày cho Gấu Mật
         window.petNoteSpend = function (st, amt) {
             if (!st || !(amt > 0)) return; const day = petPd(new Date()), m = day.slice(0, 7);
