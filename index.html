@@ -2558,6 +2558,178 @@ html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
 .xf-pop-foot p.xf-pop-gain{margin-top:.35rem;font-size:12px}
 @media (prefers-reduced-motion:reduce){#scoreMatrix td.sticky-col-2.mx-bday,#scoreModal .sm-hdr>.sm-bg.mx-bday,.vl-head.vl-bday,.vl-head.vl-bday .roster-avatar{animation:none !important}}
 </style>
+
+<style id="patch-2026-10-27-pets">
+@keyframes petBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes petWob{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes petShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-7deg)}40%{transform:rotate(6deg)}60%{transform:rotate(-5deg)}80%{transform:rotate(4deg)}}
+@keyframes petFlash{0%{box-shadow:0 0 0 0 rgba(250,204,21,.9)}100%{box-shadow:0 0 0 26px rgba(250,204,21,0)}}
+@keyframes petAura{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+.pet-card{position:relative;overflow:hidden;border:1px solid #e2e8f0;border-radius:1rem;background:linear-gradient(160deg,#fff,#f5f3ff);padding:.75rem;text-align:center;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.pet-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(99,102,241,.22);border-color:#a5b4fc}
+.pet-card.pet-evo{animation:petFlash 1.2s ease-out 2}
+.pet-card.pet-f8{background:linear-gradient(160deg,#fffbeb,#fdf2f8 55%,#ede9fe);border-color:#f472b6}
+.pet-art{width:96px;height:96px;margin:0 auto;display:block}
+.pet-art svg{width:100%;height:100%;overflow:visible}
+.pet-art.egg{animation:petWob 2.6s ease-in-out infinite}.pet-art.egg.cr{animation:petShake 1.6s ease-in-out infinite}
+.pet-art.mon{animation:petBob 2.4s ease-in-out infinite}
+.pet-card:hover .pet-art{animation-duration:.9s}
+.pet-aura{transform-origin:50% 55%;animation:petAura 2.4s ease-in-out infinite}
+.pet-bar{height:7px;border-radius:9999px;background:#e2e8f0;overflow:hidden}.pet-bar>i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#6366f1,#a855f7,#f472b6);transition:width .5s ease}
+.pet-chip{display:inline-block;border-radius:9999px;padding:1px 8px;font-size:10px;font-weight:800;background:#ede9fe;color:#5b21b6}
+.pet-sp{cursor:pointer;border:2px solid transparent;border-radius:.9rem;padding:.35rem;text-align:center;transition:transform .15s ease,background .15s ease,border-color .15s ease}
+.pet-sp:hover{transform:translateY(-2px) scale(1.04);background:#eef2ff}.pet-sp.on{border-color:#6366f1;background:#e0e7ff}
+.pet-sp .pet-art{width:64px;height:64px}
+.pet-line{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:.5rem}
+.pet-line>div{border:1px solid #e2e8f0;border-radius:.8rem;background:#fff;padding:.4rem;text-align:center;transition:transform .15s ease,box-shadow .15s ease}
+.pet-line>div:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(99,102,241,.2)}
+.pet-line .pet-art{width:70px;height:70px}
+.pet-tabbtn{border-radius:9999px;padding:.35rem .9rem;font-size:12px;font-weight:800;border:1px solid #c7d2fe;background:#fff;color:#4338ca;transition:transform .15s ease,background .15s ease}
+.pet-tabbtn:hover{transform:translateY(-1px);background:#eef2ff}.pet-tabbtn.on{background:linear-gradient(90deg,#4338ca,#7c3aed);color:#fff;border-color:transparent}
+html.mx-dark .pet-card{background:linear-gradient(160deg,#1e293b,#1e1b4b);border-color:#334155}
+html.mx-dark .pet-card.pet-f8{background:linear-gradient(160deg,#3b0764,#1e1b4b);border-color:#f472b6}
+html.mx-dark .pet-line>div,html.mx-dark .pet-sp:hover,html.mx-dark .pet-sp.on{background:#1e293b}
+html.mx-dark #viewPetContainer .text-slate-800{color:#f1f5f9}
+@media (prefers-reduced-motion:reduce){.pet-art,.pet-aura,.pet-card.pet-evo{animation:none!important}.pet-card,.pet-sp,.pet-line>div{transition:none}}
+</style>
+
+<style id="patch-2026-10-27-pet-art">
+/* Pet 3D vector: không nền, đổ bóng khối, cử động liên tục */
+@keyframes p3Idle{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-1.2px) scale(.985,1.03)}}
+@keyframes p3Head{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(2.2deg) translateY(-.6px)}}
+@keyframes p3Blink{0%,91%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
+@keyframes p3Look{0%,38%,100%{transform:translate(0,0)}46%,68%{transform:translate(1.3px,-.3px)}76%,92%{transform:translate(-1.3px,.3px)}}
+@keyframes p3Tail{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
+@keyframes p3Wing{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+@keyframes p3Ear{0%,84%,100%{transform:rotate(0)}89%{transform:rotate(-5deg)}94%{transform:rotate(3deg)}}
+@keyframes p3ArmL{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg)}}
+@keyframes p3ArmR{0%,100%{transform:rotate(0)}50%{transform:rotate(8deg)}}
+@keyframes p3Jelly{0%,100%{transform:scale(1,1)}33%{transform:scale(1.05,.95)}66%{transform:scale(.96,1.05)}}
+@keyframes p3Tent{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+@keyframes p3Egg{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes p3EggCr{0%,48%,100%{transform:rotate(0)}8%{transform:rotate(-7deg)}16%{transform:rotate(7deg)}24%{transform:rotate(-5deg)}32%{transform:rotate(5deg)}40%{transform:rotate(-2deg)}}
+@keyframes p3Hop{0%,100%{transform:translateY(0) scale(1,1)}22%{transform:translateY(0) scale(1.08,.9)}52%{transform:translateY(-10px) scale(.94,1.08)}80%{transform:translateY(0) scale(1.05,.94)}}
+@keyframes p3Aura{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes p3Spin{to{transform:rotate(360deg)}}
+@keyframes p3Pulse{0%,100%{opacity:.65}50%{opacity:1}}
+@keyframes p3Glow{0%,100%{filter:drop-shadow(0 0 5px rgba(250,204,21,.8))}50%{filter:drop-shadow(0 0 13px rgba(250,204,21,1))}}
+@keyframes p3Float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes petTwinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(90deg)}}
+@keyframes petEvoPop{0%{transform:scale(.55);filter:brightness(2.4)}55%{transform:scale(1.28);filter:brightness(1.6)}100%{transform:scale(1);filter:brightness(1)}}
+.pet-art,.pet-art.egg,.pet-art.mon,.pet-art.egg.cr{animation:none!important;background:none!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important;position:relative;width:168px;height:168px;margin:0 auto;display:block;cursor:pointer}
+.pet-sp .pet-art{width:96px;height:96px}.pet-line .pet-art{width:124px;height:124px}
+.pet-art svg{width:100%;height:100%;overflow:visible;transform:perspective(260px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .18s ease-out}
+.p3-idle{transform-origin:50px 88px;animation:p3Idle 3.2s ease-in-out infinite}
+.p3-head{transform-origin:50px 64px;animation:p3Head 4.6s ease-in-out infinite}
+.p3-eyes{animation:p3Blink 4.2s ease-in-out infinite}
+.p3-pup{animation:p3Look 7s ease-in-out infinite}
+.p3-tail{transform-origin:66px 72px;animation:p3Tail 2.6s ease-in-out infinite}
+.p3-wing{transform-origin:62px 58px;animation:p3Wing 1.9s ease-in-out infinite}
+.p3-ear{transform-origin:50px 30px;animation:p3Ear 5s ease-in-out infinite}
+.p3-armL{transform-origin:27px 60px;animation:p3ArmL 3.2s ease-in-out infinite}
+.p3-armR{transform-origin:73px 60px;animation:p3ArmR 3.2s ease-in-out infinite}
+.p3-jelly{transform-origin:50px 88px;animation:p3Jelly 2.8s ease-in-out infinite}
+.p3-bow{transform-origin:50px 38px;animation:p3Pulse 2.4s ease-in-out infinite}
+.p3-tent{animation:p3Tent 2.2s ease-in-out infinite}
+.p3-egg{transform-origin:50px 90px;animation:p3Egg 3s ease-in-out infinite}
+.p3-egg.cr{animation:p3EggCr 2s ease-in-out infinite}
+.p3-crk,.p3-gem,.p3-halo,.p3-knot{animation:p3Pulse 1.6s ease-in-out infinite}
+.p3-knot{transform-origin:70px 40px;animation:p3Tail 1.4s ease-in-out infinite}
+.p3-aura{transform-origin:50px 56px;animation:p3Aura 2.6s ease-in-out infinite}
+.p3-spin{transform-origin:50px 56px;animation:p3Spin 14s linear infinite}
+.pet-card:hover .p3-idle,.pet-sp:hover .p3-idle,.pet-line>div:hover .p3-idle,.p3-jump .p3-idle{animation:p3Hop .7s ease-in-out infinite}
+.p3-jump .p3-idle{animation:p3Hop .7s ease-out 1!important}
+.pet-t2 svg{filter:drop-shadow(0 0 4px rgba(129,140,248,.85))}
+.pet-t3 svg{filter:drop-shadow(0 0 6px rgba(192,132,252,.95))}
+.pet-t4 svg{animation:p3Glow 2s ease-in-out infinite}
+.pet-card.pet-evo .pet-art svg{animation:petEvoPop 1.1s ease-out 2!important}
+.pet-st{position:absolute;font-style:normal;font-size:13px;line-height:1;color:#fde68a;text-shadow:0 0 6px #facc15;pointer-events:none;animation:petTwinkle 2.2s ease-in-out infinite}
+.pet-st.a{top:10%;left:12%}.pet-st.b{top:22%;right:10%;animation-delay:.7s}.pet-st.c{bottom:18%;left:16%;animation-delay:1.3s}.pet-st.d{top:6%;left:48%;animation-delay:.3s}.pet-st.e{bottom:24%;right:12%;animation-delay:1s}
+@media (prefers-reduced-motion:reduce){.pet-art svg,.pet-art svg *,.pet-st{animation:none!important;transition:none!important}}
+</style>
+<style id="patch-nav-nowrap">
+#appNavBar > .max-w-7xl{max-width:none !important}
+.view-tabs{overflow:visible !important;flex-wrap:wrap !important;row-gap:.45rem;column-gap:.7rem;scroll-snap-type:none !important;scroll-behavior:auto !important}
+.tab-group{flex:0 1 auto !important}
+.tab-pills{flex-wrap:wrap}
+.tab-pills > button{padding:.42rem .75rem !important}
+</style>
+<style id="patch-ui-center-pet-lb">
+/* Căn giữa thanh lớp + thanh tab */
+#appNavBar > .max-w-7xl > .flex.flex-wrap{justify-content:flex-start !important}
+#classTabsContainer{flex:0 1 auto !important;justify-content:flex-start;flex-wrap:wrap;overflow:visible !important;row-gap:.25rem}
+.view-tabs{justify-content:flex-start !important}
+.tab-group{align-items:center}
+.tab-group-label{padding-left:0 !important;text-align:left}
+/* Căn mép trái thẻ lớp + thẻ tab + tên nhóm tab thẳng hàng với tiêu đề/thanh công cụ ở header (header dùng max-w-7xl căn giữa) */
+#appNavBar > .max-w-7xl{padding-left:max(1rem,calc((100% - 80rem) / 2 + 1rem)) !important}
+.tab-group{align-items:flex-start}
+.view-tabs{padding-left:0 !important}
+/* Tab Thú cưng: trượt mượt giữa Thú của lớp và Kho trứng */
+#viewPetContainer{overflow-x:hidden}
+#viewPetContainer > section{overflow-x:clip}
+.pet-pane{will-change:transform,opacity}
+.pet-pane.pet-out{animation:petPaneOut .21s ease-in forwards}
+.pet-pane.pet-in{animation:petPaneIn .46s cubic-bezier(.22,1,.36,1) both}
+@keyframes petPaneOut{to{opacity:0;transform:translateX(calc(var(--dir,1) * -56px))}}
+@keyframes petPaneIn{from{opacity:0;transform:translateX(calc(var(--dir,1) * 72px))}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.pet-pane.pet-out,.pet-pane.pet-in{animation:none !important}}
+/* Leaderboard: rộng hơn, cột đều nhau, có cột Thú cưng */
+#viewRankingContainer table{table-layout:auto;width:100%;max-width:none;min-width:0;margin-left:0;margin-right:0}
+#viewRankingContainer thead th:nth-child(1){width:7%}
+#viewRankingContainer thead th:nth-child(2){width:auto}
+#viewRankingContainer thead th:nth-child(3){width:12%}
+#viewRankingContainer thead th:nth-child(4){width:10%}
+#viewRankingContainer thead th:nth-child(5){width:12%}
+#viewRankingContainer thead th:nth-child(6){width:10%}
+#viewRankingContainer thead th:nth-child(7){width:11%}
+#viewRankingContainer thead th:nth-child(8){width:14%}
+#rankingTableBody td{vertical-align:middle}
+#viewRankingContainer thead th:nth-child(n+3),#rankingTableBody td:nth-child(n+3){padding-left:.4rem !important;padding-right:.4rem !important}
+.rk-namerow{display:flex;align-items:center;flex-wrap:nowrap;min-width:0}
+.rk-namerow > *{flex:0 0 auto}
+.rk-namerow > .tf-name-link{flex:0 0 auto;white-space:nowrap;overflow:visible;text-overflow:clip}
+#rankingTableBody td:nth-child(2){white-space:nowrap;overflow:visible}
+#rankingTableBody .pet-art{width:92px !important;height:92px !important}
+#rankingTableBody .pet-art.pet-none,#petLbModal .pet-art.pet-none{display:flex;align-items:center;justify-content:center;font-size:52px;opacity:.4}
+.rk-pet{display:inline-block;cursor:pointer;border-radius:1rem;transition:transform .2s cubic-bezier(.2,.9,.3,1.5),filter .2s}
+.rk-pet:hover{transform:scale(1.12);filter:drop-shadow(0 6px 10px rgba(99,102,241,.35))}
+.rk-pet:focus-visible{outline:2px solid #6366f1;outline-offset:2px}
+.hl-row .pet-art{isolation:isolate;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+/* Leaderboard: thu gọn chiều cao thẻ học sinh (không áp dụng cho podium top 3) để xem được nhiều học sinh hơn */
+#rankingTableBody td{padding-top:.3rem !important;padding-bottom:.3rem !important}
+#rankingTableBody .pet-art{width:62px !important;height:62px !important}
+#rankingTableBody .pet-art.pet-none{font-size:34px}
+#rankingTableBody .gb-wrap{width:2.3rem;height:2.3rem}
+#rankingTableBody .gb-wrap svg{width:100%;height:100%}
+/* Cửa sổ nội tại của pet */
+.pl-back{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(15,23,42,.55);backdrop-filter:blur(3px);animation:plFade .2s ease-out}
+.pl-back.pl-out{animation:plFadeOut .18s ease-in forwards}
+.pl-card{position:relative;width:min(440px,100%);max-height:92vh;overflow:auto;background:linear-gradient(160deg,#fff,#f5f3ff);border:1px solid #c7d2fe;border-radius:1.4rem;padding:1.2rem 1.3rem 1.3rem;text-align:center;box-shadow:0 24px 60px rgba(49,46,129,.35);animation:plPop .32s cubic-bezier(.22,1.2,.36,1)}
+.pl-x{position:absolute;top:.6rem;right:.7rem;width:2rem;height:2rem;border-radius:9999px;border:0;background:#e0e7ff;color:#4338ca;font-weight:900;cursor:pointer}
+.pl-owner{font-weight:900;color:#1e293b;font-size:1.05rem;margin-bottom:.2rem}
+.pl-form{font-weight:900;color:#6d28d9;margin-top:.2rem}
+.pl-chips{margin-top:.4rem}
+.pl-bless{margin-top:.8rem;text-align:left;border:1px solid #ddd6fe;background:#f5f3ff;border-radius:1rem;padding:.7rem .85rem}
+.pl-bn{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-weight:900;color:#5b21b6}
+.pl-bn span{font-size:.7rem;background:#ede9fe;border-radius:9999px;padding:1px 9px}
+.pl-bt{margin-top:.3rem;color:#334155;font-size:.88rem;line-height:1.45}
+.pl-next{margin-top:.45rem;padding-top:.4rem;border-top:1px dashed #c4b5fd;color:#64748b;font-size:.75rem;line-height:1.4}
+.pl-lock{background:#f8fafc;border-color:#e2e8f0}
+.pl-log{margin-top:.7rem;text-align:left;font-size:.72rem;color:#475569;line-height:1.5}
+.pl-go{margin-top:.8rem}
+html.mx-dark .pl-card{background:linear-gradient(160deg,#1e293b,#1e1b4b);border-color:#4338ca}
+html.mx-dark .pl-owner{color:#f1f5f9}
+html.mx-dark .pl-form{color:#c4b5fd}
+html.mx-dark .pl-bless{background:#312e81;border-color:#4f46e5}
+html.mx-dark .pl-bn{color:#e0e7ff}html.mx-dark .pl-bn span{background:#4338ca;color:#fff}
+html.mx-dark .pl-bt{color:#e2e8f0}html.mx-dark .pl-next,html.mx-dark .pl-log{color:#cbd5e1}
+html.mx-dark .pl-lock{background:#1e293b;border-color:#334155}
+html.mx-dark .pl-x{background:#4338ca;color:#fff}
+@keyframes plFade{from{opacity:0}to{opacity:1}}@keyframes plFadeOut{to{opacity:0}}
+@keyframes plPop{from{opacity:0;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.pl-back,.pl-card{animation:none !important}}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -2831,6 +3003,7 @@ html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
                             <button id="btnViewShop" onclick="switchViewMode('shop')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-gift mr-1"></i> <span data-i18n="tabShop">Cửa Hàng Quà</span></button>
                             <button id="btnViewWheel" onclick="switchViewMode('wheel')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-circle-notch mr-1"></i><span id="wheelTabLabel">Vòng Quay May Mắn</span></button>
                             <button id="btnViewGacha" onclick="switchViewMode('gacha')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-box-open mr-1"></i> <span data-i18n="tabGacha">Hộp Quà Bí Ẩn</span></button>
+                            <button id="btnViewPet" onclick="switchViewMode('pet')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-egg mr-1"></i> <span data-i18n="tabPet">Thú Cưng</span></button>
                         </div>
                     </div>
                 </div>
@@ -2896,7 +3069,8 @@ html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
                             <tr class="text-xs font-bold uppercase text-slate-400 border-b border-slate-100">
                                 <th class="py-3 px-4 w-20 text-center" data-i18n="thRank">HẠNG</th>
                                 <th class="py-3 px-4" data-i18n="thName">HỌ VÀ TÊN HỌC SINH</th>
-                                <th class="py-3 px-2 w-14 text-center" aria-hidden="true"></th>
+                                <th class="py-3 px-2 text-center" data-i18n="thPet">THÚ CƯNG</th>
+                                <th class="py-3 px-2 text-center" aria-hidden="true"></th>
                                 <th class="py-3 px-4 text-center" data-i18n="thAttended">SỐ ĐIỂM NHẬN ĐƯỢC</th>
                                 <th class="py-3 px-4 text-center" data-i18n="thTotal">TỔNG ĐIỂM</th>
                                 <th class="py-3 px-4 text-center" data-i18n="thAvg">ĐIỂM TRUNG BÌNH</th>
@@ -3021,6 +3195,7 @@ html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap justify-between gap-2 items-center mb-3"><h3 id="wheelHistoryTitle" class="font-black text-lg">Lịch sử quay</h3><button onclick="clearWheelHistoryView()" class="rounded-lg border px-3 py-2 text-xs font-bold">Xóa lịch sử hiển thị</button></div><div id="wheelHistory" class="space-y-2"></div></section>
     </div>
 
+    <div id="viewPetContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3"></div>
     <div id="viewGachaContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3">
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
         <div class="flex flex-wrap items-start justify-between gap-3"><div><h2 id="gcTitle" class="text-xl font-black text-slate-800"><i class="fa-solid fa-box-open mr-2 text-violet-600"></i>Hộp Quà Bí Ẩn</h2><p id="gcSub" class="text-sm text-slate-500 mt-1"></p></div><button id="gcManageToggle" type="button" onclick="toggleGachaManager()" class="rounded-lg border px-3 py-2 text-sm font-bold">Cấu hình hộp quà</button></div>
@@ -4357,7 +4532,7 @@ html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
         function qsTrack(kind, classId, ids) {
             const st = qsRank[kind][classId] || (qsRank[kind][classId] = { ranks: null, deltas: {} });
             const cur = {}; ids.forEach((id, i) => { cur[id] = i + 1; });
-            if (st.ranks) ids.forEach(id => { const p = st.ranks[id]; if (p && p !== cur[id]) st.deltas[id] = { d: p - cur[id], ts: Date.now() }; });
+            if (st.ranks) ids.forEach(id => { const p = st.ranks[id]; if (p && p !== cur[id]) { st.deltas[id] = { d: p - cur[id], ts: Date.now() }; if (kind === 'rk') { try { window.petRankHook && window.petRankHook(classId, id, p - cur[id]); } catch (e) {} } } });
             st.ranks = cur;
         }
         function qsTrackAll() {
@@ -6618,8 +6793,8 @@ html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
 
         // Chuyển tab: khung giao diện đang hiện lướt ra theo hướng tab được chọn, khung mới lướt vào từ hướng đó
         (function () {
-            const ORDER = ['matrix', 'ranking', 'finalExam', 'students', 'teaching', 'violation', 'shop', 'wheel', 'gacha'];
-            const IDS = { matrix: 'viewMatrixContainer', ranking: 'viewRankingContainer', finalExam: 'viewFinalExamContainer', students: 'viewStudentsContainer', teaching: 'viewTeachingContainer', violation: 'viewViolationContainer', shop: 'viewShopContainer', wheel: 'viewWheelContainer', gacha: 'viewGachaContainer' };
+            const ORDER = ['matrix', 'ranking', 'finalExam', 'students', 'teaching', 'violation', 'shop', 'wheel', 'gacha', 'pet'];
+            const IDS = { matrix: 'viewMatrixContainer', ranking: 'viewRankingContainer', finalExam: 'viewFinalExamContainer', students: 'viewStudentsContainer', teaching: 'viewTeachingContainer', violation: 'viewViolationContainer', shop: 'viewShopContainer', wheel: 'viewWheelContainer', gacha: 'viewGachaContainer', pet: 'viewPetContainer' };
             const raw = window.switchViewMode; let busy = false;
             window.switchViewMode = function (mode) {
                 const curRaw = appData.activeViewMode, cur = ORDER.includes(curRaw) ? curRaw : 'matrix';
@@ -6673,7 +6848,7 @@ html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
             btnShop.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900";
             btnViolation.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900";
             btnFinalExam.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900";
-            btnStudents.className = btnTeaching.className = btnWheel.className = btnGacha.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900";
+            btnStudents.className = btnTeaching.className = btnWheel.className = btnGacha.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"; { const bp = document.getElementById('btnViewPet'), pc = document.getElementById('viewPetContainer'); if (bp) bp.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"; if (pc) pc.classList.add('hidden'); }
 
             matrixContainer.classList.add('hidden');
             rankingContainer.classList.add('hidden');
@@ -6704,6 +6879,8 @@ html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
                 btnTeaching.className = "px-3 py-1 rounded-md transition bg-white text-indigo-700 shadow"; teachingContainer.classList.remove('hidden'); renderTeachingView();
             } else if (appData.activeViewMode === 'wheel') {
                 btnWheel.className = "px-3 py-1 rounded-md transition bg-white text-indigo-700 shadow"; wheelContainer.classList.remove('hidden'); renderWheelView();
+            } else if (appData.activeViewMode === 'pet') {
+                { const bp = document.getElementById('btnViewPet'), pc = document.getElementById('viewPetContainer'); if (bp) bp.className = "px-3 py-1 rounded-md transition bg-white text-indigo-700 shadow"; if (pc) pc.classList.remove('hidden'); if (window.renderPetView) window.renderPetView(); }
             } else if (appData.activeViewMode === 'gacha') {
                 btnGacha.className = "px-3 py-1 rounded-md transition bg-white text-indigo-700 shadow"; gachaContainer.classList.remove('hidden'); renderGachaView();
             } else {
@@ -7377,6 +7554,7 @@ html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
 
         function giveGiftToStudent(student, item, qty, dateStr) {
             student.rewardPoints = (student.rewardPoints || 0) - item.cost * qty;
+            try { window.petNoteSpend && window.petNoteSpend(student, item.cost * qty); } catch (e) {}
             try { (window.__ehHints = window.__ehHints || []).push({ sid: student.id, itemId: item.id, cost: item.cost, qty, t: Date.now() }); } catch (e) {}
             if (!student.inventory) student.inventory = [];
             let lastInv = null;
@@ -9098,7 +9276,7 @@ html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
         function getTenStreak(studentId) { return tenStreakInfo(studentId).cur; }
         // Lưu kỷ lục vào dữ liệu học sinh mỗi lần lưu (chỉ tăng, không giảm).
         function updateTenRecords() {
-            (appData.students || []).forEach(st => { const b = tenStreakInfo(st.id).best; if (b > (st.bestTenStreak || 0)) st.bestTenStreak = b; });
+            (appData.students || []).forEach(st => { const b = tenStreakInfo(st.id).best; if (b > (st.bestTenStreak || 0)) st.bestTenStreak = b; const pk = Math.max(tenStreakInfo(st.id).cur, st.petPeak || 0); if (pk > (st.petPeak || 0) || (st.petPeak === undefined && b > 0)) st.petPeak = Math.max(pk, b); });
         }
         // Xem nhanh trong Console (F12): window.tenStreakReport() -> streak hiện tại và kỷ lục của từng học sinh.
         window.tenStreakReport = function () {
@@ -9420,7 +9598,7 @@ html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
             let tableHtml = '';
 
             if (studentStatsList.length === 0) {
-                tableHtml = `<tr><td colspan="7" class="py-8 text-center text-slate-400 font-medium">${t.lblNoStudentInClass}</td></tr>`;
+                tableHtml = `<tr><td colspan="8" class="py-8 text-center text-slate-400 font-medium">${t.lblNoStudentInClass}</td></tr>`;
             } else {
                 studentStatsList.forEach((item, index) => {
                     const rated = item.stats.hasData;
@@ -9438,9 +9616,10 @@ html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
                     tableHtml += `
                         <tr class="hl-row ${rank===1?'hl-r1':rank===2?'hl-r2':rank===3?'hl-r3':''} ${qsRowFlash('rk', activeClass.id, s.id, st.hasData)}">
                             <td class="py-3.5 px-4 text-center">${rankBadge}</td>
-                            <td class="py-3.5 px-4 font-bold text-slate-800">
-                                <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> <span class="tf-name-link${tfNameFx(s.id).nm}" onclick="tfOpenProfile('${s.id}')" title="${lang === 'en' ? 'View profile' : 'Xem hồ sơ'}">${getStudentDisplayName(s)}</span>${levelPillHtml(s.id)}${(() => { const f = tenStreakHtml(s.id); return f ? `<span class="sg-open" role="button" tabindex="0" onclick="sgOpenBook('${s.id}')" onkeydown="if(event.key==='Enter')sgOpenBook('${s.id}')" title="${lang === 'en' ? 'Open Streak Gift Book' : 'Mở Sổ quà Chuỗi'}">${f}</span>` : ''; })()} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span>
+                            <td class="py-3.5 px-4 font-bold text-slate-800"><div class="rk-namerow">
+                                <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> <span class="tf-name-link${tfNameFx(s.id).nm}" onclick="tfOpenProfile('${s.id}')" title="${lang === 'en' ? 'View profile' : 'Xem hồ sơ'}">${getStudentDisplayName(s)}</span>${levelPillHtml(s.id)}${(() => { const f = tenStreakHtml(s.id); return f ? `<span class="sg-open" role="button" tabindex="0" onclick="sgOpenBook('${s.id}')" onkeydown="if(event.key==='Enter')sgOpenBook('${s.id}')" title="${lang === 'en' ? 'Open Streak Gift Book' : 'Mở Sổ quà Chuỗi'}">${f}</span>` : ''; })()} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span></div>
                             </td>
+                            <td class="py-2 px-2 text-center">${window.petLbCell ? window.petLbCell(s.id) : ''}</td>
                             <td class="py-2 px-2 text-center">${gradeBadgeSvg(st.avg, st.hasData)}</td>
                             <td class="py-3.5 px-4 text-center font-semibold text-slate-600"><span data-cu="rkt:${s.id}:n" data-to="${st.attendedCount}" data-dec="0">${st.attendedCount}</span></td>
                             <td class="py-3.5 px-4 text-center font-bold text-indigo-600"><span data-cu="rkt:${s.id}:t" data-to="${st.total}" data-dec="1" data-final="${st.total}">${st.total}</span></td>
@@ -11378,7 +11557,7 @@ window.openStudentProfile=function(studentId){
         };
         function selectWeightedPrize(){const ps=wheelEnabled(),total=ps.reduce((n,p)=>n+Number(p.weight),0);if(!ps.length||!Number.isFinite(total)||total<=0)return null;if(ps.length===1)return ps[0];let n=Math.random()*total;for(const p of ps){n-=Number(p.weight);if(n<0)return p;}return ps[ps.length-1];}
         function animateWheelToPrize(prize){return new Promise(resolve=>{const ps=wheelPrizes().filter(p=>p.enabled!==false),index=ps.findIndex(p=>p.id===prize.id);if(index<0){resolve(false);return;}const step=Math.PI*2/ps.length;const desired=(-(index*step+step/2))%(Math.PI*2);const start=wheelAngle;const end=desired+Math.PI*2*6;const t0=performance.now(),duration=4200,token=++wheelAnimationToken;const frame=now=>{if(token!==wheelAnimationToken){resolve(false);return;}const t=Math.min(1,(now-t0)/duration),ease=1-Math.pow(1-t,4);wheelAngle=start+(end-start)*ease;drawWheel();if(t<1)requestAnimationFrame(frame);else{wheelAngle=((desired%(Math.PI*2))+Math.PI*2)%(Math.PI*2);drawWheel();resolve(true);}};requestAnimationFrame(frame);});}
-        window.spinLuckyWheel=async function(){if(wheelBusy)return;if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(wheelText('Khóa đã lưu trữ chỉ được xem.','Archived course is read-only.'));return;}ensureWheelData();const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';const studentId=document.getElementById('wheelStudentPicker').value;const student=(appData.students||[]).find(x=>String(x.id)===String(studentId));if(mode==='student'&&(!student||!wheelInventory(student).length)){alert(wheelText('Học sinh này không có quà lượt quay may mắn.','This student has no Lucky Wheel turn gift.'));return;}const prize=selectWeightedPrize();if(!prize){alert(wheelText('Không có phần thưởng đang bật với trọng số hợp lệ.','No enabled prize has a valid weight.'));return;}const giftItem=wheelItemOf(prize),giftSnap=giftItem?deepCopy(giftItem):null,qty=wheelQty(prize),awardInvId='inv_'+Date.now()+'_wheel_'+Math.random().toString(36).slice(2,8);const teacherAtStart=currentTeacherId||LEGACY_TEACHER_ID,courseId=appData.courseManager?.activeCourseId||null,spinId='spin_'+Date.now()+'_'+Math.random().toString(36).slice(2,10),studentName=student?.name||'',className=(appData.classes||[]).find(c=>String(c.id)===String(student?.classId))?.name||'';const record={spinId,teacherId:teacherAtStart,courseId,studentId:mode==='student'?student.id:null,studentName:mode==='student'?studentName:null,className:mode==='student'?className:null,mode,prizeId:prize.id,prizeName:prize.name,prizeColor:prize.color,prizeWeight:Number(prize.weight),qty,prizeSnapshot:deepCopy(prize),status:'completed',at:new Date().toISOString()};wheelBusy=true;document.getElementById('wheelSpinBtn').disabled=true;try{const path=`appDataMultiTeacher/teacherData/${teacherAtStart}`;const result=await runTransaction(ref(db,path),current=>{if(!current||typeof current!=='object')return;current.luckyWheel=current.luckyWheel&&typeof current.luckyWheel==='object'?current.luckyWheel:{prizes:[],history:[],transactions:{}};current.luckyWheel.history=Array.isArray(current.luckyWheel.history)?current.luckyWheel.history:[];current.luckyWheel.transactions=current.luckyWheel.transactions||{};if(current.luckyWheel.transactions[spinId])return current;if(mode==='student'){const st=(current.students||[]).find(x=>String(x.id)===String(student.id));if(!st||!Array.isArray(st.inventory))return;const inv=st.inventory.findIndex(i=>isLuckyWheelGift(i));if(inv<0)return;const consumed=st.inventory.splice(inv,1)[0];record.giftInventoryId=consumed.invId||consumed.id||null;record.consumedGiftItemId=consumed.itemId||consumed.id||LUCKY_GIFT_ID;record.turnsBefore=st.inventory.length+1;record.turnsAfter=st.inventory.length;const itm=(current.globalShopItems||[]).find(x=>x&&x.id===prize.itemId)||giftSnap;if(itm&&itm.type){const awardedIds=[];for(let q=0;q<qty;q++){const invId=q===0?awardInvId:awardInvId+'_'+q;const inv={invId,itemId:itm.id,name:itm.name,itemName:itm.name,isFixed:!!itm.isFixed,type:itm.type,date:new Date().toISOString().split('T')[0],fromWheel:true};['targetScore','deltaScore','matchScore','matchOp'].forEach(k=>{if(itm[k]!==undefined)inv[k]=itm[k];});st.inventory.push(inv);awardedIds.push(invId);}record.awardedInvId=awardInvId;record.awardedInvIds=awardedIds;record.awardedQty=qty;record.awardedItemName=itm.name;}}current.luckyWheel.transactions[spinId]={spinId,status:'completed',at:record.at,studentId:record.studentId,giftInventoryId:record.giftInventoryId||null,prizeId:record.prizeId};current.luckyWheel.history.push(record);return current;},{applyLocally:false});if(!result.committed){throw new Error('transaction_not_committed');}const committed=result.snapshot.val();if(!committed?.luckyWheel?.transactions?.[spinId]){throw new Error('transaction_not_confirmed');}if(currentTeacherId!==teacherAtStart){return;}appData=committed;if(sessionViewMode)appData.activeViewMode=sessionViewMode;else appData.activeViewMode='wheel';ensureWheelData();lastPersistedSnapshot=deepCopy(appData);renderClassTabs();renderCurrentView();const shownName=prize.name+(qty>1?' ×'+qty:'');const animated=await animateWheelToPrize(prize);document.getElementById('wheelResult').textContent=shownName;wheelApplyPrizeColor(prize);document.getElementById('wheelStatus').textContent=wheelText('Sẵn sàng','Ready');showWheelResultModal(shownName,mode==='student'?studentName:'');if(window.showAppToast){if(mode==='student'&&record.awardedInvId)window.showAppToast(wheelText(`Đã cộng “${prize.name}”${qty>1?' ×'+qty:''} vào túi quà của ${studentName}.`,`Added “${prize.name}”${qty>1?' ×'+qty:''} to ${studentName}'s gift bag.`),'success');else if(mode!=='student'&&giftItem&&giftItem.type)window.showAppToast(wheelText('Quay tự do nên quà này không được cộng vào túi học sinh nào.','Free spin: this gift was not added to any student\'s bag.'),'info');}wheelApplyPrizeColor(prize);renderWheelView();}catch(err){console.error('Lucky Wheel transaction failed or uncertain:',err);document.getElementById('wheelStatus').textContent=wheelText('Chưa xác nhận được lượt quay. Hãy tải lại dữ liệu/kiểm tra Firebase trước khi thử lại.','Spin status could not be confirmed. Refresh/check Firebase before retrying.');alert(wheelText('Không thể xác nhận giao dịch. Không tự động thử lại để tránh dùng lượt hai lần. Hãy kiểm tra lịch sử sau khi kết nối ổn định.','Could not confirm the transaction. It will not retry automatically to avoid using a turn twice. Check history when the connection is stable.'));}finally{wheelBusy=false;const b=document.getElementById('wheelSpinBtn');if(b)b.disabled=false;renderWheelView();}};
+        window.spinLuckyWheel=async function(){if(wheelBusy)return;if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(wheelText('Khóa đã lưu trữ chỉ được xem.','Archived course is read-only.'));return;}ensureWheelData();const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';const studentId=document.getElementById('wheelStudentPicker').value;const student=(appData.students||[]).find(x=>String(x.id)===String(studentId));if(mode==='student'&&(!student||!wheelInventory(student).length)){alert(wheelText('Học sinh này không có quà lượt quay may mắn.','This student has no Lucky Wheel turn gift.'));return;}const prize=selectWeightedPrize();if(!prize){alert(wheelText('Không có phần thưởng đang bật với trọng số hợp lệ.','No enabled prize has a valid weight.'));return;}const giftItem=wheelItemOf(prize),giftSnap=giftItem?deepCopy(giftItem):null,qty=wheelQty(prize),awardInvId='inv_'+Date.now()+'_wheel_'+Math.random().toString(36).slice(2,8);const teacherAtStart=currentTeacherId||LEGACY_TEACHER_ID,courseId=appData.courseManager?.activeCourseId||null,spinId='spin_'+Date.now()+'_'+Math.random().toString(36).slice(2,10),studentName=student?.name||'',className=(appData.classes||[]).find(c=>String(c.id)===String(student?.classId))?.name||'';const record={spinId,teacherId:teacherAtStart,courseId,studentId:mode==='student'?student.id:null,studentName:mode==='student'?studentName:null,className:mode==='student'?className:null,mode,prizeId:prize.id,prizeName:prize.name,prizeColor:prize.color,prizeWeight:Number(prize.weight),qty,prizeSnapshot:deepCopy(prize),status:'completed',at:new Date().toISOString()};wheelBusy=true;document.getElementById('wheelSpinBtn').disabled=true;try{const path=`appDataMultiTeacher/teacherData/${teacherAtStart}`;const result=await runTransaction(ref(db,path),current=>{if(!current||typeof current!=='object')return;current.luckyWheel=current.luckyWheel&&typeof current.luckyWheel==='object'?current.luckyWheel:{prizes:[],history:[],transactions:{}};current.luckyWheel.history=Array.isArray(current.luckyWheel.history)?current.luckyWheel.history:[];current.luckyWheel.transactions=current.luckyWheel.transactions||{};if(current.luckyWheel.transactions[spinId])return current;if(mode==='student'){const st=(current.students||[]).find(x=>String(x.id)===String(student.id));if(!st||!Array.isArray(st.inventory))return;const inv=st.inventory.findIndex(i=>isLuckyWheelGift(i));if(inv<0)return;const consumed=st.inventory.splice(inv,1)[0];record.giftInventoryId=consumed.invId||consumed.id||null;record.consumedGiftItemId=consumed.itemId||consumed.id||LUCKY_GIFT_ID;record.turnsBefore=st.inventory.length+1;record.turnsAfter=st.inventory.length;const itm=(current.globalShopItems||[]).find(x=>x&&x.id===prize.itemId)||giftSnap;if(itm&&itm.type){const awardedIds=[];for(let q=0;q<qty;q++){const invId=q===0?awardInvId:awardInvId+'_'+q;const inv={invId,itemId:itm.id,name:itm.name,itemName:itm.name,isFixed:!!itm.isFixed,type:itm.type,date:new Date().toISOString().split('T')[0],fromWheel:true};['targetScore','deltaScore','matchScore','matchOp'].forEach(k=>{if(itm[k]!==undefined)inv[k]=itm[k];});st.inventory.push(inv);awardedIds.push(invId);}record.awardedInvId=awardInvId;record.awardedInvIds=awardedIds;record.awardedQty=qty;record.awardedItemName=itm.name;}}current.luckyWheel.transactions[spinId]={spinId,status:'completed',at:record.at,studentId:record.studentId,giftInventoryId:record.giftInventoryId||null,prizeId:record.prizeId};current.luckyWheel.history.push(record);return current;},{applyLocally:false});if(!result.committed){throw new Error('transaction_not_committed');}const committed=result.snapshot.val();if(!committed?.luckyWheel?.transactions?.[spinId]){throw new Error('transaction_not_confirmed');}if(currentTeacherId!==teacherAtStart){return;}appData=committed;if(sessionViewMode)appData.activeViewMode=sessionViewMode;else appData.activeViewMode='wheel';ensureWheelData();lastPersistedSnapshot=deepCopy(appData);try{if(mode==='student'&&student)window.petOnWheel&&window.petOnWheel(student.id,prize);}catch(e){}renderClassTabs();renderCurrentView();const shownName=prize.name+(qty>1?' ×'+qty:'');const animated=await animateWheelToPrize(prize);document.getElementById('wheelResult').textContent=shownName;wheelApplyPrizeColor(prize);document.getElementById('wheelStatus').textContent=wheelText('Sẵn sàng','Ready');showWheelResultModal(shownName,mode==='student'?studentName:'');if(window.showAppToast){if(mode==='student'&&record.awardedInvId)window.showAppToast(wheelText(`Đã cộng “${prize.name}”${qty>1?' ×'+qty:''} vào túi quà của ${studentName}.`,`Added “${prize.name}”${qty>1?' ×'+qty:''} to ${studentName}'s gift bag.`),'success');else if(mode!=='student'&&giftItem&&giftItem.type)window.showAppToast(wheelText('Quay tự do nên quà này không được cộng vào túi học sinh nào.','Free spin: this gift was not added to any student\'s bag.'),'info');}wheelApplyPrizeColor(prize);renderWheelView();}catch(err){console.error('Lucky Wheel transaction failed or uncertain:',err);document.getElementById('wheelStatus').textContent=wheelText('Chưa xác nhận được lượt quay. Hãy tải lại dữ liệu/kiểm tra Firebase trước khi thử lại.','Spin status could not be confirmed. Refresh/check Firebase before retrying.');alert(wheelText('Không thể xác nhận giao dịch. Không tự động thử lại để tránh dùng lượt hai lần. Hãy kiểm tra lịch sử sau khi kết nối ổn định.','Could not confirm the transaction. It will not retry automatically to avoid using a turn twice. Check history when the connection is stable.'));}finally{wheelBusy=false;const b=document.getElementById('wheelSpinBtn');if(b)b.disabled=false;renderWheelView();}};
         window.clearWheelHistoryView=async function(){if(wheelBusy)return;const en=appData.language==='en';const message=wheelText('Xóa lịch sử quay đang hiển thị? Các bản ghi giao dịch vẫn được giữ lại để ngăn sử dụng một lượt quay nhiều lần.','Clear the visible spin history? Transaction records will be retained to prevent the same turn from being used more than once.');if(!await showAppConfirm(message,wheelText('Xóa lịch sử hiển thị','Clear visible history')))return;const old=deepCopy(appData.luckyWheel.history);appData.luckyWheel.history=[];const ok=await saveData();if(!ok){appData.luckyWheel.history=old;await showAppNotice(wheelText('Không thể xóa lịch sử.','Could not clear history.'),wheelText('Lỗi lưu dữ liệu','Save error'));}renderWheelView();};
 
         // Multi-teacher routing on the existing Firebase Realtime Database.
@@ -12061,6 +12240,452 @@ window.openStudentProfile=function(studentId){
             timers.push(setTimeout(() => box.classList.add('shake'), 400), setTimeout(open, 950));
         }
 
+
+        /* ===================== PET: Thú cưng (20 loài · 8 dạng · tiến hoá theo mốc streak 10) ===================== */
+        const PET_MS = [0, 1, 5, 10, 15, 20, 30, 40, 50];
+        const PET_SP = [
+            ['Mèo Lửa','Flame Cat','#fb923c','#fde047','tri','curl'], ['Cún Mây','Cloud Pup','#93c5fd','#ffffff','floppy','fluff'],
+            ['Chim Sấm','Thunder Bird','#facc15','#6366f1','beak','spike'], ['Cá Biển','Sea Fin','#22d3ee','#1d4ed8','fin','fish'],
+            ['Rồng Con','Baby Drake','#4ade80','#166534','horn','spike'], ['Slime Kẹo','Candy Slime','#f472b6','#fbcfe8','none','none'],
+            ['Thỏ Trăng','Moon Bunny','#e9d5ff','#a78bfa','long','fluff'], ['Gấu Mật','Honey Bear','#d6a77a','#fde68a','round','fluff'],
+            ['Cáo Tuyết','Snow Fox','#e2e8f0','#38bdf8','tri','fluff'], ['Nhím Lá','Leaf Hog','#86efac','#65a30d','leaf','spike'],
+            ['Ếch Ngọc','Jade Frog','#34d399','#065f46','round','none'], ['Cú Sao','Star Owl','#a78bfa','#fde047','tuft','none'],
+            ['Khủng Long Dâu','Berry Dino','#fb7185','#be123c','horn','curl'], ['Bướm Cầu Vồng','Rainbow Moth','#f0abfc','#22d3ee','ant','none'],
+            ['Sói Đêm','Night Wolf','#64748b','#a5b4fc','tri','fluff'], ['Panda Nhỏ','Mini Panda','#f8fafc','#1e293b','round','none'],
+            ['Rùa Đá','Stone Turtle','#a8a29e','#65a30d','none','none'], ['Kỳ Lân','Unicorn','#fbcfe8','#c084fc','horn1','fluff'],
+            ['Phượng Hoàng','Phoenix','#ef4444','#fbbf24','beak','spike'], ['Mực Sao','Star Squid','#818cf8','#f0abfc','none','tent']
+        ];
+        const PET_FORM_VI = ['Trứng','Sơ sinh','Nhí','Thiếu niên','Trưởng thành','Dũng sĩ','Huyền thoại','Thần thú'];
+        const PET_FORM_EN = ['Egg','Hatchling','Kiddo','Teen','Adult','Warrior','Legend','Mythic'];
+        const petFormOf = pk => pk >= 50 ? 8 : pk >= 40 ? 7 : pk >= 30 ? 6 : pk >= 20 ? 5 : pk >= 15 ? 4 : pk >= 10 ? 3 : pk >= 5 ? 2 : 1;
+        const petFormName = (i, f) => f === 1 ? L2('Trứng ', 'Egg of ') + L2(PET_SP[i][0], PET_SP[i][1]) : L2(PET_SP[i][0] + ' ' + PET_FORM_VI[f - 1], PET_FORM_EN[f - 1] + ' ' + PET_SP[i][1]);
+        /* PET_IMG (ảnh cắt sẵn) đã được thay bằng pet vector 3D — xem PET3D bên dưới */
+        const PET_CRACK = '<svg class="pet-crack" viewBox="0 0 100 100"><path d="M52 16l-7 15 9 8-10 11 8 9-6 11" stroke="#fef08a" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M61 40l9-4M42 53l-9 3M54 39l5 8" stroke="#fde047" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
+        // Hình thú cưng: nhân vật vector chibi kiểu ClassDojo/game — đổ bóng khối 3D, KHÔNG nền, cử động liên tục (thở, chớp mắt, vẫy đuôi, vỗ cánh...)
+        const PET3D = (() => {
+            let uid = 0;
+            const hx = h => { h = h.replace('#', ''); if (h.length === 3) h = h.replace(/./g, '$&$&'); return [0, 2, 4].map(k => parseInt(h.substr(k, 2), 16)); };
+            const mix = (a, b, t) => { const A = hx(a), B = hx(b); return '#' + A.map((v, k) => Math.round(v + (B[k] - v) * t).toString(16).padStart(2, '0')).join(''); };
+            const lt = (c, t) => mix(c, '#ffffff', t), dk = (c, t) => mix(c, '#0b1020', t);
+            const lum = c => { const A = hx(c); return (A[0] * .3 + A[1] * .59 + A[2] * .11) / 255; };
+            const dist = (a, b) => { const A = hx(a), B = hx(b); return Math.abs(A[0] - B[0]) + Math.abs(A[1] - B[1]) + Math.abs(A[2] - B[2]); };
+            const rg = (id, c, cx = .34, cy = .26, r = .92) => `<radialGradient id="${id}" cx="${cx}" cy="${cy}" r="${r}"><stop offset="0" stop-color="${lt(c, .6)}"/><stop offset=".42" stop-color="${c}"/><stop offset="1" stop-color="${dk(c, .45)}"/></radialGradient>`;
+            const lg = (id, a, b, x2 = 1, y2 = 0) => `<linearGradient id="${id}" x1="0" y1="0" x2="${x2}" y2="${y2}"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`;
+            const mir = s => `<g transform="translate(100 0) scale(-1 1)">${s}</g>`;
+            const pair = s => `<g class="p3-ear">${s}${mir(s)}</g>`;
+            const IRIS = ['#7c2d12', '#1d4ed8', '#312e81', '#0e7490', '#14532d', '#9d174d', '#5b21b6', '#451a03', '#0369a1', '#422006', '#064e3b', '#4c1d95', '#4a044e', '#7e22ce', '#1e1b4b', '#0f172a', '#3f3f46', '#7e22ce', '#7c2d12', '#4c1d95'];
+            const WN = { 2: 'f', 4: 'b', 11: 'f', 13: 'u', 17: 'f', 18: 'f' };
+            const WP = { f: 'M64 56C75 36 91 36 99 20C99 40 93 52 85 58C93 58 95 63 88 69C80 66 72 67 64 65Z', b: 'M64 54L82 26L84 40L95 33L91 48L100 50L87 58L91 69L74 62L64 66Z', u: 'M62 52C68 20 99 14 99 38C99 52 80 58 62 58ZM62 61C78 58 94 66 89 80C84 91 68 83 62 69Z' };
+            const TL = {
+                curl: 'M66 74C87 76 95 58 84 45C87 58 79 66 66 67Z', fluff: 'M64 78C93 90 103 52 84 35C81 52 75 58 64 66Z',
+                spike: 'M66 77L89 75L83 69L95 63L81 62L85 52L66 65Z', fish: 'M66 74C80 85 95 80 97 65C91 70 86 62 93 51C80 56 72 60 66 66Z'
+            };
+            const SPX = {
+                5: { slime: 1 }, 7: { muz: '#f3dcae' }, 9: { skin: '#e8bf94', bel: '#f6e3c8', spk: 1 }, 10: { frog: 1, h: [27, 21, 47] }, 11: { owl: 1 }, 12: { dino: 1 },
+                13: { b: [14, 17], h: [19, 18, 42] }, 15: { panda: 1 }, 16: { b: [32, 22], h: [17, 15, 52], es: .74, shell: 1 }, 17: { mane: 1 }, 19: { squid: 1, h: [29, 31, 48] }
+            };
+            const NOSE = [0, 1, 6, 7, 8, 9, 14, 15, 17], BEAK = [2, 11, 18];
+            const SHADOW = id => `<radialGradient id="${id}sh"><stop offset="0" stop-color="#0b1020" stop-opacity=".4"/><stop offset="1" stop-color="#0b1020" stop-opacity="0"/></radialGradient>`;
+            const AURA = (id, c) => `<radialGradient id="${id}au"><stop offset=".45" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient>`;
+            const wrap = (id, defs, inner, w = 28) => `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs>${defs}${SHADOW(id)}</defs><ellipse cx="50" cy="90" rx="${w}" ry="5" fill="url(#${id}sh)"/>${inner}</svg>`;
+            const dly = () => (-((uid * 1.37) % 4)).toFixed(2) + 's';
+
+            const ears = (k, g, A, F, G) => {
+                const tri = `<path d="M27 38L29 11L46 27Z" fill="${g}"/><path d="M31.5 33L32 19L41 27Z" fill="${F}" opacity=".85"/>`;
+                switch (k) {
+                    case 'tri': return pair(tri);
+                    case 'horn1': return `<g transform="translate(50 32) scale(.72) translate(-50 -32)">${pair(tri)}</g>`;
+                    case 'floppy': return pair(`<path d="M30 28C13 24 10 52 19 62C28 59 33 46 33 36Z" fill="${g}"/>`);
+                    case 'long': return pair(`<g transform="rotate(-9 40 30)"><ellipse cx="38" cy="10" rx="6.5" ry="19" fill="${g}"/><ellipse cx="38" cy="11" rx="3.2" ry="13" fill="${F}" opacity=".8"/></g>`);
+                    case 'round': return pair(`<circle cx="29" cy="28" r="9.5" fill="${g}"/><circle cx="29" cy="28" r="5" fill="${F}" opacity=".55"/>`);
+                    case 'horn': return pair(`<path d="M35 30L29 4L46 24Z" fill="${G}" stroke="#b45309" stroke-opacity=".4" stroke-width=".7"/>`);
+                    case 'leaf': return pair(`<path d="M30 34C14 30 16 11 36 11C39 22 37 29 30 34Z" fill="${A}"/><path d="M30 31C26 25 28 18 33 14" stroke="${g}" fill="none" stroke-width="1.2" opacity=".55"/>`);
+                    case 'tuft': return pair(`<path d="M28 33L21 7L44 24Z" fill="${A}"/>`);
+                    case 'ant': return pair(`<path d="M43 26C40 15 36 9 29 6" stroke="${A}" stroke-width="1.9" fill="none" stroke-linecap="round"/><circle cx="29" cy="6" r="2.8" fill="${A}"/>`);
+                    case 'fin': return `<path d="M36 28Q50 2 64 28Q50 19 36 28Z" fill="${A}"/>` + pair(`<path d="M26 46C9 38 6 60 16 64C22 60 26 54 26 46Z" fill="${A}" opacity=".92"/>`);
+                    case 'beak': return `<path d="M50 28C43 17 45 6 50 -1C55 6 57 17 50 28Z" fill="${A}"/>` + pair(`<path d="M41 28C32 22 32 13 35 7C41 12 45 19 46 28Z" fill="${A}"/>`);
+                }
+                return '';
+            };
+
+            function egg(i, crack) {
+                const [, , c1, c2] = PET_SP[i], id = 'e' + (++uid) + '_', P = 'M50 11C69 11 81 45 81 65C81 80 68 91 50 91C32 91 19 80 19 65C19 45 31 11 50 11Z', dl = dly();
+                const defs = rg(id + 'b', lt(c1, .32)) + AURA(id, crack ? '#fde047' : c2) + `<clipPath id="${id}c"><path d="${P}"/></clipPath><radialGradient id="${id}o" cx=".34" cy=".26" r=".95"><stop offset=".35" stop-color="#fff" stop-opacity=".28"/><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#0b1020" stop-opacity=".45"/></radialGradient>`;
+                const pat = i % 2 ? `<path d="M10 60L23 52L36 60L49 52L62 60L75 52L90 60V70L75 62L62 70L49 62L36 70L23 62L10 70Z" fill="${c2}" opacity=".85"/><circle cx="40" cy="32" r="3.6" fill="${c2}"/><circle cx="60" cy="38" r="2.6" fill="${c2}"/><circle cx="50" cy="82" r="3.4" fill="${c2}" opacity=".8"/>`
+                    : `<circle cx="38" cy="60" r="7.5" fill="${c2}" opacity=".9"/><circle cx="62" cy="50" r="5.5" fill="${c2}" opacity=".9"/><circle cx="58" cy="75" r="6.5" fill="${c2}" opacity=".85"/><circle cx="42" cy="36" r="4" fill="${c2}" opacity=".9"/><circle cx="64" cy="30" r="2.6" fill="${c2}"/>`;
+                const ck = crack ? `<path d="M53 13L47 27L56 38L45 50L54 61L47 73M56 38L67 35M45 50L34 54" fill="none" stroke="#fff7ad" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" class="p3-crk"/><path d="M53 13L47 27L56 38L45 50L54 61L47 73" fill="none" stroke="#f59e0b" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>` : '';
+                const inner = (crack ? `<circle cx="50" cy="55" r="42" fill="url(#${id}au)" class="p3-aura"/>` : '') +
+                    `<g class="p3-egg${crack ? ' cr' : ''}" style="animation-delay:${dl}"><path d="${P}" fill="url(#${id}b)"/><g clip-path="url(#${id}c)">${pat}${ck}</g><path d="${P}" fill="url(#${id}o)"/><ellipse cx="39" cy="34" rx="5.6" ry="12" transform="rotate(22 39 34)" fill="#fff" opacity=".45"/><path d="${P}" fill="none" stroke="${dk(c1, .4)}" stroke-width="1" opacity=".45"/></g>`;
+                return wrap(id, defs, `<g transform="translate(50 90) scale(.84) translate(-50 -90)">${inner}</g>`, 26);
+            }
+
+            function mon(i, f) {
+                const [, , c1, c2, ek, tk] = PET_SP[i], X = SPX[i] || {}, id = 'p' + (++uid) + '_', u = s => `url(#${id}${s})`, dl = dly(), ds = `style="animation-delay:${dl}"`;
+                const sk = X.skin || c1, sc = [.84, .62, .72, .82, .9, .95, 1, 1.05][f - 1], Bd = X.b || [24, 21], [hrx, hry, hy] = X.h || [26, 23, 44], by = 66;
+                const belly = X.bel || (lum(c2) > .55 ? lt(c2, .35) : lt(c1, .55)), A = u('a'), F = lt(c2, .2), G = u('g');
+                let defs = rg(id + 'b', sk) + rg(id + 'a', c2) + lg(id + 't', sk, c2) + lg(id + 'g', '#fff3b0', '#d98a06', 0, 1) + rg(id + 'e', lt(c2, .35), .35, .3, .8) + AURA(id, c2) + lg(id + 'm', '#f9a8d4', '#a78bfa', 0, 1);
+                // --- cánh ---
+                let wings = '', wk = WN[i] && f >= 3 ? WN[i] : f >= 7 ? 'f' : '';
+                if (wk) {
+                    const ws = (f >= 7 ? 1.06 : f >= 5 ? .96 : .82) * (wk === 'u' ? 1.12 : 1), T = `translate(62 58) scale(${ws}) translate(-62 -58)`;
+                    defs += wk === 'u' ? `<linearGradient id="${id}w" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset=".45" stop-color="#67e8f9"/><stop offset=".75" stop-color="#fde047"/><stop offset="1" stop-color="${c2}"/></linearGradient>` : lg(id + 'w', WN[i] ? lt(c2, .1) : lt(c2, .55), WN[i] ? c1 : lt(c1, .3), 1, 1);
+                    const W = `<g class="p3-wing" ${ds}><path d="${WP[wk]}" fill="${u('w')}" opacity="${WN[i] ? 1 : .78}" stroke="${dk(c1, .3)}" stroke-opacity=".35" stroke-width=".8"/>${wk === 'f' ? '<path d="M70 52C80 42 90 40 95 30M72 58C82 52 92 50 97 42" stroke="#fff" stroke-opacity=".5" fill="none" stroke-width="1"/>' : ''}</g>`;
+                    wings = `<g transform="${T}">${W}</g>` + mir(`<g transform="${T}">${W}</g>`);
+                }
+                // --- đuôi & chi tiết sau lưng ---
+                let back = TL[tk] && !X.squid ? `<g class="p3-tail" ${ds}><path d="${TL[tk]}" fill="${u('t')}" stroke="${dk(c1, .35)}" stroke-opacity=".3" stroke-width=".8"/></g>` : '';
+                if (X.spk) back += `<path d="M19 64L11 44L24 48L19 28L34 38L35 17L46 33L53 14L59 33L69 19L67 39L81 29L77 50L90 45L81 65Z" fill="${A}" stroke="${dk(c2, .35)}" stroke-opacity=".5" stroke-width=".8" stroke-linejoin="round"/>`;
+                if (X.dino) back += `<path d="M60 36L69 21L74 38ZM66 47L80 37L80 54ZM69 60L84 54L82 69Z" fill="${A}" stroke="${dk(c2, .3)}" stroke-opacity=".5" stroke-width=".7"/>`;
+                // --- thân ---
+                let bod = '';
+                if (X.slime) {
+                    defs += `<radialGradient id="${id}j" cx=".35" cy=".25" r=".95"><stop offset="0" stop-color="${lt(c1, .55)}"/><stop offset=".45" stop-color="${c1}"/><stop offset=".8" stop-color="${mix(c1, '#a78bfa', .6)}"/><stop offset="1" stop-color="#6d28d9"/></radialGradient>`;
+                    bod = `<g class="p3-jelly"><path d="M16 88C10 62 28 36 50 36C72 36 90 62 84 88Z" fill="${u('j')}"/><ellipse cx="33" cy="52" rx="9" ry="5.5" transform="rotate(-30 33 52)" fill="#fff" opacity=".5"/><circle cx="72" cy="72" r="2.6" fill="#fff" opacity=".4"/><circle cx="24" cy="76" r="1.8" fill="#fff" opacity=".4"/><g class="p3-bow"><ellipse cx="40" cy="36" rx="10" ry="5.8" transform="rotate(-24 40 36)" fill="#f472b6"/><ellipse cx="60" cy="36" rx="10" ry="5.8" transform="rotate(24 60 36)" fill="#f472b6"/><circle cx="50" cy="37" r="4.4" fill="#ec4899"/><ellipse cx="38" cy="34" rx="4" ry="1.6" transform="rotate(-24 38 34)" fill="#fff" opacity=".6"/></g></g>`;
+                } else if (X.squid) {
+                    for (let k = 0; k < 5; k++) { const x = 30 + k * 10; bod += `<path d="M${x} 70C${x - 7} 78 ${x + 7} 82 ${x - 2} 93" stroke="${k % 2 ? c1 : mix(c1, c2, .4)}" stroke-width="6.6" fill="none" stroke-linecap="round" class="p3-tent" style="transform-origin:${x}px 70px;animation-delay:${(-k * .5).toFixed(2)}s"/>`; }
+                } else {
+                    const fx = Bd[0] * .5, fc = X.panda ? c2 : u('b'), fw = X.frog ? 10 : 8;
+                    bod = `<ellipse cx="${50 - fx}" cy="87" rx="${fw}" ry="4.6" fill="${fc}"/><ellipse cx="${50 + fx}" cy="87" rx="${fw}" ry="4.6" fill="${fc}"/><ellipse cx="50" cy="${by}" rx="${Bd[0]}" ry="${Bd[1]}" fill="${u('b')}"/><ellipse cx="50" cy="${by + 4}" rx="${Bd[0] * .58}" ry="${Bd[1] * .62}" fill="${belly}" opacity=".95"/>`;
+                    if (X.shell) bod += `<path d="M31 63L40 55H60L69 63L60 72H40ZM40 55L35 46M60 55L65 46M40 72L37 81M60 72L63 81" stroke="${dk(c1, .5)}" stroke-width="1.5" fill="none" opacity=".7"/><ellipse cx="34" cy="58" rx="6" ry="3" fill="${c2}"/><circle cx="66" cy="76" r="3.4" fill="${c2}"/>`;
+                    if (X.dino) bod += `<g fill="#fde68a" opacity=".9"><ellipse cx="40" cy="62" rx="1.4" ry="2"/><ellipse cx="60" cy="64" rx="1.4" ry="2"/><ellipse cx="34" cy="74" rx="1.4" ry="2"/><ellipse cx="66" cy="74" rx="1.4" ry="2"/><ellipse cx="50" cy="80" rx="1.4" ry="2"/></g>`;
+                    if (i === 3) bod += `<path d="M38 72q4 4 8 0M46 79q4 4 8 0M54 72q4 4 8 0M34 80q4 4 8 0M58 80q4 4 8 0" stroke="${lt(c1, .6)}" stroke-width="1.2" fill="none" opacity=".7"/>`;
+                    const ax = Bd[0] + 1, ar = X.owl ? [6.5, 12, A] : [5.2, 9, X.panda ? c2 : u('b')];
+                    bod += `<g class="p3-armL"><ellipse cx="${50 - ax}" cy="68" rx="${ar[0]}" ry="${ar[1]}" transform="rotate(18 ${50 - ax} 68)" fill="${ar[2]}"/></g><g class="p3-armR"><ellipse cx="${50 + ax}" cy="68" rx="${ar[0]}" ry="${ar[1]}" transform="rotate(-18 ${50 + ax} 68)" fill="${ar[2]}"/></g>`;
+                }
+                // --- đầu & khuôn mặt ---
+                const ex = hrx * .38, es = (X.es || 1) * (f <= 3 ? 1.12 : 1) * (X.owl ? 1.22 : 1), my = hy + hry * .5;
+                const eye = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><ellipse rx="6.3" ry="7.3" fill="#fff"/><g class="p3-pup"><circle cx=".3" cy=".9" r="4.7" fill="${IRIS[i]}"/><circle cx=".3" cy=".9" r="2.5" fill="#0b1020"/><circle cx="-1.7" cy="-1.8" r="1.9" fill="#fff"/><circle cx="2.1" cy="2.7" r=".9" fill="#fff" opacity=".85"/></g></g>`;
+                const ep = X.frog ? [[36, 30], [64, 30]] : [[50 - ex, hy + 2], [50 + ex, hy + 2]], eyes = `<g class="p3-eyes" style="transform-origin:50px ${ep[0][1]}px;animation-delay:${dl}">${eye(ep[0][0], ep[0][1], es)}${eye(ep[1][0], ep[1][1], es)}</g>`;
+                let hd = `<g class="p3-head" ${ds}>` + (X.slime || X.squid ? '' : ears(ek, X.panda ? c2 : u('b'), A, F, G));
+                if (X.mane) hd += `<path d="M27 36C10 44 12 74 24 84C31 72 30 56 33 46Z" fill="${u('m')}"/>` + mir(`<path d="M27 36C10 44 12 74 24 84C31 72 30 56 33 46Z" fill="${u('m')}"/>`);
+                if (X.frog) hd += `<circle cx="36" cy="30" r="10.5" fill="${u('b')}"/><circle cx="64" cy="30" r="10.5" fill="${u('b')}"/>`;
+                if (!X.slime) hd += `<ellipse cx="50" cy="${hy}" rx="${hrx}" ry="${hry}" fill="${u('b')}"/><ellipse cx="${50 - hrx * .3}" cy="${hy - hry * .55}" rx="${hrx * .34}" ry="${hry * .17}" transform="rotate(-18 ${50 - hrx * .3} ${hy - hry * .55})" fill="#fff" opacity=".38"/>`;
+                if (X.mane) hd += `<path d="M26 40C28 22 72 22 74 40C66 33 60 40 50 32C42 40 34 33 26 40Z" fill="${u('m')}"/>`;
+                if (i === 0) hd += `<path d="M50 ${hy - 17}v7M43.5 ${hy - 16}l2 6.5M56.5 ${hy - 16}l-2 6.5" stroke="${c2}" stroke-width="2.2" stroke-linecap="round" fill="none"/>`;
+                if (i === 1) hd += `<g fill="${lt(c1, .75)}"><circle cx="43" cy="${hy - hry + 2}" r="6"/><circle cx="50" cy="${hy - hry}" r="7"/><circle cx="57" cy="${hy - hry + 2}" r="6"/></g>`;
+                if (i === 6) hd += `<path d="M50 ${hy - 19}a5 5 0 1 0 4 7a4 4 0 1 1 -4 -7Z" fill="${c2}"/>`;
+                if (i === 8) hd += `<path d="M30 ${hy + 8}L40 ${hy + 5}M70 ${hy + 8}L60 ${hy + 5}" stroke="${c2}" stroke-width="2.2" stroke-linecap="round"/>`;
+                if (X.owl) hd += `<circle cx="${50 - ex}" cy="${hy + 2}" r="11.5" fill="${lt(c2, .55)}" opacity=".9"/><circle cx="${50 + ex}" cy="${hy + 2}" r="11.5" fill="${lt(c2, .55)}" opacity=".9"/>`;
+                if (X.panda) hd += `<ellipse cx="${50 - ex}" cy="${hy + 2}" rx="8" ry="10" transform="rotate(20 ${50 - ex} ${hy + 2})" fill="${c2}"/><ellipse cx="${50 + ex}" cy="${hy + 2}" rx="8" ry="10" transform="rotate(-20 ${50 + ex} ${hy + 2})" fill="${c2}"/>`;
+                if (X.muz) hd += `<ellipse cx="50" cy="${hy + 9}" rx="10.5" ry="8" fill="${X.muz}"/>`;
+                if (X.dino) hd += `<ellipse cx="50" cy="${hy + 8}" rx="13" ry="9" fill="${lt(c1, .45)}"/>`;
+                hd += `<ellipse cx="${50 - hrx * .66}" cy="${hy + hry * .4}" rx="4.6" ry="2.8" fill="#fb7185" opacity=".42"/><ellipse cx="${50 + hrx * .66}" cy="${hy + hry * .4}" rx="4.6" ry="2.8" fill="#fb7185" opacity=".42"/>`;
+                if (BEAK.includes(i)) hd += `<path d="M44 ${hy + 3}Q50 ${hy + 1} 56 ${hy + 3}L50 ${hy + 14}Z" fill="${G}" stroke="#b45309" stroke-opacity=".5" stroke-width=".7"/>`;
+                else {
+                    if (NOSE.includes(i)) hd += `<ellipse cx="50" cy="${hy + hry * .27}" rx="2.7" ry="1.9" fill="${X.panda ? '#1e293b' : '#3b1d12'}"/>`;
+                    hd += f <= 2 ? `<path d="M45 ${my}Q50 ${my + 5} 55 ${my}" stroke="#3b1d12" stroke-width="1.7" fill="none" stroke-linecap="round"/>`
+                        : X.frog ? `<path d="M34 ${my}Q50 ${my + 11} 66 ${my}" stroke="${dk(c1, .55)}" stroke-width="1.9" fill="none" stroke-linecap="round"/>`
+                            : `<path d="M44 ${my - 1}Q50 ${my + 9} 56 ${my - 1}Z" fill="#7f1d1d"/><path d="M46.5 ${my + 3.2}Q50 ${my + 1.8} 53.5 ${my + 3.2}Q50 ${my + 6.2} 46.5 ${my + 3.2}Z" fill="#fb7185"/>` + (X.dino ? `<path d="M45.5 ${my - 1}l1.6 2.6l1.6-2.6ZM52.9 ${my - 1}l1.6 2.6l1.6-2.6Z" fill="#fff"/>` : '');
+                }
+                hd += eyes;
+                if (X.squid) hd += `<path d="M50 ${hy - hry - 3}l3.4 7.6l8 .9l-6 5.4l1.8 8l-7.2-4.2l-7.2 4.2l1.8-8l-6-5.4l8-.9Z" fill="${G}" stroke="#b45309" stroke-opacity=".4" stroke-width=".6"/><g fill="${c2}" opacity=".8"><circle cx="30" cy="40" r="2.6"/><circle cx="70" cy="42" r="3.2"/><circle cx="66" cy="62" r="2"/></g>`;
+                if (ek === 'horn1') hd += `<path d="M46.5 ${hy - hry + 3}L50 ${hy - hry - 17}L53.5 ${hy - hry + 3}Z" fill="${G}" stroke="#b45309" stroke-opacity=".4" stroke-width=".6"/><path d="M47.6 ${hy - hry - 3}L52.4 ${hy - hry - 6}M48.4 ${hy - hry - 9}L51.6 ${hy - hry - 12}" stroke="#fff" stroke-opacity=".7" stroke-width=".9"/>`;
+                const yb = hy - hry * .35;
+                if (f === 6 || f === 7) { const hb = dist(sk, c2) > 110 ? c2 : '#ef4444'; hd += `<path d="M${51 - hrx} ${yb}Q50 ${yb - 9} ${hrx + 49} ${yb}L${hrx + 49} ${yb + 5}Q50 ${yb - 4} ${51 - hrx} ${yb + 5}Z" fill="${hb}" stroke="${dk(hb, .3)}" stroke-opacity=".5" stroke-width=".7"/><path class="p3-knot" d="M${hrx + 47} ${yb + 1}l10 -4l-1 10z" fill="${hb}" stroke="${dk(hb, .3)}" stroke-opacity=".5" stroke-width=".7"/>`; }
+                if (f >= 7) hd += `<path class="p3-gem" d="M50 ${hy - hry * .6 - 5}L54.5 ${hy - hry * .6}L50 ${hy - hry * .6 + 5}L45.5 ${hy - hry * .6}Z" fill="${u('e')}" stroke="#fff" stroke-opacity=".75" stroke-width=".8"/>`;
+                if (f === 8) hd += `<ellipse cx="50" cy="${Math.max(4, hy - hry - 8)}" rx="13" ry="3.6" fill="none" stroke="#fde047" stroke-opacity=".35" stroke-width="5"/><ellipse class="p3-halo" cx="50" cy="${Math.max(4, hy - hry - 8)}" rx="13" ry="3.6" fill="none" stroke="#fde047" stroke-width="2.2"/>`;
+                hd += '</g>';
+                // --- giáp vai & ngọc ngực ---
+                let fr = '';
+                if (f >= 6 && !X.slime && !X.squid) for (const s of [-1, 1]) { const px = 50 + s * (Bd[0] - 3); fr += `<ellipse cx="${px}" cy="${by - 8}" rx="7.6" ry="5" transform="rotate(${s * -28} ${px} ${by - 8})" fill="${G}" stroke="#92400e" stroke-opacity=".5" stroke-width=".8"/>`; }
+                if (f >= 4 && !X.squid) fr += `<path d="M50 ${by + 3}l5 5 -5 8 -5 -8z" fill="${u('e')}" stroke="#fff" stroke-opacity=".65" stroke-width=".7" class="p3-gem"/>`;
+                const aura = f >= 7 ? `<circle cx="50" cy="56" r="46" fill="url(#${id}au)" class="p3-aura"/>` + (f === 8 ? `<circle cx="50" cy="56" r="43" fill="none" stroke="${c2}" stroke-opacity=".75" stroke-width="1.6" stroke-dasharray="1.5 6" stroke-linecap="round" class="p3-spin"/>` : '') : '';
+                return wrap(id, defs, aura + `<g transform="translate(50 90) scale(${sc}) translate(-50 -90)"><g class="p3-idle" ${ds}>${wings}${back}${bod}${hd}${fr}</g></g>`, 30 * sc + 4);
+            }
+            return { art: (i, f, crack) => f === 1 ? egg(i, crack) : mon(i, f) };
+        })();
+        const petArt = (i, f, crack) => {
+            const t = f >= 8 ? 4 : f >= 6 ? 3 : f >= 3 ? 2 : 1;
+            const sp = f >= 3 ? '<i class="pet-st a">✦</i><i class="pet-st b">✧</i>' + (f >= 6 ? '<i class="pet-st c">✦</i>' : '') + (f >= 8 ? '<i class="pet-st d">⭐</i><i class="pet-st e">✨</i>' : '') : '';
+            return `<div class="pet-art pet-t${t} ${f === 1 ? 'egg' + (crack ? ' cr' : '') : 'mon'}">${PET3D.art(i, f, crack)}${sp}</div>`;
+        };
+        // Tương tác 3D: nghiêng theo con trỏ, bấm vào thì thú nhảy lên
+        (function () {
+            const root = document.getElementById('viewPetContainer'); if (!root) return;
+            const art = e => e.target && e.target.closest ? e.target.closest('.pet-art') : null;
+            root.addEventListener('mousemove', e => { const a = art(e); if (!a) return; const r = a.getBoundingClientRect(); a.style.setProperty('--ry', (((e.clientX - r.left) / r.width - .5) * 34).toFixed(1) + 'deg'); a.style.setProperty('--rx', (-((e.clientY - r.top) / r.height - .5) * 26).toFixed(1) + 'deg'); });
+            root.addEventListener('mouseout', e => { const a = art(e); if (a && !a.contains(e.relatedTarget)) { a.style.setProperty('--rx', '0deg'); a.style.setProperty('--ry', '0deg'); } });
+            root.addEventListener('click', e => { const a = art(e); if (!a || !a.classList.contains('mon') || a.classList.contains('p3-jump')) return; a.classList.add('p3-jump'); try { if (window.tfBeep) tfBeep(660, .1, .12, 0); } catch (_) {} setTimeout(() => a.classList.remove('p3-jump'), 760); });
+        })();
+        let petMode = 'class', petSel = 0, petTarget = '';
+        function petPeakOf(st) { let pk = Number(st.petPeak) || 0; try { pk = Math.max(pk, tenStreakInfo(st.id).cur); } catch (e) {} return pk; }
+        window.petPick = function (sid, sp) {
+            const st = appData.students.find(x => x.id === sid); if (!st) return;
+            if (petFormOf(petPeakOf(st)) > 1 && st.petSp !== undefined) { if (window.showAppToast) window.showAppToast(L2('Thú đã nở nên không thể đổi loài.', 'The pet has hatched and cannot be swapped.'), 'error'); return; }
+            st.petSp = sp; Promise.resolve(saveData()).then(() => { if (window.showAppToast) window.showAppToast(L2(`${getStudentDisplayName(st)} đã chọn ${PET_SP[sp][0]}!`, `${getStudentDisplayName(st)} chose ${PET_SP[sp][1]}!`), 'success'); petMode = 'class'; window.__petSlide = -1; renderPetView(); });
+        };
+        window.petSetMode = m => {
+            if (m === petMode) return;
+            const root = document.getElementById('viewPetContainer'), pane = root && root.querySelector('.pet-pane'), dir = m === 'bank' ? 1 : -1;
+            const go = () => { petMode = m; window.__petSlide = dir; renderPetView(); };
+            if (pane && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) { pane.style.setProperty('--dir', dir); pane.classList.remove('pet-in'); pane.classList.add('pet-out'); setTimeout(go, 210); } else go();
+        };
+        window.petSetSel = i => { petSel = i; renderPetView(); };
+        window.petGoPick = sid => { petTarget = sid; if (petMode !== 'bank') window.__petSlide = 1; petMode = 'bank'; renderPetView(); };
+        window.renderPetView = function renderPetView() {
+            const root = document.getElementById('viewPetContainer'); if (!root || !appData) return;
+            const list = (appData.students || []).filter(s => s.classId === appData.activeClassId);
+            if (!petTarget || !list.some(s => s.id === petTarget)) petTarget = list.length ? list[0].id : '';
+            const head = `<section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="text-xl font-black text-slate-800"><i class="fa-solid fa-egg mr-2 text-violet-600"></i>${L2('Thú Cưng', 'Pets')}</h2><p class="text-sm text-slate-500 mt-1">${L2('Mốc streak 1 · 5 · 10 · 15 · 20 · 30 · 40 · 50 giúp thú cưng tiến hoá. Mất chuỗi không ảnh hưởng đến thú. Thú nở ở streak 5 sẽ có nội tại ban phúc, mạnh dần theo từng mốc.', 'Streak milestones 1 · 5 · 10 · 15 · 20 · 30 · 40 · 50 evolve your pet. Losing a streak never affects it. A pet that hatches at streak 5 unlocks an innate blessing that grows with each milestone.')}</p></div><div class="flex gap-2"><button class="pet-tabbtn ${petMode === 'class' ? 'on' : ''}" onclick="petSetMode('class')"><i class="fa-solid fa-paw mr-1"></i>${L2('Thú của lớp', 'Class pets')}</button><button class="pet-tabbtn ${petMode === 'bank' ? 'on' : ''}" onclick="petSetMode('bank')"><i class="fa-solid fa-egg mr-1"></i>${L2('Kho trứng', 'Egg bank')}</button></div></div>`;
+            let body = '', evo = [];
+            if (petMode === 'class') {
+                body = `<div class="grid gap-3 mt-4" style="grid-template-columns:repeat(auto-fill,minmax(214px,1fr))">` + list.map(st => {
+                    const pk = petPeakOf(st), f = petFormOf(pk), has = st.petSp !== undefined && PET_SP[st.petSp], nxt = PET_MS.find(m => m > pk), cur = (() => { try { return tenStreakInfo(st.id).cur; } catch (e) { return 0; } })();
+                    const isEvo = has && f > (st.petShown || 1); if (isEvo) evo.push(st);
+                    const art = has ? petArt(st.petSp, f, pk >= 1) : `<div class="pet-art" style="display:flex;align-items:center;justify-content:center;font-size:64px;opacity:.45">🥚</div>`;
+                    const pct = nxt ? Math.round(((pk - PET_MS[PET_MS.indexOf(nxt) - 1]) / (nxt - PET_MS[PET_MS.indexOf(nxt) - 1])) * 100) : 100;
+                    return `<div class="pet-card ${f === 8 && has ? 'pet-f8' : ''} ${isEvo ? 'pet-evo' : ''}" data-sid="${st.id}"><div class="text-xs font-black text-slate-800 truncate">${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}</div>${art}<div class="text-[11px] font-extrabold text-violet-700 mt-1 min-h-[1.2em]">${has ? escapeHtml(petFormName(st.petSp, f)) : L2('Chưa chọn trứng', 'No egg chosen')}</div><div class="mt-1"><span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span></div>${petBlessLine(st)}<div class="pet-bar mt-2"><i style="width:${pct}%"></i></div><div class="text-[10px] text-slate-500 mt-1">${nxt ? L2('Mốc tiếp theo: ', 'Next milestone: ') + nxt : L2('Đã đạt dạng cuối!', 'Final form reached!')}</div>${!has || f === 1 ? `<button class="pet-tabbtn mt-2" onclick="petGoPick('${st.id}')">${has ? L2('Đổi trứng', 'Change egg') : L2('Chọn trứng', 'Pick egg')}</button>` : ''}</div>`;
+                }).join('') + `</div>`;
+            } else {
+                const sp = PET_SP[petSel], tgt = list.find(s => s.id === petTarget), locked = tgt && tgt.petSp !== undefined && petFormOf(petPeakOf(tgt)) > 1;
+                body = `<div class="mt-4 grid gap-1" style="grid-template-columns:repeat(auto-fill,minmax(116px,1fr))">` + PET_SP.map((p, i) => `<div class="pet-sp ${i === petSel ? 'on' : ''}" onclick="petSetSel(${i})">${petArt(i, 1, false)}<div class="text-[10px] font-black text-slate-800 truncate">${L2(p[0], p[1])}</div></div>`).join('') + `</div>
+                <div class="mt-4 rounded-xl bg-slate-50 border border-slate-200 p-3"><div class="flex flex-wrap items-center justify-between gap-2 mb-3"><h3 class="font-black text-slate-800">${L2(sp[0], sp[1])} — ${L2('8 dạng tiến hoá', '8 evolution forms')}</h3><div class="flex items-center gap-2"><select class="border rounded-lg px-2 py-1 text-sm" onchange="petTarget=this.value;renderPetView()">${list.map(s => `<option value="${s.id}" ${s.id === petTarget ? 'selected' : ''}>${escapeHtml(getStudentDisplayName(s))}</option>`).join('')}</select><button class="pet-tabbtn on" ${!tgt || locked ? 'disabled style="opacity:.5;cursor:not-allowed"' : ''} onclick="petPick('${petTarget}',${petSel})">${locked ? L2('Đã nở, không đổi được', 'Hatched, locked') : L2('Chọn trứng này', 'Choose this egg')}</button></div></div><div class="pet-line">` +
+                    [1, 2, 3, 4, 5, 6, 7, 8].map(f => { const need = f === 1 ? L2('Streak 0 (nứt ở 1)', 'Streak 0 (cracks at 1)') : L2('Streak ', 'Streak ') + PET_MS[f]; return `<div>${petArt(petSel, f, false)}<div class="text-[11px] font-extrabold text-violet-700">${escapeHtml(petFormName(petSel, f))}</div><div class="text-[10px] text-slate-500">${need}</div></div>`; }).join('') + `</div>` + petBlessPanel(petSel) + `</div>`;
+            }
+            const slide = window.__petSlide || 0; window.__petSlide = 0;
+            root.innerHTML = head + `<div class="pet-pane${slide ? ' pet-in' : ''}" style="--dir:${slide || 1}">` + body + (petMode === 'class' ? petLogHtml() : '') + `</div></section>`;
+            if (evo.length) {
+                // Hiệu ứng tiến hoá lần đầu thấy dạng mới
+                evo.forEach(st => { st.petShown = petFormOf(petPeakOf(st)); });
+                try { const el = root.querySelector('.pet-card.pet-evo'); if (el && !xfRM()) { const r = el.getBoundingClientRect(); tfBurst(r.left + r.width / 2, r.top + 60, 60, 300); [523, 659, 784, 1047].forEach((f, k) => tfBeep(f, .16, .2, k * .12)); } } catch (e) {}
+                Promise.resolve(saveData()).catch(() => {});
+            }
+        };
+        // Cập nhật lại khi dữ liệu thay đổi (đồng bộ Firebase / nhập điểm)
+        let _petSig = '';
+        setInterval(() => { try { if (appData && appData.activeViewMode === 'pet' && !document.hidden && !document.querySelector('#viewPetContainer select:focus')) { const sg = (appData.students || []).filter(s => s.classId === appData.activeClassId).map(s => s.id + ':' + s.petSp + ':' + petPeakOf(s) + ':' + (s.petShown || 0) + ':' + getStudentDisplayName(s)).join('|') + '#' + appData.activeClassId; if (sg !== _petSig) { _petSig = sg; window.renderPetView(); } } } catch (e) {} }, 15000);
+        /* ===== Leaderboard: cột Thú cưng + bấm xem nội tại ===== */
+        try { Object.assign(translations.vi, { thPet: 'THÚ CƯNG' }); Object.assign(translations.en, { thPet: 'PET' }); } catch (e) {}
+        window.petLbCell = sid => {
+            try {
+                const st = (appData.students || []).find(x => x.id === sid); if (!st) return '';
+                const pk = petPeakOf(st), f = petFormOf(pk), has = st.petSp !== undefined && PET_SP[st.petSp];
+                const art = has ? petArt(st.petSp, f, pk >= 1) : '<div class="pet-art pet-none">🥚</div>';
+                const tip = has ? petFormName(st.petSp, f) : L2('Chưa chọn trứng', 'No egg chosen');
+                return `<span class="rk-pet" role="button" tabindex="0" title="${escapeHtml(tip)}" onclick="petLbOpen('${sid}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();petLbOpen('${sid}')}">${art}</span>`;
+            } catch (e) { return ''; }
+        };
+        window.petLbClose = () => { const m = document.getElementById('petLbModal'); if (m) { m.classList.add('pl-out'); setTimeout(() => m.remove(), 180); } };
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') window.petLbClose(); });
+        window.petLbOpen = sid => {
+            const st = (appData.students || []).find(x => x.id === sid); if (!st) return;
+            const old = document.getElementById('petLbModal'); if (old) old.remove();
+            const pk = petPeakOf(st), f = petFormOf(pk), has = st.petSp !== undefined && PET_SP[st.petSp], lv = petLv(pk), w = (appData.language || 'vi') === 'en' ? 1 : 0;
+            let cur = 0; try { cur = tenStreakInfo(st.id).cur; } catch (e) {}
+            const nm = escapeHtml(getStudentDisplayName(st)); let inner;
+            if (!has) {
+                inner = `<div class="pet-art pet-none">🥚</div><div class="pl-form">${L2('Chưa chọn trứng', 'No egg chosen')}</div><div class="pl-bless pl-lock">${L2('Chọn một quả trứng để thú cưng đồng hành và ban phúc cho bạn.', 'Pick an egg so a pet can join you and bless you.')}</div><button class="pet-tabbtn on pl-go" onclick="petLbClose();switchViewMode('pet');petGoPick('${st.id}')">${L2('Chọn trứng', 'Pick egg')}</button>`;
+            } else {
+                const b = PET_B[st.petSp], bi = petBInfo(st.petSp, lv);
+                const blessing = bi
+                    ? `<div class="pl-bless"><div class="pl-bn">${bi.ic} ${escapeHtml(bi.name)}<span>${L2('Cấp', 'Lv')} ${lv + 1}/7</span></div><div class="pl-bt">${escapeHtml(bi.txt)}</div><div class="pl-next">${lv < 6 ? L2('Cấp tiếp theo', 'Next level') + ' (streak ' + PET_LV[lv + 1] + '): ' + escapeHtml(petFmt(b.t[w], b.v[lv + 1])) : L2('Đã đạt cấp nội tại tối đa!', 'Innate blessing at max level!')}</div></div>`
+                    : `<div class="pl-bless pl-lock"><div class="pl-bn">${b.ic} ${escapeHtml(b.n[w])}</div><div class="pl-bt">${L2('🥚 Nở ở streak 5 để mở nội tại này.', '🥚 Hatch at streak 5 to unlock this blessing.')}</div></div>`;
+                const P = appData.petBless, logs = ((P && P.log) || []).filter(e => e.sid === st.id).slice(-3).reverse();
+                const logHtml = logs.length ? `<div class="pl-log"><b>${L2('✨ Phúc lành gần đây', '✨ Recent blessings')}</b>${logs.map(e => `<div>${escapeHtml(e.d)} · ${escapeHtml(L2(e.vi, e.en))}</div>`).join('')}</div>` : '';
+                inner = `${petArt(st.petSp, f, pk >= 1)}<div class="pl-form">${escapeHtml(petFormName(st.petSp, f))}</div><div class="pl-chips"><span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span></div>${blessing}${logHtml}`;
+            }
+            const m = document.createElement('div'); m.id = 'petLbModal'; m.className = 'pl-back';
+            m.onclick = e => { if (e.target === m) window.petLbClose(); };
+            m.innerHTML = `<div class="pl-card" role="dialog" aria-modal="true"><button class="pl-x" onclick="petLbClose()" aria-label="${L2('Đóng', 'Close')}">✕</button><div class="pl-owner">${st.icon || '🎓'} ${nm}</div>${inner}</div>`;
+            document.body.appendChild(m);
+        };
+
+        /* ===================== PET BLESSING: 20 nội tại ban phúc (mở khi nở ở streak 5, 7 cấp theo mốc 5·10·15·20·30·40·50) ===================== */
+        const PET_LV = [5, 10, 15, 20, 30, 40, 50], PET_T = [4, 6, 8, 10, 12, 14, 16], PET_X = [2, 3, 4, 5, 6, 7, 8];
+        const petLv = pk => { let l = -1; PET_LV.forEach((m, i) => { if (pk >= m) l = i; }); return l; };
+        const PET_PR = [2, 5, 10, 15, 20, 30, 80];
+        const PET_B = [
+            { ic: '🔥', n: ['Lửa Khởi Đầu', 'Kindling Flame'], t: ['Buổi học đầu tiên trong tuần (theo Lịch học), nếu có mặt: +{0} pts', 'First scheduled class of the week, if present: +{0} pts'], v: [1, 2, 3, 4, 5, 6, 7].map(x => [x]) },
+            { ic: '☁️', n: ['Mây Che Chở', 'Cloud Cover'], t: ['Cuối tuần: bù +2 pts cho mỗi vi phạm bị ghi trong tuần, tối đa {0} pts/tuần', 'Week end: +2 pts per violation recorded that week, up to {0} pts/week'], v: [4, 6, 8, 10, 12, 14, 25].map(x => [x]) },
+            { ic: '⚡', n: ['Sét Mỗi Ngày', 'Daily Lightning'], t: ['Mỗi buổi học có mặt theo Lịch học: {0}% nhận +{1} pts', 'Each attended scheduled class: {0}% chance of +{1} pts'], v: [[5, 1], [10, 1], [15, 2], [20, 2], [25, 2], [30, 2], [80, 5]] },
+            { ic: '🌊', n: ['Túi Pts Biển', 'Sea Purse'], t: ['Mỗi buổi học có mặt theo Lịch học: {0}% nhận 3 quà "1 lượt quay may mắn"', 'Each attended scheduled class: {0}% chance of 3 "Lucky Wheel spin" gifts'], v: PET_PR.map(x => [x]) },
+            { ic: '🐉', n: ['Hơi Thở Rồng', 'Dragon Breath'], t: ['Mỗi điểm 9 hoặc 10 trong ngày: {0}% nhận +2 pts', 'Each score of 9 or 10 in a day: {0}% chance of +2 pts'], v: PET_PR.map(x => [x]) },
+            { ic: '🍬', n: ['Mưa Kẹo', 'Candy Rain'], t: ['Mỗi buổi học có mặt theo Lịch học: {0}% tặng +1 pts cho 1 bạn ngẫu nhiên cùng lớp', 'Each attended scheduled class: {0}% chance to give +1 pts to a random classmate'], v: PET_PR.map(x => [x]) },
+            { ic: '🌙', n: ['Trăng Tròn', 'Full Moon'], t: ['Buổi học đầu tiên trong tuần, nếu có mặt: {0}% nhận 1 quà "Cộng 2 điểm"', 'First scheduled class of the week, if present: {0}% chance of a "+2 points" gift'], v: PET_PR.map(x => [x]) },
+            { ic: '🍯', n: ['Hũ Mật', 'Honey Pot'], t: ['Buổi học cuối tuần: hoàn {0}% pts đã chi ở cửa hàng trong tuần (tối đa {1} pts)', 'Last class of the week: {0}% cashback on pts spent in the shop that week (max {1} pts)'], v: [[5, 4], [6, 6], [7, 8], [8, 10], [9, 12], [10, 14], [12, 16]] },
+            { ic: '❄️', n: ['Lãi Tiết Kiệm', 'Savings Interest'], t: ['Mỗi tuần, giao dịch đầu tiên ở cửa hàng được hoàn lại số pts đã chi, tối đa {0} pts', 'Each week, your first shop transaction is refunded, up to {0} pts'], v: [1, 2, 3, 4, 5, 6, 7].map(x => [x]) },
+            { ic: '🌿', n: ['Mầm Hồi Phục', 'Comeback Sprout'], t: ['Sau điểm dưới 9, lần kế tiếp từ 9 trở lên: +{0} pts (tối đa 2 lần/tháng)', 'After a score under 9, the next 9+ earns +{0} pts (max 2 times/month)'], v: [2, 3, 4, 5, 6, 7, 8].map(x => [x]) },
+            { ic: '🐸', n: ['Ngọc Trúng Lớn', 'Jade Jackpot'], t: ['Cuối tuần: {0}% trúng jackpot +{1} pts', 'Week end: {0}% chance of a +{1} pts jackpot'], v: [[5, 4], [7, 5], [10, 5], [15, 5], [20, 7], [30, 10], [80, 20]] },
+            { ic: '🦉', n: ['Tuần Học Giỏi', 'Star Scholar'], t: ['Mỗi tuần không có điểm dưới 9: +1 pts (tối đa 4/tháng). Đủ 4 tuần trong tháng: thưởng thêm +{0} pts', 'Each week with no score under 9: +1 pts (max 4/month). 4 clean weeks in a month: bonus +{0} pts'], v: [0, 10, 20, 30, 40, 50, 60].map(x => [x]) },
+            { ic: '🍓', n: ['Quà Dâu Tây', 'Berry Gift'], t: ['Cuối tuần, nếu ĐTB nằm trong top 4 của lớp: {0}% nhận +{1} pts', 'Week end, if your average is in the class top 4: {0}% chance of +{1} pts'], v: [[5, 4], [7, 5], [10, 5], [15, 5], [20, 7], [30, 10], [80, 20]] },
+            { ic: '🦋', n: ['Combo Cánh Bướm', 'Butterfly Combo'], t: ['Mỗi lần đạt 3 điểm 10 liên tiếp: +{0} pts (không giới hạn số lần)', 'Each 3 tens in a row: +{0} pts (unlimited)'], v: [5, 10, 15, 20, 25, 30, 50].map(x => [x]) },
+            { ic: '🐺', n: ['Hộ Vệ Bầy Đàn', 'Pack Guardian'], t: ['Cuối tuần: {0}% nhận 1 quà "Xóa điểm thấp nhất"', 'Week end: {0}% chance of a "Delete lowest score" gift'], v: PET_PR.map(x => [x]) },
+            { ic: '🎋', n: ['Tre Bình An', 'Bamboo Calm'], t: ['Buổi học cuối tuần: ĐTB từ 9,0 nhận +{0} pts; từ 8,0 đến dưới 9,0 nhận +{1} pts', 'Last class of the week: average 9.0+ earns +{0} pts; 8.0 to under 9.0 earns +{1} pts'], v: [4, 6, 8, 10, 12, 14, 16].map(x => [x, x / 2]) },
+            { ic: '🐢', n: ['Mai Rùa Bền Bỉ', 'Steady Shell'], t: ['Cứ đủ 3 buổi học theo Lịch học liên tiếp mà không bị đánh vắng: +{0} pts (vắng thì đếm lại)', 'Every 3 scheduled classes in a row without an absence: +{0} pts (an absence resets the count)'], v: [2, 3, 4, 5, 6, 7, 8].map(x => [x]) },
+            { ic: '🦄', n: ['Phúc Đôi', 'Double Blessing'], t: ['Mỗi lần lên từ 2 hạng trở lên: +{0} pts; mỗi lần xuống từ 1 hạng: +{1} pts', 'Each time you climb 2+ ranks: +{0} pts; each time you drop 1+ ranks: +{1} pts'], v: [[2, 1], [4, 2], [6, 3], [8, 4], [10, 5], [16, 8], [20, 10]] },
+            { ic: '🕊️', n: ['Tro Tàn Hồi Sinh', 'Ashes Reborn'], t: ['Mỗi lần mất streak (về 0): đền bù +{0} pts', 'Each time your streak is lost (back to 0): +{0} pts compensation'], v: [1, 2, 5, 10, 15, 20, 30].map(x => [x]) },
+            { ic: '🦑', n: ['Ngày Mực', 'Ink Day'], t: ['Quay Vòng Quay May Mắn trúng "Chúc bạn may mắn lần sau": {0}% nhận 1 quà "Cộng 1 điểm" (tối đa 1 lần/tuần)', 'Lucky Wheel lands on "Better luck next time": {0}% chance of a "+1 point" gift (max once/week)'], v: PET_PR.map(x => [x]) }
+        ];
+        const petFmt = (s, a) => s.replace(/\{(\d)\}/g, (m, i) => { const x = a[+i]; return Number.isInteger(x) ? x : String(x).replace('.', L2(',', '.')); });
+        const petBInfo = (sp, lv) => { const b = PET_B[sp]; if (!b || lv < 0) return null; const w = (appData.language || 'vi') === 'en' ? 1 : 0; return { ic: b.ic, name: b.n[w], txt: petFmt(b.t[w], b.v[lv]) }; };
+        const petBlessLine = st => {
+            if (st.petSp === undefined || !PET_SP[st.petSp]) return '';
+            const lv = petLv(petPeakOf(st)), bi = petBInfo(st.petSp, lv);
+            if (!bi) return `<div class="text-[10px] text-slate-400 mt-1">${L2('🥚 Nở ở streak 5 để mở nội tại', '🥚 Hatches at streak 5 to unlock its blessing')}</div>`;
+            return `<div class="mt-1 rounded-lg bg-violet-50 border border-violet-200 px-1.5 py-1 text-left"><div class="text-[10px] font-black text-violet-700">${bi.ic} ${escapeHtml(bi.name)} · ${L2('Cấp', 'Lv')} ${lv + 1}/7</div><div class="text-[10px] text-slate-600 leading-snug">${escapeHtml(bi.txt)}</div></div>`;
+        };
+        const petBlessPanel = sp => {
+            const b = PET_B[sp], w = (appData.language || 'vi') === 'en' ? 1 : 0; if (!b) return '';
+            return `<div class="mt-3 rounded-xl bg-violet-50 border border-violet-200 p-3"><div class="font-black text-violet-800 text-sm">${b.ic} ${escapeHtml(b.n[w])} — ${L2('nội tại ban phúc (mở khi nở ở streak 5)', 'innate blessing (unlocks on hatching at streak 5)')}</div><div class="grid gap-1 mt-2 text-[11px] text-slate-700">` +
+                PET_LV.map((m, i) => `<div><b>${L2('Cấp', 'Lv')} ${i + 1} · streak ${m}:</b> ${escapeHtml(petFmt(b.t[w], b.v[i]))}</div>`).join('') + `</div></div>`;
+        };
+        const petLogHtml = () => {
+            const P = appData.petBless, log = (P && P.log || []).filter(e => { const s = (appData.students || []).find(x => x.id === e.sid); return s && s.classId === appData.activeClassId; }).slice(-12).reverse();
+            if (!log.length) return '';
+            return `<div class="mt-4 rounded-xl bg-slate-50 border border-slate-200 p-3"><h3 class="font-black text-slate-800 text-sm mb-2">${L2('✨ Phúc lành gần đây', '✨ Recent blessings')}</h3><div class="grid gap-1 text-[11px] text-slate-700">` + log.map(e => `<div>${escapeHtml(e.d)} · ${escapeHtml(L2(e.vi, e.en))}</div>`).join('') + `</div></div>`;
+        };
+        const petPd = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        const petMon = ds => { const t = new Date(ds + 'T12:00:00Z'); t.setUTCDate(t.getUTCDate() - ((t.getUTCDay() + 6) % 7)); return t.toISOString().slice(0, 10); };
+        const petAdd = (ds, n) => { const t = new Date(ds + 'T12:00:00Z'); t.setUTCDate(t.getUTCDate() + n); return t.toISOString().slice(0, 10); };
+        const petDow = ds => new Date(ds + 'T12:00:00Z').getUTCDay();
+        let _petChanged = false;
+        const petP = () => { const P = appData.petBless = (appData.petBless && typeof appData.petBless === 'object') ? appData.petBless : {}; P.led = P.led || {}; P.log = P.log || []; P.recv = P.recv || {}; return P; };
+        const PET_GIFT = {
+            spin: { itemId: 'fix_lucky_spin', type: 'lucky_spin', isFixed: true, vi: '1 lượt quay may mắn', en: '1 Lucky Wheel spin' },
+            plus2: { itemId: 'pet_plus_2', type: 'plus', deltaScore: 2, isFixed: false, vi: 'Cộng 2 điểm', en: '+2 points' },
+            plus1: { itemId: 'pet_plus_1', type: 'plus', deltaScore: 1, isFixed: false, vi: 'Cộng 1 điểm', en: '+1 point' },
+            del: { itemId: 'gacha_delete_low', type: 'delete_score', isFixed: false, vi: 'Xóa điểm thấp nhất', en: 'Delete lowest score' }
+        };
+        const petLog = (P, st, vi, en) => { P.log.push({ d: petPd(new Date()), sid: st.id, vi: `${st.petName || getStudentDisplayName(st)} · ${PET_SP[st.petSp][0]}: ${vi}`, en: `${getStudentDisplayName(st)} · ${PET_SP[st.petSp][1]}: ${en}` }); if (P.log.length > 200) P.log.splice(0, P.log.length - 200); };
+        const petToast = (vi, en) => { try { if (window.showAppToast) window.showAppToast(L2(vi, en), 'success'); } catch (e) {} };
+        const petGive = (st, key, pts, vi, en, to) => {
+            const P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led[key]) return; led[key] = 1; _petChanged = true;
+            pts = Math.round(pts); if (!(pts > 0)) return;
+            if (to) { const rk = to.id + '|' + petPd(new Date()).slice(0, 7); P.recv[rk] = P.recv[rk] || 0; if (P.recv[rk] + pts > 8) return; P.recv[rk] += pts; }
+            const tg = to || st; tg.rewardPoints = (tg.rewardPoints || 0) + pts;
+            const toTxt = to ? ' → ' + getStudentDisplayName(to) : '';
+            petLog(P, st, `${vi} (+${pts} pts${toTxt})`, `${en} (+${pts} pts${toTxt})`);
+            if (!to) petToast(`${PET_SP[st.petSp][0]} của ${getStudentDisplayName(st)} ban phúc +${pts} pts!`, `${getStudentDisplayName(st)}'s ${PET_SP[st.petSp][1]} blessed +${pts} pts!`);
+        };
+        const petGiveInv = (st, key, kind, n, vi, en) => {
+            const P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led[key]) return; led[key] = 1; _petChanged = true;
+            const g = PET_GIFT[kind], nm = (appData.language || 'vi') === 'en' ? g.en : g.vi;
+            st.inventory = st.inventory || [];
+            for (let k = 0; k < n; k++) { const o = { invId: 'inv_' + Date.now() + '_pet' + k + '_' + Math.random().toString(36).slice(2, 8), itemId: g.itemId, name: nm, itemName: nm, isFixed: g.isFixed, type: g.type, date: petPd(new Date()), fromPet: true }; if (g.deltaScore !== undefined) o.deltaScore = g.deltaScore; st.inventory.push(o); }
+            petLog(P, st, `${vi} (+${n} ${g.vi})`, `${en} (+${n} ${g.en})`);
+            petToast(`${PET_SP[st.petSp][0]} của ${getStudentDisplayName(st)} ban phúc: ${n} × ${g.vi}!`, `${getStudentDisplayName(st)}'s ${PET_SP[st.petSp][1]} blessed: ${n} × ${g.en}!`);
+        };
+        // Cáo Tuyết: hoàn pts cho giao dịch đầu tiên trong tuần; ghi chi tiêu theo ngày cho Gấu Mật
+        window.petNoteSpend = function (st, amt) {
+            if (!st || !(amt > 0)) return; const day = petPd(new Date()), m = day.slice(0, 7);
+            st.petSpent = st.petSpent || {}; st.petSpent[m] = (st.petSpent[m] || 0) + amt;
+            st.petSpentD = st.petSpentD || {}; st.petSpentD[day] = (st.petSpentD[day] || 0) + amt;
+            const cut = petAdd(day, -100); Object.keys(st.petSpentD).forEach(k => { if (k < cut) delete st.petSpentD[k]; });
+            if (st.petSp === 8) {
+                const lv = petLv(petPeakOf(st)); if (lv < 0 || !st.petHatch) return;
+                _petChanged = false; petGive(st, 'n:fx:' + petMon(day), Math.min(amt, PET_B[8].v[lv][0]), 'hoàn pts giao dịch đầu tuần', 'first weekly purchase refund');
+            }
+        };
+        // Kỳ Lân: gọi từ qsTrack khi hạng của học sinh thay đổi (d > 0: lên hạng)
+        window.petRankHook = function (classId, sid, d) {
+            try {
+                if (!d || !appData || (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId)) return;
+                const st = (appData.students || []).find(x => x.id === sid); if (!st || st.petSp !== 17 || !st.petHatch) return;
+                const lv = petLv(petPeakOf(st)); if (lv < 0) return;
+                try { if (!calculateStudentStats(sid).hasData) return; } catch (e) {}
+                const v = PET_B[17].v[lv], pts = d >= 2 ? v[0] : d <= -1 ? v[1] : 0; if (pts <= 0) return;
+                _petChanged = false;
+                petGive(st, 'n:ky:' + Date.now() + ':' + Math.random().toString(36).slice(2, 6), pts, d > 0 ? `lên ${d} hạng` : `xuống ${-d} hạng`, d > 0 ? `climbed ${d} rank(s)` : `dropped ${-d} rank(s)`);
+                if (_petChanged) Promise.resolve(saveData()).catch(() => {});
+            } catch (e) { console.warn('petRankHook', e); }
+        };
+        // Mực Sao: gọi sau khi quay vòng quay may mắn cho học sinh
+        window.petOnWheel = function (sid, prize) {
+            try {
+                if (!sid || !prize || !appData) return;
+                const st = (appData.students || []).find(x => String(x.id) === String(sid)); if (!st || st.petSp !== 19 || !st.petHatch) return;
+                const lv = petLv(petPeakOf(st)); if (lv < 0) return;
+                const it = (appData.globalShopItems || []).find(i => i && i.id === prize.itemId); if (it && it.type) return;
+                if (!/chúc\s*bạn\s*may\s*mắn|better\s*luck/i.test(String(prize.name || ''))) return;
+                const wk = petMon(petPd(new Date())), P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led['n:sq:' + wk]) return;
+                if (Math.random() * 100 >= PET_B[19].v[lv][0]) return;
+                _petChanged = false; petGiveInv(st, 'n:sq:' + wk, 'plus1', 1, 'đền bù "Chúc bạn may mắn lần sau"', 'compensation for "Better luck next time"');
+                if (_petChanged) Promise.resolve(saveData()).catch(() => {});
+            } catch (e) { console.warn('petOnWheel', e); }
+        };
+        let _petBusy = false;
+        window.petBlessRun = function petBlessRun() {
+            if (_petBusy || !appData || !Array.isArray(appData.students)) return; _petBusy = true;
+            try {
+                if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return;
+                const today = petPd(new Date()), thisW = petMon(today), P = petP(); _petChanged = false;
+                const stuC = {}, N = {}, R = {}, cnt = {};
+                appData.students.forEach(s => { stuC[s.id] = s.classId; N[s.classId] = (N[s.classId] || 0) + 1; });
+                // Dữ liệu từ Matrix Score: R[học sinh][ngày] = { v: điểm, abs: vắng }
+                Object.keys(appData.scores || {}).forEach(k => {
+                    const m = k.match(/^(.*)_(\d{4})-(\d{1,2})-(\d{1,2})$/), it = appData.scores[k]; if (!m || !it || it.sg) return;
+                    const d = m[2] + '-' + m[3].padStart(2, '0') + '-' + m[4].padStart(2, '0'), abs = !!it.absent, v = parseFloat(it.score);
+                    if (!abs && isNaN(v)) return;
+                    (R[m[1]] = R[m[1]] || {})[d] = { v, abs };
+                    const c = stuC[m[1]]; if (c) { cnt[c] = cnt[c] || {}; cnt[c][d] = (cnt[c][d] || 0) + 1; }
+                });
+                // Lịch học (tab Nội dung giảng dạy): classSchedules[lớp][thứ 0-6] = giờ học
+                const schedC = {};
+                const sched = cid => schedC[cid] || (schedC[cid] = (() => { const sc = (appData.classSchedules || {})[cid] || {}; return { has: Object.keys(sc).some(k => sc[k]), sc }; })());
+                const isSched = (cid, d) => { const s = sched(cid); return !s.has || !!s.sc[petDow(d)]; };
+                const weekInfo = (cid, w) => {
+                    const s = sched(cid), ds = [];
+                    for (let i = 0; i < 7; i++) { const d = petAdd(w, i); if (s.has ? s.sc[petDow(d)] : (cnt[cid] && cnt[cid][d])) ds.push(d); }
+                    return ds.length ? { first: ds[0], last: ds[ds.length - 1], fb: !s.has } : null;
+                };
+                const dayDone = (cid, d) => ((cnt[cid] || {})[d] || 0) >= Math.max(1, Math.ceil((N[cid] || 1) * 0.5));
+                const weekAny = (cid, w) => { for (let i = 0; i < 7; i++) if ((cnt[cid] || {})[petAdd(w, i)]) return true; return false; };
+                // Buổi học cuối tuần đã hoàn thành = đã nhập điểm (từ 50% lớp) cho ngày học cuối cùng của tuần theo lịch
+                const lastDone = (cid, w, wi) => wi.last <= today && !(wi.fb && w >= thisW) && (dayDone(cid, wi.last) || (w < thisW && weekAny(cid, w)));
+                const chance = (st, key, pct, fn, ok) => { const led = P.led[st.id] = P.led[st.id] || {}, rk = 'r:' + key; if (led[rk]) return; led[rk] = 1; _petChanged = true; if (ok !== false && Math.random() * 100 < pct) fn(); };
+                const statsOf = id => { try { const s = calculateStudentStats(id); return s && s.hasData ? s : null; } catch (e) { return null; } };
+                appData.students.forEach(st => {
+                    if (st.petSp === undefined || !PET_SP[st.petSp]) return;
+                    const lv = petLv(petPeakOf(st));
+                    let cur = 0; try { cur = tenStreakInfo(st.id).cur; } catch (e) {}
+                    const seen = st.petStreakSeen || 0; if (seen !== cur) { st.petStreakSeen = cur; _petChanged = true; }
+                    if (lv < 0) return;
+                    if (!st.petHatch) { st.petHatch = today; _petChanged = true; }
+                    const hatch = st.petHatch, sp = st.petSp, v = PET_B[sp].v[lv], cid = st.classId, mine = R[st.id] || {};
+                    const days = Object.keys(mine).filter(d => d >= hatch).sort(), att = days.filter(d => !mine[d].abs);
+                    const mates = appData.students.filter(x => x.classId === cid && x.id !== st.id);
+                    const pick = a => a[Math.floor(Math.random() * a.length)];
+                    // ---- Theo ngày ----
+                    if (sp === 2) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:th:' + d, v[0], () => petGive(st, 'n:th:' + d, v[1], 'sét đánh trúng', 'lightning struck')));
+                    if (sp === 3) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:sea:' + d, v[0], () => petGiveInv(st, 'n:sea:' + d, 'spin', 3, 'sóng biển mang quà', 'sea gifts')));
+                    if (sp === 5) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:sl:' + d, v[0], () => mates.length && petGive(st, 'n:sl:' + d, 1, 'mưa kẹo', 'candy rain', pick(mates))));
+                    if (sp === 4) att.filter(d => mine[d].v >= 9).forEach(d => chance(st, 'n:dr:' + d, v[0], () => petGive(st, 'n:dr:' + d, 2, 'hơi thở rồng (điểm ≥ 9)', 'dragon breath (score 9+)')));
+                    // ---- Chuỗi điểm / tháng ----
+                    if (sp === 13) { let run = 0, n = 0; att.forEach(d => { if (mine[d].v >= 10) { if (++run === 3) { run = 0; n++; petGive(st, 'n:bu:' + n, v[0], 'combo 3 điểm 10', 'three-10 combo'); } } else run = 0; }); }
+                    if (sp === 9) { const byM = {}; att.forEach(d => (byM[d.slice(0, 7)] = byM[d.slice(0, 7)] || []).push(mine[d].v)); Object.keys(byM).forEach(mk => { let n = 0, low = false; byM[mk].forEach(x => { if (x < 9) low = true; else if (low) { low = false; if (n < 2) { n++; petGive(st, 'n:he:' + mk + ':' + n, v[0], 'hồi phục sau điểm thấp', 'comeback'); } } }); }); }
+                    // ---- Rùa: cứ 3 buổi học theo lịch liên tiếp không vắng ----
+                    if (sp === 16) { let run = 0, n = 0; for (let d = hatch; d <= today; d = petAdd(d, 1)) { if (!isSched(cid, d) || !mine[d]) continue; if (mine[d].abs) { run = 0; continue; } if (++run % 3 === 0) { n++; petGive(st, 'n:tu:' + n, v[0], '3 buổi học liên tiếp theo lịch', '3 scheduled classes in a row'); } } }
+                    // ---- Phượng Hoàng: mỗi lần streak về 0 ----
+                    if (sp === 18 && seen > 0 && cur === 0) petGive(st, 'n:ph:' + Date.now(), v[0], `tái sinh từ tro tàn (mất streak ${seen})`, `reborn from ashes (lost streak ${seen})`);
+                    // ---- Theo tuần (theo Lịch học) ----
+                    const owSeq = [];
+                    for (let w = petMon(hatch); w <= thisW; w = petAdd(w, 7)) {
+                        const wi = weekInfo(cid, w); if (!wi) continue;
+                        const firstOk = wi.first >= hatch && wi.first <= today && mine[wi.first] && !mine[wi.first].abs;
+                        const lastOk = wi.last >= hatch && lastDone(cid, w, wi), wEnd = petAdd(w, 6);
+                        if (sp === 0 && firstOk) petGive(st, 'n:cat:' + w, v[0], 'lửa đầu tuần', 'first-day flame');
+                        if (sp === 6 && firstOk) chance(st, 'n:moon:' + w, v[0], () => petGiveInv(st, 'n:moon:' + w, 'plus2', 1, 'trăng tròn đầu tuần', 'full moon'));
+                        if (!lastOk) continue;
+                        if (sp === 1) { const c = (st.violations || []).filter(x => x.date && x.date >= (w > hatch ? w : hatch) && x.date <= wEnd).length; if (c) petGive(st, 'n:cl:' + w, Math.min(v[0], c * 2), 'bù vi phạm trong tuần', 'weekly violation compensation'); }
+                        if (sp === 7) { const sd = st.petSpentD || {}; let sum = 0; Object.keys(sd).forEach(k => { if (k >= (w > hatch ? w : hatch) && k <= wi.last) sum += sd[k]; }); if (sum > 0) petGive(st, 'n:ho:' + w, Math.min(v[1], Math.max(1, Math.round(sum * v[0] / 100))), 'hoàn pts cửa hàng cuối tuần', 'weekly shop cashback'); }
+                        if (sp === 10) chance(st, 'n:frog:' + w, v[0], () => petGive(st, 'n:frog:' + w, v[1], 'trúng jackpot', 'jackpot'));
+                        if (sp === 14) chance(st, 'n:wo:' + w, v[0], () => petGiveInv(st, 'n:wo:' + w, 'del', 1, 'hộ vệ bầy đàn', 'pack guardian'));
+                        if (sp === 12) {
+                            const arr = appData.students.filter(x => x.classId === cid).map(x => { const s = statsOf(x.id); return s ? { id: x.id, a: Number(s.avg) } : null; }).filter(Boolean), me = arr.find(x => x.id === st.id);
+                            chance(st, 'n:dk:' + w, v[0], () => petGive(st, 'n:dk:' + w, v[1], 'quà dâu tây (top 4)', 'berry gift (top 4)'), !!me && arr.filter(x => x.a > me.a + 1e-9).length < 4);
+                        }
+                        if (sp === 15) { const s = statsOf(st.id); if (s) { const a = Number(s.avg); if (a >= 9 - 1e-9) petGive(st, 'n:pa:' + w, v[0], 'ĐTB ≥ 9,0 cuối tuần', 'weekly average 9.0+'); else if (a >= 8 - 1e-9) petGive(st, 'n:pa:' + w, v[1], 'ĐTB ≥ 8,0 cuối tuần', 'weekly average 8.0+'); } }
+                        if (sp === 11) { const ws = []; for (let i = 0; i < 7; i++) { const d = petAdd(w, i); if (d >= hatch && mine[d] && !mine[d].abs) ws.push(mine[d].v); } if (ws.length && ws.every(x => x >= 9)) owSeq.push({ w, mk: wi.last.slice(0, 7) }); }
+                    }
+                    if (sp === 11) { const cm = {}; owSeq.forEach(o => { const n = cm[o.mk] = (cm[o.mk] || 0) + 1; if (n <= 4) petGive(st, 'n:ow:' + o.w, 1, 'tuần học giỏi', 'clean week'); if (n === 4 && v[0] > 0) petGive(st, 'n:ow4:' + o.mk, v[0], 'đủ 4 tuần học giỏi', '4 clean weeks'); }); }
+                });
+                if (_petChanged) Promise.resolve(saveData()).catch(() => {});
+            } catch (e) { console.warn('petBlessRun', e); } finally { _petBusy = false; }
+        };
+        setTimeout(() => window.petBlessRun(), 4000);
+        setInterval(() => window.petBlessRun(), 45000);
+
+
         /* ---------- Phím Esc cho các lớp phủ mới ---------- */
         document.addEventListener('keydown', e => {
             if (e.key !== 'Escape') return;
@@ -12200,7 +12825,7 @@ window.openStudentProfile=function(studentId){
     
 /* ===== GACHA: HỘP QUÀ BÍ ẨN (kiểu Genshin) — tab trong nhóm "Tương tác & Thưởng", tiền tệ: điểm dư (rewardPoints) ===== */
 (function(){
-  Object.assign(translations.vi,{tabGacha:'Hộp Quà Bí Ẩn'});Object.assign(translations.en,{tabGacha:'Mystery Box'});
+  Object.assign(translations.vi,{tabPet:'Thú Cưng'});Object.assign(translations.en,{tabPet:'Pets'});Object.assign(translations.vi,{tabGacha:'Hộp Quà Bí Ẩn'});Object.assign(translations.en,{tabGacha:'Mystery Box'});
   const GD={cost:1,base5:0.6,hard5:90,base4:5.1,hard4:10,limitedN:5,standardN:3,g5w:'fix_add_10',g5l:'fix_add_10',p4:['gacha_delete_low','fix_plus_exam_1'],p3:['fix_lucky_spin']};
   const T=(vi,en)=>(appData&&appData.language==='en')?en:vi;
   const $=id=>document.getElementById(id);
