@@ -12781,7 +12781,10 @@ window.openStudentProfile=function(studentId){
                 const it = (appData.globalShopItems || []).find(i => i && i.id === prize.itemId); if (it && it.type) return;
                 if (!/chúc\s*bạn\s*may\s*mắn|better\s*luck/i.test(String(prize.name || ''))) return;
                 const wk = petMon(petPd(new Date())), P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led['n:sq:' + wk]) return;
-                if (Math.random() * 100 >= PET_B[19].v[lv][0]) return;
+                // Ghi nhận lần thử ngay sau khi đã xác nhận lượt quay thành công và trúng ô hụt.
+                // Đánh dấu trước khi tung xác suất để cả thành công lẫn thất bại đều chỉ thử một lần/tuần.
+                led['n:sq:' + wk] = 1; _petChanged = true;
+                if (Math.random() * 100 >= PET_B[19].v[lv][0]) { Promise.resolve(saveData()).catch(() => {}); return; }
                 _petChanged = false; petGiveInv(st, 'n:sq:' + wk, 'plus1', 1, 'đền bù "Chúc bạn may mắn lần sau"', 'compensation for "Better luck next time"');
                 if (_petChanged) Promise.resolve(saveData()).catch(() => {});
             } catch (e) { console.warn('petOnWheel', e); }
@@ -12835,7 +12838,10 @@ window.openStudentProfile=function(studentId){
                     if (st.petSp === undefined || !PET_SP[st.petSp]) return;
                     const lv = petLv(petPeakOf(st));
                     let cur = 0; try { cur = tenStreakInfo(st.id).cur; } catch (e) {}
-                    const seen = st.petStreakSeen || 0; if (seen !== cur) { st.petStreakSeen = cur; _petChanged = true; }
+                    // Lưu streak lần trước để phát hiện mọi lần streak giảm, kể cả giảm 1 bậc hoặc về 0.
+                    const seen = Number.isFinite(Number(st.petStreakSeen)) ? Number(st.petStreakSeen) : cur;
+                    const streakDropped = seen > cur;
+                    if (seen !== cur) { st.petStreakSeen = cur; _petChanged = true; }
                     if (lv < 0) return;
                     if (!st.petHatch) { st.petHatch = today; _petChanged = true; }
                     const hatch = st.petHatch, sp = st.petSp, v = PET_B[sp].v[lv], cid = st.classId, mine = R[st.id] || {};
@@ -12850,9 +12856,27 @@ window.openStudentProfile=function(studentId){
                     if (sp === 13) { let run = 0, n = 0; att.forEach(d => { if (mine[d].v >= 10) { if (++run === 3) { run = 0; n++; petGive(st, 'n:bu:' + n, v[0], 'combo 3 điểm 10', 'three-10 combo'); } } else run = 0; }); }
                     if (sp === 9) { const cap = Math.max(1, Math.round(v[1])), cn = {}; let low = false; att.forEach(d => { const x = mine[d].v; if (x < 9) low = true; else if (low) { low = false; if (d < P.heFrom) return; const wk = petMon(d), n = cn[wk] = (cn[wk] || 0) + 1; if (n <= cap) petGive(st, 'n:he:' + wk + ':' + n, v[0], 'hồi phục sau điểm thấp', 'comeback'); } }); }
                     // ---- Rùa: cứ 3 buổi học theo lịch liên tiếp không vắng ----
-                    if (sp === 16) { let run = 0, n = 0; for (let d = hatch; d <= today; d = petAdd(d, 1)) { if (!isSched(cid, d) || !mine[d]) continue; if (mine[d].abs) { run = 0; continue; } if (++run % 3 === 0) { n++; petGive(st, 'n:tu:' + n, v[0], '3 buổi học liên tiếp theo lịch', '3 scheduled classes in a row'); } } }
-                    // ---- Phượng Hoàng: mỗi lần streak về 0 ----
-                    if (sp === 18 && seen > 0 && cur === 0) petGive(st, 'n:ph:' + Date.now(), v[0], `tái sinh từ tro tàn (mất streak ${seen})`, `reborn from ashes (lost streak ${seen})`);
+                    if (sp === 16) {
+                        let run = 0, n = 0;
+                        for (let d = hatch; d <= today; d = petAdd(d, 1)) {
+                            if (!isSched(cid, d)) continue;
+                            // Buổi đã diễn ra nhưng không có ô điểm/điểm danh: dữ liệu chưa xác nhận,
+                            // không được bỏ qua để nối chuỗi và cũng không được tự coi là có mặt/vắng.
+                            if (!mine[d]) { run = 0; continue; }
+                            if (mine[d].abs) { run = 0; continue; }
+                            if (!Number.isFinite(mine[d].v)) { run = 0; continue; }
+                            if (++run % 3 === 0) { n++; petGive(st, 'n:tu:' + n, v[0], '3 buổi học liên tiếp theo lịch', '3 scheduled classes in a row'); }
+                        }
+                    }
+                    // ---- Phượng Hoàng: kích hoạt ngay mỗi khi streak giảm, kể cả giảm 1 hoặc về 0 ----
+                    // Dùng bộ đếm sự kiện để các lần mất streak riêng biệt trong cùng ngày không bị gộp.
+                    if (sp === 18 && streakDropped) {
+                        st.petStreakLossCount = (Number(st.petStreakLossCount) || 0) + 1;
+                        _petChanged = true;
+                        petGive(st, 'n:ph:' + st.petStreakLossCount, v[0],
+                            `tái sinh từ tro tàn (streak ${seen} → ${cur})`,
+                            `reborn from ashes (streak ${seen} → ${cur})`);
+                    }
                     // ---- Theo tuần (theo Lịch học) ----
                     const owSeq = [];
                     for (let w = petMon(hatch); w <= thisW; w = petAdd(w, 7)) {
@@ -12867,19 +12891,57 @@ window.openStudentProfile=function(studentId){
                         if (sp === 10) chance(st, 'n:frog:' + w, v[0], () => petGive(st, 'n:frog:' + w, v[1], 'trúng jackpot', 'jackpot'));
                         if (sp === 14) chance(st, 'n:wo:' + w, v[0], () => petGiveInv(st, 'n:wo:' + w, 'del', 1, 'hộ vệ bầy đàn', 'pack guardian'));
                         if (sp === 12) {
-                            const arr = appData.students.filter(x => x.classId === cid).map(x => { const s = statsOf(x.id); return s ? { id: x.id, a: Number(s.avg) } : null; }).filter(Boolean), me = arr.find(x => x.id === st.id);
+                            // Xếp hạng bằng các điểm hợp lệ của chính tuần này, không dùng ĐTB toàn kỳ.
+                            const weeklyAvg = x => {
+                                const rec = R[x.id] || {}, vals = [];
+                                for (let i = 0; i < 7; i++) { const d = petAdd(w, i); if (d >= hatch && rec[d] && !rec[d].abs && Number.isFinite(rec[d].v)) vals.push(rec[d].v); }
+                                return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+                            };
+                            const arr = appData.students.filter(x => x.classId === cid).map(x => ({ id: x.id, a: weeklyAvg(x) })).filter(x => x.a !== null);
+                            const me = arr.find(x => x.id === st.id);
                             chance(st, 'n:dk:' + w, v[0], () => petGive(st, 'n:dk:' + w, v[1], 'quà dâu tây (top 4)', 'berry gift (top 4)'), !!me && arr.filter(x => x.a > me.a + 1e-9).length < 4);
                         }
                         if (sp === 15) { const s = statsOf(st.id); if (s) { const a = Number(s.avg); if (a >= 9 - 1e-9) petGive(st, 'n:pa:' + w, v[0], 'ĐTB ≥ 9,0 cuối tuần', 'weekly average 9.0+'); else if (a >= 8 - 1e-9) petGive(st, 'n:pa:' + w, v[1], 'ĐTB ≥ 8,0 cuối tuần', 'weekly average 8.0+'); } }
-                        if (sp === 11) { const ws = []; for (let i = 0; i < 7; i++) { const d = petAdd(w, i); if (d >= hatch && mine[d] && !mine[d].abs) ws.push(mine[d].v); } if (ws.length && ws.every(x => x >= 9)) owSeq.push({ w, mk: wi.last.slice(0, 7) }); }
+                        if (sp === 11) {
+                            // Chỉ xét tuần đã kết thúc và có dữ liệu cho mọi buổi học theo lịch.
+                            // Thiếu dữ liệu => tuần chưa xác định, không đạt cũng không trượt.
+                            const wEnd = petAdd(w, 6), scheduled = [];
+                            for (let i = 0; i < 7; i++) { const d = petAdd(w, i); if (d >= hatch && d <= wEnd && isSched(cid, d)) scheduled.push(d); }
+                            const weekFinished = wEnd < today || (wEnd === today && lastOk);
+                            const complete = scheduled.length > 0 && scheduled.every(d => !!mine[d]);
+                            const scores = scheduled.filter(d => mine[d] && !mine[d].abs && Number.isFinite(mine[d].v)).map(d => mine[d].v);
+                            const hasAbsence = scheduled.some(d => mine[d] && mine[d].abs);
+                            if (weekFinished && complete && !hasAbsence && scores.length === scheduled.length && scores.every(x => x >= 9)) owSeq.push({ w, mk: wi.last.slice(0, 7) });
+                        }
                     }
                     if (sp === 11) { const cm = {}; owSeq.forEach(o => { const n = cm[o.mk] = (cm[o.mk] || 0) + 1; if (n <= 4) petGive(st, 'n:ow:' + o.w, v[1], 'tuần học giỏi', 'clean week'); if (n === 4 && v[0] > 0) petGive(st, 'n:ow4:' + o.mk, v[0], 'đủ 4 tuần học giỏi', '4 clean weeks'); }); }
                 });
                 if (_petChanged) Promise.resolve(saveData()).catch(() => {});
             } catch (e) { console.warn('petBlessRun', e); } finally { _petBusy = false; }
         };
+        // Chạy lần đầu khi dữ liệu sẵn sàng; bộ hẹn giờ chỉ là lớp dự phòng.
         setTimeout(() => window.petBlessRun(), 4000);
         setInterval(() => window.petBlessRun(), 45000);
+
+        // Kích hoạt nội tại ngay sau mọi lần lưu dữ liệu (điểm, vắng mặt,
+        // streak, quà, lịch học...). Giữ nguyên saveData/Firebase và kết quả trả về.
+        // Khi chính petBlessRun() lưu phần thưởng, _petBusy sẽ chặn vòng lặp lồng nhau.
+        const __petOriginalSaveData = saveData;
+        saveData = function (...args) {
+            const result = __petOriginalSaveData.apply(this, args);
+            if (result && typeof result.then === 'function') {
+                result.then(() => {
+                    if (typeof window.petBlessRun === 'function') {
+                        Promise.resolve().then(() => window.petBlessRun());
+                    }
+                }).catch(() => {});
+            } else {
+                Promise.resolve().then(() => {
+                    if (typeof window.petBlessRun === 'function') window.petBlessRun();
+                });
+            }
+            return result;
+        };
 
 
         /* ---------- Phím Esc cho các lớp phủ mới ---------- */
