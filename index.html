@@ -2525,6 +2525,39 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
 })();
 </script>
 <style id="fe-collapse-css">.fe-collapse{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}.fe-collapse.open{grid-template-rows:1fr}.fe-collapse>div{overflow:hidden;min-height:0;visibility:hidden;transition:visibility 0s .3s}.fe-collapse.open>div{visibility:visible;transition:visibility 0s}@media (prefers-reduced-motion:reduce){.fe-collapse,.fe-collapse>div{transition:none}}</style>
+
+<style id="patch-2026-10-27-bday-sync">
+/* Template sinh nhật tạm thời (1 ngày) đồng bộ: Danh sách lớp · Score Matrix · cửa sổ nhập điểm · tab Vi phạm */
+@keyframes xfRainbowTop{from{background-position:0 0,0 0}to{background-position:200% 0,0 0}}
+#scoreMatrix td.sticky-col-2.mx-bday,
+#scoreModal .sm-hdr>.sm-bg.mx-bday,
+.vl-head.vl-bday{background:linear-gradient(90deg,#f472b6,#facc15,#38bdf8,#a78bfa,#f472b6) 0 0/200% 3px no-repeat,linear-gradient(135deg,#fff1f2,#fffbeb 55%,#fdf2f8);animation:xfRainbowTop 3s linear infinite}
+/* Score Matrix */
+#scoreMatrix td.sticky-col-2.mx-bday{position:sticky;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(244,114,182,.55)}
+#scoreMatrix td.sticky-col-2.mx-bday>div:not(.xf-bfx){position:relative;z-index:1}
+#scoreMatrix td.sticky-col-2.mx-bday .mx-nbox{background:rgba(255,255,255,.84);border-radius:9999px;padding:1px 8px 1px 4px;box-shadow:0 0 0 1px rgba(15,23,42,.1)}
+html body #scoreMatrix .score-row:hover>td.sticky-col-2.mx-bday{background-color:#fff1f2 !important;color:#831843;box-shadow:inset 0 0 0 2px #db2777}
+html body #scoreMatrix .score-row.qs-rowsel>td.sticky-col-2.mx-bday{background-color:#fff1f2 !important;box-shadow:inset 0 0 0 2px #db2777,inset 0 0 0 4px rgba(252,231,243,.95)}
+#scoreMatrix td.sticky-col-2.mx-bday .xf-bribbon{display:none}
+#scoreMatrix td.sticky-col-2.mx-bday .xf-bfx .b{font-size:14px !important}
+html.mx-dark #scoreMatrix td.sticky-col-2.mx-bday{color:#1e293b}
+html.mx-dark #scoreMatrix td.sticky-col-2.mx-bday .mx-nbox{background:rgba(255,255,255,.88);color:#1e293b}
+/* Cửa sổ cập nhật điểm */
+#scoreModal .sm-hdr>.sm-bg.mx-bday{border-radius:inherit}
+#scoreModal .sm-bg .xf-bribbon{right:64px;top:8px}
+/* Tab Vi phạm */
+.vl-head.vl-bday{position:relative;overflow:hidden;border-radius:.75rem;padding:.45rem .65rem !important;border-bottom:0 !important;margin-bottom:.35rem;box-shadow:inset 0 0 0 1px rgba(244,114,182,.6);transition:box-shadow .2s ease,transform .2s ease}
+.vio-list .vl-head.vl-bday{margin-bottom:0}
+.vl-head.vl-bday>*:not(.xf-bfx){position:relative;z-index:1}
+.vl-head.vl-bday .xf-bribbon{display:none}
+.roster-card:hover .vl-head.vl-bday{box-shadow:inset 0 0 0 2px #db2777,0 6px 16px rgba(244,114,182,.35)}
+.vl-head.vl-bday .roster-avatar{animation:xfWiggle 1.6s ease-in-out infinite}
+html.mx-dark .vl-head.vl-bday .text-slate-800{color:#1e293b !important}
+/* Thông báo sinh nhật: dòng quà */
+.xf-pop-gain{color:#047857;font-weight:800}
+.xf-pop-foot p.xf-pop-gain{margin-top:.35rem;font-size:12px}
+@media (prefers-reduced-motion:reduce){#scoreMatrix td.sticky-col-2.mx-bday,#scoreModal .sm-hdr>.sm-bg.mx-bday,.vl-head.vl-bday,.vl-head.vl-bday .roster-avatar{animation:none !important}}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -7477,11 +7510,12 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     violationPreviewHtml += "</div>";
                 }
 
-                const vlTpl = (typeof ctCls === 'function') ? ctCls(student) : '';
-                const vlFx = vlTpl ? ctFx(student, 4) : '';
+                const vlBd = (typeof xfBdayToday === 'function') && xfBdayToday(student);
+                const vlTpl = (!vlBd && typeof ctCls === 'function') ? ctCls(student) : '';
+                const vlFx = vlBd ? xfBdayFx(student) : (vlTpl ? ctFx(student, 4) : '');
                 card.innerHTML = `
                     <div class="vl-main">
-                        <div class="flex items-center justify-between pb-2 border-b border-slate-100 vl-head${vlTpl ? ' vl-tpl ' + vlTpl : ''}">${vlFx}
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-100 vl-head${vlBd ? ' vl-bday' : (vlTpl ? ' vl-tpl ' + vlTpl : '')}">${vlFx}
                             <div class="font-black text-slate-800 text-sm min-w-0 flex items-center gap-1.5">
                                 <span class="roster-avatar roster-avatar-sm"><span class="ra-ico" style="animation-delay:${raDelay(student.id)}">${student.icon || '🎓'}</span></span>
                                 <span class="truncate">${getStudentDisplayName(student)}</span>
@@ -9519,7 +9553,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                     const mxBday = (typeof xfBdayToday === 'function') && xfBdayToday(student);
                     const mxTpl = (qsTpl && !mxBday && typeof ctGet === 'function') ? ctGet(student) : null;
                     html += `<td class="font-bold text-slate-800 ${mxTpl ? ctCls(student) : ((qsTpl && mxBday) ? 'mx-bday' : 'bg-slate-50')} border-r border-slate-300 px-2 py-2 text-left sticky-col-2 whitespace-nowrap overflow-hidden text-ellipsis shadow-right group">`;
-                    if (mxTpl) html += ctFx(student, 3);
+                    if (mxTpl) html += ctFx(student, 3); else if (qsTpl && mxBday && typeof xfBdayFx === 'function') html += xfBdayFx(student);
                     html += `<div class="flex items-center justify-between">`;
                     html += `<div class="flex items-center space-x-1.5 mx-nbox">`;
                     html += `<span class="mx-ico">${student.icon || '🎓'}</span>`;
@@ -9659,7 +9693,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
                 if (!bday && !tpl) return;
                 const bg = document.createElement('div');
                 bg.setAttribute('aria-hidden', 'true');
-                if (bday) { bg.className = 'sm-bg mx-bday'; hdr.classList.add('sm-light'); }
+                if (bday) { bg.className = 'sm-bg mx-bday'; if (typeof xfBdayFx === 'function') bg.innerHTML = xfBdayFx(student); hdr.classList.add('sm-light'); }
                 else {
                     bg.className = 'sm-bg ' + ctCls(student);
                     bg.style.setProperty('--h', '56px'); bg.style.setProperty('--w', '720px');
@@ -11892,13 +11926,11 @@ window.openStudentProfile=function(studentId){
             try {
                 if (!currentTeacherId || !appData || !Array.isArray(appData.students)) return;
                 if (document.getElementById('xfBdayPop')) return;
-                const today = xfDateKey(), prefix = 'xfBday:', key = prefix + String(currentTeacherId) + ':' + today;
-                let seen = []; try { seen = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) {}
-                try { for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && k.indexOf(prefix) === 0 && k.slice(-10) !== today) localStorage.removeItem(k); } } catch (e) {}
-                const fresh = appData.students.filter(s => xfBdayToday(s) && seen.indexOf(s.id) < 0 && !xfBdayShown.has(today + '|' + s.id));
+                const today = xfDateKey(), year = today.slice(0, 4);
+                // Còn hiện thông báo cho tới khi giáo viên bấm "Gửi lời chúc" (lúc đó mới ghi cờ đã tặng quà năm nay vào dữ liệu học sinh)
+                const fresh = appData.students.filter(s => xfBdayToday(s) && String(s.bdayGiftYear || '') !== year && !xfBdayShown.has(today + '|' + s.id));
                 if (!fresh.length) return;
                 fresh.forEach(s => xfBdayShown.add(today + '|' + s.id));
-                try { localStorage.setItem(key, JSON.stringify(seen.concat(fresh.map(s => s.id)))); } catch (e) {}
                 xfShowBdayPop(fresh);
             } catch (e) { console.warn('Birthday scan skipped:', e); }
         }
@@ -11909,11 +11941,10 @@ window.openStudentProfile=function(studentId){
                 const cls = appData.classes.find(c => c.id === s.classId), age = xfBdayAge(s);
                 return `<div class="xf-pop-item"><span class="xf-pop-av">${xfEsc(s.icon || '🎓')}</span><div class="min-w-0"><div class="xf-pop-name">${xfEsc(getStudentDisplayName(s))}</div><div class="xf-pop-sub">${xfEsc(cls ? cls.name : '')}${age ? ' · ' + L2(`Tròn ${age} tuổi`, `Turns ${age}`) : ''}</div></div><span class="xf-pop-ico">🎂</span></div>`;
             }).join('');
-            w.innerHTML = `<div class="xf-pop-card"><div class="xf-pop-head"><div class="xf-pop-cake">🎂</div><h3>${L2('Hôm nay có sinh nhật!', 'Birthday today!')}</h3><p>${L2('Hệ thống phát hiện hôm nay là sinh nhật của:', 'The system found birthdays today for:')}</p></div><div class="xf-pop-list">${items}</div><div class="xf-pop-foot"><p>${L2('Chúc bạn sinh nhật thật vui, học giỏi và luôn hạnh phúc! 🎉', 'Happy birthday! Wishing you joy, great learning and lots of happiness! 🎉')}</p><button type="button" id="xfBdayOk">${L2('Gửi lời chúc', 'Send wishes')}</button></div></div>`;
+            w.innerHTML = `<div class="xf-pop-card"><div class="xf-pop-head"><div class="xf-pop-cake">🎂</div><h3>${L2('Hôm nay có sinh nhật!', 'Birthday today!')}</h3><p>${L2('Hệ thống phát hiện hôm nay là sinh nhật của:', 'The system found birthdays today for:')}</p></div><div class="xf-pop-list">${items}</div><div class="xf-pop-foot"><p>${L2('Chúc bạn sinh nhật thật vui, học giỏi và luôn hạnh phúc! 🎉', 'Happy birthday! Wishing you joy, great learning and lots of happiness! 🎉')}</p><p class="xf-pop-gain">🎁 ${L2('Bấm "Gửi lời chúc" để tặng mỗi bạn ' + XF_BDAY_PTS + ' pts vào kho điểm thưởng.', 'Press "Send wishes" to give each student ' + XF_BDAY_PTS + ' pts in their reward bank.')}</p><button type="button" id="xfBdayOk">${L2('Gửi lời chúc', 'Send wishes')}</button></div></div>`;
             document.body.appendChild(w);
-            const close = () => w.remove();
-            w.querySelector('#xfBdayOk').onclick = close;
-            w.onclick = e => { if (e.target === w) close(); };
+            // Không đóng khi bấm nền để không bỏ lỡ quà; đóng bằng nút hoặc phím Esc
+            w.querySelector('#xfBdayOk').onclick = () => xfBdaySendWishes(list, w);
             try {
                 if ('Notification' in window && Notification.permission === 'granted') new Notification(L2('🎂 Hôm nay có sinh nhật!', '🎂 Birthday today!'), { body: list.map(s => getStudentDisplayName(s)).join(', ') });
             } catch (e) {}
@@ -11924,7 +11955,47 @@ window.openStudentProfile=function(studentId){
                 [392, 392, 440, 392, 523, 494].forEach((f, i) => tfBeep(f, .22, .22, i * .26));
             } catch (e) {}
         }
-        setInterval(() => { try { xfBdayScan(); } catch (e) {} }, 60000);
+        const XF_BDAY_PTS = 10;
+        function xfBdaySendWishes(list, w) {
+            const btn = w.querySelector('#xfBdayOk'); if (btn) { if (btn.disabled) return; btn.disabled = true; }
+            const year = xfDateKey().slice(0, 4), got = [], had = [];
+            (list || []).forEach(s0 => {
+                const st = appData.students.find(x => x.id === s0.id); if (!st) return;
+                if (String(st.bdayGiftYear || '') === year) { had.push(st); return; }
+                st.rewardPoints = Math.round(((Number(st.rewardPoints) || 0) + XF_BDAY_PTS) * 100) / 100;
+                st.bdayGiftYear = year;
+                got.push(st);
+            });
+            const show = () => {
+                const card = w.querySelector('.xf-pop-card'); if (!card) return;
+                const row = (s, txt) => `<div class="xf-pop-item"><span class="xf-pop-av">${xfEsc(s.icon || '🎓')}</span><div class="min-w-0"><div class="xf-pop-name">${xfEsc(getStudentDisplayName(s))}</div><div class="xf-pop-sub xf-pop-gain">${txt}</div></div><span class="xf-pop-ico">🎁</span></div>`;
+                const items = got.map(s => row(s, L2(`Đã tặng +${XF_BDAY_PTS} pts vào kho điểm thưởng`, `+${XF_BDAY_PTS} pts added to the reward bank`))).concat(had.map(s => row(s, L2('Năm nay đã nhận quà sinh nhật rồi', 'Birthday gift already received this year')))).join('');
+                card.innerHTML = `<div class="xf-pop-head"><div class="xf-pop-cake">🎁</div><h3>${L2('Đã gửi lời chúc sinh nhật!', 'Birthday wishes sent!')}</h3><p>${got.length ? L2(`Hệ thống đã tặng ${XF_BDAY_PTS} pts cho mỗi bạn dưới đây:`, `The system gave ${XF_BDAY_PTS} pts to each student below:`) : L2('Quà sinh nhật đã được tặng trước đó:', 'The birthday gift was already given:')}</p></div><div class="xf-pop-list">${items}</div><div class="xf-pop-foot"><button type="button" id="xfBdayDone">${L2('Đóng', 'Close')}</button></div>`;
+                const done = card.querySelector('#xfBdayDone'); if (done) done.onclick = () => w.remove();
+                w.onclick = e => { if (e.target === w) w.remove(); };
+                try { if (!xfRM()) { const r = card.getBoundingClientRect(); tfBurst(r.left + r.width / 2, r.top + 40, 50, 300); [523, 659, 784, 1047].forEach((f, i) => tfBeep(f, .18, .2, i * .12)); } } catch (e) {}
+            };
+            if (!got.length) { show(); return; }
+            Promise.resolve(saveData()).then(ok => {
+                if (ok === false) {
+                    got.forEach(st => { st.rewardPoints = Math.round(((Number(st.rewardPoints) || 0) - XF_BDAY_PTS) * 100) / 100; delete st.bdayGiftYear; });
+                    got.length = 0; if (btn) btn.disabled = false;
+                    if (window.showAppToast) window.showAppToast(L2('Chưa lưu được quà sinh nhật, hãy thử lại.', 'Could not save the birthday gift, please try again.'), 'error');
+                    return;
+                }
+                show();
+                try { renderCurrentView(); } catch (e) {}
+            }).catch(() => { if (btn) btn.disabled = false; });
+        }
+        let xfLastDay = xfDateKey();
+        setInterval(() => {
+            try {
+                // Qua ngày mới: vẽ lại để template sinh nhật tạm thời tự trả về template cũ (và bật cho người có sinh nhật hôm nay)
+                const d = xfDateKey();
+                if (d !== xfLastDay) { xfLastDay = d; if (currentTeacherId) { try { renderCurrentView(); } catch (e) {} } }
+                xfBdayScan();
+            } catch (e) {}
+        }, 60000);
         document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(xfBdayScan, 300); });
 
         /* ---------- Thẻ thành tích (dùng chung: Score Matrix & Danh sách lớp > xem chi tiết) ---------- */
