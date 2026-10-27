@@ -2647,6 +2647,33 @@ html.mx-dark #viewPetContainer .text-slate-800{color:#f1f5f9}
 .pet-st.a{top:10%;left:12%}.pet-st.b{top:22%;right:10%;animation-delay:.7s}.pet-st.c{bottom:18%;left:16%;animation-delay:1.3s}.pet-st.d{top:6%;left:48%;animation-delay:.3s}.pet-st.e{bottom:24%;right:12%;animation-delay:1s}
 @media (prefers-reduced-motion:reduce){.pet-art svg,.pet-art svg *,.pet-st{animation:none!important;transition:none!important}}
 </style>
+<style id="patch-pet-cfg">
+/* Nút chỉnh thông số nội tại ban phúc (Kho trứng) — cùng tông tím/indigo với tab Thú Cưng */
+#petBP .pc-row{border:1px solid #ddd6fe;background:#fff;border-radius:.75rem;padding:.5rem .65rem;transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease}
+#petBP .pc-row:hover{border-color:#a78bfa;box-shadow:0 4px 14px rgba(124,58,237,.12);transform:translateY(-1px)}
+#petBP .pc-row.pc-dirty{border-color:#f59e0b;background:linear-gradient(180deg,#fffbeb,#fff)}
+#petBP .pc-h{font-size:11px;color:#334155;line-height:1.4}
+#petBP .pc-c{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:flex-end;margin-top:.45rem}
+#petBP .pc-p{display:flex;flex-direction:column;gap:2px}
+#petBP .pc-l{font-size:10px;font-weight:800;color:#6d28d9}
+#petBP .pc-s{display:inline-flex;align-items:center;gap:2px;background:#f5f3ff;border:1px solid #c7d2fe;border-radius:9999px;padding:2px;transition:border-color .15s ease,background .15s ease}
+#petBP .pc-b{width:26px;height:26px;border-radius:9999px;font-size:15px;font-weight:900;line-height:1;color:#4338ca;background:#fff;border:1px solid #c7d2fe;cursor:pointer;transition:transform .15s ease,background .15s ease,color .15s ease}
+#petBP .pc-b:hover:not(:disabled){transform:translateY(-1px);background:linear-gradient(90deg,#4338ca,#7c3aed);color:#fff;border-color:transparent}
+#petBP .pc-b:active:not(:disabled){transform:scale(.88)}
+#petBP .pc-b:disabled,#petBP .pc-i:disabled{opacity:.5;cursor:not-allowed}
+#petBP .pc-i{width:40px;text-align:center;font-size:12px;font-weight:900;color:#1e1b4b;background:transparent;border:0;outline:none;border-radius:6px;-moz-appearance:textfield;appearance:textfield}
+#petBP .pc-i::-webkit-outer-spin-button,#petBP .pc-i::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+#petBP .pc-i:focus{box-shadow:0 0 0 2px #a78bfa;background:#fff}
+#petBP .pc-u{font-size:10px;font-weight:800;color:#7c3aed;padding:0 6px 0 1px}
+#petBP .pc-ch .pc-s{border-color:#f59e0b;background:#fffbeb}
+#petBP .pc-ch .pc-i{color:#b45309}
+#petBP .pc-d{font-size:9px;font-weight:700;color:#94a3b8}
+#petBP .pc-rs{font-size:10px;font-weight:800;border-radius:9999px;padding:4px 11px;border:1px solid #fcd34d;background:#fffbeb;color:#b45309;cursor:pointer;transition:transform .15s ease,background .15s ease}
+#petBP .pc-rs:hover{transform:translateY(-1px);background:#fef3c7}
+@keyframes pcPop{0%{transform:scale(1)}40%{transform:scale(1.4);color:#7c3aed}100%{transform:scale(1)}}
+#petBP .pc-pop{animation:pcPop .35s ease-out}
+@media (prefers-reduced-motion:reduce){#petBP .pc-row,#petBP .pc-b,#petBP .pc-rs,#petBP .pc-pop{animation:none!important;transition:none!important}}
+</style>
 <style id="patch-pet-bless-claim">
 /* Chúc phúc thú cưng: thẻ chuyển vàng, thú nhảy múa, bấm để nhận */
 @keyframes petDance{0%,100%{transform:translateY(0) rotate(0) scale(1)}12%{transform:translateY(-10px) rotate(-9deg)}25%{transform:translateY(0) rotate(0) scale(1.04,.93)}37%{transform:translateY(-10px) rotate(9deg)}50%{transform:translateY(0) rotate(0) scale(1.04,.93)}62%{transform:translateY(-6px) rotate(-5deg) scale(1.07)}75%{transform:translateY(-6px) rotate(5deg) scale(1.07)}88%{transform:translateY(0) rotate(0)}}
@@ -5703,6 +5730,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                 else if (plan && plan.kind === 'add') extra = ' ' + qgT('empty_cell_filled');
                 else if (plan && plan.kind === 'delete_score') extra = ' ' + qgT('score_deleted_quick');
                 qsToast(qgT('apply_gift_success', { giftName: gName, studentName: sName }) + extra, 'success');
+                try { window.petOnGift && window.petOnGift(studentId); } catch (e) {}
                 qgRender();
             } finally { qgBusy = false; }
         };
@@ -9054,6 +9082,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                     return;
                 }
                 qsToast(qgT('sg_done', { used: plan.used, student: sName }) + (plan.left > 0 ? qgT('sg_done_rest', { left: plan.left }) : ''), 'success');
+                try { window.petOnGift && window.petOnGift(studentId); } catch (e) {}
                 try { qgRender(); } catch (e) {}
             } finally { marked.forEach(td => td.classList.remove('ds-target')); sgBusy = false; }
         }
@@ -10140,6 +10169,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                 }
                 refreshScoreModalData();
                 uiToast('dsToastSuccess', 'success');
+                try { window.petOnGift && window.petOnGift(studentId); } catch (e) {}
             } finally {
                 dsBusy = false;
             }
@@ -10214,6 +10244,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                     return;
                 }
                 mxGiftDoneToast(studentId, invItem, pl, dateStr);
+                try { window.petOnGift && window.petOnGift(studentId); } catch (e) {}
             } finally { mxGiftBusy = false; }
         }
 
@@ -12520,17 +12551,17 @@ window.openStudentProfile=function(studentId){
         const PET_PR = [2, 5, 10, 15, 20, 30, 80];
         const PET_B = [
             { ic: '🔥', n: ['Lửa Khởi Đầu', 'Kindling Flame'], t: ['Buổi học đầu tiên trong tuần (theo Lịch học), nếu có mặt: +{0} pts', 'First scheduled class of the week, if present: +{0} pts'], v: [1, 2, 3, 4, 5, 6, 7].map(x => [x]) },
-            { ic: '☁️', n: ['Mây Che Chở', 'Cloud Cover'], t: ['Cuối tuần: bù +2 pts cho mỗi vi phạm bị ghi trong tuần, tối đa {0} pts/tuần', 'Week end: +2 pts per violation recorded that week, up to {0} pts/week'], v: [4, 6, 8, 10, 12, 14, 25].map(x => [x]) },
+            { ic: '☁️', n: ['Mây Che Chở', 'Cloud Cover'], t: ['Cuối tuần: bù +{1} pts cho mỗi vi phạm bị ghi trong tuần, tối đa {0} pts/tuần', 'Week end: +{1} pts per violation recorded that week, up to {0} pts/week'], v: [4, 6, 8, 10, 12, 14, 25].map(x => [x, 2]) },
             { ic: '⚡', n: ['Sét Mỗi Ngày', 'Daily Lightning'], t: ['Mỗi buổi học có mặt theo Lịch học: {0}% nhận +{1} pts', 'Each attended scheduled class: {0}% chance of +{1} pts'], v: [[5, 1], [10, 1], [15, 2], [20, 2], [25, 2], [30, 2], [80, 5]] },
-            { ic: '🌊', n: ['Túi Pts Biển', 'Sea Purse'], t: ['Mỗi buổi học có mặt theo Lịch học: {0}% nhận 3 quà "1 lượt quay may mắn"', 'Each attended scheduled class: {0}% chance of 3 "Lucky Wheel spin" gifts'], v: PET_PR.map(x => [x]) },
-            { ic: '🐉', n: ['Hơi Thở Rồng', 'Dragon Breath'], t: ['Mỗi điểm 9 hoặc 10 trong ngày: {0}% nhận +2 pts', 'Each score of 9 or 10 in a day: {0}% chance of +2 pts'], v: PET_PR.map(x => [x]) },
-            { ic: '🍬', n: ['Mưa Kẹo', 'Candy Rain'], t: ['Mỗi buổi học có mặt theo Lịch học: {0}% tặng +1 pts cho 1 bạn ngẫu nhiên cùng lớp', 'Each attended scheduled class: {0}% chance to give +1 pts to a random classmate'], v: PET_PR.map(x => [x]) },
+            { ic: '🌊', n: ['Túi Pts Biển', 'Sea Purse'], t: ['Mỗi buổi học có mặt theo Lịch học: {0}% nhận {1} quà "1 lượt quay may mắn"', 'Each attended scheduled class: {0}% chance of {1} "Lucky Wheel spin" gifts'], v: PET_PR.map(x => [x, 3]) },
+            { ic: '🐉', n: ['Hơi Thở Rồng', 'Dragon Breath'], t: ['Mỗi điểm 9 hoặc 10 trong ngày: {0}% nhận +{1} pts', 'Each score of 9 or 10 in a day: {0}% chance of +{1} pts'], v: PET_PR.map(x => [x, 2]) },
+            { ic: '🍬', n: ['Kẹo Thưởng Bất Ngờ', 'Surprise Candy Bonus'], t: ['Mỗi lần áp dụng một món quà thành công: {0}% nhận thêm +{1} pts tích lũy', 'Each time a gift is applied successfully: {0}% chance of an extra +{1} pts accumulated'], v: [5, 10, 15, 20, 25, 30, 60].map(x => [x, 1]) },
             { ic: '🌙', n: ['Trăng Tròn', 'Full Moon'], t: ['Buổi học đầu tiên trong tuần, nếu có mặt: {0}% nhận 1 quà "Cộng 2 điểm"', 'First scheduled class of the week, if present: {0}% chance of a "+2 points" gift'], v: PET_PR.map(x => [x]) },
             { ic: '🍯', n: ['Hũ Mật', 'Honey Pot'], t: ['Buổi học cuối tuần: hoàn {0}% pts đã chi ở cửa hàng trong tuần (tối đa {1} pts)', 'Last class of the week: {0}% cashback on pts spent in the shop that week (max {1} pts)'], v: [[5, 4], [6, 6], [7, 8], [8, 10], [9, 12], [10, 14], [12, 16]] },
             { ic: '❄️', n: ['Lãi Tiết Kiệm', 'Savings Interest'], t: ['Mỗi tuần, giao dịch đầu tiên ở cửa hàng được hoàn lại số pts đã chi, tối đa {0} pts', 'Each week, your first shop transaction is refunded, up to {0} pts'], v: [1, 2, 3, 4, 5, 6, 7].map(x => [x]) },
-            { ic: '🌿', n: ['Mầm Hồi Phục', 'Comeback Sprout'], t: ['Sau điểm dưới 9, lần kế tiếp từ 9 trở lên: +{0} pts (tối đa 2 lần/tháng)', 'After a score under 9, the next 9+ earns +{0} pts (max 2 times/month)'], v: [2, 3, 4, 5, 6, 7, 8].map(x => [x]) },
+            { ic: '🌿', n: ['Mầm Hồi Phục', 'Comeback Sprout'], t: ['Sau điểm dưới 9, lần kế tiếp từ 9 trở lên: +{0} pts (tối đa {1} lần/tuần)', 'After a score under 9, the next 9+ earns +{0} pts (max {1} times/week)'], v: [2, 3, 4, 5, 6, 7, 8].map(x => [x, 2]) },
             { ic: '🐸', n: ['Ngọc Trúng Lớn', 'Jade Jackpot'], t: ['Cuối tuần: {0}% trúng jackpot +{1} pts', 'Week end: {0}% chance of a +{1} pts jackpot'], v: [[5, 4], [7, 5], [10, 5], [15, 5], [20, 7], [30, 10], [80, 20]] },
-            { ic: '🦉', n: ['Tuần Học Giỏi', 'Star Scholar'], t: ['Mỗi tuần không có điểm dưới 9: +1 pts (tối đa 4/tháng). Đủ 4 tuần trong tháng: thưởng thêm +{0} pts', 'Each week with no score under 9: +1 pts (max 4/month). 4 clean weeks in a month: bonus +{0} pts'], v: [0, 10, 20, 30, 40, 50, 60].map(x => [x]) },
+            { ic: '🦉', n: ['Tuần Học Giỏi', 'Star Scholar'], t: ['Mỗi tuần không có điểm dưới 9: +{1} pts (tối đa 4/tháng). Đủ 4 tuần trong tháng: thưởng thêm +{0} pts', 'Each week with no score under 9: +{1} pts (max 4/month). 4 clean weeks in a month: bonus +{0} pts'], v: [0, 10, 20, 30, 40, 50, 60].map(x => [x, 1]) },
             { ic: '🍓', n: ['Quà Dâu Tây', 'Berry Gift'], t: ['Cuối tuần, nếu ĐTB nằm trong top 4 của lớp: {0}% nhận +{1} pts', 'Week end, if your average is in the class top 4: {0}% chance of +{1} pts'], v: [[5, 4], [7, 5], [10, 5], [15, 5], [20, 7], [30, 10], [80, 20]] },
             { ic: '🦋', n: ['Combo Cánh Bướm', 'Butterfly Combo'], t: ['Mỗi lần đạt 3 điểm 10 liên tiếp: +{0} pts (không giới hạn số lần)', 'Each 3 tens in a row: +{0} pts (unlimited)'], v: [5, 10, 15, 20, 25, 30, 50].map(x => [x]) },
             { ic: '🐺', n: ['Hộ Vệ Bầy Đàn', 'Pack Guardian'], t: ['Cuối tuần: {0}% nhận 1 quà "Xóa điểm thấp nhất"', 'Week end: {0}% chance of a "Delete lowest score" gift'], v: PET_PR.map(x => [x]) },
@@ -12540,8 +12571,76 @@ window.openStudentProfile=function(studentId){
             { ic: '🕊️', n: ['Tro Tàn Hồi Sinh', 'Ashes Reborn'], t: ['Mỗi lần mất streak (về 0): đền bù +{0} pts', 'Each time your streak is lost (back to 0): +{0} pts compensation'], v: [1, 2, 5, 10, 15, 20, 30].map(x => [x]) },
             { ic: '🦑', n: ['Ngày Mực', 'Ink Day'], t: ['Quay Vòng Quay May Mắn trúng "Chúc bạn may mắn lần sau": {0}% nhận 1 quà "Cộng 1 điểm" (tối đa 1 lần/tuần)', 'Lucky Wheel lands on "Better luck next time": {0}% chance of a "+1 point" gift (max once/week)'], v: PET_PR.map(x => [x]) }
         ];
+
+        /* ===== Tuỳ chỉnh thông số nội tại (Kho trứng): lưu ở appData.petCfg['p'+loài]['l'+cấp] = [các thông số] ===== */
+        PET_B.forEach(b => { b.d = JSON.parse(JSON.stringify(b.v)); });
+        const PM = (vi, en, u, min, max, s) => ({ vi, en, u, min, max, s });
+        const PM_CH = PM('Xác suất', 'Chance', '%', 0, 100, 5);
+        const PET_PM = [
+            [PM('Pts nhận', 'Pts earned', 'pts', 0, 100, 1)],
+            [PM('Tối đa / tuần', 'Weekly cap', 'pts', 0, 200, 1), PM('Pts mỗi vi phạm', 'Pts per violation', 'pts', 0, 50, 1)],
+            [PM_CH, PM('Pts nhận', 'Pts earned', 'pts', 0, 100, 1)],
+            [PM_CH, PM('Số quà quay', 'Spin gifts', 'quà', 1, 20, 1)],
+            [PM_CH, PM('Pts nhận', 'Pts earned', 'pts', 0, 100, 1)],
+            [PM_CH, PM('Pts tích lũy', 'Bonus pts', 'pts', 0, 100, 1)],
+            [PM_CH],
+            [PM('Hoàn lại', 'Cashback', '%', 0, 100, 1), PM('Tối đa', 'Max', 'pts', 0, 200, 1)],
+            [PM('Hoàn tối đa', 'Max refund', 'pts', 0, 200, 1)],
+            [PM('Pts nhận', 'Pts earned', 'pts', 0, 100, 1), PM('Giới hạn / tuần', 'Limit / week', 'lần', 1, 7, 1)],
+            [PM_CH, PM('Pts jackpot', 'Jackpot pts', 'pts', 0, 200, 1)],
+            [PM('Thưởng đủ 4 tuần', '4-week bonus', 'pts', 0, 300, 5), PM('Pts mỗi tuần', 'Pts / week', 'pts', 0, 50, 1)],
+            [PM_CH, PM('Pts nhận', 'Pts earned', 'pts', 0, 100, 1)],
+            [PM('Pts mỗi combo', 'Pts / combo', 'pts', 0, 200, 1)],
+            [PM_CH],
+            [PM('ĐTB từ 9,0', 'Avg 9.0+', 'pts', 0, 100, 1), PM('ĐTB 8,0 – 9,0', 'Avg 8.0 – 9.0', 'pts', 0, 100, 1)],
+            [PM('Pts mỗi lần', 'Pts each time', 'pts', 0, 100, 1)],
+            [PM('Lên ≥ 2 hạng', 'Climb 2+ ranks', 'pts', 0, 100, 1), PM('Xuống ≥ 1 hạng', 'Drop 1+ rank', 'pts', 0, 100, 1)],
+            [PM('Pts đền bù', 'Compensation', 'pts', 0, 200, 1)],
+            [PM_CH]
+        ];
+        const petApplyCfg = () => {
+            const C = (appData && appData.petCfg && typeof appData.petCfg === 'object') ? appData.petCfg : {};
+            PET_B.forEach((b, sp) => {
+                const o = C['p' + sp];
+                b.v = b.d.map((row, li) => { const r = o && o['l' + li]; return row.map((x, i) => (r && typeof r[i] === 'number' && isFinite(r[i])) ? r[i] : x); });
+            });
+        };
+        const petCfgRO = () => (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId);
+        let _petCfgT = 0;
+        const petCfgSaveSoon = () => { clearTimeout(_petCfgT); _petCfgT = setTimeout(() => { Promise.resolve(saveData()).catch(() => {}); }, 600); };
+        const petCfgRefresh = (sp, pop) => {
+            const w = document.getElementById('petBP'); if (!w) return;
+            const t = document.createElement('div'); t.innerHTML = petBlessPanel(sp);
+            const n = t.firstElementChild; if (!n) return; w.replaceWith(n);
+            if (pop) { const el = n.querySelector('[data-pk="' + pop + '"]'); if (el) el.classList.add('pc-pop'); }
+        };
+        const petCfgWrite = (sp, li, j, val) => {
+            if (petCfgRO() || !appData) return;
+            petApplyCfg();
+            const b = PET_B[sp], p = PET_PM[sp][j]; if (!b || !p) return;
+            val = Math.round(Number(val)); if (!isFinite(val)) val = b.v[li][j];
+            val = Math.min(p.max, Math.max(p.min, val));
+            const row = b.v[li].slice(); row[j] = val;
+            const C = appData.petCfg = (appData.petCfg && typeof appData.petCfg === 'object') ? appData.petCfg : {};
+            const k = 'p' + sp, lk = 'l' + li; C[k] = (C[k] && typeof C[k] === 'object') ? C[k] : {};
+            if (row.every((x, i) => x === b.d[li][i])) delete C[k][lk]; else C[k][lk] = row;
+            if (!Object.keys(C[k]).length) delete C[k];
+            if (!Object.keys(C).length) delete appData.petCfg;
+            petApplyCfg(); petCfgSaveSoon(); petCfgRefresh(sp, sp + '-' + li + '-' + j);
+            try { if (!xfRM()) tfBeep(520 + li * 40 + j * 60, .06, .08, 0); } catch (e) {}
+        };
+        window.petCfgStep = (sp, li, j, dir) => { petApplyCfg(); const p = PET_PM[sp][j]; petCfgWrite(sp, li, j, PET_B[sp].v[li][j] + dir * p.s); };
+        window.petCfgSet = (sp, li, j, val) => petCfgWrite(sp, li, j, val);
+        window.petCfgReset = async (sp, li) => {
+            if (petCfgRO() || !appData || !appData.petCfg) return;
+            if (li < 0) { let ok = true; try { ok = await showAppConfirm(L2('Đặt lại toàn bộ thông số của nội tại này về mặc định?', 'Reset all values of this blessing to default?'), L2('Đặt lại mặc định', 'Reset to default')); } catch (e) {} if (!ok) return; }
+            const C = appData.petCfg, k = 'p' + sp; if (!C[k]) return;
+            if (li < 0) delete C[k]; else { delete C[k]['l' + li]; if (!Object.keys(C[k]).length) delete C[k]; }
+            if (!Object.keys(C).length) delete appData.petCfg;
+            petApplyCfg(); petCfgSaveSoon(); petCfgRefresh(sp);
+        };
         const petFmt = (s, a) => s.replace(/\{(\d)\}/g, (m, i) => { const x = a[+i]; return Number.isInteger(x) ? x : String(x).replace('.', L2(',', '.')); });
-        const petBInfo = (sp, lv) => { const b = PET_B[sp]; if (!b || lv < 0) return null; const w = (appData.language || 'vi') === 'en' ? 1 : 0; return { ic: b.ic, name: b.n[w], txt: petFmt(b.t[w], b.v[lv]) }; };
+        const petBInfo = (sp, lv) => { petApplyCfg(); const b = PET_B[sp]; if (!b || lv < 0) return null; const w = (appData.language || 'vi') === 'en' ? 1 : 0; return { ic: b.ic, name: b.n[w], txt: petFmt(b.t[w], b.v[lv]) }; };
         const petBlessLine = st => {
             if (st.petSp === undefined || !PET_SP[st.petSp]) return '';
             const lv = petLv(petPeakOf(st)), bi = petBInfo(st.petSp, lv);
@@ -12549,9 +12648,21 @@ window.openStudentProfile=function(studentId){
             return `<div class="mt-1 rounded-lg bg-violet-50 border border-violet-200 px-1.5 py-1 text-left"><div class="text-[10px] font-black text-violet-700">${bi.ic} ${escapeHtml(bi.name)} · ${L2('Cấp', 'Lv')} ${lv + 1}/7</div><div class="text-[10px] text-slate-600 leading-snug">${escapeHtml(bi.txt)}</div></div>`;
         };
         const petBlessPanel = sp => {
+            petApplyCfg();
             const b = PET_B[sp], w = (appData.language || 'vi') === 'en' ? 1 : 0; if (!b) return '';
-            return `<div class="mt-3 rounded-xl bg-violet-50 border border-violet-200 p-3"><div class="font-black text-violet-800 text-sm">${b.ic} ${escapeHtml(b.n[w])} — ${L2('nội tại ban phúc (mở khi nở ở streak 5)', 'innate blessing (unlocks on hatching at streak 5)')}</div><div class="grid gap-1 mt-2 text-[11px] text-slate-700">` +
-                PET_LV.map((m, i) => `<div><b>${L2('Cấp', 'Lv')} ${i + 1} · streak ${m}:</b> ${escapeHtml(petFmt(b.t[w], b.v[i]))}</div>`).join('') + `</div></div>`;
+            const M = PET_PM[sp] || [], ro = !!petCfgRO();
+            const rowDirty = li => b.v[li].some((x, i) => x !== b.d[li][i]);
+            const anyDirty = PET_LV.some((m, li) => rowDirty(li));
+            const rows = PET_LV.map((m, li) => {
+                const ctrls = M.map((p, j) => {
+                    const val = b.v[li][j], d0 = b.d[li][j], ch = val !== d0;
+                    return `<div class="pc-p ${ch ? 'pc-ch' : ''}"><span class="pc-l">${L2(p.vi, p.en)}</span><div class="pc-s"><button type="button" class="pc-b" ${ro ? 'disabled' : ''} onclick="petCfgStep(${sp},${li},${j},-1)" aria-label="${L2('Giảm', 'Decrease')}">−</button><input class="pc-i" type="number" inputmode="numeric" data-pk="${sp}-${li}-${j}" value="${val}" min="${p.min}" max="${p.max}" step="${p.s}" ${ro ? 'disabled' : ''} onchange="petCfgSet(${sp},${li},${j},this.value)" onfocus="this.select()"><span class="pc-u">${p.u}</span><button type="button" class="pc-b" ${ro ? 'disabled' : ''} onclick="petCfgStep(${sp},${li},${j},1)" aria-label="${L2('Tăng', 'Increase')}">+</button></div>${ch ? `<span class="pc-d">${L2('mặc định', 'default')}: ${d0}</span>` : ''}</div>`;
+                }).join('');
+                const rs = rowDirty(li) && !ro ? `<button type="button" class="pc-rs" onclick="petCfgReset(${sp},${li})">↺ ${L2('Mặc định', 'Default')}</button>` : '';
+                return `<div class="pc-row ${rowDirty(li) ? 'pc-dirty' : ''}"><div class="pc-h"><b>${L2('Cấp', 'Lv')} ${li + 1} · streak ${m}:</b> ${escapeHtml(petFmt(b.t[w], b.v[li]))}</div><div class="pc-c">${ctrls}${rs}</div></div>`;
+            }).join('');
+            const rsAll = anyDirty && !ro ? `<button type="button" class="pc-rs" onclick="petCfgReset(${sp},-1)">↺ ${L2('Đặt lại tất cả', 'Reset all')}</button>` : '';
+            return `<div id="petBP" class="mt-3 rounded-xl bg-violet-50 border border-violet-200 p-3"><div class="flex flex-wrap items-center justify-between gap-2"><div class="font-black text-violet-800 text-sm">${b.ic} ${escapeHtml(b.n[w])} — ${L2('nội tại ban phúc (mở khi nở ở streak 5)', 'innate blessing (unlocks on hatching at streak 5)')}</div>${rsAll}</div><div class="text-[10px] text-slate-500 mt-1">⚙️ ${L2('Dùng nút − / + hoặc nhập số để chỉnh thông số từng cấp. Áp dụng cho mọi thú cùng loài, tính cho phúc lành phát sinh sau khi chỉnh.', 'Use − / + or type a number to tune each level. Applies to every pet of this species, for blessings earned after the change.')}</div><div class="grid gap-2 mt-2">${rows}</div></div>`;
         };
         const petLogHtml = () => {
             const P = appData.petBless, log = (P && P.log || []).filter(e => { const s = (appData.students || []).find(x => x.id === e.sid); return s && s.classId === appData.activeClassId; }).slice(-12).reverse();
@@ -12639,7 +12750,7 @@ window.openStudentProfile=function(studentId){
         setTimeout(() => { try { window.petUpdateBadge(); } catch (e) {} }, 1500);
         // Cáo Tuyết: hoàn pts cho giao dịch đầu tiên trong tuần; ghi chi tiêu theo ngày cho Gấu Mật
         window.petNoteSpend = function (st, amt) {
-            if (!st || !(amt > 0)) return; const day = petPd(new Date()), m = day.slice(0, 7);
+            if (!st || !(amt > 0)) return; petApplyCfg(); const day = petPd(new Date()), m = day.slice(0, 7);
             st.petSpent = st.petSpent || {}; st.petSpent[m] = (st.petSpent[m] || 0) + amt;
             st.petSpentD = st.petSpentD || {}; st.petSpentD[day] = (st.petSpentD[day] || 0) + amt;
             const cut = petAdd(day, -100); Object.keys(st.petSpentD).forEach(k => { if (k < cut) delete st.petSpentD[k]; });
@@ -12651,7 +12762,7 @@ window.openStudentProfile=function(studentId){
         // Kỳ Lân: gọi từ qsTrack khi hạng của học sinh thay đổi (d > 0: lên hạng)
         window.petRankHook = function (classId, sid, d) {
             try {
-                if (!d || !appData || (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId)) return;
+                if (!d || !appData || (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId)) return; petApplyCfg();
                 const st = (appData.students || []).find(x => x.id === sid); if (!st || st.petSp !== 17 || !st.petHatch) return;
                 const lv = petLv(petPeakOf(st)); if (lv < 0) return;
                 try { if (!calculateStudentStats(sid).hasData) return; } catch (e) {}
@@ -12664,7 +12775,7 @@ window.openStudentProfile=function(studentId){
         // Mực Sao: gọi sau khi quay vòng quay may mắn cho học sinh
         window.petOnWheel = function (sid, prize) {
             try {
-                if (!sid || !prize || !appData) return;
+                if (!sid || !prize || !appData) return; petApplyCfg();
                 const st = (appData.students || []).find(x => String(x.id) === String(sid)); if (!st || st.petSp !== 19 || !st.petHatch) return;
                 const lv = petLv(petPeakOf(st)); if (lv < 0) return;
                 const it = (appData.globalShopItems || []).find(i => i && i.id === prize.itemId); if (it && it.type) return;
@@ -12675,12 +12786,26 @@ window.openStudentProfile=function(studentId){
                 if (_petChanged) Promise.resolve(saveData()).catch(() => {});
             } catch (e) { console.warn('petOnWheel', e); }
         };
+        // Slime Kẹo – Kẹo Thưởng Bất Ngờ: gọi sau mỗi lần áp dụng quà thành công cho học sinh
+        window.petOnGift = function (sid) {
+            try {
+                if (!sid || !appData || (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId)) return;
+                petApplyCfg();
+                const st = (appData.students || []).find(x => String(x.id) === String(sid)); if (!st || st.petSp !== 5 || !st.petHatch) return;
+                const lv = petLv(petPeakOf(st)); if (lv < 0) return;
+                const v = PET_B[5].v[lv]; if (Math.random() * 100 >= v[0]) return;
+                _petChanged = false;
+                petGive(st, 'n:gf:' + Date.now() + ':' + Math.random().toString(36).slice(2, 6), v[1], 'kẹo thưởng bất ngờ khi áp dụng quà', 'surprise candy on gift use');
+                if (_petChanged) Promise.resolve(saveData()).catch(() => {});
+            } catch (e) { console.warn('petOnGift', e); }
+        };
         let _petBusy = false;
         window.petBlessRun = function petBlessRun() {
             if (_petBusy || !appData || !Array.isArray(appData.students)) return; _petBusy = true;
             try {
                 if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return;
-                const today = petPd(new Date()), thisW = petMon(today), P = petP(); _petChanged = false;
+                petApplyCfg(); const today = petPd(new Date()), thisW = petMon(today), P = petP(); _petChanged = false;
+                if (!P.heFrom) { P.heFrom = today; _petChanged = true; }
                 const stuC = {}, N = {}, R = {}, cnt = {};
                 appData.students.forEach(s => { stuC[s.id] = s.classId; N[s.classId] = (N[s.classId] || 0) + 1; });
                 // Dữ liệu từ Matrix Score: R[học sinh][ngày] = { v: điểm, abs: vắng }
@@ -12719,12 +12844,11 @@ window.openStudentProfile=function(studentId){
                     const pick = a => a[Math.floor(Math.random() * a.length)];
                     // ---- Theo ngày ----
                     if (sp === 2) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:th:' + d, v[0], () => petGive(st, 'n:th:' + d, v[1], 'sét đánh trúng', 'lightning struck')));
-                    if (sp === 3) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:sea:' + d, v[0], () => petGiveInv(st, 'n:sea:' + d, 'spin', 3, 'sóng biển mang quà', 'sea gifts')));
-                    if (sp === 5) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:sl:' + d, v[0], () => mates.length && petGive(st, 'n:sl:' + d, 1, 'mưa kẹo', 'candy rain', pick(mates))));
-                    if (sp === 4) att.filter(d => mine[d].v >= 9).forEach(d => chance(st, 'n:dr:' + d, v[0], () => petGive(st, 'n:dr:' + d, 2, 'hơi thở rồng (điểm ≥ 9)', 'dragon breath (score 9+)')));
+                    if (sp === 3) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:sea:' + d, v[0], () => petGiveInv(st, 'n:sea:' + d, 'spin', Math.max(1, Math.round(v[1])), 'sóng biển mang quà', 'sea gifts')));
+                    if (sp === 4) att.filter(d => mine[d].v >= 9).forEach(d => chance(st, 'n:dr:' + d, v[0], () => petGive(st, 'n:dr:' + d, v[1], 'hơi thở rồng (điểm ≥ 9)', 'dragon breath (score 9+)')));
                     // ---- Chuỗi điểm / tháng ----
                     if (sp === 13) { let run = 0, n = 0; att.forEach(d => { if (mine[d].v >= 10) { if (++run === 3) { run = 0; n++; petGive(st, 'n:bu:' + n, v[0], 'combo 3 điểm 10', 'three-10 combo'); } } else run = 0; }); }
-                    if (sp === 9) { const byM = {}; att.forEach(d => (byM[d.slice(0, 7)] = byM[d.slice(0, 7)] || []).push(mine[d].v)); Object.keys(byM).forEach(mk => { let n = 0, low = false; byM[mk].forEach(x => { if (x < 9) low = true; else if (low) { low = false; if (n < 2) { n++; petGive(st, 'n:he:' + mk + ':' + n, v[0], 'hồi phục sau điểm thấp', 'comeback'); } } }); }); }
+                    if (sp === 9) { const cap = Math.max(1, Math.round(v[1])), cn = {}; let low = false; att.forEach(d => { const x = mine[d].v; if (x < 9) low = true; else if (low) { low = false; if (d < P.heFrom) return; const wk = petMon(d), n = cn[wk] = (cn[wk] || 0) + 1; if (n <= cap) petGive(st, 'n:he:' + wk + ':' + n, v[0], 'hồi phục sau điểm thấp', 'comeback'); } }); }
                     // ---- Rùa: cứ 3 buổi học theo lịch liên tiếp không vắng ----
                     if (sp === 16) { let run = 0, n = 0; for (let d = hatch; d <= today; d = petAdd(d, 1)) { if (!isSched(cid, d) || !mine[d]) continue; if (mine[d].abs) { run = 0; continue; } if (++run % 3 === 0) { n++; petGive(st, 'n:tu:' + n, v[0], '3 buổi học liên tiếp theo lịch', '3 scheduled classes in a row'); } } }
                     // ---- Phượng Hoàng: mỗi lần streak về 0 ----
@@ -12738,7 +12862,7 @@ window.openStudentProfile=function(studentId){
                         if (sp === 0 && firstOk) petGive(st, 'n:cat:' + w, v[0], 'lửa đầu tuần', 'first-day flame');
                         if (sp === 6 && firstOk) chance(st, 'n:moon:' + w, v[0], () => petGiveInv(st, 'n:moon:' + w, 'plus2', 1, 'trăng tròn đầu tuần', 'full moon'));
                         if (!lastOk) continue;
-                        if (sp === 1) { const c = (st.violations || []).filter(x => x.date && x.date >= (w > hatch ? w : hatch) && x.date <= wEnd).length; if (c) petGive(st, 'n:cl:' + w, Math.min(v[0], c * 2), 'bù vi phạm trong tuần', 'weekly violation compensation'); }
+                        if (sp === 1) { const c = (st.violations || []).filter(x => x.date && x.date >= (w > hatch ? w : hatch) && x.date <= wEnd).length; if (c) petGive(st, 'n:cl:' + w, Math.min(v[0], c * v[1]), 'bù vi phạm trong tuần', 'weekly violation compensation'); }
                         if (sp === 7) { const sd = st.petSpentD || {}; let sum = 0; Object.keys(sd).forEach(k => { if (k >= (w > hatch ? w : hatch) && k <= wi.last) sum += sd[k]; }); if (sum > 0) petGive(st, 'n:ho:' + w, Math.min(v[1], Math.max(1, Math.round(sum * v[0] / 100))), 'hoàn pts cửa hàng cuối tuần', 'weekly shop cashback'); }
                         if (sp === 10) chance(st, 'n:frog:' + w, v[0], () => petGive(st, 'n:frog:' + w, v[1], 'trúng jackpot', 'jackpot'));
                         if (sp === 14) chance(st, 'n:wo:' + w, v[0], () => petGiveInv(st, 'n:wo:' + w, 'del', 1, 'hộ vệ bầy đàn', 'pack guardian'));
@@ -12749,7 +12873,7 @@ window.openStudentProfile=function(studentId){
                         if (sp === 15) { const s = statsOf(st.id); if (s) { const a = Number(s.avg); if (a >= 9 - 1e-9) petGive(st, 'n:pa:' + w, v[0], 'ĐTB ≥ 9,0 cuối tuần', 'weekly average 9.0+'); else if (a >= 8 - 1e-9) petGive(st, 'n:pa:' + w, v[1], 'ĐTB ≥ 8,0 cuối tuần', 'weekly average 8.0+'); } }
                         if (sp === 11) { const ws = []; for (let i = 0; i < 7; i++) { const d = petAdd(w, i); if (d >= hatch && mine[d] && !mine[d].abs) ws.push(mine[d].v); } if (ws.length && ws.every(x => x >= 9)) owSeq.push({ w, mk: wi.last.slice(0, 7) }); }
                     }
-                    if (sp === 11) { const cm = {}; owSeq.forEach(o => { const n = cm[o.mk] = (cm[o.mk] || 0) + 1; if (n <= 4) petGive(st, 'n:ow:' + o.w, 1, 'tuần học giỏi', 'clean week'); if (n === 4 && v[0] > 0) petGive(st, 'n:ow4:' + o.mk, v[0], 'đủ 4 tuần học giỏi', '4 clean weeks'); }); }
+                    if (sp === 11) { const cm = {}; owSeq.forEach(o => { const n = cm[o.mk] = (cm[o.mk] || 0) + 1; if (n <= 4) petGive(st, 'n:ow:' + o.w, v[1], 'tuần học giỏi', 'clean week'); if (n === 4 && v[0] > 0) petGive(st, 'n:ow4:' + o.mk, v[0], 'đủ 4 tuần học giỏi', '4 clean weeks'); }); }
                 });
                 if (_petChanged) Promise.resolve(saveData()).catch(() => {});
             } catch (e) { console.warn('petBlessRun', e); } finally { _petBusy = false; }
