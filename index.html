@@ -2803,6 +2803,21 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
 @keyframes plPop{from{opacity:0;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.pl-back,.pl-card{animation:none !important}}
 </style>
+
+<style id="dailyBackupReminderStyles">
+#dailyBackupReminder{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(35,0,0,.94);font-family:inherit}
+#dailyBackupReminder.active{display:flex;animation:backupScreenPulse .72s infinite alternate}
+#dailyBackupReminder .backup-panel{width:min(760px,96vw);max-height:94vh;overflow:auto;text-align:center;padding:clamp(24px,5vw,54px);border:4px solid #ff2b2b;border-radius:28px;background:linear-gradient(145deg,#fff7ed,#fff);box-shadow:0 0 25px #ff1616,0 0 75px #ff3300,0 0 150px #ff0000;animation:backupPanelPulse .55s infinite alternate}
+#dailyBackupReminder .backup-title{font-size:clamp(28px,5vw,52px);font-weight:1000;line-height:1.1;color:#b00000;text-shadow:0 2px #ffcaca;margin:10px 0 18px}
+#dailyBackupReminder .backup-download{display:block;margin:24px auto 0;padding:18px 28px;max-width:520px;width:100%;border:3px solid #ff1d00;border-radius:18px;color:#fff;font-size:clamp(18px,3vw,27px);font-weight:1000;background:linear-gradient(120deg,#ff1717,#ff7a00,#ff1717);background-size:200% 200%;box-shadow:0 0 18px #ff2400,0 0 38px #ff5a00;animation:backupButtonPulse .48s infinite alternate;cursor:pointer}
+#dailyBackupReminder .backup-close{display:none;margin:18px auto 0;padding:12px 26px;border:0;border-radius:12px;background:#991b1b;color:white;font-weight:900;cursor:pointer}
+#dailyBackupReminder .backup-close.ready{display:block}
+@keyframes backupScreenPulse{from{background:rgba(45,0,0,.91)}to{background:rgba(255,0,0,.88)}}
+@keyframes backupPanelPulse{from{transform:scale(1);box-shadow:0 0 20px #ff1616,0 0 65px #ff3300}to{transform:scale(1.012);box-shadow:0 0 40px #ff1616,0 0 110px #ff3300}}
+@keyframes backupButtonPulse{from{filter:brightness(1);transform:scale(1)}to{filter:brightness(1.35);transform:scale(1.035);background-position:100% 50%}}
+@media(prefers-reduced-motion:reduce){#dailyBackupReminder.active,#dailyBackupReminder .backup-panel,#dailyBackupReminder .backup-download{animation:none}}
+</style>
+
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -13733,6 +13748,21 @@ html.mx-dark .gc-bar{background:#334155}
 </script>
 
 
+<style id="mxQuickBackupButtonStyles">
+.mx-quick-backup{position:relative;z-index:46;flex:0 0 46px;width:46px;height:46px;box-sizing:border-box;margin-left:10px;margin-right:10px;padding:0;border:2px solid #fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#fff;background:linear-gradient(145deg,#ff3b30 0%,#ff6a00 52%,#ffb000 100%);box-shadow:0 3px 0 #b93408,0 5px 12px rgba(234,72,12,.32),inset 0 2px 4px rgba(255,255,255,.5);font-family:inherit;font-size:6.5px;font-weight:1000;letter-spacing:0;line-height:1;cursor:pointer;animation:mxQuickBackupBob 1.35s ease-in-out infinite;transition:width .22s ease,flex-basis .22s ease,border-radius .22s ease,padding .22s ease,filter .18s,box-shadow .18s}
+.mx-quick-backup i{flex:none;font-size:16px;line-height:1;text-shadow:0 1px 2px rgba(90,20,0,.25)}
+.mx-quick-backup span{display:none!important}
+.mx-quick-backup.show-backup-info::after{content:attr(data-backup-info);position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);z-index:9999;width:max-content;max-width:min(330px,calc(100vw - 90px));box-sizing:border-box;padding:10px 13px;border:1px solid rgba(255,130,0,.45);border-radius:12px;background:#fffaf0;color:#7c2d12;font-size:12px;font-weight:700;line-height:1.4;white-space:normal;text-align:left;box-shadow:0 5px 18px rgba(80,35,10,.22);animation:mxBackupTipIn .16s ease-out}
+@keyframes mxBackupTipIn{from{opacity:0;transform:translate(5px,-50%)}to{opacity:1;transform:translate(0,-50%)}}
+.mx-quick-backup:hover{filter:brightness(1.12) saturate(1.15);box-shadow:0 5px 0 #b93408,0 0 0 4px rgba(255,130,0,.15),0 10px 25px rgba(234,72,12,.4),inset 0 2px 5px rgba(255,255,255,.55)}
+.mx-quick-backup:active{box-shadow:0 2px 0 #b93408,0 4px 10px rgba(234,72,12,.35)}
+.mx-quick-backup:focus-visible{outline:3px solid #312e81;outline-offset:4px}
+@keyframes mxQuickBackupBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(-1deg)}}
+@media(max-width:640px){.mx-quick-backup{flex-basis:40px;width:40px;height:40px;margin-left:6px;margin-right:6px;border-width:2px;font-size:5.5px}.mx-quick-backup i{font-size:14px}.mx-quick-backup.show-backup-info::after{max-width:calc(100vw - 80px);font-size:11px;padding:8px 10px}.mx-clock{gap:.25rem}}
+@media(prefers-reduced-motion:reduce){.mx-quick-backup{animation:none}}
+@media print{.mx-quick-backup{display:none!important}}
+</style>
+
 <script>
 /* ===== MX: đồng hồ thời gian thực (góc trên phải sau Tiện ích, hiện ở mọi tab) ===== */
 (function () {
@@ -13758,6 +13788,49 @@ html.mx-dark .gc-bar{background:#334155}
             '</div>';
         var host = document.getElementById('appHeaderActions');
         if (host) host.appendChild(root); else { root.style.position = 'fixed'; root.style.top = '12px'; root.style.right = '12px'; document.body.appendChild(root); }
+        // Nút sao lưu nhanh cạnh đồng hồ, dùng cùng hàm exportData() của Tiện ích.
+        var backupBtn = document.createElement('button');
+        backupBtn.type = 'button';
+        backupBtn.id = 'mxQuickBackupBtn';
+        backupBtn.className = 'mx-quick-backup';
+        backupBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i>';
+        backupBtn.removeAttribute('title');
+        backupBtn.setAttribute('aria-label', lang() === 'en' ? 'Back up data' : 'Sao lưu dữ liệu');
+        var backupHoverTimer = null;
+        var backupStampKey = 'mxQuickBackupLastTimestamp';
+        function backupInfoText() {
+            var stamp = 0;
+            try { stamp = Number(localStorage.getItem(backupStampKey) || 0); } catch (e) {}
+            var en = lang() === 'en';
+            if (!stamp) return en ? 'No backup has been made yet.' : 'Chưa có bản sao lưu';
+            var d = new Date(stamp);
+            var dateText = d.toLocaleDateString(en ? 'en-US' : 'vi-VN', en ? {weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'} : {weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
+            var timeText = d.toLocaleTimeString(en ? 'en-US' : 'vi-VN', {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+            return (en ? 'Last backup: ' : 'Lần sao lưu gần nhất: ') + dateText + ' · ' + timeText;
+        }
+        function updateBackupInfo() { backupBtn.setAttribute('data-backup-info', backupInfoText()); }
+        updateBackupInfo();
+        backupBtn.addEventListener('mouseenter', function () {
+            clearTimeout(backupHoverTimer);
+            backupHoverTimer = setTimeout(function () {
+                updateBackupInfo();
+                backupBtn.classList.add('show-backup-info');
+            }, 1000);
+        });
+        backupBtn.addEventListener('mouseleave', function () {
+            clearTimeout(backupHoverTimer);
+            backupHoverTimer = null;
+            backupBtn.classList.remove('show-backup-info');
+        });
+        backupBtn.addEventListener('focus', function () { updateBackupInfo(); });
+        backupBtn.addEventListener('click', function () {
+            if (typeof window.exportData === 'function') {
+                try { localStorage.setItem(backupStampKey, String(Date.now())); } catch (e) {}
+                updateBackupInfo();
+                window.exportData();
+            } else alert(lang() === 'en' ? 'Backup function is not available yet. Please try again.' : 'Chức năng sao lưu chưa sẵn sàng. Vui lòng thử lại.');
+        });
+        if (host) host.appendChild(backupBtn); else document.body.appendChild(backupBtn);
         tEl = root.querySelector('#mxClockT'); apEl = root.querySelector('#mxClockAp'); dEl = root.querySelector('#mxClockD');
         btn = root.querySelector('#mxClockBtn'); menu = root.querySelector('#mxClockMenu'); mt = root.querySelector('#mxClockMt');
         o12 = menu.querySelector('[data-f="12"]'); o24 = menu.querySelector('[data-f="24"]');
@@ -13775,6 +13848,13 @@ html.mx-dark .gc-bar{background:#334155}
     function setOpen(on) { menu.hidden = !on; btn.setAttribute('aria-expanded', on ? 'true' : 'false'); }
     function render() {
         var d = new Date(), l = L[lang()], h = d.getHours(), ap = '';
+        var quickBackup = document.getElementById('mxQuickBackupBtn');
+        if (quickBackup) {
+            var en = lang() === 'en';
+            quickBackup.innerHTML = '<i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i>';
+            quickBackup.removeAttribute('title');
+            quickBackup.setAttribute('aria-label', en ? 'Back up data' : 'Sao lưu dữ liệu');
+        }
         if (fmt === '12') { ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; }
         tEl.textContent = (fmt === '12' ? String(h) : pad(h)) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
         apEl.textContent = ap;
@@ -13915,5 +13995,87 @@ html.mx-dark .gc-bar{background:#334155}
   });
 })();
 </script>
+
+<div id="dailyBackupReminder" role="alertdialog" aria-modal="true" aria-labelledby="dailyBackupTitle">
+ <div class="backup-panel">
+  <div style="font-size:clamp(48px,8vw,86px);line-height:1">🚨</div>
+  <div id="dailyBackupEyebrow" style="font-size:14px;font-weight:1000;letter-spacing:.18em;color:#dc2626">NHẮC NHỞ SAO LƯU HẰNG NGÀY</div>
+  <h2 class="backup-title" id="dailyBackupTitle">ĐÃ ĐẾN GIỜ SAO LƯU DỮ LIỆU!</h2>
+  <p id="dailyBackupMessage" style="font-size:clamp(15px,2.3vw,20px);font-weight:800;color:#7f1d1d">Vui lòng tải bản sao lưu JSON để bảo vệ dữ liệu lớp học. Cửa sổ này chỉ có thể tắt sau khi bắt đầu tải bản sao lưu.</p>
+  <button id="dailyBackupDownload" class="backup-download" type="button">⬇ SAO LƯU DỮ LIỆU NGAY</button>
+  <button id="dailyBackupClose" class="backup-close" type="button">Đã sao lưu — Đóng thông báo</button>
+  <p id="dailyBackupStatus" style="font-size:12px;color:#991b1b;font-weight:700;margin-top:14px"></p>
+ </div>
+</div>
+
+<script>
+(function(){
+ 'use strict';
+ const root=document.getElementById('dailyBackupReminder');
+ if(!root)return;
+ const $=id=>document.getElementById(id);
+ let audioCtx=null, soundTimer=null, triggeredDate='', downloaded=false;
+ const lang=()=>((window.appData&&appData.language)==='en'?'en':'vi');
+ const words={
+  vi:{eyebrow:'NHẮC NHỞ SAO LƯU HẰNG NGÀY',title:'ĐÃ ĐẾN GIỜ SAO LƯU DỮ LIỆU!',message:'Vui lòng tải bản sao lưu JSON để bảo vệ dữ liệu lớp học. Cửa sổ này chỉ có thể tắt sau khi bắt đầu tải bản sao lưu.',download:'⬇ SAO LƯU DỮ LIỆU NGAY',close:'Đã sao lưu — Đóng thông báo',status:'Hãy bấm nút đỏ cam để tải tệp JSON. Sau khi bắt đầu tải, nút đóng sẽ xuất hiện.',started:'Đã khởi chạy tải xuống tệp sao lưu JSON. Hãy kiểm tra thư mục tải xuống trước khi đóng.',err:'Không thể tạo bản sao lưu. Vui lòng thử lại.'},
+  en:{eyebrow:'DAILY DATA BACKUP REMINDER',title:'IT’S TIME TO BACK UP YOUR DATA!',message:'Download a JSON backup to protect your class data. This alert can only be dismissed after you start the backup download.',download:'⬇ BACK UP DATA NOW',close:'Backup started — Dismiss alert',status:'Press the red-orange button to download the JSON file. The close button appears after the download starts.',started:'The JSON backup download has been initiated. Check your Downloads folder before dismissing.',err:'Could not create the backup. Please try again.'}
+ };
+ function paintLanguage(){const w=words[lang()];$('dailyBackupEyebrow').textContent=w.eyebrow;$('dailyBackupTitle').textContent=w.title;$('dailyBackupMessage').textContent=w.message;$('dailyBackupDownload').textContent=w.download;$('dailyBackupClose').textContent=w.close;if(!downloaded)$('dailyBackupStatus').textContent=w.status;}
+ function playAlarm(){
+  try{
+   const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+   audioCtx=audioCtx||new AC(); if(audioCtx.state==='suspended')audioCtx.resume();
+   const start=audioCtx.currentTime;
+   [880,660,880,990].forEach((hz,i)=>{const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();osc.type='sawtooth';osc.frequency.value=hz;gain.gain.setValueAtTime(.0001,start+i*.22);gain.gain.exponentialRampToValueAtTime(.12,start+i*.22+.025);gain.gain.exponentialRampToValueAtTime(.0001,start+i*.22+.19);osc.connect(gain);gain.connect(audioCtx.destination);osc.start(start+i*.22);osc.stop(start+i*.22+.2);});
+  }catch(e){}
+ }
+ function stopAlarm(){if(soundTimer){clearInterval(soundTimer);soundTimer=null;}}
+ function showReminder(){
+  const today=localDateKey(); if(triggeredDate===today||root.classList.contains('active'))return;
+  triggeredDate=today;downloaded=false;paintLanguage();$('dailyBackupClose').classList.remove('ready');root.classList.add('active');
+  playAlarm();soundTimer=setInterval(playAlarm,1500);
+ }
+ function localDateKey(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+ function checkSchedule(){
+  if(!window.appData||!Array.isArray(appData.classes)||!appData.classes.length)return;
+  const now=new Date(),dow=now.getDay(),schedules=appData.classSchedules||{};
+  let latest=null,hasSchedule=false;
+  appData.classes.forEach(c=>{
+   const sc=schedules[String(c.id)]||schedules[c.id]; if(!sc||typeof sc!=='object')return;
+   Object.keys(sc).forEach(k=>{if(sc[k])hasSchedule=true;});
+   const time=sc[String(dow)];
+   if(!time||!/^\d{1,2}:\d{2}$/.test(String(time)))return;
+   const parts=String(time).split(':').map(Number),mins=parts[0]*60+parts[1];
+   if(latest===null||mins>latest)latest=mins;
+  });
+  if(!hasSchedule||latest===null)return;
+  const due=new Date(now.getFullYear(),now.getMonth(),now.getDate(),0,0,0,0);
+  due.setMinutes(latest+89);
+  if(now>=due&&triggeredDate!==localDateKey())showReminder();
+ }
+ function startDownload(){
+  try{
+   if(typeof window.appData==='undefined')throw new Error('appData unavailable');
+   const backup={...JSON.parse(JSON.stringify(appData)),_backupInfo:{format:'student-management-backup',version:1,createdAt:new Date().toISOString()}};
+   const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
+   const url=URL.createObjectURL(blob),a=document.createElement('a');
+   a.href=url;a.download='Sao_Luu_Quan_Ly_Hoc_Sinh_'+localDateKey()+'.json';
+   document.body.appendChild(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),60000);
+   downloaded=true;stopAlarm();$('dailyBackupClose').classList.add('ready');$('dailyBackupStatus').textContent=words[lang()].started;
+  }catch(e){$('dailyBackupStatus').textContent=words[lang()].err;console.error('Daily backup failed',e);}
+ }
+ $('dailyBackupDownload').addEventListener('click',startDownload);
+ $('dailyBackupClose').addEventListener('click',()=>{if(!downloaded)return;root.classList.remove('active');stopAlarm();});
+ // Deliberately block Escape and outside clicks while reminder is active.
+ root.addEventListener('click',e=>{if(e.target===root)e.preventDefault();});
+ document.addEventListener('keydown',e=>{if(root.classList.contains('active')&&e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();}},true);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkSchedule();});
+ setInterval(checkSchedule,15000);
+ setInterval(()=>{if(root.classList.contains('active'))paintLanguage();},3000);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',checkSchedule);else setTimeout(checkSchedule,800);
+})();
+</script>
 </body>
+</html>
 </html>
