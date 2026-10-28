@@ -12864,7 +12864,7 @@ window.openStudentProfile=function(studentId){
             { ic: '⚡', n: ['Sét Mỗi Ngày', 'Daily Lightning'], t: ['Mỗi buổi học có mặt theo Lịch học: {0}% nhận +{1} pts', 'Each attended scheduled class: {0}% chance of +{1} pts'], v: [[5, 1], [10, 1], [15, 2], [20, 2], [25, 2], [30, 2], [80, 5]] },
             { ic: '🌊', n: ['Túi Pts Biển', 'Sea Purse'], t: ['Mỗi buổi học có mặt theo Lịch học: {0}% nhận {1} quà "1 lượt quay may mắn"', 'Each attended scheduled class: {0}% chance of {1} "Lucky Wheel spin" gifts'], v: PET_PR.map(x => [x, 3]) },
             { ic: '🐉', n: ['Hơi Thở Rồng', 'Dragon Breath'], t: ['Mỗi điểm 9 hoặc 10 trong ngày: {0}% nhận +{1} pts', 'Each score of 9 or 10 in a day: {0}% chance of +{1} pts'], v: PET_PR.map(x => [x, 2]) },
-            { ic: '🍬', n: ['Kẹo Thưởng Bất Ngờ', 'Surprise Candy Bonus'], t: ['Mỗi lần áp dụng một món quà thành công: {0}% nhận thêm +{1} pts tích lũy', 'Each time a gift is applied successfully: {0}% chance of an extra +{1} pts accumulated'], v: [5, 10, 15, 20, 25, 30, 60].map(x => [x, 1]) },
+            { ic: '🍬', n: ['Kẹo Thưởng Bất Ngờ', 'Surprise Candy Bonus'], t: ['Mỗi lần áp dụng một món quà thành công: {0}% nhận 1 quà cộng {1} điểm tích lũy', 'Each time a gift is applied successfully: {0}% chance of a +{1} accumulated-point gift'], v: [5, 10, 15, 20, 25, 30, 60].map(x => [x, 1]) },
             { ic: '🌙', n: ['Trăng Tròn', 'Full Moon'], t: ['Buổi học đầu tiên trong tuần, nếu có mặt: {0}% nhận 1 quà "Cộng 2 điểm"', 'First scheduled class of the week, if present: {0}% chance of a "+2 points" gift'], v: PET_PR.map(x => [x]) },
             { ic: '🍯', n: ['Hũ Mật', 'Honey Pot'], t: ['Buổi học cuối tuần: hoàn {0}% pts đã chi ở cửa hàng trong tuần (tối đa {1} pts)', 'Last class of the week: {0}% cashback on pts spent in the shop that week (max {1} pts)'], v: [[5, 4], [6, 6], [7, 8], [8, 10], [9, 12], [10, 14], [12, 16]] },
             { ic: '❄️', n: ['Lãi Tiết Kiệm', 'Savings Interest'], t: ['Mỗi tuần, giao dịch đầu tiên ở cửa hàng được hoàn lại số pts đã chi, tối đa {0} pts', 'Each week, your first shop transaction is refunded, up to {0} pts'], v: [1, 2, 3, 4, 5, 6, 7].map(x => [x]) },
@@ -12884,10 +12884,10 @@ window.openStudentProfile=function(studentId){
             { ic: '🦉', n: ['Thiên Khải Hoàn Mỹ', 'Perfect Revelation'], t: ['Mỗi lần ghi nhận một điểm 10 (không tính cột Kiểm Tra): {0}% nhận 1 quà "Đổi một điểm có sẵn thành 9"', 'Each time a score of 10 is recorded (Test columns excluded): {0}% chance of a "Change existing score to 9" gift'], v: [5, 7, 15, 20, 30, 50, 70].map(x => [x]) },
             { ic: '🐍', n: ['Thủy Triều Hóa Giải', 'Soothing Tide'], t: ['Mỗi lần ghi nhận một buổi vắng: {0}% nhận 1 quà "Đổi một điểm có sẵn thành 8"', 'Each time an absence is recorded: {0}% chance of a "Change existing score to 8" gift'], v: [5, 10, 15, 20, 25, 50, 70].map(x => [x]) },
             { ic: '🦁', n: ['Long Uy Điểm Mười', 'Lion Majesty'], t: ['Mỗi cột Kiểm Tra đạt từ 9 trở lên: {0}% nhận 1 quà "Một điểm 10"', 'Each Test column scored 9 or higher: {0}% chance of a "One score of 10" gift'], v: [0.6, 1, 1.6, 5, 10, 20, 30].map(x => [x]) },
-            { ic: '🦎', n: ['Niết Bàn Phúc Lộc', 'Nirvana Blessing'], t: ['Mỗi lần nhận một cột điểm dưới 5: {0}% nhận +{1} điểm tích lũy', 'Each score column below 5: {0}% chance of +{1} accumulated point(s)'], v: [5, 10, 20, 30, 40, 50, 70].map(x => [x, 1]) },
+            { ic: '🦎', n: ['Niết Bàn Phúc Lộc', 'Nirvana Blessing'], t: ['Mỗi lần nhận một cột điểm dưới 5: {0}% nhận 1 quà cộng {1} điểm tích lũy', 'Each score column below 5: {0}% chance of a +{1} accumulated-point gift'], v: [5, 10, 20, 30, 40, 50, 70].map(x => [x, 1]) },
             { ic: '🕷️', n: ['Tinh Thể Khuếch Đại', 'Crystal Amplifier'], t: ['Khi điểm dư phát biểu đúng bằng 1: {0}% khuếch đại ×{1} (nhận thêm +{1} pts)', 'When the speaking surplus is exactly 1: {0}% chance to amplify it ×{1} (bonus +{1} pts)'], v: [[2, 1], [5, 2], [7, 3], [10, 4], [20, 5], [30, 10], [50, 15]] },
             { ic: '🐒', n: ['Thời Khắc Thăng Hoa', 'Moment of Ascension'], t: ['Mỗi lần Cấp độ tăng thêm 1: {0}% nhận 1 quà "Một điểm 10"', 'Each time your Level goes up by 1: {0}% chance of a "One score of 10" gift'], v: [2, 5, 10, 15, 20, 50, 70].map(x => [x]) },
-            { ic: '🦇', n: ['Lôi Quang Liên Kết', 'Linked Lightning'], t: ['Mỗi lần ghi nhận điểm 9 liên tiếp hai lần: {0}% nhận +{1} điểm tích lũy', 'Each time two 9s are recorded in a row: {0}% chance of +{1} accumulated point(s)'], v: [5, 10, 15, 20, 40, 50, 70].map(x => [x, 1]) },
+            { ic: '🦇', n: ['Lôi Quang Liên Kết', 'Linked Lightning'], t: ['Mỗi lần ghi nhận điểm 9 liên tiếp hai lần: {0}% nhận 1 quà cộng {1} điểm tích lũy', 'Each time two 9s are recorded in a row: {0}% chance of a +{1} accumulated-point gift'], v: [5, 10, 15, 20, 40, 50, 70].map(x => [x, 1]) },
             { ic: '🐋', n: ['Mạch Sống Nghịch Chuyển', 'Reversing Lifeline'], t: ['Mỗi lần điểm trung bình giảm (tối đa 1 lần/ngày): {0}% nhận +{1} pts', 'Each time your average drops (max once/day): {0}% chance of +{1} pts'], v: [[20, 2], [30, 3], [40, 4], [50, 5], [60, 6], [70, 7], [80, 8]] }
         ];
 
@@ -13069,6 +13069,16 @@ window.openStudentProfile=function(studentId){
             if (to) { const rk = to.id + '|' + petPd(new Date()).slice(0, 7); P.recv[rk] = P.recv[rk] || 0; if (P.recv[rk] + pts > 8) return; P.recv[rk] += pts; }
             petQueue(st, { k: 'pts', pts, to: to ? to.id : '', vi, en });
         };
+        // Điểm tích lũy là QUÀ cộng vào đúng một ô Matrix Score, KHÔNG phải ví pts.
+        // Quà chỉ sinh từ Pet, không thêm vào danh sách cửa hàng.
+        const petGiveAccum = (st, key, amount, vi, en) => {
+            const P = petP(), led = P.led[st.id] = P.led[st.id] || {};
+            if (led[key]) return;
+            led[key] = 1; _petChanged = true;
+            amount = Math.round(Number(amount));
+            if (!(amount > 0)) return;
+            petQueue(st, { k: 'accum', amount, vi, en });
+        };
         const petGiveInv = (st, key, kind, n, vi, en) => {
             const P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led[key]) return; led[key] = 1; _petChanged = true;
             petQueue(st, { k: 'inv', kind, n, vi, en });
@@ -13094,6 +13104,20 @@ window.openStudentProfile=function(studentId){
                         const toTxt = it.to ? ' → ' + getStudentDisplayName(tg) : '';
                         petLog(P, st, `${it.vi} (+${it.pts} pts${toTxt})`, `${it.en} (+${it.pts} pts${toTxt})`);
                         parts.push(`+${it.pts} pts${toTxt}`);
+                    } else if (it.k === 'accum') {
+                        // Một lần ban phúc = một món quà +N, không tách thành N món +1.
+                        const amount = Math.round(Number(it.amount)); if (!(amount > 0)) return;
+                        const nm = en ? `+${amount} accumulated point${amount === 1 ? '' : 's'}` : `Cộng ${amount} điểm tích lũy`;
+                        st.inventory = st.inventory || [];
+                        st.inventory.push({
+                            invId: 'inv_' + Date.now() + '_petacc_' + Math.random().toString(36).slice(2, 8),
+                            itemId: 'pet_hidden_accum_plus_' + amount,
+                            name: nm, itemName: nm, isFixed: false,
+                            type: 'plus', deltaScore: amount,
+                            date: petPd(new Date()), fromPet: true, petAccumulated: true
+                        });
+                        petLog(P, st, `${it.vi} (quà +${amount} điểm tích lũy)`, `${it.en} (+${amount} accumulated-point gift)`);
+                        parts.push(nm);
                     } else if (it.k === 'inv') {
                         const g = PET_GIFT[it.kind]; if (!g) return; const nm = en ? g.en : g.vi;
                         st.inventory = st.inventory || [];
@@ -13193,7 +13217,7 @@ window.openStudentProfile=function(studentId){
                 const lv = petLv(petPeakOf(st)); if (lv < 0) return;
                 const v = PET_B[5].v[lv]; if (Math.random() * 100 >= v[0]) return;
                 _petChanged = false;
-                petGive(st, 'n:gf:' + Date.now() + ':' + Math.random().toString(36).slice(2, 6), v[1], 'kẹo thưởng bất ngờ khi áp dụng quà', 'surprise candy on gift use');
+                petGiveAccum(st, 'n:gf:' + Date.now() + ':' + Math.random().toString(36).slice(2, 6), v[1], 'kẹo thưởng bất ngờ khi áp dụng quà', 'surprise candy on gift use');
                 if (_petChanged) Promise.resolve(saveData()).catch(() => {});
             } catch (e) { console.warn('petOnGift', e); }
         };
@@ -13268,7 +13292,7 @@ window.openStudentProfile=function(studentId){
                         if(sp===23)days.filter(d=>mine[d].abs).forEach(d=>chance(st,'n:sn:'+d,v[0],()=>petGiveInv(st,'n:sn:'+d,'chg8',1,'thủy triều hóa giải buổi vắng','the tide soothes an absence')));
                         if(sp===24)points.filter(e=>e.raw.isExam&&e.v>=9-1e-9).forEach(e=>chance(st,'n:li:'+e.key,v[0],()=>petGiveInv(st,'n:li:'+e.key,'add10',1,'long uy điểm mười (kiểm tra ≥ 9)','lion majesty (test 9+)')));
                         if(sp===22)points.filter(e=>e.v>=10-1e-9&&!e.raw.isExam).forEach(e=>chance(st,'n:ow10d:'+e.key,v[0],()=>petGiveInv(st,'n:ow10d:'+e.key,'chg9',1,'thiên khải hoàn mỹ (ghi nhận điểm 10)','perfect revelation (a score of 10 recorded)')));
-                        if(sp===25)points.filter(e=>e.v<5).forEach(e=>chance(st,'n:ge:'+e.key,v[0],()=>petGive(st,'n:ge:'+e.key,v[1],'niết bàn phúc lộc (điểm dưới 5)','nirvana blessing (score under 5)')));
+                        if(sp===25)points.filter(e=>e.v<5).forEach(e=>chance(st,'n:ge:'+e.key,v[0],()=>petGiveAccum(st,'n:ge:'+e.key,v[1],'niết bàn phúc lộc (điểm dưới 5)','nirvana blessing (score under 5)')));
                         if(sp===26)points.filter(e=>spk(e)===MLIM+1).forEach(e=>chance(st,'n:sp:'+e.key,v[0],()=>petGive(st,'n:sp:'+e.key,v[1],`tinh thể khuếch đại ×${v[1]}`,`crystal amplified ×${v[1]}`)));
                         // 🐒 Linh Hầu: Cấp độ (XP/50) tăng thêm 1 — mỗi cấp chỉ được tung xác suất một lần
                         if (sp === 27) {
@@ -13280,7 +13304,7 @@ window.openStudentProfile=function(studentId){
                             }
                         }
                         // 🦇 Dơi Lôi Quang: hai điểm 9 (từ 9 đến dưới 10) liên tiếp
-                        if (sp === 28) { let run=0;points.forEach(e=>{if(e.v>=9-1e-9&&e.v<10-1e-9){if(++run===2){run=0;chance(st,'n:ba:'+e.key,v[0],()=>petGive(st,'n:ba:'+e.key,v[1],'lôi quang liên kết (hai điểm 9 liên tiếp)','linked lightning (two 9s in a row)'));}}else run=0;});}
+                        if (sp === 28) { let run=0;points.forEach(e=>{if(e.v>=9-1e-9&&e.v<10-1e-9){if(++run===2){run=0;chance(st,'n:ba:'+e.key,v[0],()=>petGiveAccum(st,'n:ba:'+e.key,v[1],'lôi quang liên kết (hai điểm 9 liên tiếp)','linked lightning (two 9s in a row)'));}}else run=0;});}
                         // 🐋 Cá Voi: điểm trung bình giảm so với lần ghi nhận trước (tối đa 1 lần tung xác suất/ngày)
                         if (sp === 29) {
                             const s = statsOf(st.id);
