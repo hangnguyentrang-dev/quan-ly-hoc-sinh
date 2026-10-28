@@ -13206,14 +13206,23 @@ window.openStudentProfile=function(studentId){
                 if (!P.heFrom) { P.heFrom = today; _petChanged = true; }
                 const stuC = {}, N = {}, R = {}, cnt = {}, XI = {};
                 appData.students.forEach(s => { stuC[s.id] = s.classId; N[s.classId] = (N[s.classId] || 0) + 1; });
-                // Dữ liệu từ Matrix Score: R[học sinh][ngày] = { v: điểm, abs: vắng }
+                // Mỗi ô điểm là một sự kiện riêng; SG (quà chuỗi) tuyệt đối không tham gia Chúc phúc.
+                const EVENTS = {}, DAY = {};
                 Object.keys(appData.scores || {}).forEach(k => {
-                    const m = k.match(/^(.*)_(\d{4})-(\d{1,2})-(\d{1,2})$/), it = appData.scores[k]; if (!m || !it || it.sg) return;
-                    const d = m[2] + '-' + m[3].padStart(2, '0') + '-' + m[4].padStart(2, '0'), abs = !!it.absent, v = (it.score === null || it.score === '' || it.score === undefined) ? NaN : Number(it.score);
-                    if (!abs && isNaN(v) && !it.present) return;
-                    (R[m[1]] = R[m[1]] || {})[d] = { v, abs, present: !!it.present || (!abs && Number.isFinite(v)) }; (XI[m[1]] = XI[m[1]] || {})[d] = it;
-                    const c = stuC[m[1]]; if (c) { cnt[c] = cnt[c] || {}; cnt[c][d] = (cnt[c][d] || 0) + 1; }
+                    const m = k.match(/^(.*)_(\d{4})-(\d{1,2})-(\d{1,2})$/), it = appData.scores[k];
+                    if (!m || !it || it.sg || it.giftNeutral) return;
+                    const id=m[1], d=m[2]+'-'+m[3].padStart(2,'0')+'-'+m[4].padStart(2,'0');
+                    const abs=!!it.absent, v=(it.score===null||it.score===''||it.score===undefined)?NaN:Number(it.score);
+                    if (!abs && !Number.isFinite(v) && !it.present) return;
+                    const ev={key:k,d,v,abs,present:!!it.present||(!abs&&Number.isFinite(v)),raw:it};
+                    (EVENTS[id]=EVENTS[id]||[]).push(ev);
+                    const rec=(DAY[id]=DAY[id]||{}), cur=rec[d]||(rec[d]={v:NaN,abs:false,present:false});
+                    if(ev.present){cur.present=true;cur.abs=false;if(Number.isFinite(v))cur.v=v;}
+                    else if(abs&&!cur.present)cur.abs=true;
+                    const c=stuC[id];if(c){cnt[c]=cnt[c]||{};cnt[c][d]=(cnt[c][d]||0)+1;}
                 });
+                Object.values(EVENTS).forEach(a=>a.sort((x,y)=>x.d.localeCompare(y.d)||(Number(x.raw.ts)||0)-(Number(y.raw.ts)||0)||x.key.localeCompare(y.key)));
+                Object.assign(R,DAY);
                 // Lịch học (tab Nội dung giảng dạy): classSchedules[lớp][thứ 0-6] = giờ học
                 const schedC = {};
                 const sched = cid => schedC[cid] || (schedC[cid] = (() => { const sc = (appData.classSchedules || {})[cid] || {}; return { has: Object.keys(sc).some(k => sc[k]), sc }; })());
@@ -13243,29 +13252,24 @@ window.openStudentProfile=function(studentId){
                     if (!st.petHatch) { st.petHatch = today; _petChanged = true; }
                     const hatch = st.petHatch, sp = st.petSp, v = PET_B[sp].v[lv], cid = st.classId, mine = R[st.id] || {};
                     const days = Object.keys(mine).filter(d => d >= hatch && isSched(cid, d)).sort(), att = days.filter(d => attended(cid, mine, d));
+                    const points=(EVENTS[st.id]||[]).filter(e=>e.d>=hatch&&!e.abs&&Number.isFinite(e.v));
+                    const weekPoints=w=>points.filter(e=>e.d>=w&&e.d<=petAdd(w,6));
                     const mates = appData.students.filter(x => x.classId === cid && x.id !== st.id);
                     const pick = a => a[Math.floor(Math.random() * a.length)];
                     // ---- Theo ngày ----
                     if (sp === 2) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:th:' + d, v[0], () => petGive(st, 'n:th:' + d, v[1], 'sét đánh trúng', 'lightning struck')));
                     if (sp === 3) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:sea:' + d, v[0], () => petGiveInv(st, 'n:sea:' + d, 'spin', Math.max(1, Math.round(v[1])), 'sóng biển mang quà', 'sea gifts')));
-                    if (sp === 4) att.filter(d => mine[d].v >= 9).forEach(d => chance(st, 'n:dr:' + d, v[0], () => petGive(st, 'n:dr:' + d, v[1], 'hơi thở rồng (điểm ≥ 9)', 'dragon breath (score 9+)')));
+                    if (sp === 4) points.filter(e=>e.v>=9).forEach(e=>chance(st,'n:dr:'+e.key,v[0],()=>petGive(st,'n:dr:'+e.key,v[1],'hơi thở rồng (điểm ≥ 9)','dragon breath (score 9+)')));
                     // ---- 10 loài mới (loài 21–30) ----
                     if (sp >= 20) {
-                        const XM = XI[st.id] || {}, MLIM = parseInt(appData.maxSpeakingLimit) || 15;
-                        // Số lần phát biểu của ô điểm (chỉ ô nhập qua số lần phát biểu; bỏ qua ô vắng và ô sửa tay)
-                        const spk = d => { const o = XM[d]; return (o && !o.absent && !o.manual && o.speakingCount !== undefined && Number.isFinite(Number(o.speakingCount))) ? Number(o.speakingCount) : null; };
-                        // 🦚 Khổng Tước: điểm dư phát biểu đúng bằng 0 (phát biểu đúng bằng mốc M)
-                        if (sp === 20) att.forEach(d => { if (spk(d) === MLIM) chance(st, 'n:pk:' + d, v[0], () => petGive(st, 'n:pk:' + d, v[1], 'vũ điệu phúc lộc (đủ mốc, dư 0)', 'fortune dance (target hit, surplus 0)')); });
-                        // 🐍 Xà Vương: mỗi buổi vắng được ghi nhận
-                        if (sp === 23) days.filter(d => mine[d].abs).forEach(d => chance(st, 'n:sn:' + d, v[0], () => petGiveInv(st, 'n:sn:' + d, 'chg8', 1, 'thủy triều hóa giải buổi vắng', 'the tide soothes an absence')));
-                        // 🦁 Sư Tử: cột Kiểm Tra đạt từ 9 trở lên
-                        if (sp === 24) att.filter(d => XM[d] && XM[d].isExam && mine[d].v >= 9 - 1e-9).forEach(d => chance(st, 'n:li:' + d, v[0], () => petGiveInv(st, 'n:li:' + d, 'add10', 1, 'long uy điểm mười (kiểm tra ≥ 9)', 'lion majesty (test 9+)')));
-                        // 🦉 Cú Tuyết: mỗi điểm 10 được ghi nhận (trừ cột Kiểm Tra) → chance nhận quà "Đổi một điểm có sẵn thành 9"; không xét cuối tuần
-                        if (sp === 22) att.filter(d => Number.isFinite(mine[d].v) && mine[d].v >= 10 - 1e-9 && !(XM[d] && XM[d].isExam)).forEach(d => chance(st, 'n:ow10d:' + d, v[0], () => petGiveInv(st, 'n:ow10d:' + d, 'chg9', 1, 'thiên khải hoàn mỹ (ghi nhận điểm 10)', 'perfect revelation (a score of 10 recorded)')));
-                        // 🦎 Thằn Lằn: nhận một cột điểm dưới 5
-                        if (sp === 25) att.filter(d => mine[d].v < 5).forEach(d => chance(st, 'n:ge:' + d, v[0], () => petGive(st, 'n:ge:' + d, v[1], 'niết bàn phúc lộc (điểm dưới 5)', 'nirvana blessing (score under 5)')));
-                        // 🕷️ Nhện Pha Lê: điểm dư phát biểu đúng bằng 1 → khuếch đại ×k
-                        if (sp === 26) att.forEach(d => { if (spk(d) === MLIM + 1) chance(st, 'n:sp:' + d, v[0], () => petGive(st, 'n:sp:' + d, v[1], `tinh thể khuếch đại ×${v[1]}`, `crystal amplified ×${v[1]}`)); });
+                        const MLIM = parseInt(appData.maxSpeakingLimit) || 15;
+                        const spk=e=>(!e.raw.manual&&e.raw.speakingCount!==undefined&&Number.isFinite(Number(e.raw.speakingCount)))?Number(e.raw.speakingCount):null;
+                        if(sp===20)points.filter(e=>spk(e)===MLIM).forEach(e=>chance(st,'n:pk:'+e.key,v[0],()=>petGive(st,'n:pk:'+e.key,v[1],'vũ điệu phúc lộc (đủ mốc, dư 0)','fortune dance (target hit, surplus 0)')));
+                        if(sp===23)days.filter(d=>mine[d].abs).forEach(d=>chance(st,'n:sn:'+d,v[0],()=>petGiveInv(st,'n:sn:'+d,'chg8',1,'thủy triều hóa giải buổi vắng','the tide soothes an absence')));
+                        if(sp===24)points.filter(e=>e.raw.isExam&&e.v>=9-1e-9).forEach(e=>chance(st,'n:li:'+e.key,v[0],()=>petGiveInv(st,'n:li:'+e.key,'add10',1,'long uy điểm mười (kiểm tra ≥ 9)','lion majesty (test 9+)')));
+                        if(sp===22)points.filter(e=>e.v>=10-1e-9&&!e.raw.isExam).forEach(e=>chance(st,'n:ow10d:'+e.key,v[0],()=>petGiveInv(st,'n:ow10d:'+e.key,'chg9',1,'thiên khải hoàn mỹ (ghi nhận điểm 10)','perfect revelation (a score of 10 recorded)')));
+                        if(sp===25)points.filter(e=>e.v<5).forEach(e=>chance(st,'n:ge:'+e.key,v[0],()=>petGive(st,'n:ge:'+e.key,v[1],'niết bàn phúc lộc (điểm dưới 5)','nirvana blessing (score under 5)')));
+                        if(sp===26)points.filter(e=>spk(e)===MLIM+1).forEach(e=>chance(st,'n:sp:'+e.key,v[0],()=>petGive(st,'n:sp:'+e.key,v[1],`tinh thể khuếch đại ×${v[1]}`,`crystal amplified ×${v[1]}`)));
                         // 🐒 Linh Hầu: Cấp độ (XP/50) tăng thêm 1 — mỗi cấp chỉ được tung xác suất một lần
                         if (sp === 27) {
                             const lvNow = Math.floor(xpOf(st.id) / XP_PER_LEVEL) + 1, seenL = Number(st.petLvSeen);
@@ -13276,7 +13280,7 @@ window.openStudentProfile=function(studentId){
                             }
                         }
                         // 🦇 Dơi Lôi Quang: hai điểm 9 (từ 9 đến dưới 10) liên tiếp
-                        if (sp === 28) { let run = 0; att.forEach(d => { const x = mine[d].v; if (x >= 9 - 1e-9 && x < 10 - 1e-9) { if (++run === 2) { run = 0; chance(st, 'n:ba:' + d, v[0], () => petGive(st, 'n:ba:' + d, v[1], 'lôi quang liên kết (hai điểm 9 liên tiếp)', 'linked lightning (two 9s in a row)')); } } else run = 0; }); }
+                        if (sp === 28) { let run=0;points.forEach(e=>{if(e.v>=9-1e-9&&e.v<10-1e-9){if(++run===2){run=0;chance(st,'n:ba:'+e.key,v[0],()=>petGive(st,'n:ba:'+e.key,v[1],'lôi quang liên kết (hai điểm 9 liên tiếp)','linked lightning (two 9s in a row)'));}}else run=0;});}
                         // 🐋 Cá Voi: điểm trung bình giảm so với lần ghi nhận trước (tối đa 1 lần tung xác suất/ngày)
                         if (sp === 29) {
                             const s = statsOf(st.id);
@@ -13291,8 +13295,8 @@ window.openStudentProfile=function(studentId){
                         }
                     }
                     // ---- Chuỗi điểm / tháng ----
-                    if (sp === 13) { let run = 0, n = 0; att.forEach(d => { if (mine[d].v >= 10) { if (++run === 3) { run = 0; n++; petGive(st, 'n:bu:' + n, v[0], 'combo 3 điểm 10', 'three-10 combo'); } } else run = 0; }); }
-                    if (sp === 9) { const cap = Math.max(1, Math.round(v[1])), cn = {}; let low = false; att.forEach(d => { const x = mine[d].v; if (x < 9) low = true; else if (low) { low = false; if (d < P.heFrom) return; const wk = petMon(d), n = cn[wk] = (cn[wk] || 0) + 1; if (n <= cap) petGive(st, 'n:he:' + wk + ':' + n, v[0], 'hồi phục sau điểm thấp', 'comeback'); } }); }
+                    if (sp === 13) {let run=0;points.forEach(e=>{if(e.v>=10-1e-9){if(++run===3){run=0;petGive(st,'n:bu:'+e.key,v[0],'combo 3 điểm 10','three-10 combo');}}else run=0;});}
+                    if(sp===9){const cap=Math.max(1,Math.round(v[1])),cn={};let low=false;points.forEach(e=>{if(e.v<9)low=true;else if(low){low=false;if(e.d<P.heFrom)return;const wk=petMon(e.d),n=cn[wk]=(cn[wk]||0)+1;if(n<=cap)petGive(st,'n:he:'+e.key,v[0],'hồi phục sau điểm thấp','comeback');}});}
                     // ---- Rùa: cứ 3 buổi học theo lịch liên tiếp không vắng ----
                     if (sp === 16) {
                         let run = 0, n = 0;
@@ -13330,11 +13334,7 @@ window.openStudentProfile=function(studentId){
                         if (sp === 14) chance(st, 'n:wo:' + w, v[0], () => petGiveInv(st, 'n:wo:' + w, 'del', 1, 'hộ vệ bầy đàn', 'pack guardian'));
                         if (sp === 12) {
                             // Xếp hạng bằng các điểm hợp lệ của chính tuần này, không dùng ĐTB toàn kỳ.
-                            const weeklyAvg = x => {
-                                const rec = R[x.id] || {}, vals = [];
-                                for (let i = 0; i < 7; i++) { const d = petAdd(w, i); if (d >= hatch && rec[d] && !rec[d].abs && Number.isFinite(rec[d].v)) vals.push(rec[d].v); }
-                                return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
-                            };
+                            const weeklyAvg=x=>{const vals=(EVENTS[x.id]||[]).filter(e=>e.d>=w&&e.d<=petAdd(w,6)&&e.d>=hatch&&!e.abs&&Number.isFinite(e.v)).map(e=>e.v);return vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null;};
                             const arr = appData.students.filter(x => x.classId === cid).map(x => ({ id: x.id, a: weeklyAvg(x) })).filter(x => x.a !== null);
                             const me = arr.find(x => x.id === st.id);
                             chance(st, 'n:dk:' + w, v[0], () => petGive(st, 'n:dk:' + w, v[1], 'quà dâu tây (top 4)', 'berry gift (top 4)'), !!me && arr.filter(x => x.a > me.a + 1e-9).length < 4);
@@ -13347,9 +13347,9 @@ window.openStudentProfile=function(studentId){
                             for (let i = 0; i < 7; i++) { const d = petAdd(w, i); if (d >= hatch && d <= wEnd && isSched(cid, d)) scheduled.push(d); }
                             const weekFinished = wEnd < today || (wEnd === today && lastOk);
                             const complete = scheduled.length > 0 && scheduled.every(d => !!mine[d]);
-                            const scores = scheduled.filter(d => mine[d] && !mine[d].abs && Number.isFinite(mine[d].v)).map(d => mine[d].v);
-                            const hasAbsence = scheduled.some(d => mine[d] && mine[d].abs);
-                            if (weekFinished && complete && !hasAbsence && scores.length === scheduled.length && scores.every(x => x >= 9)) owSeq.push({ w, mk: wi.last.slice(0, 7) });
+                            const scores=weekPoints(w).map(e=>e.v);
+                            const hasAbsence=scheduled.some(d=>mine[d]&&mine[d].abs);
+                            if(weekFinished&&complete&&!hasAbsence&&scheduled.every(d=>attended(cid,mine,d))&&scores.length>0&&scores.every(x=>x>=9))owSeq.push({w,mk:wi.last.slice(0,7)});
                         }
                     }
                     if (sp === 11) { const cm = {}; owSeq.forEach(o => { const n = cm[o.mk] = (cm[o.mk] || 0) + 1; if (n <= 4) petGive(st, 'n:ow:' + o.w, v[1], 'tuần học giỏi', 'clean week'); if (n === 4 && v[0] > 0) petGive(st, 'n:ow4:' + o.mk, v[0], 'đủ 4 tuần học giỏi', '4 clean weeks'); }); }
