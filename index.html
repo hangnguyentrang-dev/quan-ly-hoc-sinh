@@ -2700,6 +2700,31 @@ html.mx-dark #viewPetContainer .text-slate-800{color:#f1f5f9}
 #petBP .pc-rs:hover{transform:translateY(-1px);background:#fef3c7}
 @keyframes pcPop{0%{transform:scale(1)}40%{transform:scale(1.4);color:#7c3aed}100%{transform:scale(1)}}
 #petBP .pc-pop{animation:pcPop .35s ease-out}
+/* ===== Kho trứng: danh sách tóm tắt (đã lưu) + khu chỉnh sửa trượt xuống ===== */
+#petBP .pc-sum{list-style:none;margin:.6rem 0 0;padding:0;display:grid;gap:.35rem}
+#petBP .pc-sli{display:grid;grid-template-columns:auto 1fr;gap:.2rem .6rem;align-items:start;background:#fff;border:1px solid #ddd6fe;border-radius:.65rem;padding:.4rem .6rem}
+#petBP .pc-lv{font-size:10px;font-weight:900;color:#5b21b6;background:#ede9fe;border-radius:9999px;padding:2px 9px;white-space:nowrap;margin-top:1px}
+#petBP .pc-tx{font-size:11.5px;color:#334155;line-height:1.45}
+@media(max-width:480px){#petBP .pc-sli{grid-template-columns:1fr}}
+#petBP .pc-edit-btn{display:inline-flex;align-items:center;gap:.35rem;font-size:11px;font-weight:900;color:#4338ca;background:#fff;border:1px solid #c7d2fe;border-radius:.6rem;padding:.4rem .75rem;cursor:pointer;transition:transform .15s ease,background .15s ease,color .15s ease,border-color .15s ease}
+#petBP .pc-edit-btn:hover{background:#eef2ff;transform:translateY(-1px)}
+#petBP .pc-edit-btn.on{background:linear-gradient(100deg,#6d28d9,#4f46e5);color:#fff;border-color:#6d28d9}
+#petBP .pc-chev{font-size:9px;transition:transform .25s ease}
+#petBP .pc-edit-btn.on .pc-chev{transform:rotate(180deg)}
+#petBP .pc-unsaved{font-size:10px;font-weight:800;color:#b45309;background:#fffbeb;border:1px solid #fcd34d;border-radius:9999px;padding:2px 9px;white-space:nowrap}
+#petBP .pc-edit{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .32s ease,opacity .25s ease}
+#petBP .pc-edit.open{grid-template-rows:1fr;opacity:1}
+#petBP .pc-edit-in{min-height:0;overflow:hidden;visibility:hidden;transition:visibility 0s linear .32s}
+#petBP .pc-edit.open .pc-edit-in{visibility:visible;transition-delay:0s}
+#petBP .pc-edit-pad{margin-top:.6rem;padding:.6rem;border:1px dashed #a78bfa;border-radius:.75rem;background:rgba(255,255,255,.55)}
+#petBP .pc-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem}
+#petBP .pc-foot{display:flex;justify-content:flex-end;margin-top:.6rem}
+html.mx-dark #petBP .pc-sli{background:#1e1b4b;border-color:#4c1d95}
+html.mx-dark #petBP .pc-tx{color:#e2e8f0}
+html.mx-dark #petBP .pc-lv{background:#4c1d95;color:#ede9fe}
+html.mx-dark #petBP .pc-edit-btn:not(.on){background:#1e1b4b;color:#c7d2fe;border-color:#4c1d95}
+html.mx-dark #petBP .pc-edit-pad{background:rgba(30,27,75,.5);border-color:#6d28d9}
+@media (prefers-reduced-motion:reduce){#petBP .pc-edit,#petBP .pc-edit-in,#petBP .pc-chev,#petBP .pc-edit-btn{transition:none!important}}
 @media (prefers-reduced-motion:reduce){#petBP .pc-row,#petBP .pc-b,#petBP .pc-rs,#petBP .pc-pop{animation:none!important;transition:none!important}}
 </style>
 <style id="patch-pet-unique">
@@ -12826,26 +12851,36 @@ window.openStudentProfile=function(studentId){
         let _petCfgT = 0;
         // Snapshot of the last successfully saved values per species; yellow marks unsaved edits only.
         const _petCfgSaved = Object.create(null);
+        // Trạng thái mở/đóng khu chỉnh sửa theo từng loài (mặc định đóng)
+        const _petEditOpen = Object.create(null);
+        window.petCfgToggle = sp => {
+            const w = document.getElementById('petBP'); if (!w) return;
+            const open = !_petEditOpen[sp]; _petEditOpen[sp] = open;
+            const ed = w.querySelector('.pc-edit'), bt = w.querySelector('.pc-edit-btn');
+            if (ed) ed.classList.toggle('open', open);
+            if (bt) {
+                bt.classList.toggle('on', open); bt.setAttribute('aria-expanded', open ? 'true' : 'false');
+                const t = bt.querySelector('.pc-eb-t'); if (t) t.textContent = open ? L2('Thu gọn', 'Collapse') : L2('Chỉnh sửa', 'Edit');
+            }
+        };
         const petCfgSnapshot = sp => JSON.stringify(PET_B[sp] ? PET_B[sp].v : []);
         const petCfgSaveSoon = () => { clearTimeout(_petCfgT); };
         window.petCfgSaveNow = async () => {
             if (petCfgRO() || !appData) return;
             clearTimeout(_petCfgT);
-            const btn = document.querySelector('#petBP .pc-save');
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i>' + L2('Đang lưu…', 'Saving…'); }
+            document.querySelectorAll('#petBP .pc-save').forEach(btn => { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i>' + L2('Đang lưu…', 'Saving…'); });
             try {
                 await Promise.resolve(saveData());
                 petApplyCfg();
-                const spMatch = document.querySelector('#petBP [data-pk]');
-                const savedSp = spMatch ? Number(spMatch.dataset.pk.split('-')[0]) : null;
+                const bpEl = document.getElementById('petBP');
+                const savedSp = bpEl && bpEl.dataset.sp !== undefined ? Number(bpEl.dataset.sp) : null;
                 if (savedSp !== null && Number.isFinite(savedSp)) _petCfgSaved[savedSp] = petCfgSnapshot(savedSp);
                 if (savedSp !== null && Number.isFinite(savedSp)) petCfgRefresh(savedSp);
                 if (window.showAppToast) window.showAppToast(L2('Đã lưu thông số nội tại.', 'Innate settings saved.'), 'success');
             } catch (e) {
                 if (window.showAppToast) window.showAppToast(L2('Lưu chưa thành công. Vui lòng thử lại.', 'Save failed. Please try again.'), 'error');
             } finally {
-                const b = document.querySelector('#petBP .pc-save');
-                if (b) { b.disabled = false; b.innerHTML = '<i class="fa-solid fa-floppy-disk mr-1"></i>' + L2('Lưu thông số', 'Save settings'); }
+                document.querySelectorAll('#petBP .pc-save').forEach(b => { b.disabled = false; b.innerHTML = '<i class="fa-solid fa-floppy-disk mr-1"></i>' + L2('Lưu thông số', 'Save settings'); });
             }
         };
         const petCfgRefresh = (sp, pop) => {
@@ -12905,7 +12940,13 @@ window.openStudentProfile=function(studentId){
             }).join('');
             const rsAll = !ro ? `<button type="button" class="pc-rs" onclick="petCfgReset(${sp},-1)">↺ ${L2('Đặt lại tất cả', 'Reset all')}</button>` : '';
             const saveBtn = !ro ? `<button type="button" class="pc-save" onclick="petCfgSaveNow()"><i class="fa-solid fa-floppy-disk mr-1"></i>${L2('Lưu thông số', 'Save settings')}</button>` : '';
-            return `<div id="petBP" class="mt-3 rounded-xl bg-violet-50 border border-violet-200 p-3"><div class="flex flex-wrap items-center justify-between gap-2"><div class="font-black text-violet-800 text-sm">${b.ic} ${escapeHtml(b.n[w])} — ${L2('nội tại ban phúc (mở khi nở ở streak 5)', 'innate blessing (unlocks on hatching at streak 5)')}</div><div class="flex flex-wrap items-center gap-2">${rsAll}${saveBtn}</div></div><div class="text-[10px] text-slate-500 mt-1">⚙️ ${L2('Dùng nút − / + hoặc nhập số để chỉnh thông số từng cấp. Áp dụng cho mọi thú cùng loài, tính cho phúc lành phát sinh sau khi chỉnh.', 'Use − / + or type a number to tune each level. Applies to every pet of this species, for blessings earned after the change.')}</div><div class="grid gap-2 mt-2">${rows}</div></div>`;
+            const open = !ro && !!_petEditOpen[sp];
+            // Tóm tắt: luôn hiển thị thông số ĐÃ LƯU (chỉ đổi sau khi bấm Lưu thông số)
+            const summary = PET_LV.map((m, li) => `<li class="pc-sli"><span class="pc-lv">${L2('Cấp', 'Lv')} ${li + 1} · streak ${m}</span><span class="pc-tx">${escapeHtml(petFmt(b.t[w], savedRows[li] || b.v[li]))}</span></li>`).join('');
+            const editBtn = !ro ? `<button type="button" class="pc-edit-btn ${open ? 'on' : ''}" aria-expanded="${open ? 'true' : 'false'}" aria-controls="petBPEdit" onclick="petCfgToggle(${sp})"><i class="fa-solid fa-pen-to-square"></i><span class="pc-eb-t">${open ? L2('Thu gọn', 'Collapse') : L2('Chỉnh sửa', 'Edit')}</span><i class="fa-solid fa-chevron-down pc-chev"></i></button>` : '';
+            const unsaved = anyDirty && !ro ? `<span class="pc-unsaved">● ${L2('Có thay đổi chưa lưu', 'Unsaved changes')}</span>` : '';
+            const editor = ro ? '' : `<div id="petBPEdit" class="pc-edit ${open ? 'open' : ''}"><div class="pc-edit-in"><div class="pc-edit-pad"><div class="pc-bar"><div class="text-[10px] text-slate-500 flex-1" style="min-width:200px">⚙️ ${L2('Dùng nút − / + hoặc nhập số để chỉnh thông số từng cấp. Áp dụng cho mọi thú cùng loài, tính cho phúc lành phát sinh sau khi chỉnh. Phần tóm tắt phía trên sẽ cập nhật sau khi bấm Lưu thông số.', 'Use − / + or type a number to tune each level. Applies to every pet of this species, for blessings earned after the change. The summary above updates after you press Save settings.')}</div><div class="flex flex-wrap items-center gap-2">${rsAll}${saveBtn}</div></div><div class="grid gap-2 mt-2">${rows}</div><div class="pc-foot">${saveBtn}</div></div></div></div>`;
+            return `<div id="petBP" data-sp="${sp}" class="mt-3 rounded-xl bg-violet-50 border border-violet-200 p-3"><div class="flex flex-wrap items-center justify-between gap-2"><div class="font-black text-violet-800 text-sm">${b.ic} ${escapeHtml(b.n[w])} — ${L2('nội tại ban phúc (mở khi nở ở streak 5)', 'innate blessing (unlocks on hatching at streak 5)')}</div><div class="flex flex-wrap items-center gap-2">${unsaved}${editBtn}</div></div><ul class="pc-sum">${summary}</ul>${editor}</div>`;
         };
         const petLogHtml = () => {
             const P = appData.petBless, log = (P && P.log || []).filter(e => { const s = (appData.students || []).find(x => x.id === e.sid); return s && s.classId === appData.activeClassId; }).slice(-12).reverse();
