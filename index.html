@@ -2620,6 +2620,11 @@ html.mx-dark #viewPetContainer .text-slate-800{color:#f1f5f9}
 @keyframes p3Pulse{0%,100%{opacity:.65}50%{opacity:1}}
 @keyframes p3Glow{0%,100%{filter:drop-shadow(0 0 5px rgba(250,204,21,.8))}50%{filter:drop-shadow(0 0 13px rgba(250,204,21,1))}}
 @keyframes p3Float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes p3Fan{0%,100%{transform:scale(1) rotate(-1.5deg)}50%{transform:scale(1.045) rotate(1.5deg)}}
+@keyframes p3Spout{0%,100%{opacity:.45;transform:translateY(1.5px) scaleY(.85)}50%{opacity:1;transform:translateY(-1.5px) scaleY(1.08)}}
+.p3-fan{transform-origin:50px 70px;animation:p3Fan 3.4s ease-in-out infinite}
+.p3-sun{transform-origin:50px 44px;animation:p3Spin 26s linear infinite}
+.p3-spout{transform-origin:50px 24px;animation:p3Spout 2s ease-in-out infinite}
 @keyframes petTwinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(90deg)}}
 @keyframes petEvoPop{0%{transform:scale(.55);filter:brightness(2.4)}55%{transform:scale(1.28);filter:brightness(1.6)}100%{transform:scale(1);filter:brightness(1)}}
 .pet-art,.pet-art.egg,.pet-art.mon,.pet-art.egg.cr{animation:none!important;background:none!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important;position:relative;width:168px;height:168px;margin:0 auto;display:block;cursor:pointer}
@@ -2696,6 +2701,18 @@ html.mx-dark #viewPetContainer .text-slate-800{color:#f1f5f9}
 @keyframes pcPop{0%{transform:scale(1)}40%{transform:scale(1.4);color:#7c3aed}100%{transform:scale(1)}}
 #petBP .pc-pop{animation:pcPop .35s ease-out}
 @media (prefers-reduced-motion:reduce){#petBP .pc-row,#petBP .pc-b,#petBP .pc-rs,#petBP .pc-pop{animation:none!important;transition:none!important}}
+</style>
+<style id="patch-pet-unique">
+.pet-sp.taken{filter:grayscale(.9) brightness(.55);opacity:.7;position:relative;transition:filter .25s,opacity .25s}
+.pet-sp.taken:hover{filter:grayscale(.6) brightness(.7);opacity:.85}
+.pet-sp.taken.on{outline:2px dashed #94a3b8}
+.pet-owner{margin-top:2px;font-size:9px;font-weight:800;color:#475569;background:rgba(148,163,184,.25);border-radius:999px;padding:1px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.pet-sp:not(.taken) .pet-owner{color:#047857;background:rgba(16,185,129,.18)}
+.pet-tabbtn.pet-chosen{background:linear-gradient(135deg,#64748b,#475569);color:#fff;border-color:#475569}
+.pet-who{transition:transform .15s,box-shadow .15s}.pet-who:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(124,58,237,.3)}
+html.mx-dark .pet-owner{color:#e2e8f0;background:rgba(148,163,184,.3)}
+html.mx-dark .pet-sp:not(.taken) .pet-owner{color:#6ee7b7;background:rgba(16,185,129,.25)}
+@media (prefers-reduced-motion:reduce){.pet-sp.taken,.pet-who{transition:none}}
 </style>
 <style id="patch-pet-bless-claim">
 /* Chúc phúc thú cưng: thẻ chuyển vàng, thú nhảy múa, bấm để nhận */
@@ -12333,19 +12350,24 @@ window.openStudentProfile=function(studentId){
         }
 
 
-        /* ===================== PET: Thú cưng (20 loài · 8 dạng · tiến hoá theo mốc streak 10) ===================== */
+        /* ===================== PET: Thú cưng (30 loài · 8 dạng · tiến hoá theo mốc streak 10) ===================== */
         const PET_MS = [0, 1, 5, 10, 15, 20, 30, 40, 50];
         const PET_SP = [
             ['Mèo Lửa','Flame Cat','#fb923c','#fde047','tri','curl'], ['Cún Mây','Cloud Pup','#93c5fd','#ffffff','floppy','fluff'],
-            ['Chim Sấm','Thunder Bird','#facc15','#6366f1','beak','spike'], ['Cá Biển','Sea Fin','#22d3ee','#1d4ed8','fin','fish'],
-            ['Rồng Con','Baby Drake','#4ade80','#166534','horn','spike'], ['Slime Kẹo','Candy Slime','#f472b6','#fbcfe8','none','none'],
+            ['Chim Sấm','Thunder Bird','#facc15','#6366f1','beak','spike'], ['Cá Mập','Reef Shark','#7ea3c8','#e0f2fe','shark','shark'],
+            ['Rồng Con','Baby Drake','#4ade80','#166534','drake','drake'], ['Slime Kẹo','Candy Slime','#f472b6','#fbcfe8','none','none'],
             ['Thỏ Trăng','Moon Bunny','#e9d5ff','#a78bfa','long','fluff'], ['Gấu Mật','Honey Bear','#d6a77a','#fde68a','round','fluff'],
-            ['Cáo Tuyết','Snow Fox','#e2e8f0','#38bdf8','tri','fluff'], ['Nhím Lá','Leaf Hog','#86efac','#65a30d','leaf','spike'],
-            ['Ếch Ngọc','Jade Frog','#34d399','#065f46','round','none'], ['Cú Sao','Star Owl','#a78bfa','#fde047','tuft','none'],
-            ['Khủng Long Dâu','Berry Dino','#fb7185','#be123c','horn','curl'], ['Bướm Cầu Vồng','Rainbow Moth','#f0abfc','#22d3ee','ant','none'],
+            ['Cáo Tuyết','Snow Fox','#e2e8f0','#38bdf8','fox','fox'], ['Nhím Lá','Leaf Hog','#86efac','#65a30d','leaf','spike'],
+            ['Ếch Ngọc','Jade Frog','#34d399','#065f46','round','none'], ['Hươu Sao','Star Deer','#c98a52','#fff7e6','deer','none'],
+            ['Khủng Long Dâu','Berry Dino','#fb7185','#be123c','none','trex'], ['Bướm Cầu Vồng','Rainbow Moth','#f0abfc','#22d3ee','ant','none'],
             ['Sói Đêm','Night Wolf','#64748b','#a5b4fc','tri','fluff'], ['Panda Nhỏ','Mini Panda','#f8fafc','#1e293b','round','none'],
             ['Rùa Đá','Stone Turtle','#a8a29e','#65a30d','none','none'], ['Kỳ Lân','Unicorn','#fbcfe8','#c084fc','horn1','fluff'],
-            ['Phượng Hoàng','Phoenix','#ef4444','#fbbf24','beak','spike'], ['Mực Sao','Star Squid','#818cf8','#f0abfc','none','tent']
+            ['Phượng Hoàng','Phoenix','#ef4444','#fbbf24','beak','spike'], ['Mực Sao','Star Squid','#818cf8','#f0abfc','none','tent'],
+            ['Khổng Tước Ngũ Sắc','Five-Color Peacock','#0d9488','#fbbf24','ant','none'], ['Quạ Kho Báu','Treasure Crow','#334155','#fbbf24','none','spike'],
+            ['Cú Tuyết Trí Tuệ','Wisdom Snow Owl','#f1f5f9','#7dd3fc','none','none'], ['Xà Vương Thủy Triều','Tide Serpent King','#0891b2','#fde047','none','none'],
+            ['Sư Tử Mặt Trời','Sun Lion','#fbbf24','#ea580c','round','lion'], ['Thằn Lằn Niết Bàn','Nirvana Gecko','#5eead4','#f472b6','none','curl'],
+            ['Nhện Pha Lê','Crystal Spider','#a5f3fc','#c084fc','none','none'], ['Linh Hầu Thời Khắc','Chrono Monkey','#b45309','#fde68a','mon','mcurl'],
+            ['Dơi Lôi Quang','Thunder Bat','#5b21b6','#facc15','bat','none'], ['Cá Voi Sinh Mệnh','Lifeblood Whale','#3b82f6','#a7f3d0','none','fluke']
         ];
         const PET_FORM_VI = ['Trứng','Sơ sinh','Nhí','Thiếu niên','Trưởng thành','Dũng sĩ','Huyền thoại','Thần thú'];
         const PET_FORM_EN = ['Egg','Hatchling','Kiddo','Teen','Adult','Warrior','Legend','Mythic'];
@@ -12367,18 +12389,26 @@ window.openStudentProfile=function(studentId){
             const lg = (id, a, b, x2 = 1, y2 = 0) => `<linearGradient id="${id}" x1="0" y1="0" x2="${x2}" y2="${y2}"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`;
             const mir = s => `<g transform="translate(100 0) scale(-1 1)">${s}</g>`;
             const pair = s => `<g class="p3-ear">${s}${mir(s)}</g>`;
-            const IRIS = ['#7c2d12', '#1d4ed8', '#312e81', '#0e7490', '#14532d', '#9d174d', '#5b21b6', '#451a03', '#0369a1', '#422006', '#064e3b', '#4c1d95', '#4a044e', '#7e22ce', '#1e1b4b', '#0f172a', '#3f3f46', '#7e22ce', '#7c2d12', '#4c1d95'];
-            const WN = { 2: 'f', 4: 'b', 11: 'f', 13: 'u', 17: 'f', 18: 'f' };
+            const IRIS = ['#7c2d12', '#1d4ed8', '#312e81', '#0e7490', '#14532d', '#9d174d', '#5b21b6', '#451a03', '#0369a1', '#422006', '#064e3b', '#422006', '#4a044e', '#7e22ce', '#1e1b4b', '#0f172a', '#3f3f46', '#7e22ce', '#7c2d12', '#4c1d95', '#0e7490', '#92400e', '#0369a1', '#a16207', '#7c2d12', '#9d174d', '#6d28d9', '#451a03', '#9f1239', '#1e3a8a'];
+            const WN = { 2: 'f', 4: 'b', 13: 'u', 17: 'f', 18: 'f', 20: 'f', 21: 'f', 22: 'f', 28: 'b' };
             const WP = { f: 'M64 56C75 36 91 36 99 20C99 40 93 52 85 58C93 58 95 63 88 69C80 66 72 67 64 65Z', b: 'M64 54L82 26L84 40L95 33L91 48L100 50L87 58L91 69L74 62L64 66Z', u: 'M62 52C68 20 99 14 99 38C99 52 80 58 62 58ZM62 61C78 58 94 66 89 80C84 91 68 83 62 69Z' };
             const TL = {
+                shark: 'M66 82C76 78 82 68 87 48C91 62 95 72 99 76C91 77 89 84 95 92C80 91 72 88 66 85Z',
+                drake: 'M66 76C84 82 98 72 92 58L98 55L91 46L84 54C88 64 80 70 66 69Z',
+                trex: 'M66 68C86 70 99 80 98 91C90 91 82 86 66 82Z',
+                fox: 'M66 78C92 92 106 62 90 36C82 33 78 40 81 47C86 59 78 67 66 69Z',
                 curl: 'M66 74C87 76 95 58 84 45C87 58 79 66 66 67Z', fluff: 'M64 78C93 90 103 52 84 35C81 52 75 58 64 66Z',
-                spike: 'M66 77L89 75L83 69L95 63L81 62L85 52L66 65Z', fish: 'M66 74C80 85 95 80 97 65C91 70 86 62 93 51C80 56 72 60 66 66Z'
+                spike: 'M66 77L89 75L83 69L95 63L81 62L85 52L66 65Z', fish: 'M66 74C80 85 95 80 97 65C91 70 86 62 93 51C80 56 72 60 66 66Z',
+                mcurl: 'M66 77C93 82 102 58 87 45C80 40 73 46 79 51C86 56 82 68 66 70Z', lion: 'M66 79C82 83 94 71 91 55L87 56C89 68 80 75 66 73ZM91 55C84 53 83 45 88 41C92 45 96 47 98 53C96 59 93 59 91 55Z',
+                fluke: 'M66 78C76 72 86 62 90 49C95 59 95 71 88 79C93 77 98 79 100 84C94 92 80 91 66 85Z'
             };
             const SPX = {
-                5: { slime: 1 }, 7: { muz: '#f3dcae' }, 9: { skin: '#e8bf94', bel: '#f6e3c8', spk: 1 }, 10: { frog: 1, h: [27, 21, 47] }, 11: { owl: 1 }, 12: { dino: 1 },
+                5: { slime: 1 }, 7: { muz: '#f3dcae' }, 9: { skin: '#e8bf94', bel: '#f6e3c8', spk: 1 }, 10: { frog: 1, h: [27, 21, 47] }, 11: { deer: 1 }, 3: { shark: 1, bel: '#f8fafc', es: .8 }, 4: { drake: 1, bel: '#fde68a' }, 8: { fox: 1 }, 12: { dino: 1, trex: 1, es: .85 },
+                20: { peac: 1 }, 21: { crow: 1 }, 22: { owl: 1, snow: 1, b: [25, 22], h: [27, 24, 44] }, 23: { snake: 1, h: [24, 21, 42] }, 24: { lion: 1, muz: '#fff1c2' }, 25: { frog: 1, gecko: 1, h: [27, 21, 47] },
+                26: { spider: 1 }, 27: { monkey: 1 }, 28: { bat: 1, es: .86 }, 29: { whale: 1, b: [27, 22], h: [29, 23, 45] },
                 13: { b: [14, 17], h: [19, 18, 42] }, 15: { panda: 1 }, 16: { b: [32, 22], h: [17, 15, 52], es: .74, shell: 1 }, 17: { mane: 1 }, 19: { squid: 1, h: [29, 31, 48] }
             };
-            const NOSE = [0, 1, 6, 7, 8, 9, 14, 15, 17], BEAK = [2, 11, 18];
+            const NOSE = [0, 1, 6, 7, 8, 9, 11, 14, 15, 17, 24, 27], BEAK = [2, 18, 20, 21];
             const SHADOW = id => `<radialGradient id="${id}sh"><stop offset="0" stop-color="#0b1020" stop-opacity=".4"/><stop offset="1" stop-color="#0b1020" stop-opacity="0"/></radialGradient>`;
             const AURA = (id, c) => `<radialGradient id="${id}au"><stop offset=".45" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient>`;
             const wrap = (id, defs, inner, w = 28) => `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs>${defs}${SHADOW(id)}</defs><ellipse cx="50" cy="90" rx="${w}" ry="5" fill="url(#${id}sh)"/>${inner}</svg>`;
@@ -12388,12 +12418,18 @@ window.openStudentProfile=function(studentId){
                 const tri = `<path d="M27 38L29 11L46 27Z" fill="${g}"/><path d="M31.5 33L32 19L41 27Z" fill="${F}" opacity=".85"/>`;
                 switch (k) {
                     case 'tri': return pair(tri);
+                    case 'mon': return pair(`<circle cx="24" cy="47" r="10.5" fill="${g}"/><circle cx="24" cy="47" r="6" fill="${F}" opacity=".85"/>`);
+                    case 'bat': return pair(`<path d="M31 38L21 3L47 25Z" fill="${g}"/><path d="M32 32L26 13L41 25Z" fill="${F}" opacity=".85"/>`);
                     case 'horn1': return `<g transform="translate(50 32) scale(.72) translate(-50 -32)">${pair(tri)}</g>`;
                     case 'floppy': return pair(`<path d="M30 28C13 24 10 52 19 62C28 59 33 46 33 36Z" fill="${g}"/>`);
                     case 'long': return pair(`<g transform="rotate(-9 40 30)"><ellipse cx="38" cy="10" rx="6.5" ry="19" fill="${g}"/><ellipse cx="38" cy="11" rx="3.2" ry="13" fill="${F}" opacity=".8"/></g>`);
                     case 'round': return pair(`<circle cx="29" cy="28" r="9.5" fill="${g}"/><circle cx="29" cy="28" r="5" fill="${F}" opacity=".55"/>`);
                     case 'horn': return pair(`<path d="M35 30L29 4L46 24Z" fill="${G}" stroke="#b45309" stroke-opacity=".4" stroke-width=".7"/>`);
                     case 'leaf': return pair(`<path d="M30 34C14 30 16 11 36 11C39 22 37 29 30 34Z" fill="${A}"/><path d="M30 31C26 25 28 18 33 14" stroke="${g}" fill="none" stroke-width="1.2" opacity=".55"/>`);
+                    case 'shark': return `<path d="M40 31C44 18 50 8 56 -2C59 11 63 22 64 31Z" fill="${g}"/>` + pair(`<path d="M27 54C9 47 4 61 6 67C17 65 25 61 27 57Z" fill="${g}"/>`);
+                    case 'drake': return pair(`<path d="M38 30C32 19 24 13 14 12C22 20 25 27 30 34Z" fill="#fde68a" stroke="#b45309" stroke-opacity=".55" stroke-width=".8"/><path d="M30 38C24 33 21 31 17 32C21 36 24 40 28 44Z" fill="${A}" opacity=".9"/>`);
+                    case 'fox': return pair(`<path d="M29 38L23 4L48 27Z" fill="${g}"/><path d="M31 34L27 14L41 27Z" fill="${F}" opacity=".85"/><path d="M23 4L25.6 14.5L31 10.5Z" fill="#475569"/>`);
+                    case 'deer': return pair(`<g stroke="#92400e" stroke-width="3.4" stroke-linecap="round" fill="none"><path d="M40 27C39 17 34 12 31 3"/><path d="M36.5 17C33 16 29 15 26 11"/><path d="M38.5 22C35.5 21 32.5 22 30 19"/></g><g stroke="#e9b872" stroke-width="1.7" stroke-linecap="round" fill="none"><path d="M40 27C39 17 34 12 31 3"/><path d="M36.5 17C33 16 29 15 26 11"/><path d="M38.5 22C35.5 21 32.5 22 30 19"/></g><circle cx="31" cy="3" r="2" fill="#fde047"/><g transform="rotate(-58 25 37)"><ellipse cx="25" cy="37" rx="4.8" ry="9" fill="${g}"/><ellipse cx="25" cy="38" rx="2.4" ry="6" fill="${F}" opacity=".85"/></g>`);
                     case 'tuft': return pair(`<path d="M28 33L21 7L44 24Z" fill="${A}"/>`);
                     case 'ant': return pair(`<path d="M43 26C40 15 36 9 29 6" stroke="${A}" stroke-width="1.9" fill="none" stroke-linecap="round"/><circle cx="29" cy="6" r="2.8" fill="${A}"/>`);
                     case 'fin': return `<path d="M36 28Q50 2 64 28Q50 19 36 28Z" fill="${A}"/>` + pair(`<path d="M26 46C9 38 6 60 16 64C22 60 26 54 26 46Z" fill="${A}" opacity=".92"/>`);
@@ -12419,8 +12455,13 @@ window.openStudentProfile=function(studentId){
                 const belly = X.bel || (lum(c2) > .55 ? lt(c2, .35) : lt(c1, .55)), A = u('a'), F = lt(c2, .2), G = u('g');
                 let defs = rg(id + 'b', sk) + rg(id + 'a', c2) + lg(id + 't', sk, c2) + lg(id + 'g', '#fff3b0', '#d98a06', 0, 1) + rg(id + 'e', lt(c2, .35), .35, .3, .8) + AURA(id, c2) + lg(id + 'm', '#f9a8d4', '#a78bfa', 0, 1);
                 // --- cánh ---
-                let wings = '', wk = WN[i] && f >= 3 ? WN[i] : f >= 7 ? 'f' : '';
-                if (wk) {
+                let wings = '', wk = (X.bat || (X.drake && f >= 3)) ? 'bat' : WN[i] && f >= 3 ? WN[i] : f >= 7 ? 'f' : '';
+                if (wk === 'bat') {
+                    const bs = f <= 2 ? .72 : f <= 4 ? .92 : 1.02, bT = `translate(62 58) scale(${bs}) translate(-62 -58)`, bl = dk(c1, .55);
+                    defs += lg(id + 'w', lt(c1, .12), dk(c1, .35), 0, 1);
+                    const BW = `<g class="p3-wing" ${ds}><path d="M63 58L88 28L99 44Q90 52 97 66Q87 63 86 80Q77 71 66 77Z" fill="${u('w')}" stroke="${bl}" stroke-opacity=".6" stroke-width=".9" stroke-linejoin="round"/><path d="M63 58L88 28M88 28L99 44M88 28L97 66M88 28L86 80" stroke="${bl}" stroke-opacity=".75" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="88" cy="28" r="2.1" fill="${c2}"/></g>`;
+                    wings = `<g transform="${bT}">${BW}</g>` + mir(`<g transform="${bT}">${BW}</g>`);
+                } else if (wk) {
                     const ws = (f >= 7 ? 1.06 : f >= 5 ? .96 : .82) * (wk === 'u' ? 1.12 : 1), T = `translate(62 58) scale(${ws}) translate(-62 -58)`;
                     defs += wk === 'u' ? `<linearGradient id="${id}w" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset=".45" stop-color="#67e8f9"/><stop offset=".75" stop-color="#fde047"/><stop offset="1" stop-color="${c2}"/></linearGradient>` : lg(id + 'w', WN[i] ? lt(c2, .1) : lt(c2, .55), WN[i] ? c1 : lt(c1, .3), 1, 1);
                     const W = `<g class="p3-wing" ${ds}><path d="${WP[wk]}" fill="${u('w')}" opacity="${WN[i] ? 1 : .78}" stroke="${dk(c1, .3)}" stroke-opacity=".35" stroke-width=".8"/>${wk === 'f' ? '<path d="M70 52C80 42 90 40 95 30M72 58C82 52 92 50 97 42" stroke="#fff" stroke-opacity=".5" fill="none" stroke-width="1"/>' : ''}</g>`;
@@ -12428,29 +12469,61 @@ window.openStudentProfile=function(studentId){
                 }
                 // --- đuôi & chi tiết sau lưng ---
                 let back = TL[tk] && !X.squid ? `<g class="p3-tail" ${ds}><path d="${TL[tk]}" fill="${u('t')}" stroke="${dk(c1, .35)}" stroke-opacity=".3" stroke-width=".8"/></g>` : '';
+                if (X.fox && back) back = back.replace('</g>', `<path d="M90 36C82 33 78 40 81 47C85 51 91 48 95 45C94 41 93 38 90 36Z" fill="#fff"/></g>`);
                 if (X.spk) back += `<path d="M19 64L11 44L24 48L19 28L34 38L35 17L46 33L53 14L59 33L69 19L67 39L81 29L77 50L90 45L81 65Z" fill="${A}" stroke="${dk(c2, .35)}" stroke-opacity=".5" stroke-width=".8" stroke-linejoin="round"/>`;
                 if (X.dino) back += `<path d="M60 36L69 21L74 38ZM66 47L80 37L80 54ZM69 60L84 54L82 69Z" fill="${A}" stroke="${dk(c2, .3)}" stroke-opacity=".5" stroke-width=".7"/>`;
+                // --- loài mới: phần nằm phía sau thân ---
+                if (X.peac) {
+                    const cols = ['#22d3ee', '#3b82f6', '#a855f7', '#facc15', '#4ade80', '#f472b6']; let fan = '';
+                    for (let k = 0; k < 9; k++) {
+                        const a = -78 + k * 19.5, rd = a * Math.PI / 180, cx = (50 + Math.sin(rd) * 31).toFixed(1), cy = (70 - Math.cos(rd) * 31).toFixed(1), tx = (50 + Math.sin(rd) * 47).toFixed(1), ty = (70 - Math.cos(rd) * 47).toFixed(1), col = cols[k % cols.length];
+                        fan += `<ellipse cx="${cx}" cy="${cy}" rx="6.2" ry="19" transform="rotate(${a.toFixed(1)} ${cx} ${cy})" fill="${lt(col, .15)}" stroke="${dk(col, .4)}" stroke-opacity=".5" stroke-width=".7"/><circle cx="${tx}" cy="${ty}" r="4.4" fill="${c2}"/><circle cx="${tx}" cy="${ty}" r="2.9" fill="${col}"/><circle cx="${tx}" cy="${ty}" r="1.4" fill="#312e81"/>`;
+                    }
+                    back += `<g class="p3-fan" ${ds}>${fan}</g>`;
+                }
+                if (X.snake) back += `<ellipse cx="50" cy="45" rx="35" ry="24" fill="${u('t')}" stroke="${dk(c1, .4)}" stroke-opacity=".4" stroke-width=".8"/><path d="M33 40Q50 30 67 40M35 48Q50 40 65 48" stroke="${c2}" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".8"/>`;
                 // --- thân ---
                 let bod = '';
                 if (X.slime) {
                     defs += `<radialGradient id="${id}j" cx=".35" cy=".25" r=".95"><stop offset="0" stop-color="${lt(c1, .55)}"/><stop offset=".45" stop-color="${c1}"/><stop offset=".8" stop-color="${mix(c1, '#a78bfa', .6)}"/><stop offset="1" stop-color="#6d28d9"/></radialGradient>`;
                     bod = `<g class="p3-jelly"><path d="M16 88C10 62 28 36 50 36C72 36 90 62 84 88Z" fill="${u('j')}"/><ellipse cx="33" cy="52" rx="9" ry="5.5" transform="rotate(-30 33 52)" fill="#fff" opacity=".5"/><circle cx="72" cy="72" r="2.6" fill="#fff" opacity=".4"/><circle cx="24" cy="76" r="1.8" fill="#fff" opacity=".4"/><g class="p3-bow"><ellipse cx="40" cy="36" rx="10" ry="5.8" transform="rotate(-24 40 36)" fill="#f472b6"/><ellipse cx="60" cy="36" rx="10" ry="5.8" transform="rotate(24 60 36)" fill="#f472b6"/><circle cx="50" cy="37" r="4.4" fill="#ec4899"/><ellipse cx="38" cy="34" rx="4" ry="1.6" transform="rotate(-24 38 34)" fill="#fff" opacity=".6"/></g></g>`;
+                } else if (X.snake) {
+                    const bc = u('b'), sts = lt(c2, .25);
+                    bod = `<ellipse cx="50" cy="83" rx="30" ry="9" fill="${bc}"/><ellipse cx="50" cy="84" rx="24" ry="5" fill="${belly}" opacity=".8"/><ellipse cx="50" cy="75" rx="24" ry="9" fill="${bc}"/><path d="M33 78Q50 84 67 78" stroke="${sts}" stroke-width="1.6" fill="none" opacity=".7"/><ellipse cx="50" cy="67" rx="18" ry="8.5" fill="${bc}"/><path d="M38 69Q50 75 62 69" stroke="${sts}" stroke-width="1.4" fill="none" opacity=".7"/><g class="p3-tail" ${ds}><path d="M78 83C90 84 95 76 90 70C88 74 84 76 80 76Z" fill="${bc}" stroke="${dk(c1, .35)}" stroke-opacity=".3" stroke-width=".8"/></g>`;
+                } else if (X.spider) {
+                    const lc = dk(c1, .42), lh = lt(c1, .4), lgs = ['M59 63L81 45L92 61', 'M61 69L88 57L97 77', 'M61 74L86 71L92 90', 'M59 78L77 81L79 93'];
+                    const half = lgs.map((d, k) => { const m = d.match(/M(\d+) (\d+)/); return `<g class="p3-tent" style="transform-origin:${m[1]}px ${m[2]}px;animation-delay:${(-k * .45).toFixed(2)}s"><path d="${d}" fill="none" stroke="${lc}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${lh}" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" opacity=".6"/></g>`; }).join('');
+                    bod = half + mir(half) + `<ellipse cx="50" cy="77" rx="21" ry="15" fill="${u('b')}"/><path d="M50 63L66 72L62 90H38L34 72Z" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1"/><path d="M34 72L50 79L66 72M50 79V90" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width=".9"/><ellipse cx="42" cy="70" rx="5" ry="2.6" transform="rotate(-24 42 70)" fill="#fff" opacity=".55"/>`;
                 } else if (X.squid) {
                     for (let k = 0; k < 5; k++) { const x = 30 + k * 10; bod += `<path d="M${x} 70C${x - 7} 78 ${x + 7} 82 ${x - 2} 93" stroke="${k % 2 ? c1 : mix(c1, c2, .4)}" stroke-width="6.6" fill="none" stroke-linecap="round" class="p3-tent" style="transform-origin:${x}px 70px;animation-delay:${(-k * .5).toFixed(2)}s"/>`; }
                 } else {
                     const fx = Bd[0] * .5, fc = X.panda ? c2 : u('b'), fw = X.frog ? 10 : 8;
                     bod = `<ellipse cx="${50 - fx}" cy="87" rx="${fw}" ry="4.6" fill="${fc}"/><ellipse cx="${50 + fx}" cy="87" rx="${fw}" ry="4.6" fill="${fc}"/><ellipse cx="50" cy="${by}" rx="${Bd[0]}" ry="${Bd[1]}" fill="${u('b')}"/><ellipse cx="50" cy="${by + 4}" rx="${Bd[0] * .58}" ry="${Bd[1] * .62}" fill="${belly}" opacity=".95"/>`;
                     if (X.shell) bod += `<path d="M31 63L40 55H60L69 63L60 72H40ZM40 55L35 46M60 55L65 46M40 72L37 81M60 72L63 81" stroke="${dk(c1, .5)}" stroke-width="1.5" fill="none" opacity=".7"/><ellipse cx="34" cy="58" rx="6" ry="3" fill="${c2}"/><circle cx="66" cy="76" r="3.4" fill="${c2}"/>`;
+                    if (X.whale) bod += `<path d="M36 73Q50 79 64 73M38 79Q50 84 62 79" stroke="${lt(c1, .65)}" stroke-width="1.3" fill="none" opacity=".75"/><path class="p3-gem" d="M50 79l-6.5-6.2a3.7 3.7 0 0 1 6.5-3.7a3.7 3.7 0 0 1 6.5 3.7z" fill="#34d399" stroke="#065f46" stroke-opacity=".5" stroke-width=".7"/>`;
+                    if (X.crow) bod += `<g class="p3-gem"><circle cx="50" cy="71" r="7" fill="${G}" stroke="#92400e" stroke-opacity=".6" stroke-width=".9"/><path d="M50 66l1.6 3.4 3.7.5-2.7 2.6.7 3.7-3.3-1.8-3.3 1.8.7-3.7-2.7-2.6 3.7-.5z" fill="#b45309" opacity=".75"/></g>`;
+                    if (X.shark) bod += `<g stroke="${dk(c1, .4)}" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".6"><path d="M30 58q-2.4 5 0 10M34 57q-2.4 5 0 10M38 57q-2.4 5 0 10M70 58q2.4 5 0 10M66 57q2.4 5 0 10M62 57q2.4 5 0 10"/></g>`;
+                    if (X.drake) bod += `<path d="M40 66q10 3 20 0M39 71q11 3 22 0M40 76q10 3 20 0" stroke="${dk('#fde68a', .25)}" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".75"/>`;
+                    if (X.deer) bod += `<g fill="#fff7e6" opacity=".9"><circle cx="36" cy="60" r="2"/><circle cx="48" cy="56" r="1.8"/><circle cx="62" cy="60" r="2"/><circle cx="31" cy="70" r="1.7"/><circle cx="68" cy="69" r="1.7"/><circle cx="40" cy="78" r="1.5"/><circle cx="60" cy="78" r="1.5"/></g>`;
+                    if (X.snow) bod += `<g stroke="#64748b" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".6"><path d="M38 60q4 3 8 0M54 60q4 3 8 0M34 67q4 3 8 0M46 67q4 3 8 0M58 67q4 3 8 0M40 74q4 3 8 0M52 74q4 3 8 0M46 81q4 3 8 0"/></g>`;
+                    if (X.snow) bod += `<g fill="#94a3b8" opacity=".55"><circle cx="38" cy="60" r="1.7"/><circle cx="62" cy="58" r="1.5"/><circle cx="45" cy="74" r="1.4"/><circle cx="58" cy="76" r="1.7"/><circle cx="33" cy="72" r="1.3"/><circle cx="67" cy="70" r="1.3"/></g>`;
+                    if (X.monkey) bod += `<circle cx="50" cy="70" r="8.4" fill="#fff7d6" stroke="${G}" stroke-width="2"/><path d="M50 64.8V70" stroke="#7c2d12" stroke-width="1.4" stroke-linecap="round" style="transform-origin:50px 70px;animation:p3Spin 6s linear infinite"/><path d="M50 70l3.4 2" stroke="#7c2d12" stroke-width="1.2" stroke-linecap="round" style="transform-origin:50px 70px;animation:p3Spin 72s linear infinite"/><circle cx="50" cy="70" r="1" fill="#7c2d12"/>`;
                     if (X.dino) bod += `<g fill="#fde68a" opacity=".9"><ellipse cx="40" cy="62" rx="1.4" ry="2"/><ellipse cx="60" cy="64" rx="1.4" ry="2"/><ellipse cx="34" cy="74" rx="1.4" ry="2"/><ellipse cx="66" cy="74" rx="1.4" ry="2"/><ellipse cx="50" cy="80" rx="1.4" ry="2"/></g>`;
                     if (i === 3) bod += `<path d="M38 72q4 4 8 0M46 79q4 4 8 0M54 72q4 4 8 0M34 80q4 4 8 0M58 80q4 4 8 0" stroke="${lt(c1, .6)}" stroke-width="1.2" fill="none" opacity=".7"/>`;
-                    const ax = Bd[0] + 1, ar = X.owl ? [6.5, 12, A] : [5.2, 9, X.panda ? c2 : u('b')];
+                    const ax = Bd[0] + 1, ar = X.owl ? [6.5, 12, X.snow ? '#dbe4ee' : A] : X.trex ? [3.4, 5.8, u('b')] : [5.2, 9, X.panda ? c2 : u('b')];
                     bod += `<g class="p3-armL"><ellipse cx="${50 - ax}" cy="68" rx="${ar[0]}" ry="${ar[1]}" transform="rotate(18 ${50 - ax} 68)" fill="${ar[2]}"/></g><g class="p3-armR"><ellipse cx="${50 + ax}" cy="68" rx="${ar[0]}" ry="${ar[1]}" transform="rotate(-18 ${50 + ax} 68)" fill="${ar[2]}"/></g>`;
                 }
                 // --- đầu & khuôn mặt ---
                 const ex = hrx * .38, es = (X.es || 1) * (f <= 3 ? 1.12 : 1) * (X.owl ? 1.22 : 1), my = hy + hry * .5;
-                const eye = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><ellipse rx="6.3" ry="7.3" fill="#fff"/><g class="p3-pup"><circle cx=".3" cy=".9" r="4.7" fill="${IRIS[i]}"/><circle cx=".3" cy=".9" r="2.5" fill="#0b1020"/><circle cx="-1.7" cy="-1.8" r="1.9" fill="#fff"/><circle cx="2.1" cy="2.7" r=".9" fill="#fff" opacity=".85"/></g></g>`;
+                const eye = (x, y, s) => X.snow ? `<g transform="translate(${x} ${y}) scale(${s})"><circle r="7.8" fill="#fde047" stroke="#ca8a04" stroke-width=".9"/><circle r="5.6" fill="#f59e0b" opacity=".5"/><g class="p3-pup"><circle cx=".3" cy=".7" r="4" fill="#0b1020"/><circle cx="-1.7" cy="-1.8" r="1.9" fill="#fff"/><circle cx="2.1" cy="2.5" r=".8" fill="#fff" opacity=".85"/></g><path d="M-7.4 -6.4Q0 -11.5 7.4 -6.4" stroke="#475569" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".6"/></g>` : `<g transform="translate(${x} ${y}) scale(${s})"><ellipse rx="6.3" ry="7.3" fill="#fff"/><g class="p3-pup"><circle cx=".3" cy=".9" r="4.7" fill="${IRIS[i]}"/><circle cx=".3" cy=".9" r="2.5" fill="#0b1020"/><circle cx="-1.7" cy="-1.8" r="1.9" fill="#fff"/><circle cx="2.1" cy="2.7" r=".9" fill="#fff" opacity=".85"/></g></g>`;
                 const ep = X.frog ? [[36, 30], [64, 30]] : [[50 - ex, hy + 2], [50 + ex, hy + 2]], eyes = `<g class="p3-eyes" style="transform-origin:50px ${ep[0][1]}px;animation-delay:${dl}">${eye(ep[0][0], ep[0][1], es)}${eye(ep[1][0], ep[1][1], es)}</g>`;
-                let hd = `<g class="p3-head" ${ds}>` + (X.slime || X.squid ? '' : ears(ek, X.panda ? c2 : u('b'), A, F, G));
+                let sunMane = '';
+                if (X.lion) {
+                    let rays = '';
+                    for (let k = 0; k < 14; k++) rays += `<path d="M44 ${hy - hry - 3}L50 ${hy - hry - 19}L56 ${hy - hry - 3}Z" transform="rotate(${(k * 360 / 14).toFixed(1)} 50 ${hy})" fill="${k % 2 ? c2 : mix(c2, '#fbbf24', .45)}" stroke="${dk(c2, .35)}" stroke-opacity=".45" stroke-width=".6"/>`;
+                    sunMane = `<g class="p3-sun">${rays}<circle cx="50" cy="${hy}" r="${hrx + 3}" fill="${dk(c2, .06)}"/></g>`;
+                }
+                let hd = `<g class="p3-head" ${ds}>` + sunMane + (X.slime || X.squid ? '' : ears(ek, X.panda ? c2 : u('b'), A, F, G));
                 if (X.mane) hd += `<path d="M27 36C10 44 12 74 24 84C31 72 30 56 33 46Z" fill="${u('m')}"/>` + mir(`<path d="M27 36C10 44 12 74 24 84C31 72 30 56 33 46Z" fill="${u('m')}"/>`);
                 if (X.frog) hd += `<circle cx="36" cy="30" r="10.5" fill="${u('b')}"/><circle cx="64" cy="30" r="10.5" fill="${u('b')}"/>`;
                 if (!X.slime) hd += `<ellipse cx="50" cy="${hy}" rx="${hrx}" ry="${hry}" fill="${u('b')}"/><ellipse cx="${50 - hrx * .3}" cy="${hy - hry * .55}" rx="${hrx * .34}" ry="${hry * .17}" transform="rotate(-18 ${50 - hrx * .3} ${hy - hry * .55})" fill="#fff" opacity=".38"/>`;
@@ -12460,16 +12533,32 @@ window.openStudentProfile=function(studentId){
                 if (i === 6) hd += `<path d="M50 ${hy - 19}a5 5 0 1 0 4 7a4 4 0 1 1 -4 -7Z" fill="${c2}"/>`;
                 if (i === 8) hd += `<path d="M30 ${hy + 8}L40 ${hy + 5}M70 ${hy + 8}L60 ${hy + 5}" stroke="${c2}" stroke-width="2.2" stroke-linecap="round"/>`;
                 if (X.owl) hd += `<circle cx="${50 - ex}" cy="${hy + 2}" r="11.5" fill="${lt(c2, .55)}" opacity=".9"/><circle cx="${50 + ex}" cy="${hy + 2}" r="11.5" fill="${lt(c2, .55)}" opacity=".9"/>`;
+                                if (X.snow) hd += `<circle cx="${50 - ex}" cy="${hy + 2}" r="13" fill="#fff" stroke="#cbd5e1" stroke-width=".9"/><circle cx="${50 + ex}" cy="${hy + 2}" r="13" fill="#fff" stroke="#cbd5e1" stroke-width=".9"/><path d="M50 ${hy - hry + 2}L50 ${hy - 3}" stroke="#cbd5e1" stroke-width="1" stroke-linecap="round"/>`;
                 if (X.panda) hd += `<ellipse cx="${50 - ex}" cy="${hy + 2}" rx="8" ry="10" transform="rotate(20 ${50 - ex} ${hy + 2})" fill="${c2}"/><ellipse cx="${50 + ex}" cy="${hy + 2}" rx="8" ry="10" transform="rotate(-20 ${50 + ex} ${hy + 2})" fill="${c2}"/>`;
                 if (X.muz) hd += `<ellipse cx="50" cy="${hy + 9}" rx="10.5" ry="8" fill="${X.muz}"/>`;
-                if (X.dino) hd += `<ellipse cx="50" cy="${hy + 8}" rx="13" ry="9" fill="${lt(c1, .45)}"/>`;
+                if (X.dino) hd += `<ellipse cx="50" cy="${hy + 9}" rx="17" ry="10.5" fill="${lt(c1, .45)}"/><circle cx="44" cy="${hy + 5}" r="1.2" fill="${dk(c1, .5)}"/><circle cx="56" cy="${hy + 5}" r="1.2" fill="${dk(c1, .5)}"/><path d="M36 ${hy - 6}Q42 ${hy - 10} 47 ${hy - 6}M53 ${hy - 6}Q58 ${hy - 10} 64 ${hy - 6}" stroke="${dk(c1, .45)}" stroke-width="1.8" fill="none" stroke-linecap="round"/><g fill="#22c55e" stroke="#15803d" stroke-width=".6"><ellipse cx="50" cy="${hy - hry - 2}" rx="3.6" ry="7.5"/><ellipse cx="43" cy="${hy - hry}" rx="3.2" ry="6.6" transform="rotate(-42 43 ${hy - hry})"/><ellipse cx="57" cy="${hy - hry}" rx="3.2" ry="6.6" transform="rotate(42 57 ${hy - hry})"/></g>`;
+                if (X.drake) hd += `<ellipse cx="50" cy="${hy + 9}" rx="13" ry="8.5" fill="${lt(c1, .4)}"/><circle cx="46" cy="${hy + 6.5}" r="1.3" fill="${dk(c1, .55)}"/><circle cx="54" cy="${hy + 6.5}" r="1.3" fill="${dk(c1, .55)}"/><path d="M43 ${hy - hry + 2}L45.5 ${hy - hry - 7}L48.3 ${hy - hry + 1}L50 ${hy - hry - 9}L51.7 ${hy - hry + 1}L54.5 ${hy - hry - 7}L57 ${hy - hry + 2}Z" fill="${A}" stroke="${dk(c2, .3)}" stroke-opacity=".5" stroke-width=".6"/>`;
+                if (X.fox) hd += `<path d="M25 ${hy + 3}L11 ${hy + 9}L24 ${hy + 11}L15 ${hy + 20}L30 ${hy + 17}Z" fill="#fff" stroke="${c2}" stroke-opacity=".45" stroke-width=".7" stroke-linejoin="round"/>` + mir(`<path d="M25 ${hy + 3}L11 ${hy + 9}L24 ${hy + 11}L15 ${hy + 20}L30 ${hy + 17}Z" fill="#fff" stroke="${c2}" stroke-opacity=".45" stroke-width=".7" stroke-linejoin="round"/>`) + `<path d="M40 ${hy + 4}Q50 ${hy - 2} 60 ${hy + 4}Q56 ${hy + 16} 50 ${hy + 17}Q44 ${hy + 16} 40 ${hy + 4}Z" fill="#fff" stroke="${c2}" stroke-opacity=".35" stroke-width=".6"/>`;
+                if (X.deer) hd += `<g fill="#fff7e6" opacity=".9"><circle cx="39" cy="${hy - hry + 7}" r="1.5"/><circle cx="61" cy="${hy - hry + 7}" r="1.5"/><circle cx="50" cy="${hy - hry + 4}" r="1.3"/></g><path class="p3-gem" d="M50 ${hy - hry + 8}l1.7 3.5 3.8.5-2.8 2.6.7 3.8-3.4-1.9-3.4 1.9.7-3.8-2.8-2.6 3.8-.5z" fill="#fde047" stroke="#a16207" stroke-width=".5"/>`;
+                if (X.peac) hd += `<path d="M50 ${hy - hry + 1}C48 ${hy - hry - 8} 52 ${hy - hry - 14} 50 ${hy - hry - 19}" stroke="${A}" stroke-width="1.9" fill="none" stroke-linecap="round"/><circle cx="50" cy="${hy - hry - 20}" r="3.1" fill="${A}"/><circle cx="50" cy="${hy - hry - 20}" r="1.3" fill="#22d3ee"/>`;
+                if (X.crow) hd += `<path class="p3-gem" d="M62 ${hy - hry + 6}l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fde68a"/>`;
+                if (X.snow) hd += `<g fill="#94a3b8" opacity=".55"><circle cx="36" cy="${hy - 8}" r="1.5"/><circle cx="64" cy="${hy - 10}" r="1.5"/><circle cx="42" cy="${hy - 16}" r="1.2"/><circle cx="59" cy="${hy - 17}" r="1.2"/></g><g stroke="#38bdf8" stroke-width="1.4" stroke-linecap="round" class="p3-gem"><path d="M50 ${hy - hry + 4}v8M46.5 ${hy - hry + 6}l7 4M46.5 ${hy - hry + 10}l7-4"/></g>`;
+                if (X.snake) hd += `<path d="M50 ${hy + hry * .5 + 4}v9M50 ${hy + hry * .5 + 13}l-3.4 3.2M50 ${hy + hry * .5 + 13}l3.4 3.2" stroke="#ef4444" stroke-width="1.9" fill="none" stroke-linecap="round"/>`;
+                if (X.gecko) hd += `<g transform="translate(50 ${hy - hry + 3})"><ellipse cx="-7" cy="-4" rx="3.2" ry="7" transform="rotate(-38 -7 -4)" fill="#f9a8d4"/><ellipse cx="7" cy="-4" rx="3.2" ry="7" transform="rotate(38 7 -4)" fill="#f9a8d4"/><ellipse cx="0" cy="-6" rx="3.6" ry="8.2" fill="#f472b6"/><ellipse cx="-3.6" cy="-5" rx="2.8" ry="6.6" transform="rotate(-18 -3.6 -5)" fill="#fbcfe8"/><ellipse cx="3.6" cy="-5" rx="2.8" ry="6.6" transform="rotate(18 3.6 -5)" fill="#fbcfe8"/><circle cx="0" cy="-1" r="2" fill="#fde047"/></g>`;
+                if (X.spider) hd += `<path d="M50 ${hy - hry + 1}L63 ${hy - 6}L50 ${hy + 3}L37 ${hy - 6}Z" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1"/><g fill="#1e1b4b"><circle cx="40" cy="${hy - 10}" r="2.3"/><circle cx="60" cy="${hy - 10}" r="2.3"/><circle cx="45" cy="${hy - 15}" r="1.8"/><circle cx="55" cy="${hy - 15}" r="1.8"/></g><g fill="#fff" opacity=".85"><circle cx="39.4" cy="${hy - 10.6}" r=".8"/><circle cx="59.4" cy="${hy - 10.6}" r=".8"/></g>`;
+                if (X.monkey) hd += `<path d="M50 ${hy - 3}C40 ${hy - 12} 30 ${hy - 2} 32 ${hy + 7}C34 ${hy + 16} 44 ${hy + 19} 50 ${hy + 19}C56 ${hy + 19} 66 ${hy + 16} 68 ${hy + 7}C70 ${hy - 2} 60 ${hy - 12} 50 ${hy - 3}Z" fill="${lt(c2, .3)}"/>`;
+                if (X.bat) hd += `<path class="p3-gem" d="M52 ${hy - hry + 3}l-7 11h5l-3 10 10-13h-6z" fill="#fde047" stroke="#a16207" stroke-width=".6" stroke-linejoin="round"/>`;
+                if (X.bat) hd += `<path d="M46.5 ${hy + hry * .3}Q50 ${hy + hry * .12} 53.5 ${hy + hry * .3}Q50 ${hy + hry * .5} 46.5 ${hy + hry * .3}Z" fill="#f9a8d4" stroke="#be185d" stroke-opacity=".5" stroke-width=".6"/><circle cx="48.6" cy="${hy + hry * .3}" r=".7" fill="#831843"/><circle cx="51.4" cy="${hy + hry * .3}" r=".7" fill="#831843"/>`;
+                if (X.whale) hd += `<g class="p3-spout"><path d="M50 ${hy - hry}v-9M50 ${hy - hry - 9}q-7-1-9 6M50 ${hy - hry - 9}q7-1 9 6" stroke="#bae6fd" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="41" cy="${hy - hry - 4}" r="1.6" fill="#e0f2fe"/><circle cx="59" cy="${hy - hry - 4}" r="1.6" fill="#e0f2fe"/><circle cx="50" cy="${hy - hry - 13}" r="1.8" fill="#e0f2fe"/></g>`;
                 hd += `<ellipse cx="${50 - hrx * .66}" cy="${hy + hry * .4}" rx="4.6" ry="2.8" fill="#fb7185" opacity=".42"/><ellipse cx="${50 + hrx * .66}" cy="${hy + hry * .4}" rx="4.6" ry="2.8" fill="#fb7185" opacity=".42"/>`;
-                if (BEAK.includes(i)) hd += `<path d="M44 ${hy + 3}Q50 ${hy + 1} 56 ${hy + 3}L50 ${hy + 14}Z" fill="${G}" stroke="#b45309" stroke-opacity=".5" stroke-width=".7"/>`;
+                if (X.snow) hd += `<path d="M46.6 ${hy + 3}Q50 ${hy + 0.5} 53.4 ${hy + 3}Q52.4 ${hy + 11} 50 ${hy + 13.5}Q47.6 ${hy + 11} 46.6 ${hy + 3}Z" fill="#334155" stroke="#0f172a" stroke-opacity=".6" stroke-width=".7"/><path d="M48.6 ${hy + 5}Q50 ${hy + 4} 51.4 ${hy + 5}" stroke="#94a3b8" stroke-width=".8" fill="none" stroke-linecap="round" opacity=".7"/>`;
+                else if (BEAK.includes(i)) hd += `<path d="M44 ${hy + 3}Q50 ${hy + 1} 56 ${hy + 3}L50 ${hy + 14}Z" fill="${G}" stroke="#b45309" stroke-opacity=".5" stroke-width=".7"/>`;
                 else {
                     if (NOSE.includes(i)) hd += `<ellipse cx="50" cy="${hy + hry * .27}" rx="2.7" ry="1.9" fill="${X.panda ? '#1e293b' : '#3b1d12'}"/>`;
                     hd += f <= 2 ? `<path d="M45 ${my}Q50 ${my + 5} 55 ${my}" stroke="#3b1d12" stroke-width="1.7" fill="none" stroke-linecap="round"/>`
+                        : X.shark ? `<path d="M36 ${my - 1}Q50 ${my + 10} 64 ${my - 1}Z" fill="#7f1d1d"/><path d="M37 ${my - 0.8}l3.2 4.5 3.2-4.5 3.2 4.5 3.2-4.5 3.2 4.5 3.2-4.5 3.2 4.5 3.2-4.5Z" fill="#fff" stroke="#cbd5e1" stroke-width=".3"/>`
                         : X.frog ? `<path d="M34 ${my}Q50 ${my + 11} 66 ${my}" stroke="${dk(c1, .55)}" stroke-width="1.9" fill="none" stroke-linecap="round"/>`
-                            : `<path d="M44 ${my - 1}Q50 ${my + 9} 56 ${my - 1}Z" fill="#7f1d1d"/><path d="M46.5 ${my + 3.2}Q50 ${my + 1.8} 53.5 ${my + 3.2}Q50 ${my + 6.2} 46.5 ${my + 3.2}Z" fill="#fb7185"/>` + (X.dino ? `<path d="M45.5 ${my - 1}l1.6 2.6l1.6-2.6ZM52.9 ${my - 1}l1.6 2.6l1.6-2.6Z" fill="#fff"/>` : '');
+                            : `<path d="M44 ${my - 1}Q50 ${my + 9} 56 ${my - 1}Z" fill="#7f1d1d"/><path d="M46.5 ${my + 3.2}Q50 ${my + 1.8} 53.5 ${my + 3.2}Q50 ${my + 6.2} 46.5 ${my + 3.2}Z" fill="#fb7185"/>` + ((X.dino || X.bat || X.spider || X.drake) ? `<path d="M45.5 ${my - 1}l1.6 2.6l1.6-2.6ZM52.9 ${my - 1}l1.6 2.6l1.6-2.6Z" fill="#fff"/>` : '');
                 }
                 hd += eyes;
                 if (X.squid) hd += `<path d="M50 ${hy - hry - 3}l3.4 7.6l8 .9l-6 5.4l1.8 8l-7.2-4.2l-7.2 4.2l1.8-8l-6-5.4l8-.9Z" fill="${G}" stroke="#b45309" stroke-opacity=".4" stroke-width=".6"/><g fill="${c2}" opacity=".8"><circle cx="30" cy="40" r="2.6"/><circle cx="70" cy="42" r="3.2"/><circle cx="66" cy="62" r="2"/></g>`;
@@ -12481,7 +12570,7 @@ window.openStudentProfile=function(studentId){
                 hd += '</g>';
                 // --- giáp vai & ngọc ngực ---
                 let fr = '';
-                if (f >= 6 && !X.slime && !X.squid) for (const s of [-1, 1]) { const px = 50 + s * (Bd[0] - 3); fr += `<ellipse cx="${px}" cy="${by - 8}" rx="7.6" ry="5" transform="rotate(${s * -28} ${px} ${by - 8})" fill="${G}" stroke="#92400e" stroke-opacity=".5" stroke-width=".8"/>`; }
+                if (f >= 6 && !X.slime && !X.squid && !X.snake && !X.spider) for (const s of [-1, 1]) { const px = 50 + s * (Bd[0] - 3); fr += `<ellipse cx="${px}" cy="${by - 8}" rx="7.6" ry="5" transform="rotate(${s * -28} ${px} ${by - 8})" fill="${G}" stroke="#92400e" stroke-opacity=".5" stroke-width=".8"/>`; }
                 if (f >= 4 && !X.squid) fr += `<path d="M50 ${by + 3}l5 5 -5 8 -5 -8z" fill="${u('e')}" stroke="#fff" stroke-opacity=".65" stroke-width=".7" class="p3-gem"/>`;
                 const aura = f >= 7 ? `<circle cx="50" cy="56" r="46" fill="url(#${id}au)" class="p3-aura"/>` + (f === 8 ? `<circle cx="50" cy="56" r="43" fill="none" stroke="${c2}" stroke-opacity=".75" stroke-width="1.6" stroke-dasharray="1.5 6" stroke-linecap="round" class="p3-spin"/>` : '') : '';
                 // Cấp 1: sơ sinh ngồi trong nửa vỏ trứng và ngậm núm ti.
@@ -12530,6 +12619,8 @@ window.openStudentProfile=function(studentId){
         window.petPick = function (sid, sp) {
             const st = appData.students.find(x => x.id === sid); if (!st) return;
             if (petFormOf(petPeakOf(st)) > 1 && st.petSp !== undefined) { if (window.showAppToast) window.showAppToast(L2('Thú đã nở nên không thể đổi loài.', 'The pet has hatched and cannot be swapped.'), 'error'); return; }
+            const ow = (appData.students || []).find(x => x.classId === st.classId && x.id !== st.id && x.petSp === sp);
+            if (ow) { if (window.showAppToast) window.showAppToast(L2(`${PET_SP[sp][0]} đã được ${getStudentDisplayName(ow)} chọn rồi.`, `${PET_SP[sp][1]} was already chosen by ${getStudentDisplayName(ow)}.`), 'error'); renderPetView(); return; }
             st.petSp = sp; Promise.resolve(saveData()).then(() => { if (window.showAppToast) window.showAppToast(L2(`${getStudentDisplayName(st)} đã chọn ${PET_SP[sp][0]}!`, `${getStudentDisplayName(st)} chose ${PET_SP[sp][1]}!`), 'success'); petMode = 'class'; window.__petSlide = -1; renderPetView(); });
         };
         window.petSetMode = m => {
@@ -12557,8 +12648,10 @@ window.openStudentProfile=function(studentId){
                 }).join('') + `</div>`;
             } else {
                 const sp = PET_SP[petSel], tgt = list.find(s => s.id === petTarget), locked = tgt && tgt.petSp !== undefined && petFormOf(petPeakOf(tgt)) > 1;
-                body = `<div class="mt-4 grid gap-1" style="grid-template-columns:repeat(auto-fill,minmax(116px,1fr))">` + PET_SP.map((p, i) => `<div class="pet-sp ${i === petSel ? 'on' : ''}" onclick="petSetSel(${i})">${petArt(i, 1, false)}<div class="pet-level-tag">${petFormLevelName(1)}</div><div class="text-[10px] font-black text-slate-800 truncate">${L2(p[0], p[1])}</div></div>`).join('') + `</div>
-                <div class="mt-4 rounded-xl bg-slate-50 border border-slate-200 p-3"><div class="flex flex-wrap items-center justify-between gap-2 mb-3"><h3 class="font-black text-slate-800">${L2(sp[0], sp[1])} — ${L2('8 dạng tiến hoá', '8 evolution forms')}</h3><div class="flex items-center gap-2"><select class="border rounded-lg px-2 py-1 text-sm" onchange="petTarget=this.value;renderPetView()">${list.map(s => `<option value="${s.id}" ${s.id === petTarget ? 'selected' : ''}>${escapeHtml(getStudentDisplayName(s))}</option>`).join('')}</select><button class="pet-tabbtn on" ${!tgt || locked ? 'disabled style="opacity:.5;cursor:not-allowed"' : ''} onclick="petPick('${petTarget}',${petSel})">${locked ? L2('Đã nở, không đổi được', 'Hatched, locked') : L2('Chọn trứng này', 'Choose this egg')}</button></div></div><div class="pet-line">` +
+                const ownerOf = i => { const o = list.filter(s => s.petSp === i); return o.find(s => s.id === petTarget) || o[0] || null; };
+                const selOwner = ownerOf(petSel), takenSel = !!(selOwner && selOwner.id !== petTarget), ownSel = !!(selOwner && selOwner.id === petTarget);
+                body = (tgt ? `<div class="mt-4 flex flex-wrap items-center gap-2"><button class="pet-tabbtn on pet-who" onclick="petSetMode('class')" title="${L2('Quay lại Thú của lớp để chọn học sinh khác', 'Back to Class pets to choose another student')}"><i class="fa-solid fa-user mr-1"></i>${L2('Đang chọn cho', 'Choosing for')}: ${tgt.icon || '🎓'} ${escapeHtml(getStudentDisplayName(tgt))} <span class="opacity-70 ml-1">· ${L2('Đổi học sinh', 'Change student')}</span></button></div>` : '') + `<div class="mt-3 grid gap-1" style="grid-template-columns:repeat(auto-fill,minmax(116px,1fr))">` + PET_SP.map((p, i) => { const ow = ownerOf(i), tk = !!(ow && ow.id !== petTarget); return `<div class="pet-sp ${i === petSel ? 'on' : ''} ${tk ? 'taken' : ''}" onclick="petSetSel(${i})">${petArt(i, 1, false)}<div class="pet-level-tag">${petFormLevelName(1)}</div><div class="text-[10px] font-black text-slate-800 truncate">${L2(p[0], p[1])}</div>${ow ? `<div class="pet-owner">${tk ? '🔒' : '✓'} ${escapeHtml(getStudentDisplayName(ow))}</div>` : ''}</div>`; }).join('') + `</div>
+                <div class="mt-4 rounded-xl bg-slate-50 border border-slate-200 p-3"><div class="flex flex-wrap items-center justify-between gap-2 mb-3"><h3 class="font-black text-slate-800">${L2(sp[0], sp[1])} — ${L2('8 dạng tiến hoá', '8 evolution forms')}</h3><div class="flex items-center gap-2"><button class="pet-tabbtn on ${takenSel || ownSel ? 'pet-chosen' : ''}" ${!tgt || locked || takenSel || ownSel ? 'disabled style="opacity:.6;cursor:not-allowed"' : ''} onclick="petPick('${petTarget}',${petSel})">${takenSel ? '🔒 ' + L2('Đã chọn', 'Chosen') + ' · ' + escapeHtml(getStudentDisplayName(selOwner)) : ownSel ? '✓ ' + L2('Đã chọn', 'Chosen') + ' · ' + escapeHtml(getStudentDisplayName(selOwner)) : locked ? L2('Đã nở, không đổi được', 'Hatched, locked') : L2('Chọn trứng này', 'Choose this egg')}</button></div></div><div class="pet-line">` +
                     [1, 2, 3, 4, 5, 6, 7, 8].map(f => { const need = f === 1 ? L2('Streak 0 (nứt ở 1)', 'Streak 0 (cracks at 1)') : L2('Streak ', 'Streak ') + PET_MS[f]; return `<div>${petArt(petSel, f, false)}<div class="pet-level-tag">${escapeHtml(petFormLevelName(f))}</div><div class="text-[11px] font-extrabold text-violet-700">${escapeHtml(petFormName(petSel, f))}</div><div class="text-[10px] text-slate-500">${need}</div></div>`; }).join('') + `</div>` + petBlessPanel(petSel) + `</div>`;
             }
             const slide = window.__petSlide || 0; window.__petSlide = 0;
@@ -12609,7 +12702,7 @@ window.openStudentProfile=function(studentId){
             document.body.appendChild(m);
         };
 
-        /* ===================== PET BLESSING: 20 nội tại ban phúc (mở khi nở ở streak 5, 7 cấp theo mốc 5·10·15·20·30·40·50) ===================== */
+        /* ===================== PET BLESSING: 30 nội tại ban phúc (mở khi nở ở streak 5, 7 cấp theo mốc 5·10·15·20·30·40·50) ===================== */
         const PET_LV = [5, 10, 15, 20, 30, 40, 50], PET_T = [4, 6, 8, 10, 12, 14, 16], PET_X = [2, 3, 4, 5, 6, 7, 8];
         const petLv = pk => { let l = -1; PET_LV.forEach((m, i) => { if (pk >= m) l = i; }); return l; };
         const PET_PR = [2, 5, 10, 15, 20, 30, 80];
@@ -12625,7 +12718,7 @@ window.openStudentProfile=function(studentId){
             { ic: '❄️', n: ['Lãi Tiết Kiệm', 'Savings Interest'], t: ['Mỗi tuần, giao dịch đầu tiên ở cửa hàng được hoàn lại số pts đã chi, tối đa {0} pts', 'Each week, your first shop transaction is refunded, up to {0} pts'], v: [1, 2, 3, 4, 5, 6, 7].map(x => [x]) },
             { ic: '🌿', n: ['Mầm Hồi Phục', 'Comeback Sprout'], t: ['Sau điểm dưới 9, lần kế tiếp từ 9 trở lên: +{0} pts (tối đa {1} lần/tuần)', 'After a score under 9, the next 9+ earns +{0} pts (max {1} times/week)'], v: [2, 3, 4, 5, 6, 7, 8].map(x => [x, 2]) },
             { ic: '🐸', n: ['Ngọc Trúng Lớn', 'Jade Jackpot'], t: ['Cuối tuần: {0}% trúng jackpot +{1} pts', 'Week end: {0}% chance of a +{1} pts jackpot'], v: [[5, 4], [7, 5], [10, 5], [15, 5], [20, 7], [30, 10], [80, 20]] },
-            { ic: '🦉', n: ['Tuần Học Giỏi', 'Star Scholar'], t: ['Mỗi tuần không có điểm dưới 9: +{1} pts (tối đa 4/tháng). Đủ 4 tuần trong tháng: thưởng thêm +{0} pts', 'Each week with no score under 9: +{1} pts (max 4/month). 4 clean weeks in a month: bonus +{0} pts'], v: [0, 10, 20, 30, 40, 50, 60].map(x => [x, 1]) },
+            { ic: '🦌', n: ['Tuần Sao Sáng', 'Starry Week'], t: ['Mỗi tuần không có điểm dưới 9: +{1} pts (tối đa 4/tháng). Đủ 4 tuần trong tháng: thưởng thêm +{0} pts', 'Each week with no score under 9: +{1} pts (max 4/month). 4 clean weeks in a month: bonus +{0} pts'], v: [0, 10, 20, 30, 40, 50, 60].map(x => [x, 1]) },
             { ic: '🍓', n: ['Quà Dâu Tây', 'Berry Gift'], t: ['Cuối tuần, nếu ĐTB nằm trong top 4 của lớp: {0}% nhận +{1} pts', 'Week end, if your average is in the class top 4: {0}% chance of +{1} pts'], v: [[5, 4], [7, 5], [10, 5], [15, 5], [20, 7], [30, 10], [80, 20]] },
             { ic: '🦋', n: ['Combo Cánh Bướm', 'Butterfly Combo'], t: ['Mỗi lần đạt 3 điểm 10 liên tiếp: +{0} pts (không giới hạn số lần)', 'Each 3 tens in a row: +{0} pts (unlimited)'], v: [5, 10, 15, 20, 25, 30, 50].map(x => [x]) },
             { ic: '🐺', n: ['Hộ Vệ Bầy Đàn', 'Pack Guardian'], t: ['Cuối tuần: {0}% nhận 1 quà "Xóa điểm thấp nhất"', 'Week end: {0}% chance of a "Delete lowest score" gift'], v: PET_PR.map(x => [x]) },
@@ -12633,13 +12726,24 @@ window.openStudentProfile=function(studentId){
             { ic: '🐢', n: ['Mai Rùa Bền Bỉ', 'Steady Shell'], t: ['Cứ đủ 3 buổi học theo Lịch học liên tiếp mà không bị đánh vắng: +{0} pts (vắng thì đếm lại)', 'Every 3 scheduled classes in a row without an absence: +{0} pts (an absence resets the count)'], v: [2, 3, 4, 5, 6, 7, 8].map(x => [x]) },
             { ic: '🦄', n: ['Phúc Đôi', 'Double Blessing'], t: ['Mỗi lần lên từ 2 hạng trở lên: +{0} pts; mỗi lần xuống từ 1 hạng: +{1} pts', 'Each time you climb 2+ ranks: +{0} pts; each time you drop 1+ ranks: +{1} pts'], v: [[2, 1], [4, 2], [6, 3], [8, 4], [10, 5], [16, 8], [20, 10]] },
             { ic: '🕊️', n: ['Tro Tàn Hồi Sinh', 'Ashes Reborn'], t: ['Mỗi lần mất streak (về 0): đền bù +{0} pts', 'Each time your streak is lost (back to 0): +{0} pts compensation'], v: [1, 2, 5, 10, 15, 20, 30].map(x => [x]) },
-            { ic: '🦑', n: ['Ngày Mực', 'Ink Day'], t: ['Quay Vòng Quay May Mắn trúng "Chúc bạn may mắn lần sau": {0}% nhận 1 quà "Cộng 1 điểm" (tối đa 1 lần/tuần)', 'Lucky Wheel lands on "Better luck next time": {0}% chance of a "+1 point" gift (max once/week)'], v: PET_PR.map(x => [x]) }
+            { ic: '🦑', n: ['Ngày Mực', 'Ink Day'], t: ['Quay Vòng Quay May Mắn trúng "Chúc bạn may mắn lần sau": {0}% nhận 1 quà "Cộng 1 điểm" (tối đa 1 lần/tuần)', 'Lucky Wheel lands on "Better luck next time": {0}% chance of a "+1 point" gift (max once/week)'], v: PET_PR.map(x => [x]) },
+            { ic: '🦚', n: ['Vũ Điệu Phúc Lộc', 'Fortune Dance'], t: ['Ghi điểm phát biểu đạt đúng mốc M, không dư lần nào (dư = 0): {0}% nhận +{1} pts', 'Speaking entry that hits the target exactly with surplus = 0: {0}% chance of +{1} pts'], v: [[5, 1], [10, 2], [15, 3], [20, 5], [30, 10], [50, 15], [70, 20]] },
+            { ic: '🐦‍⬛', n: ['Kho Báu Nhân Đôi', 'Double Treasure'], t: ['Quay Vòng Quay May Mắn và nhận được một món quà (không tính quà thường): {0}% nhận thêm một bản sao món quà đó', 'Spin the Lucky Wheel and win a gift (regular gifts excluded): {0}% chance of an extra copy of that gift'], v: [5, 7, 10, 15, 30, 80, 90].map(x => [x]) },
+            { ic: '🦉', n: ['Thiên Khải Hoàn Mỹ', 'Perfect Revelation'], t: ['Mỗi lần ghi nhận một điểm 10 (không tính cột Kiểm Tra): {0}% nhận 1 quà "Đổi một điểm có sẵn thành 9"', 'Each time a score of 10 is recorded (Test columns excluded): {0}% chance of a "Change existing score to 9" gift'], v: [5, 7, 15, 20, 30, 50, 70].map(x => [x]) },
+            { ic: '🐍', n: ['Thủy Triều Hóa Giải', 'Soothing Tide'], t: ['Mỗi lần ghi nhận một buổi vắng: {0}% nhận 1 quà "Đổi một điểm có sẵn thành 8"', 'Each time an absence is recorded: {0}% chance of a "Change existing score to 8" gift'], v: [5, 10, 15, 20, 25, 50, 70].map(x => [x]) },
+            { ic: '🦁', n: ['Long Uy Điểm Mười', 'Lion Majesty'], t: ['Mỗi cột Kiểm Tra đạt từ 9 trở lên: {0}% nhận 1 quà "Một điểm 10"', 'Each Test column scored 9 or higher: {0}% chance of a "One score of 10" gift'], v: [0.6, 1, 1.6, 5, 10, 20, 30].map(x => [x]) },
+            { ic: '🦎', n: ['Niết Bàn Phúc Lộc', 'Nirvana Blessing'], t: ['Mỗi lần nhận một cột điểm dưới 5: {0}% nhận +{1} điểm tích lũy', 'Each score column below 5: {0}% chance of +{1} accumulated point(s)'], v: [5, 10, 20, 30, 40, 50, 70].map(x => [x, 1]) },
+            { ic: '🕷️', n: ['Tinh Thể Khuếch Đại', 'Crystal Amplifier'], t: ['Khi điểm dư phát biểu đúng bằng 1: {0}% khuếch đại ×{1} (nhận thêm +{1} pts)', 'When the speaking surplus is exactly 1: {0}% chance to amplify it ×{1} (bonus +{1} pts)'], v: [[2, 1], [5, 2], [7, 3], [10, 4], [20, 5], [30, 10], [50, 15]] },
+            { ic: '🐒', n: ['Thời Khắc Thăng Hoa', 'Moment of Ascension'], t: ['Mỗi lần Cấp độ tăng thêm 1: {0}% nhận 1 quà "Một điểm 10"', 'Each time your Level goes up by 1: {0}% chance of a "One score of 10" gift'], v: [2, 5, 10, 15, 20, 50, 70].map(x => [x]) },
+            { ic: '🦇', n: ['Lôi Quang Liên Kết', 'Linked Lightning'], t: ['Mỗi lần ghi nhận điểm 9 liên tiếp hai lần: {0}% nhận +{1} điểm tích lũy', 'Each time two 9s are recorded in a row: {0}% chance of +{1} accumulated point(s)'], v: [5, 10, 15, 20, 40, 50, 70].map(x => [x, 1]) },
+            { ic: '🐋', n: ['Mạch Sống Nghịch Chuyển', 'Reversing Lifeline'], t: ['Mỗi lần điểm trung bình giảm (tối đa 1 lần/ngày): {0}% nhận +{1} pts', 'Each time your average drops (max once/day): {0}% chance of +{1} pts'], v: [[20, 2], [30, 3], [40, 4], [50, 5], [60, 6], [70, 7], [80, 8]] }
         ];
 
         /* ===== Tuỳ chỉnh thông số nội tại (Kho trứng): lưu ở appData.petCfg['p'+loài]['l'+cấp] = [các thông số] ===== */
         PET_B.forEach(b => { b.d = JSON.parse(JSON.stringify(b.v)); });
         const PM = (vi, en, u, min, max, s) => ({ vi, en, u, min, max, s });
         const PM_CH = PM('Xác suất', 'Chance', '%', 0, 100, 5);
+        const PM_CH1 = Object.assign(PM('Xác suất', 'Chance', '%', 0, 100, .2), { dec: 1 });
         const PET_PM = [
             [PM('Pts nhận', 'Pts earned', 'pts', 0, 100, 1)],
             [PM('Tối đa / tuần', 'Weekly cap', 'pts', 0, 200, 1), PM('Pts mỗi vi phạm', 'Pts per violation', 'pts', 0, 50, 1)],
@@ -12660,7 +12764,14 @@ window.openStudentProfile=function(studentId){
             [PM('Pts mỗi lần', 'Pts each time', 'pts', 0, 100, 1)],
             [PM('Lên ≥ 2 hạng', 'Climb 2+ ranks', 'pts', 0, 100, 1), PM('Xuống ≥ 1 hạng', 'Drop 1+ rank', 'pts', 0, 100, 1)],
             [PM('Pts đền bù', 'Compensation', 'pts', 0, 200, 1)],
-            [PM_CH]
+            [PM_CH],
+            [PM_CH, PM('Pts nhận', 'Pts earned', 'pts', 0, 200, 1)],
+            [PM_CH], [PM_CH], [PM_CH], [PM_CH1],
+            [PM_CH, PM('Pts tích lũy', 'Bonus pts', 'pts', 0, 100, 1)],
+            [PM_CH, PM('Hệ số nhân', 'Multiplier', '×', 1, 100, 1)],
+            [PM_CH],
+            [PM_CH, PM('Pts tích lũy', 'Bonus pts', 'pts', 0, 100, 1)],
+            [PM_CH, PM('Pts nhận', 'Pts earned', 'pts', 0, 200, 1)]
         ];
         const petApplyCfg = () => {
             const C = (appData && appData.petCfg && typeof appData.petCfg === 'object') ? appData.petCfg : {};
@@ -12705,7 +12816,7 @@ window.openStudentProfile=function(studentId){
             if (petCfgRO() || !appData) return;
             petApplyCfg();
             const b = PET_B[sp], p = PET_PM[sp][j]; if (!b || !p) return;
-            val = Math.round(Number(val)); if (!isFinite(val)) val = b.v[li][j];
+            { const fx = Math.pow(10, p.dec || 0); val = Math.round(Number(val) * fx) / fx; } if (!isFinite(val)) val = b.v[li][j];
             val = Math.min(p.max, Math.max(p.min, val));
             const row = b.v[li].slice(); row[j] = val;
             const C = appData.petCfg = (appData.petCfg && typeof appData.petCfg === 'object') ? appData.petCfg : {};
@@ -12769,7 +12880,10 @@ window.openStudentProfile=function(studentId){
             spin: { itemId: 'fix_lucky_spin', type: 'lucky_spin', isFixed: true, vi: '1 lượt quay may mắn', en: '1 Lucky Wheel spin' },
             plus2: { itemId: 'pet_plus_2', type: 'plus', deltaScore: 2, isFixed: false, vi: 'Cộng 2 điểm', en: '+2 points' },
             plus1: { itemId: 'pet_plus_1', type: 'plus', deltaScore: 1, isFixed: false, vi: 'Cộng 1 điểm', en: '+1 point' },
-            del: { itemId: 'gacha_delete_low', type: 'delete_score', isFixed: false, vi: 'Xóa điểm thấp nhất', en: 'Delete lowest score' }
+            del: { itemId: 'gacha_delete_low', type: 'delete_score', isFixed: false, vi: 'Xóa điểm thấp nhất', en: 'Delete lowest score' },
+            chg9: { itemId: 'fix_change_9', type: 'change', targetScore: 9, isFixed: true, vi: 'Đổi một điểm có sẵn thành 9', en: 'Change existing score to 9' },
+            chg8: { itemId: 'fix_change_8', type: 'change', targetScore: 8, isFixed: true, vi: 'Đổi một điểm có sẵn thành 8', en: 'Change existing score to 8' },
+            add10: { itemId: 'fix_add_10', type: 'add', targetScore: 10, isFixed: true, vi: 'Một điểm 10', en: 'One score of 10' }
         };
         const petLog = (P, st, vi, en) => { P.log.push({ d: petPd(new Date()), sid: st.id, vi: `${st.petName || getStudentDisplayName(st)} · ${PET_SP[st.petSp][0]}: ${vi}`, en: `${getStudentDisplayName(st)} · ${PET_SP[st.petSp][1]}: ${en}` }); if (P.log.length > 200) P.log.splice(0, P.log.length - 200); };
         const petToast = (vi, en) => { try { if (window.showAppToast) window.showAppToast(L2(vi, en), 'success'); } catch (e) {} };
@@ -12791,6 +12905,12 @@ window.openStudentProfile=function(studentId){
             const P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led[key]) return; led[key] = 1; _petChanged = true;
             petQueue(st, { k: 'inv', kind, n, vi, en });
         };
+        // Quạ Kho Báu: xếp hàng một bản sao của món quà vừa quay trúng (giữ nguyên các thuộc tính của quà gốc)
+        const petGiveCopy = (st, it, n) => {
+            const o = { itemId: it.id, name: it.name || '', isFixed: !!it.isFixed, type: it.type };
+            ['targetScore', 'deltaScore', 'matchScore', 'matchOp'].forEach(k => { if (it[k] !== undefined) o[k] = it[k]; });
+            petQueue(st, { k: 'copy', n, item: o, vi: 'kho báu nhân đôi', en: 'double treasure' });
+        };
         // Học sinh bấm vào thẻ thú cưng đang vàng → nhận toàn bộ chúc phúc đang chờ, thẻ về trạng thái mặc định
         window.petClaim = function petClaim(sid) {
             try {
@@ -12809,8 +12929,13 @@ window.openStudentProfile=function(studentId){
                     } else if (it.k === 'inv') {
                         const g = PET_GIFT[it.kind]; if (!g) return; const nm = en ? g.en : g.vi;
                         st.inventory = st.inventory || [];
-                        for (let k = 0; k < it.n; k++) { const o = { invId: 'inv_' + Date.now() + '_pet' + k + '_' + Math.random().toString(36).slice(2, 8), itemId: g.itemId, name: nm, itemName: nm, isFixed: g.isFixed, type: g.type, date: petPd(new Date()), fromPet: true }; if (g.deltaScore !== undefined) o.deltaScore = g.deltaScore; st.inventory.push(o); }
+                        for (let k = 0; k < it.n; k++) { const o = { invId: 'inv_' + Date.now() + '_pet' + k + '_' + Math.random().toString(36).slice(2, 8), itemId: g.itemId, name: nm, itemName: nm, isFixed: g.isFixed, type: g.type, date: petPd(new Date()), fromPet: true }; if (g.deltaScore !== undefined) o.deltaScore = g.deltaScore; if (g.targetScore !== undefined) o.targetScore = g.targetScore; st.inventory.push(o); }
                         petLog(P, st, `${it.vi} (+${it.n} ${g.vi})`, `${it.en} (+${it.n} ${g.en})`);
+                        parts.push(`${it.n} × ${nm}`);
+                    } else if (it.k === 'copy') {
+                        const g = it.item; if (!g || !g.type) return; const nm = g.name || ''; st.inventory = st.inventory || [];
+                        for (let k = 0; k < it.n; k++) { const o = { invId: 'inv_' + Date.now() + '_pet' + k + '_' + Math.random().toString(36).slice(2, 8), itemId: g.itemId, name: nm, itemName: nm, isFixed: !!g.isFixed, type: g.type, date: petPd(new Date()), fromPet: true }; ['targetScore', 'deltaScore', 'matchScore', 'matchOp'].forEach(f => { if (g[f] !== undefined) o[f] = g[f]; }); st.inventory.push(o); }
+                        petLog(P, st, `${it.vi} (+${it.n} ${nm})`, `${it.en} (+${it.n} ${nm})`);
                         parts.push(`${it.n} × ${nm}`);
                     }
                 });
@@ -12866,7 +12991,19 @@ window.openStudentProfile=function(studentId){
         window.petOnWheel = function (sid, prize) {
             try {
                 if (!sid || !prize || !appData) return; petApplyCfg();
-                const st = (appData.students || []).find(x => String(x.id) === String(sid)); if (!st || st.petSp !== 19 || !st.petHatch) return;
+                const st = (appData.students || []).find(x => String(x.id) === String(sid)); if (!st || !st.petHatch) return;
+                if (st.petSp === 21) {
+                    // Quạ Kho Báu – Kho Báu Nhân Đôi: quay trúng một món quà thật thì có xác suất nhận thêm một bản sao
+                    const lv21 = petLv(petPeakOf(st)); if (lv21 < 0) return;
+                    const gi = (appData.globalShopItems || []).find(i => i && i.id === prize.itemId);
+                    // Quà thường (không có loại / cờ "Quà thường – không vào túi") và ô hụt không được nhân đôi
+                    if (!gi || !gi.type || ['none', 'regular', 'normal'].includes(String(gi.type).toLowerCase())) return;
+                    if (Math.random() * 100 >= PET_B[21].v[lv21][0]) return;
+                    _petChanged = false; petGiveCopy(st, gi, Math.max(1, Math.floor(Number(prize.qty) || 1)));
+                    if (_petChanged) Promise.resolve(saveData()).catch(() => {});
+                    return;
+                }
+                if (st.petSp !== 19) return;
                 const lv = petLv(petPeakOf(st)); if (lv < 0) return;
                 const it = (appData.globalShopItems || []).find(i => i && i.id === prize.itemId); if (it && it.type) return;
                 if (!/chúc\s*bạn\s*may\s*mắn|better\s*luck/i.test(String(prize.name || ''))) return;
@@ -12899,14 +13036,14 @@ window.openStudentProfile=function(studentId){
                 if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return;
                 petApplyCfg(); const today = petPd(new Date()), thisW = petMon(today), P = petP(); _petChanged = false;
                 if (!P.heFrom) { P.heFrom = today; _petChanged = true; }
-                const stuC = {}, N = {}, R = {}, cnt = {};
+                const stuC = {}, N = {}, R = {}, cnt = {}, XI = {};
                 appData.students.forEach(s => { stuC[s.id] = s.classId; N[s.classId] = (N[s.classId] || 0) + 1; });
                 // Dữ liệu từ Matrix Score: R[học sinh][ngày] = { v: điểm, abs: vắng }
                 Object.keys(appData.scores || {}).forEach(k => {
                     const m = k.match(/^(.*)_(\d{4})-(\d{1,2})-(\d{1,2})$/), it = appData.scores[k]; if (!m || !it || it.sg) return;
                     const d = m[2] + '-' + m[3].padStart(2, '0') + '-' + m[4].padStart(2, '0'), abs = !!it.absent, v = parseFloat(it.score);
                     if (!abs && isNaN(v)) return;
-                    (R[m[1]] = R[m[1]] || {})[d] = { v, abs };
+                    (R[m[1]] = R[m[1]] || {})[d] = { v, abs }; (XI[m[1]] = XI[m[1]] || {})[d] = it;
                     const c = stuC[m[1]]; if (c) { cnt[c] = cnt[c] || {}; cnt[c][d] = (cnt[c][d] || 0) + 1; }
                 });
                 // Lịch học (tab Nội dung giảng dạy): classSchedules[lớp][thứ 0-6] = giờ học
@@ -12942,6 +13079,47 @@ window.openStudentProfile=function(studentId){
                     if (sp === 2) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:th:' + d, v[0], () => petGive(st, 'n:th:' + d, v[1], 'sét đánh trúng', 'lightning struck')));
                     if (sp === 3) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:sea:' + d, v[0], () => petGiveInv(st, 'n:sea:' + d, 'spin', Math.max(1, Math.round(v[1])), 'sóng biển mang quà', 'sea gifts')));
                     if (sp === 4) att.filter(d => mine[d].v >= 9).forEach(d => chance(st, 'n:dr:' + d, v[0], () => petGive(st, 'n:dr:' + d, v[1], 'hơi thở rồng (điểm ≥ 9)', 'dragon breath (score 9+)')));
+                    // ---- 10 loài mới (loài 21–30) ----
+                    if (sp >= 20) {
+                        const XM = XI[st.id] || {}, MLIM = parseInt(appData.maxSpeakingLimit) || 15;
+                        // Số lần phát biểu của ô điểm (chỉ ô nhập qua số lần phát biểu; bỏ qua ô vắng và ô sửa tay)
+                        const spk = d => { const o = XM[d]; return (o && !o.absent && !o.manual && o.speakingCount !== undefined && Number.isFinite(Number(o.speakingCount))) ? Number(o.speakingCount) : null; };
+                        // 🦚 Khổng Tước: điểm dư phát biểu đúng bằng 0 (phát biểu đúng bằng mốc M)
+                        if (sp === 20) att.forEach(d => { if (spk(d) === MLIM) chance(st, 'n:pk:' + d, v[0], () => petGive(st, 'n:pk:' + d, v[1], 'vũ điệu phúc lộc (đủ mốc, dư 0)', 'fortune dance (target hit, surplus 0)')); });
+                        // 🐍 Xà Vương: mỗi buổi vắng được ghi nhận
+                        if (sp === 23) days.filter(d => mine[d].abs).forEach(d => chance(st, 'n:sn:' + d, v[0], () => petGiveInv(st, 'n:sn:' + d, 'chg8', 1, 'thủy triều hóa giải buổi vắng', 'the tide soothes an absence')));
+                        // 🦁 Sư Tử: cột Kiểm Tra đạt từ 9 trở lên
+                        if (sp === 24) att.filter(d => XM[d] && XM[d].isExam && mine[d].v >= 9 - 1e-9).forEach(d => chance(st, 'n:li:' + d, v[0], () => petGiveInv(st, 'n:li:' + d, 'add10', 1, 'long uy điểm mười (kiểm tra ≥ 9)', 'lion majesty (test 9+)')));
+                        // 🦉 Cú Tuyết: mỗi điểm 10 được ghi nhận (trừ cột Kiểm Tra) → chance nhận quà "Đổi một điểm có sẵn thành 9"; không xét cuối tuần
+                        if (sp === 22) att.filter(d => Number.isFinite(mine[d].v) && mine[d].v >= 10 - 1e-9 && !(XM[d] && XM[d].isExam)).forEach(d => chance(st, 'n:ow10d:' + d, v[0], () => petGiveInv(st, 'n:ow10d:' + d, 'chg9', 1, 'thiên khải hoàn mỹ (ghi nhận điểm 10)', 'perfect revelation (a score of 10 recorded)')));
+                        // 🦎 Thằn Lằn: nhận một cột điểm dưới 5
+                        if (sp === 25) att.filter(d => mine[d].v < 5).forEach(d => chance(st, 'n:ge:' + d, v[0], () => petGive(st, 'n:ge:' + d, v[1], 'niết bàn phúc lộc (điểm dưới 5)', 'nirvana blessing (score under 5)')));
+                        // 🕷️ Nhện Pha Lê: điểm dư phát biểu đúng bằng 1 → khuếch đại ×k
+                        if (sp === 26) att.forEach(d => { if (spk(d) === MLIM + 1) chance(st, 'n:sp:' + d, v[0], () => petGive(st, 'n:sp:' + d, v[1], `tinh thể khuếch đại ×${v[1]}`, `crystal amplified ×${v[1]}`)); });
+                        // 🐒 Linh Hầu: Cấp độ (XP/50) tăng thêm 1 — mỗi cấp chỉ được tung xác suất một lần
+                        if (sp === 27) {
+                            const lvNow = Math.floor(xpOf(st.id) / XP_PER_LEVEL) + 1, seenL = Number(st.petLvSeen);
+                            if (!Number.isFinite(seenL)) { st.petLvSeen = lvNow; _petChanged = true; }
+                            else if (lvNow !== seenL) {
+                                if (lvNow > seenL) for (let l = seenL + 1; l <= lvNow && l <= seenL + 5; l++) chance(st, 'n:mk:' + l, v[0], () => petGiveInv(st, 'n:mk:' + l, 'add10', 1, `thời khắc thăng hoa (lên cấp ${l})`, `moment of ascension (level ${l})`));
+                                st.petLvSeen = lvNow; _petChanged = true;
+                            }
+                        }
+                        // 🦇 Dơi Lôi Quang: hai điểm 9 (từ 9 đến dưới 10) liên tiếp
+                        if (sp === 28) { let run = 0; att.forEach(d => { const x = mine[d].v; if (x >= 9 - 1e-9 && x < 10 - 1e-9) { if (++run === 2) { run = 0; chance(st, 'n:ba:' + d, v[0], () => petGive(st, 'n:ba:' + d, v[1], 'lôi quang liên kết (hai điểm 9 liên tiếp)', 'linked lightning (two 9s in a row)')); } } else run = 0; }); }
+                        // 🐋 Cá Voi: điểm trung bình giảm so với lần ghi nhận trước (tối đa 1 lần tung xác suất/ngày)
+                        if (sp === 29) {
+                            const s = statsOf(st.id);
+                            if (s) {
+                                const a = Number(s.avg), seenA = Number(st.petAvgSeen);
+                                if (!Number.isFinite(seenA)) { st.petAvgSeen = a; _petChanged = true; }
+                                else if (Math.abs(a - seenA) > 1e-9) {
+                                    if (a < seenA) chance(st, 'n:cv:' + today, v[0], () => petGive(st, 'n:cv:' + today, v[1], `mạch sống nghịch chuyển (ĐTB ${String(seenA).replace('.', ',')} → ${String(a).replace('.', ',')})`, `reversing lifeline (average ${seenA} → ${a})`));
+                                    st.petAvgSeen = a; _petChanged = true;
+                                }
+                            }
+                        }
+                    }
                     // ---- Chuỗi điểm / tháng ----
                     if (sp === 13) { let run = 0, n = 0; att.forEach(d => { if (mine[d].v >= 10) { if (++run === 3) { run = 0; n++; petGive(st, 'n:bu:' + n, v[0], 'combo 3 điểm 10', 'three-10 combo'); } } else run = 0; }); }
                     if (sp === 9) { const cap = Math.max(1, Math.round(v[1])), cn = {}; let low = false; att.forEach(d => { const x = mine[d].v; if (x < 9) low = true; else if (low) { low = false; if (d < P.heFrom) return; const wk = petMon(d), n = cn[wk] = (cn[wk] || 0) + 1; if (n <= cap) petGive(st, 'n:he:' + wk + ':' + n, v[0], 'hồi phục sau điểm thấp', 'comeback'); } }); }
