@@ -5981,9 +5981,32 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
             ehBase = null;
             if (unsubscribeTeacherData) { unsubscribeTeacherData(); unsubscribeTeacherData = null; }
             const dataRef = ref(db, `appDataMultiTeacher/teacherData/${currentTeacherId || LEGACY_TEACHER_ID}`);
+            let tdLoadedOnce = false; // đã từng nhận dữ liệu thật từ máy chủ trong phiên này
+            const tdId = currentTeacherId || LEGACY_TEACHER_ID;
             unsubscribeTeacherData = onValue(dataRef, (snapshot) => {
                 const val = snapshot.val();
+                if (!val && (tdLoadedOnce || tdId !== LEGACY_TEACHER_ID)) {
+                    // AN TOÀN: nhánh dữ liệu bỗng trống. KHÔNG tự ghi bộ nhớ hiện tại lên Firebase (tránh ghi đè mất dữ liệu).
+                    console.error('Teacher data node is empty; auto-save blocked:', tdId);
+                    if (unsubscribeTeacherData) { unsubscribeTeacherData(); unsubscribeTeacherData = null; }
+                    alert(appData && appData.language === 'en' ? 'This workspace returned no data from Firebase. Nothing was overwritten. Please reopen the teacher and, if needed, use Restore Data.' : 'Không đọc được dữ liệu của không gian này từ Firebase. Hệ thống KHÔNG ghi đè gì cả. Hãy mở lại giáo viên; nếu vẫn trống thì mới dùng Phục hồi dữ liệu.');
+                    try { window.showTeacherSelector(); } catch (e) {}
+                    return;
+                }
                 if (val) {
+                    if (!tdLoadedOnce) {
+                        tdLoadedOnce = true;
+                        // Điểm khôi phục phía Firebase: mỗi ngày 1 bản (giữ 7 ngày) trước khi có bất kỳ thao tác ghi nào
+                        try {
+                            const day = new Date().toISOString().slice(0, 10), flag = 'tdAutoBackup_' + tdId;
+                            if (localStorage.getItem(flag) !== day) {
+                                const old = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+                                set(ref(db, `appDataMultiTeacher/autoBackups/${tdId}/d_${day}`), JSON.parse(JSON.stringify(val)))
+                                    .then(() => { localStorage.setItem(flag, day); return set(ref(db, `appDataMultiTeacher/autoBackups/${tdId}/d_${old}`), null); })
+                                    .catch(e => console.warn('Auto backup skipped:', e));
+                            }
+                        } catch (e) { console.warn('Auto backup skipped:', e); }
+                    }
                     appData = val;
                     if (sessionViewMode) appData.activeViewMode = sessionViewMode;
                     setTimeout(function () { try { if (window.mxBackupRefresh) window.mxBackupRefresh(); } catch (e) {} }, 0);
@@ -6043,7 +6066,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                         });
                     }
                 } else {
-                    saveData();
+                    saveData(); // chỉ xảy ra với giáo viên mặc định lần đầu tiên (nhánh chưa từng có dữ liệu)
                 }
 
                 if (!appData.classes || appData.classes.length === 0) {
@@ -6084,6 +6107,15 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                 undoHistory.push(deepCopy(lastPersistedSnapshot));
                 if (undoHistory.length > MAX_UNDO_HISTORY) undoHistory.shift();
             }
+            // Chặn ghi nếu dữ liệu bỗng "bốc hơi" (học sinh + điểm về 0 trong khi bản đã lưu gần nhất có dữ liệu)
+            try {
+                const lp = lastPersistedSnapshot;
+                if (lp && (lp.students || []).length > 0 && (appData.students || []).length === 0 && Object.keys(appData.scores || {}).length === 0 && !window.__allowEmptySave) {
+                    console.error('saveData blocked: would wipe all students/scores');
+                    alert(appData.language === 'en' ? 'Save blocked: it would erase all students and scores. Reload the page.' : 'Đã chặn lưu: thao tác này sẽ xóa sạch học sinh và điểm. Hãy tải lại trang.');
+                    return Promise.resolve(false);
+                }
+            } catch (e) {}
             const saveSnapshot = deepCopy(appData);
             return set(ref(db, `appDataMultiTeacher/teacherData/${currentTeacherId || LEGACY_TEACHER_ID}`), appData).then(() => { // Lưu đúng nhánh dữ liệu giáo viên chính
                 lastPersistedSnapshot = deepCopy(saveSnapshot);
@@ -11845,6 +11877,12 @@ window.openStudentProfile=function(studentId){
               let unsub=null;unsub=onValue(ref(db,path),s=>{if(unsub)unsub();resolve(s);},err=>{if(unsub)unsub();reject(err);});
             });
             if(!snap.exists() && id!==LEGACY_TEACHER_ID){
+              // AN TOÀN: giáo viên đã tạo từ lâu mà không thấy dữ liệu → KHÔNG tự ghi bản trống, hỏi lại trước.
+              const created=Date.parse(t.createdAt||'')||0;
+              if(created && Date.now()-created>10*60*1000){
+                const okNew=await showAppConfirm(teacherGateLanguage==='vi'?'Không tìm thấy dữ liệu của giáo viên này trên Firebase (có thể do mạng chập chờn). Nếu tạo mới, nhánh dữ liệu sẽ bị ghi bản TRỐNG. Chỉ bấm Đồng ý khi chắc chắn. Bạn có muốn tạo không gian trống không?':'No data found for this teacher on Firebase (possibly a network glitch). Creating a new one writes a BLANK dataset. Only confirm if you are sure. Create a blank workspace?');
+                if(!okNew)return;
+              }
               // Start from a clean structure, never from another teacher's current appData.
               const blank=deepCopy(appData);
               // Explicitly reset every known class/course/student-related data collection.
@@ -14267,7 +14305,7 @@ html.mx-dark .gc-bar{background:#334155}
             var need = Math.min(info.scrollWidth, 460) + backupBtn.offsetWidth + 24;
             var r = backupBtn.getBoundingClientRect();
             var roomRight = window.innerWidth - r.left - 8;
-            backupBtn.classList.toggle('qb-left', need > roomRight && r.right > roomRight);
+            backupBtn.classList.remove('qb-left'); // luôn kéo dài sang phải, không che đồng hồ
         }
         backupBtn.addEventListener('mouseenter', pickBackupSide);
         backupBtn.addEventListener('focus', pickBackupSide);
