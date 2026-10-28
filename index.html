@@ -5938,6 +5938,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                     appData = val;
                     if (sessionViewMode) appData.activeViewMode = sessionViewMode;
                     setTimeout(function () { try { if (window.mxBackupRefresh) window.mxBackupRefresh(); } catch (e) {} }, 0);
+                    setTimeout(function () { try { if (window.mxBackupRefresh) window.mxBackupRefresh(); } catch (e) {} }, 2000);   // kiểm tra lại sau khi dữ liệu ổn định
                     if (!appData.scores) appData.scores = {};
                     if (!appData.finalExams) appData.finalExams = {};
                     if (!appData.students) appData.students = [];
@@ -13256,7 +13257,20 @@ window.openStudentProfile=function(studentId){
                     const copy = {};
                     Object.keys(appData).forEach(function (k) { if (!UI_ONLY[k]) copy[k] = appData[k]; });
                     const json = JSON.stringify(copy);
-                    return { hash: h53(json), size: new Blob([json]).size, classes: appData.classes.length, students: (appData.students || []).length };
+                    // Dấu vân tay chuẩn hóa: Firebase trả khóa theo thứ tự chữ cái và bỏ mảng/đối tượng rỗng, null,
+                    // nên phải sắp xếp khóa và bỏ giá trị rỗng để dữ liệu giống nhau luôn cho cùng một hash sau khi tải lại.
+                    const canon = function (v) {
+                        if (v === null || v === undefined || typeof v === 'function') return undefined;
+                        if (typeof v === 'number') return isFinite(v) ? v : undefined;
+                        if (typeof v !== 'object') return v;
+                        const keys = Array.isArray(v) ? v.map(function (_, i) { return String(i); }) : Object.keys(v);
+                        keys.sort();
+                        const out = {}; let any = false;
+                        keys.forEach(function (k) { const c = canon(v[k]); if (c !== undefined) { out[k] = c; any = true; } });
+                        return any ? out : undefined;
+                    };
+                    const stable = JSON.stringify(canon(copy) || {});
+                    return { hash: h53(stable), size: new Blob([json]).size, classes: appData.classes.length, students: (appData.students || []).length };
                 }
             };
             const __mxOrigSave = saveData;
