@@ -13209,24 +13209,26 @@ window.openStudentProfile=function(studentId){
                 // Dữ liệu từ Matrix Score: R[học sinh][ngày] = { v: điểm, abs: vắng }
                 Object.keys(appData.scores || {}).forEach(k => {
                     const m = k.match(/^(.*)_(\d{4})-(\d{1,2})-(\d{1,2})$/), it = appData.scores[k]; if (!m || !it || it.sg) return;
-                    const d = m[2] + '-' + m[3].padStart(2, '0') + '-' + m[4].padStart(2, '0'), abs = !!it.absent, v = parseFloat(it.score);
+                    const d = m[2] + '-' + m[3].padStart(2, '0') + '-' + m[4].padStart(2, '0'), abs = !!it.absent, v = (it.score === null || it.score === '' || it.score === undefined) ? NaN : Number(it.score);
                     if (!abs && isNaN(v) && !it.present) return;
-                    (R[m[1]] = R[m[1]] || {})[d] = { v, abs }; (XI[m[1]] = XI[m[1]] || {})[d] = it;
+                    (R[m[1]] = R[m[1]] || {})[d] = { v, abs, present: !!it.present || (!abs && Number.isFinite(v)) }; (XI[m[1]] = XI[m[1]] || {})[d] = it;
                     const c = stuC[m[1]]; if (c) { cnt[c] = cnt[c] || {}; cnt[c][d] = (cnt[c][d] || 0) + 1; }
                 });
                 // Lịch học (tab Nội dung giảng dạy): classSchedules[lớp][thứ 0-6] = giờ học
                 const schedC = {};
                 const sched = cid => schedC[cid] || (schedC[cid] = (() => { const sc = (appData.classSchedules || {})[cid] || {}; return { has: Object.keys(sc).some(k => sc[k]), sc }; })());
-                const isSched = (cid, d) => { const s = sched(cid); return !s.has || !!s.sc[petDow(d)]; };
+                const isSched = (cid, d) => { const s = sched(cid); return s.has ? !!s.sc[petDow(d)] : false; };
+                // Only configured class meeting days qualify for attendance-based blessings.
+                const attended = (cid, mine, d) => isSched(cid, d) && !!mine[d] && !mine[d].abs && !!mine[d].present;
                 const weekInfo = (cid, w) => {
                     const s = sched(cid), ds = [];
-                    for (let i = 0; i < 7; i++) { const d = petAdd(w, i); if (s.has ? s.sc[petDow(d)] : (cnt[cid] && cnt[cid][d])) ds.push(d); }
+                    for (let i = 0; i < 7; i++) { const d = petAdd(w, i); if (s.has && s.sc[petDow(d)]) ds.push(d); }
                     return ds.length ? { first: ds[0], last: ds[ds.length - 1], fb: !s.has } : null;
                 };
                 const dayDone = (cid, d) => ((cnt[cid] || {})[d] || 0) >= Math.max(1, Math.ceil((N[cid] || 1) * 0.5));
                 const weekAny = (cid, w) => { for (let i = 0; i < 7; i++) if ((cnt[cid] || {})[petAdd(w, i)]) return true; return false; };
                 // Buổi học cuối tuần đã hoàn thành = đã nhập điểm (từ 50% lớp) cho ngày học cuối cùng của tuần theo lịch
-                const lastDone = (cid, w, wi) => wi.last <= today && !(wi.fb && w >= thisW) && (dayDone(cid, wi.last) || (w < thisW && weekAny(cid, w)));
+                const lastDone = (cid, w, wi) => wi.last <= today && dayDone(cid, wi.last);
                 const chance = (st, key, pct, fn, ok) => { const led = P.led[st.id] = P.led[st.id] || {}, rk = 'r:' + key; if (led[rk]) return; led[rk] = 1; _petChanged = true; if (ok !== false && Math.random() * 100 < pct) fn(); };
                 const statsOf = id => { try { const s = calculateStudentStats(id); return s && s.hasData ? s : null; } catch (e) { return null; } };
                 appData.students.forEach(st => {
@@ -13240,7 +13242,7 @@ window.openStudentProfile=function(studentId){
                     if (lv < 0) return;
                     if (!st.petHatch) { st.petHatch = today; _petChanged = true; }
                     const hatch = st.petHatch, sp = st.petSp, v = PET_B[sp].v[lv], cid = st.classId, mine = R[st.id] || {};
-                    const days = Object.keys(mine).filter(d => d >= hatch).sort(), att = days.filter(d => !mine[d].abs);
+                    const days = Object.keys(mine).filter(d => d >= hatch && isSched(cid, d)).sort(), att = days.filter(d => attended(cid, mine, d));
                     const mates = appData.students.filter(x => x.classId === cid && x.id !== st.id);
                     const pick = a => a[Math.floor(Math.random() * a.length)];
                     // ---- Theo ngày ----
@@ -13300,7 +13302,7 @@ window.openStudentProfile=function(studentId){
                             // không được bỏ qua để nối chuỗi và cũng không được tự coi là có mặt/vắng.
                             if (!mine[d]) { run = 0; continue; }
                             if (mine[d].abs) { run = 0; continue; }
-                            if (!Number.isFinite(mine[d].v)) { run = 0; continue; }
+                            if (!attended(cid, mine, d)) { run = 0; continue; }
                             if (++run % 3 === 0) { n++; petGive(st, 'n:tu:' + n, v[0], '3 buổi học liên tiếp theo lịch', '3 scheduled classes in a row'); }
                         }
                     }
@@ -13317,7 +13319,7 @@ window.openStudentProfile=function(studentId){
                     const owSeq = [];
                     for (let w = petMon(hatch); w <= thisW; w = petAdd(w, 7)) {
                         const wi = weekInfo(cid, w); if (!wi) continue;
-                        const firstOk = wi.first >= hatch && wi.first <= today && mine[wi.first] && !mine[wi.first].abs;
+                        const firstOk = wi.first >= hatch && wi.first <= today && attended(cid, mine, wi.first);
                         const lastOk = wi.last >= hatch && lastDone(cid, w, wi), wEnd = petAdd(w, 6);
                         if (sp === 0 && firstOk) petGive(st, 'n:cat:' + w, v[0], 'lửa đầu tuần', 'first-day flame');
                         if (sp === 6 && firstOk) chance(st, 'n:moon:' + w, v[0], () => petGiveInv(st, 'n:moon:' + w, 'plus2', 1, 'trăng tròn đầu tuần', 'full moon'));
