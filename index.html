@@ -3077,6 +3077,14 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                             <option value="2" data-i18n="opt2Months">2 Tháng</option>
                             <option value="3" selected data-i18n="opt3Months">3 Tháng (1 Kỳ)</option>
                             <option value="4" data-i18n="opt4Months">4 Tháng</option>
+                            <option value="5" data-i18n="opt5Months">5 Tháng</option>
+                            <option value="6" data-i18n="opt6Months">6 Tháng</option>
+                            <option value="7" data-i18n="opt7Months">7 Tháng</option>
+                            <option value="8" data-i18n="opt8Months">8 Tháng</option>
+                            <option value="9" data-i18n="opt9Months">9 Tháng</option>
+                            <option value="10" data-i18n="opt10Months">10 Tháng</option>
+                            <option value="11" data-i18n="opt11Months">11 Tháng</option>
+                            <option value="12" data-i18n="opt12Months">12 Tháng</option>
                         </select>
                     </div>
                     <div class="ctl-chip flex items-center space-x-2 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
@@ -4063,6 +4071,14 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                 opt2Months: "2 Tháng",
                 opt3Months: "3 Tháng (1 Kỳ)",
                 opt4Months: "4 Tháng",
+                opt5Months: "5 Tháng",
+                opt6Months: "6 Tháng",
+                opt7Months: "7 Tháng",
+                opt8Months: "8 Tháng",
+                opt9Months: "9 Tháng",
+                opt10Months: "10 Tháng",
+                opt11Months: "11 Tháng",
+                opt12Months: "12 Tháng",
                 optLimit15: "Hệ 15 (M = 15)",
                 optLimit10: "Hệ 10 (M = 10)",
                 m1: "Tháng 1", m2: "Tháng 2", m3: "Tháng 3", m4: "Tháng 4",
@@ -4220,6 +4236,14 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                 opt2Months: "2 Months",
                 opt3Months: "3 Months (1 Term)",
                 opt4Months: "4 Months",
+                opt5Months: "5 Months",
+                opt6Months: "6 Months",
+                opt7Months: "7 Months",
+                opt8Months: "8 Months",
+                opt9Months: "9 Months",
+                opt10Months: "10 Months",
+                opt11Months: "11 Months",
+                opt12Months: "12 Months",
                 optLimit15: "System 15 (M = 15)",
                 optLimit10: "System 10 (M = 10)",
                 m1: "Jan", m2: "Feb", m3: "Mar", m4: "Apr",
@@ -11268,7 +11292,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
             appData.courseManager.courses.push(c);appData.courseManager.activeCourseId=c.id;
             appData.scores={};appData.finalExams={};appData.teachingPlans=appData.teachingPlans||{};appData.teachingPlans[c.id]=[];appData.studentNotes={};
             appData.students=(appData.students||[]).map(st=>({...st,rewardPoints:0,inventory:[],violations:[],courseNotes:'',sgAwarded:[]}));appData.sgLedger={cells:{},gifts:{},chains:{}};
-            if(/^\d{4}-\d{2}-\d{2}/.test(c.startDate||'')){appData.year=parseInt(c.startDate.slice(0,4));appData.startMonth=parseInt(c.startDate.slice(5,7));if(/^\d{4}-\d{2}-\d{2}/.test(c.endDate||'')){const span=(parseInt(c.endDate.slice(0,4))*12+parseInt(c.endDate.slice(5,7)))-(appData.year*12+appData.startMonth)+1;if(span>=1&&span<=4)appData.monthCount=span;}appData.yearKeysFixed=true;try{const ms=document.getElementById('startMonthSelect'),mc=document.getElementById('monthCountSelect'),ys=document.getElementById('startYearSelect');if(ms)ms.value=appData.startMonth;if(mc)mc.value=appData.monthCount||3;if(ys){const yv=String(appData.year);if(![...ys.options].some(o=>o.value===yv))ys.add(new Option(yv,yv));ys.value=yv;}}catch(e){}}
+            if(/^\d{4}-\d{2}-\d{2}/.test(c.startDate||'')){appData.year=parseInt(c.startDate.slice(0,4));appData.startMonth=parseInt(c.startDate.slice(5,7));if(/^\d{4}-\d{2}-\d{2}/.test(c.endDate||'')){const span=(parseInt(c.endDate.slice(0,4))*12+parseInt(c.endDate.slice(5,7)))-(appData.year*12+appData.startMonth)+1;if(span>=1&&span<=12)appData.monthCount=span;}appData.yearKeysFixed=true;try{const ms=document.getElementById('startMonthSelect'),mc=document.getElementById('monthCountSelect'),ys=document.getElementById('startYearSelect');if(ms)ms.value=appData.startMonth;if(mc)mc.value=appData.monthCount||3;if(ys){const yv=String(appData.year);if(![...ys.options].some(o=>o.value===yv))ys.add(new Option(yv,yv));ys.value=yv;}}catch(e){}}
             appData.courseManager.courses.forEach(x=>{if(x.id!==c.id&&x.status==='active')x.status='archived';});
           } catch(err){appData=backup;console.error(err);alert(appData.language==='en'?'Could not prepare the new course. No changes were saved.':'Không thể chuẩn bị khóa mới. Chưa có thay đổi nào được lưu.');return;}
           saveData().then(ok=>{if(!ok){appData=backup;renderClassTabs();renderCurrentView();renderCourseList();return;}renderClassTabs();renderCurrentView();renderCourseList();document.getElementById('currentCourseName').value=c.name;document.getElementById('currentCourseStart').value=c.startDate||'';document.getElementById('currentCourseEnd').value=c.endDate||'';document.getElementById('newCourseName').value='';document.getElementById('newCourseStart').value=c.endDate?datePlus(c.endDate,1):'';document.getElementById('newCourseEnd').value='';alert(appData.language==='en'?'The previous course was archived and the new course is now active.':'Đã lưu trữ khóa cũ và kích hoạt khóa mới.');});
