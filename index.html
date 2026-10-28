@@ -2131,7 +2131,7 @@ html.mx-dark tbody tr:not(.score-row):not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>
 #scoreModal .mx-sc-left #inventoryGiftSelectContainer{flex:1;display:flex;flex-direction:column;min-height:0}
 #scoreModal .mx-sc-left #inventoryGiftList{flex:1;max-height:13rem;min-height:5rem}
 #scoreModal .mx-gift-empty{font-size:11px;font-style:italic;color:#b45309;text-align:center;padding:1.1rem .5rem}
-#scoreModal .mx-tgl-row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+#scoreModal .mx-tgl-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}#scoreModal .mx-tgl-row .mx-tgl{min-width:0;min-height:2.6rem;padding:.3rem .18rem;font-size:clamp(8px,.72vw,10px);gap:.2rem}#scoreModal .mx-tgl-row .mx-tgl i{flex-shrink:0}#scoreModal .mx-tgl-present{background:#ecfdf5;border-color:#a7f3d0;color:#047857}#scoreModal .mx-tgl-present:has(input:checked){background:#059669;border-color:#047857;color:white;box-shadow:0 4px 12px #05966944}.cell-present{background:#ecfdf5!important;color:#059669!important;font-size:16px!important;font-weight:900!important}
 #scoreModal .mx-tgl{position:relative;display:flex;align-items:center;justify-content:center;gap:.4rem;text-align:center;min-height:3.1rem;padding:.45rem .55rem;border:1.5px solid;border-radius:.75rem;font-weight:800;font-size:.72rem;line-height:1.2;cursor:pointer;user-select:none;transition:background .15s ease,color .15s ease,border-color .15s ease,box-shadow .15s ease}
 #scoreModal .mx-tgl input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
 #scoreModal .mx-tgl:has(input:focus-visible){outline:2px solid #6366f1;outline-offset:2px}
@@ -3470,6 +3470,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                                 <input type="checkbox" id="modalAbsentCheckbox" onchange="toggleAbsentMode(this.checked)">
                                 <i class="fa-solid fa-user-slash"></i><span data-i18n="chkAbsent">Vắng học hôm nay (Tính 0.0đ)</span>
                             </label>
+                            <label class="mx-tgl mx-tgl-present"><input type="checkbox" id="modalPresentCheckbox" onchange="mxPresentToggle(this.checked)"><i class="fa-solid fa-check"></i><span data-i18n="chkPresent">Có mặt</span></label>
                             <label class="mx-tgl mx-tgl-exam" id="modalExamToggle">
                                 <input type="checkbox" id="modalIsExamCheckbox">
                                 <i class="fa-solid fa-file-pen"></i><span data-i18n="chkIsExam">Đánh dấu đây là bài Kiểm Tra</span>
@@ -4316,6 +4317,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
 
         Object.assign(translations.vi, {
             chkIsExam: "Đánh dấu đây là bài Kiểm Tra",
+            chkPresent: "Có mặt",
             optTypePlusExam: "Cộng dồn điểm vào Bài Kiểm Tra (+0.5đ, +1đ...)",
             qg_type_plus_exam: "Cộng điểm Bài Kiểm Tra",
             no_exam_cell_for_gift: "Không tìm thấy Bài Kiểm Tra phù hợp để áp dụng quà này!",
@@ -4326,6 +4328,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
         });
         Object.assign(translations.en, {
             chkIsExam: "Mark as Exam / Test Score",
+            chkPresent: "Present",
             optTypePlusExam: "Add bonus points to Exam Score (+0.5, +1...)",
             qg_type_plus_exam: "Exam Score Bonus",
             no_exam_cell_for_gift: "No eligible Exam Score found to apply this gift!",
@@ -4625,7 +4628,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
         const QS_TTL = 60000;
         const qsQuick = true; // Nhập nhanh bằng bàn phím: luôn bật cố định
         let qsSelCell = null, qsBuf = '', qsFlashCell = null, qsToolbarSig = '', qsPresKind = null;
-        let qsChain = false; // Điểm 10 Chuỗi: luôn TẮT mỗi lần mở trang (không lưu)
+        let qsPresent = false; let qsChain = false; // Điểm 10 Chuỗi: luôn TẮT mỗi lần mở trang (không lưu)
         let qsTen = false; // Hiện điểm 10: luôn TẮT mỗi lần mở trang (không lưu)
         let qsTrend = false; // Xu hướng điểm: luôn TẮT mỗi lần mở trang (không lưu)
         let qsEdit = false; // chế độ Sửa điểm: sửa tay, gỡ liên kết số lần phát biểu (không lưu giữa các lần mở trang)
@@ -4816,6 +4819,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
         // Màn hình cảm ứng không có bàn phím: chạm một lần mở thẳng cửa sổ nhập điểm
         const qsCoarse = () => !!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
         window.qsCellClick = function (ev, sid, d) {
+            if(qsPresent && !ev.shiftKey){ qsSelect(sid,d); qsSave("present"); return; }
             if (ev.shiftKey && qsSelCell) { mxExtendTo(sid, d); return; }
             if (!qsCoarse() && ev.detail < 2) { qsSelect(sid, d); return; }
             window.__qsModalFromKey = false;
@@ -4852,6 +4856,9 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                 if (!old) return false;
                 if (!keepPts) student.rewardPoints = Math.max(0, (student.rewardPoints || 0) - qsOldExcess(old));
                 delete appData.scores[key];
+            } else if (mode === 'present') {
+                if(old && !old.absent && old.score !== null && old.score !== undefined && old.score !== '') return false;
+                appData.scores[key] = {score:null, absent:false, present:true, isExam:false};
             } else if (mode === 'absent') {
                 if (!keepPts) student.rewardPoints = Math.max(0, (student.rewardPoints || 0) - qsOldExcess(old));
                 appData.scores[key] = { score: 0, absent: true, speakingCount: 0 };
@@ -5317,6 +5324,14 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
             renderCurrentView();
             if (qsTrend) qsToast(qsT('trendOn'), 'info');
         };
+        window.qsTogglePresent = function () {
+            qsPresent = !qsPresent;
+            qsToolbarSig = ''; qsRefreshToolbar();
+            const en = appData.language === 'en';
+            qsToast(qsPresent
+                ? (en ? 'Attendance mode enabled. Click a score cell to mark the student present without adding points.' : 'Đã bật chế độ điểm danh. Nhấn vào ô điểm để ghi nhận Có mặt mà không cộng điểm tích lũy.')
+                : (en ? 'Attendance mode disabled. Score cells are back to normal interaction.' : 'Đã tắt chế độ điểm danh. Các ô điểm trở về thao tác bình thường.'), 'info');
+        };
         window.qsToggleChain = function () {
             qsChain = !qsChain;
             if (qsChain) qsTen = false; // hai chế độ làm mờ không dùng chung một lúc
@@ -5346,11 +5361,11 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
         };
         function qsRefreshToolbar() {
             const tb = qsEl('qsToolbar'); if (!tb) return;
-            const sig = (appData.language || 'vi') + '|' + qsSpeak + '|' + qsTest + '|' + qsEdit + '|' + qsTrend + '|' + !!appData.keepStreak + '|' + qsTpl + '|' + qsTen + '|' + qsChain + '|' + !!window.__mxFs;
+            const sig = (appData.language || 'vi') + '|' + qsSpeak + '|' + qsTest + '|' + qsEdit + '|' + qsTrend + '|' + !!appData.keepStreak + '|' + qsTpl + '|' + qsTen + '|' + qsChain + '|' + qsPresent + '|' + !!window.__mxFs;
             if (sig === qsToolbarSig) return;
             qsToolbarSig = sig;
             const collapsed = !!window.__qsToolbarCollapsed;
-            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-full-btn" onclick="mxToggleFullscreen()" aria-pressed="${!!window.__mxFs}" aria-label="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}" title="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}"><i class="fa-solid ${window.__mxFs ? 'fa-compress' : 'fa-expand'}"></i></button><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle qs-toggle-speak ${qsSpeak ? 'on' : ''}" onclick="qsToggleSpeak()" aria-pressed="${qsSpeak}" title="${qsT('speakTitle')}"><i class="fa-solid fa-comments"></i><span class=\"qs-lbl\">${qsT('speakLbl')}<b>${qsOnOff(qsSpeak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i><span class=\"qs-lbl\">${qsT('testLbl')}<b>${qsOnOff(qsTest)}</b></span></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i><span class=\"qs-lbl\">${qsT('editLbl')}<b>${qsOnOff(qsEdit)}</b></span></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i><span class=\"qs-lbl\">${qsT('trendLbl')}<b>${qsOnOff(qsTrend)}</b></span></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-shield-halved"></i><span class=\"qs-lbl\">${qsT('keepLbl')}<b>${qsOnOff(appData.keepStreak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i><span class=\"qs-lbl\">${qsT('tplLbl')}<b>${qsOnOff(qsTpl)}</b></span></button><button type="button" class="qs-toggle qs-toggle-ten ${qsTen ? 'on' : ''}" onclick="qsToggleTen()" aria-pressed="${qsTen}" title="${qsT('tenHint')}"><i class="fa-solid fa-star"></i><span class=\"qs-lbl\">${qsT('tenLbl')}<b>${qsOnOff(qsTen)}</b></span></button><button type="button" class="qs-toggle qs-toggle-chain ${qsChain ? 'on' : ''}" onclick="qsToggleChain()" aria-pressed="${qsChain}" title="${qsT('chainHint')}"><i class="fa-solid fa-fire"></i><span class="qs-lbl">${qsT('chainLbl')}<b>${qsOnOff(qsChain)}</b></span></button><span class="mx-today-group" role="group"><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i><span class="qs-lbl">${qsT('todayLbl')}</span></button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button></span><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsSpeakPrev" class="qs-speak-prev" style="display:none"></span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span><div class="qs-legend" role="group"><span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>${qsT('legAbsent')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>${qsT('legScored')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>${qsT('legExam')}</span><span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>${qsT('legManual')}</span><span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>${qsT('legStreak')}</span></div></div>`;
+            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-full-btn" onclick="mxToggleFullscreen()" aria-pressed="${!!window.__mxFs}" aria-label="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}" title="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}"><i class="fa-solid ${window.__mxFs ? 'fa-compress' : 'fa-expand'}"></i></button><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle qs-toggle-speak ${qsSpeak ? 'on' : ''}" onclick="qsToggleSpeak()" aria-pressed="${qsSpeak}" title="${qsT('speakTitle')}"><i class="fa-solid fa-comments"></i><span class=\"qs-lbl\">${qsT('speakLbl')}<b>${qsOnOff(qsSpeak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i><span class=\"qs-lbl\">${qsT('testLbl')}<b>${qsOnOff(qsTest)}</b></span></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i><span class=\"qs-lbl\">${qsT('editLbl')}<b>${qsOnOff(qsEdit)}</b></span></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i><span class=\"qs-lbl\">${qsT('trendLbl')}<b>${qsOnOff(qsTrend)}</b></span></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-shield-halved"></i><span class=\"qs-lbl\">${qsT('keepLbl')}<b>${qsOnOff(appData.keepStreak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i><span class=\"qs-lbl\">${qsT('tplLbl')}<b>${qsOnOff(qsTpl)}</b></span></button><button type="button" class="qs-toggle qs-toggle-ten ${qsTen ? 'on' : ''}" onclick="qsToggleTen()" aria-pressed="${qsTen}" title="${qsT('tenHint')}"><i class="fa-solid fa-star"></i><span class=\"qs-lbl\">${qsT('tenLbl')}<b>${qsOnOff(qsTen)}</b></span></button><button type="button" class="qs-toggle qs-toggle-chain ${qsChain ? 'on' : ''}" onclick="qsToggleChain()" aria-pressed="${qsChain}" title="${qsT('chainHint')}"><i class="fa-solid fa-fire"></i><span class="qs-lbl">${qsT('chainLbl')}<b>${qsOnOff(qsChain)}</b></span></button><button type="button" class="qs-toggle ${qsPresent ? 'on' : ''}" onclick="qsTogglePresent()" aria-pressed="${qsPresent}" title="${appData.language==='en'?'Attendance check-in':'Ghi nhận có mặt'}"><i class="fa-solid fa-check"></i><span class="qs-lbl">${appData.language==='en'?'Present':'Có mặt'}<b>${qsOnOff(qsPresent)}</b></span></button><span class="mx-today-group" role="group"><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i><span class="qs-lbl">${qsT('todayLbl')}</span></button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button></span><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsSpeakPrev" class="qs-speak-prev" style="display:none"></span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span><div class="qs-legend" role="group"><span class="qs-lg"><span style="color:#059669;font-weight:900">✓</span>${appData.language==='en'?'Present':'Có mặt'}</span><span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>${qsT('legAbsent')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>${qsT('legScored')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>${qsT('legExam')}</span><span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>${qsT('legManual')}</span><span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>${qsT('legStreak')}</span></div></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
             const mt = qsEl('scoreMatrix'); if (mt) { mt.classList.toggle('qs-edit-on', qsEdit); mt.classList.toggle('qs-test-on', qsTest); mt.classList.toggle('qs-speak-on', qsSpeak); mt.classList.toggle('qs-ten-on', qsTen); mt.classList.toggle('qs-chain-on', qsChain); }
             mxUpdateTodayBadge(); mxUpdateMultiInfo(); qsSpeakPreview();
@@ -9972,7 +9987,8 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                         let examTag = '', sgFlame = '';
 
                         if (scoreItem) {
-                            if (scoreItem.absent) {
+                            if (scoreItem.present && (scoreItem.score === null || scoreItem.score === undefined || scoreItem.score === '') && !scoreItem.absent) { cellClass = cellClass.replace(" cell-empty", "") + " cell-present"; cellText = "✓"; }
+                            else if (scoreItem.absent) {
                                 cellClass = cellClass.replace(" cell-empty", "") + " cell-absent";
                                 cellText = "0.0";
                             } else if (scoreItem.score !== null && scoreItem.score !== undefined) {
@@ -10028,10 +10044,11 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
             const speakingInput = document.getElementById('modalSpeakingCountInput');
 
             const examChk = document.getElementById('modalIsExamCheckbox');
+            document.getElementById("modalPresentCheckbox").checked=!!(existing&&existing.present&&!existing.absent);
             if (examChk) examChk.checked = qsTest || !!(existing && existing.isExam && !existing.absent);
             if (existing) {
                 absentCheckbox.checked = existing.absent || false;
-                scoreInput.value = existing.score !== undefined ? existing.score : '';
+                scoreInput.value = existing.score != null ? existing.score : '';
                 speakingInput.value = existing.speakingCount !== undefined ? existing.speakingCount : '';
             } else {
                 absentCheckbox.checked = false;
@@ -10240,6 +10257,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
             absentCheckbox.checked = !!(existing && existing.absent);
             scoreInput.value = (existing && existing.score !== undefined && existing.score !== null) ? existing.score : '';
             speakingInput.value = (existing && existing.speakingCount !== undefined) ? existing.speakingCount : '';
+            document.getElementById("modalPresentCheckbox").checked=!!(existing&&existing.present&&!existing.absent);
             if (examChk) examChk.checked = !!(existing && existing.isExam && !existing.absent);
             updateRealtimeCalculationDisplay();
             if (existing && !existing.absent && existing.score !== undefined && existing.score !== null) scoreInput.value = existing.score;
@@ -10493,6 +10511,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
             const speakingInput = document.getElementById('modalSpeakingCountInput');
             const examTgl = document.getElementById('modalExamToggle'), examChk = document.getElementById('modalIsExamCheckbox');
             if (isAbsent) {
+                const pc=document.getElementById("modalPresentCheckbox");if(pc)pc.checked=false;
                 container.classList.add('opacity-40', 'pointer-events-none');
                 scoreInput.value = 0;
                 speakingInput.value = 0;
@@ -10512,6 +10531,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
         };
 
         /* --- LƯU ĐIỂM & CẬP NHẬT TÚI QUÀ Pts --- */
+        window.mxPresentToggle = function(on){if(on){document.getElementById("modalAbsentCheckbox").checked=false;toggleAbsentMode(false);}};
         window.saveScore = function(e) {
             e.preventDefault();
             const fromKey = !!window.__qsModalFromKey; window.__qsModalFromKey = false;
@@ -10520,6 +10540,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
             const isAbsent = document.getElementById('modalAbsentCheckbox').checked;
             const scoreVal = document.getElementById('modalScoreInput').value;
             const speakingVal = document.getElementById('modalSpeakingCountInput').value;
+            const presentOnly = document.getElementById("modalPresentCheckbox").checked && !isAbsent && scoreVal === "" && speakingVal === "";
 
             const student = appData.students.find(s => s.id === studentId);
             if (!student) return;
@@ -10529,7 +10550,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
 
             if (oldScoreItem && oldScoreItem.sg) { qsToast(qsT('sgLocked'), 'warning'); closeScoreModal(); return; }
             // Mở bằng Enter rồi Enter tiếp mà chưa nhập gì: không ghi nhầm điểm 0, chỉ đóng cửa sổ và xuống học sinh kế
-            if (fromKey && !isAbsent && speakingVal === '' && scoreVal === '') { closeScoreModal(); qsMoveAfterModal(); return; }
+            if (fromKey && !isAbsent && !presentOnly && speakingVal === '' && scoreVal === '') { closeScoreModal(); qsMoveAfterModal(); return; }
             // Chế độ Sửa điểm: sửa tay ô điểm → gỡ liên kết số lần phát biểu, giữ nguyên điểm dư trong túi quà
             const editDetach = qsEdit && !isAbsent && scoreVal !== '' && !isNaN(parseFloat(scoreVal)) &&
                 (!oldScoreItem || oldScoreItem.manual || parseFloat(scoreVal) !== parseFloat(oldScoreItem.score));
@@ -10556,7 +10577,9 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
             if (student.rewardPoints === undefined) student.rewardPoints = 0;
             student.rewardPoints = Math.max(0, student.rewardPoints - oldExcess);
 
-            if (isAbsent) {
+            if (presentOnly) {
+                appData.scores[key] = {score:null,absent:false,present:true,isExam:false};
+            } else if (isAbsent) {
                 appData.scores[key] = { score: 0, absent: true, speakingCount: 0, isExam: false };
             } else {
                 let N = parseInt(speakingVal);
@@ -13187,7 +13210,7 @@ window.openStudentProfile=function(studentId){
                 Object.keys(appData.scores || {}).forEach(k => {
                     const m = k.match(/^(.*)_(\d{4})-(\d{1,2})-(\d{1,2})$/), it = appData.scores[k]; if (!m || !it || it.sg) return;
                     const d = m[2] + '-' + m[3].padStart(2, '0') + '-' + m[4].padStart(2, '0'), abs = !!it.absent, v = parseFloat(it.score);
-                    if (!abs && isNaN(v)) return;
+                    if (!abs && isNaN(v) && !it.present) return;
                     (R[m[1]] = R[m[1]] || {})[d] = { v, abs }; (XI[m[1]] = XI[m[1]] || {})[d] = it;
                     const c = stuC[m[1]]; if (c) { cnt[c] = cnt[c] || {}; cnt[c][d] = (cnt[c][d] || 0) + 1; }
                 });
