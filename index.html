@@ -2832,7 +2832,26 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
 @keyframes backupScreenPulse{from{background:rgba(45,0,0,.91)}to{background:rgba(255,0,0,.88)}}
 @keyframes backupPanelPulse{from{transform:scale(1);box-shadow:0 0 20px #ff1616,0 0 65px #ff3300}to{transform:scale(1.012);box-shadow:0 0 40px #ff1616,0 0 110px #ff3300}}
 @keyframes backupButtonPulse{from{filter:brightness(1);transform:scale(1)}to{filter:brightness(1.35);transform:scale(1.035);background-position:100% 50%}}
-@media(prefers-reduced-motion:reduce){#dailyBackupReminder.active,#dailyBackupReminder .backup-panel,#dailyBackupReminder .backup-download{animation:none}}
+#dailyBackupReminder .backup-siren{font-size:clamp(48px,8vw,86px);line-height:1;display:inline-block;transform-origin:50% 90%;animation:backupSiren .5s ease-in-out infinite alternate}
+#dailyBackupReminder .backup-download{position:relative}
+#dailyBackupReminder .backup-download::after{content:"";position:absolute;inset:-3px;border:3px solid #ff5a00;border-radius:21px;pointer-events:none;animation:backupRipple 1.1s ease-out infinite}
+/* Trạng thái đã bắt đầu sao lưu: màn hình dịu lại, chuyển sang xanh lá */
+#dailyBackupReminder.done{animation:none;background:rgba(2,40,18,.94)}
+#dailyBackupReminder.done .backup-panel{border-color:#16a34a;background:linear-gradient(145deg,#f0fdf4,#fff);box-shadow:0 0 25px #16a34a,0 0 75px #22c55e;animation:backupDone .6s ease-out 1}
+#dailyBackupReminder.done .backup-siren{animation:backupPop .6s ease-out 1}
+#dailyBackupReminder.done .backup-title{color:#15803d;text-shadow:0 2px #bbf7d0}
+#dailyBackupReminder.done #dailyBackupEyebrow{color:#16a34a!important}
+#dailyBackupReminder.done #dailyBackupMessage{color:#14532d!important}
+#dailyBackupReminder.done #dailyBackupInfo{color:#166534!important}
+#dailyBackupReminder.done #dailyBackupStatus{color:#166534!important}
+#dailyBackupReminder.done .backup-download{animation:none;border-color:#15803d;background:linear-gradient(120deg,#16a34a,#22c55e);box-shadow:0 0 18px #16a34a}
+#dailyBackupReminder.done .backup-download::after{display:none}
+#dailyBackupReminder.done .backup-close{background:#15803d}
+@keyframes backupSiren{from{transform:rotate(-14deg) scale(1)}to{transform:rotate(14deg) scale(1.12)}}
+@keyframes backupRipple{0%{transform:scale(1);opacity:.9}100%{transform:scale(1.08,1.4);opacity:0}}
+@keyframes backupDone{0%{transform:scale(.94)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+@keyframes backupPop{0%{transform:scale(.3) rotate(-30deg)}70%{transform:scale(1.25) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
+@media(prefers-reduced-motion:reduce){#dailyBackupReminder.active,#dailyBackupReminder .backup-panel,#dailyBackupReminder .backup-download,#dailyBackupReminder .backup-siren,#dailyBackupReminder.done .backup-panel{animation:none}#dailyBackupReminder .backup-download::after{display:none}}
 </style>
 
 </head>
@@ -5918,6 +5937,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
                 if (val) {
                     appData = val;
                     if (sessionViewMode) appData.activeViewMode = sessionViewMode;
+                    setTimeout(function () { try { if (window.mxBackupRefresh) window.mxBackupRefresh(); } catch (e) {} }, 0);
                     if (!appData.scores) appData.scores = {};
                     if (!appData.finalExams) appData.finalExams = {};
                     if (!appData.students) appData.students = [];
@@ -11109,6 +11129,7 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
             downloadAnchor.href = url;
             downloadAnchor.download = `Sao_Luu_Quan_Ly_Hoc_Sinh_${new Date().toISOString().slice(0,10)}.json`;
             document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.remove(); URL.revokeObjectURL(url);
+            try { if (window.mxBackupMark) window.mxBackupMark(); } catch (e) {}
             alert(appData.language === 'en' ? 'Backup file created. Keep it somewhere safe.' : 'Đã tạo file sao lưu. Hãy lưu file ở nơi an toàn để có thể phục hồi khi cần.');
         };
 
@@ -13212,6 +13233,42 @@ window.openStudentProfile=function(studentId){
         };
 
 
+        /* ===== MX: cầu nối trạng thái sao lưu (nút Sao lưu cạnh đồng hồ) =====
+           Tính "dấu vân tay" của dữ liệu (bỏ qua các trường chỉ là giao diện) để biết dữ liệu đã đổi sau lần sao lưu gần nhất chưa. */
+        (function () {
+            const UI_ONLY = { language: 1, activeClassId: 1, activeViewMode: 1 };
+            function h53(str) {
+                let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+                for (let i = 0; i < str.length; i++) {
+                    const ch = str.charCodeAt(i);
+                    h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677);
+                }
+                h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+                h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+                return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36) + ':' + str.length;
+            }
+            // Script nhắc sao lưu hằng ngày (script thường) đọc window.appData; biến này nằm trong module nên phải cầu nối ra ngoài.
+            try { Object.defineProperty(window, 'appData', { configurable: true, get: function () { return appData; }, set: function (v) { appData = v; } }); } catch (e) { console.warn('appData bridge skipped:', e); }
+            window.mxBackupBridge = {
+                teacherKey: function () { return String(currentTeacherId || LEGACY_TEACHER_ID); },
+                snapshot: function () {
+                    if (typeof appData === 'undefined' || !appData || !Array.isArray(appData.classes)) return null;
+                    const copy = {};
+                    Object.keys(appData).forEach(function (k) { if (!UI_ONLY[k]) copy[k] = appData[k]; });
+                    const json = JSON.stringify(copy);
+                    return { hash: h53(json), size: new Blob([json]).size, classes: appData.classes.length, students: (appData.students || []).length };
+                }
+            };
+            const __mxOrigSave = saveData;
+            saveData = function (...args) {
+                const result = __mxOrigSave.apply(this, args);
+                if (result && typeof result.then === 'function') {
+                    result.then(function () { if (window.mxBackupRefresh) window.mxBackupRefresh(); }).catch(function () {});
+                }
+                return result;
+            };
+        })();
+
         /* ---------- Phím Esc cho các lớp phủ mới ---------- */
         document.addEventListener('keydown', e => {
             if (e.key !== 'Escape') return;
@@ -13927,17 +13984,41 @@ html.mx-dark .gc-bar{background:#334155}
 
 
 <style id="mxQuickBackupButtonStyles">
-.mx-quick-backup{position:relative;z-index:46;flex:0 0 46px;width:46px;height:46px;box-sizing:border-box;margin-left:10px;margin-right:10px;padding:0;border:2px solid #fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#fff;background:linear-gradient(145deg,#ff3b30 0%,#ff6a00 52%,#ffb000 100%);box-shadow:0 3px 0 #b93408,0 5px 12px rgba(234,72,12,.32),inset 0 2px 4px rgba(255,255,255,.5);font-family:inherit;font-size:6.5px;font-weight:1000;letter-spacing:0;line-height:1;cursor:pointer;animation:mxQuickBackupBob 1.35s ease-in-out infinite;transition:width .22s ease,flex-basis .22s ease,border-radius .22s ease,padding .22s ease,filter .18s,box-shadow .18s}
-.mx-quick-backup i{flex:none;font-size:16px;line-height:1;text-shadow:0 1px 2px rgba(90,20,0,.25)}
-.mx-quick-backup span{display:none!important}
-.mx-quick-backup.show-backup-info::after{content:attr(data-backup-info);position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);z-index:9999;width:max-content;max-width:min(330px,calc(100vw - 90px));box-sizing:border-box;padding:10px 13px;border:1px solid rgba(255,130,0,.45);border-radius:12px;background:#fffaf0;color:#7c2d12;font-size:12px;font-weight:700;line-height:1.4;white-space:normal;text-align:left;box-shadow:0 5px 18px rgba(80,35,10,.22);animation:mxBackupTipIn .16s ease-out}
-@keyframes mxBackupTipIn{from{opacity:0;transform:translate(5px,-50%)}to{opacity:1;transform:translate(0,-50%)}}
-.mx-quick-backup:hover{filter:brightness(1.12) saturate(1.15);box-shadow:0 5px 0 #b93408,0 0 0 4px rgba(255,130,0,.15),0 10px 25px rgba(234,72,12,.4),inset 0 2px 5px rgba(255,255,255,.55)}
-.mx-quick-backup:active{box-shadow:0 2px 0 #b93408,0 4px 10px rgba(234,72,12,.35)}
+/* Nút sao lưu nhanh: khi rê chuột, nút kéo dài sang bên trái để hiện thông tin lần sao lưu gần nhất.
+   Màu cam + nhấp nhô = có thay đổi chưa sao lưu (mặc định); màu xanh lá = dữ liệu đã được sao lưu. */
+.mx-quick-backup{position:relative;z-index:46;flex:0 0 46px;width:46px;height:46px;box-sizing:border-box;margin-left:10px;margin-right:10px;padding:0;border:0;border-radius:50%;background:none;color:#fff;font-family:inherit;cursor:pointer;overflow:visible;
+  --qb-a:#ff3b30;--qb-b:#ff6a00;--qb-c:#ffb000;--qb-edge:#b93408;--qb-glow:234,72,12;
+  animation:mxQuickBackupBob 1.35s ease-in-out infinite}
+.mx-quick-backup.is-synced{--qb-a:#15803d;--qb-b:#16a34a;--qb-c:#4ade80;--qb-edge:#166534;--qb-glow:22,163,74;animation:none}
+#appHeaderActions > button.mx-quick-backup:hover{transform:none;box-shadow:none;filter:none}
+.mx-quick-backup:hover,.mx-quick-backup:focus-visible{animation-play-state:paused}
+.mx-qb-pill{position:absolute;top:0;left:0;height:46px;min-width:46px;box-sizing:border-box;display:flex;flex-direction:row-reverse;align-items:center;justify-content:flex-end;border:2px solid #fff;border-radius:23px;overflow:hidden;
+  background:linear-gradient(145deg,var(--qb-a) 0%,var(--qb-b) 52%,var(--qb-c) 100%);
+  box-shadow:0 3px 0 var(--qb-edge),0 5px 12px rgba(var(--qb-glow),.32),inset 0 2px 4px rgba(255,255,255,.5);
+  transition:filter .18s,box-shadow .18s,background-color .3s}
+.mx-qb-ico{flex:none;display:block;width:42px;text-align:center;font-size:16px;line-height:1;text-shadow:0 1px 2px rgba(0,40,10,.3)}
+.mx-qb-info{display:block;flex:0 1 auto;max-width:0;min-width:0;padding:0;opacity:0;overflow:hidden;white-space:nowrap;text-align:left;font-size:11px;font-weight:700;line-height:1.35;
+  text-shadow:0 1px 2px rgba(40,10,0,.5);transition:max-width .3s ease,padding .3s ease,opacity .18s ease}
+.mx-qb-info b{display:block;font-size:12px;font-weight:900}
+.mx-qb-info em{display:block;font-style:normal;font-weight:700;opacity:.96}
+.mx-quick-backup:hover .mx-qb-info,.mx-quick-backup:focus-visible .mx-qb-info{max-width:460px;padding:0 16px 0 4px;opacity:1}
+/* Dự phòng: nếu bên phải không đủ chỗ thì kéo sang trái */
+.mx-quick-backup.qb-left .mx-qb-pill{left:auto;right:0;flex-direction:row}
+.mx-quick-backup.qb-left:hover .mx-qb-info,.mx-quick-backup.qb-left:focus-visible .mx-qb-info{padding:0 4px 0 16px}
+.mx-quick-backup:hover .mx-qb-pill,.mx-quick-backup:focus-visible .mx-qb-pill{filter:brightness(1.08) saturate(1.1);box-shadow:0 5px 0 var(--qb-edge),0 0 0 4px rgba(var(--qb-glow),.15),0 10px 25px rgba(var(--qb-glow),.4),inset 0 2px 5px rgba(255,255,255,.55)}
+.mx-quick-backup:active .mx-qb-pill{box-shadow:0 2px 0 var(--qb-edge),0 4px 10px rgba(var(--qb-glow),.35)}
 .mx-quick-backup:focus-visible{outline:3px solid #312e81;outline-offset:4px}
 @keyframes mxQuickBackupBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(-1deg)}}
-@media(max-width:640px){.mx-quick-backup{flex-basis:40px;width:40px;height:40px;margin-left:6px;margin-right:6px;border-width:2px;font-size:5.5px}.mx-quick-backup i{font-size:14px}.mx-quick-backup.show-backup-info::after{max-width:calc(100vw - 80px);font-size:11px;padding:8px 10px}.mx-clock{gap:.25rem}}
-@media(prefers-reduced-motion:reduce){.mx-quick-backup{animation:none}}
+@media(max-width:640px){
+  .mx-quick-backup{flex-basis:40px;width:40px;height:40px;margin-left:6px;margin-right:6px}
+  .mx-qb-pill{height:auto;min-height:40px;min-width:40px;border-radius:20px}
+  .mx-qb-ico{width:36px;font-size:14px}
+  .mx-qb-info{font-size:10.5px;white-space:normal}
+  .mx-qb-info b{font-size:11px}
+  .mx-quick-backup:hover .mx-qb-info,.mx-quick-backup:focus-visible .mx-qb-info{max-width:calc(100vw - 100px);padding:4px 12px 4px 4px}
+  .mx-quick-backup.qb-left:hover .mx-qb-info,.mx-quick-backup.qb-left:focus-visible .mx-qb-info{padding:4px 4px 4px 12px}
+}
+@media(prefers-reduced-motion:reduce){.mx-quick-backup{animation:none}.mx-qb-info{transition:none}}
 @media print{.mx-quick-backup{display:none!important}}
 </style>
 
@@ -13967,45 +14048,97 @@ html.mx-dark .gc-bar{background:#334155}
         var host = document.getElementById('appHeaderActions');
         if (host) host.appendChild(root); else { root.style.position = 'fixed'; root.style.top = '12px'; root.style.right = '12px'; document.body.appendChild(root); }
         // Nút sao lưu nhanh cạnh đồng hồ, dùng cùng hàm exportData() của Tiện ích.
+        // Rê chuột: nút kéo dài sang trái hiện thông tin lần sao lưu gần nhất.
+        // Cam + nhấp nhô = dữ liệu đã thay đổi sau lần sao lưu gần nhất; xanh lá = đã sao lưu, chưa có thay đổi.
         var backupBtn = document.createElement('button');
         backupBtn.type = 'button';
         backupBtn.id = 'mxQuickBackupBtn';
-        backupBtn.className = 'mx-quick-backup';
-        backupBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i>';
+        backupBtn.className = 'mx-quick-backup is-dirty';
+        backupBtn.innerHTML = '<span class="mx-qb-pill"><span class="mx-qb-info"><b class="mx-qb-l1"></b><em class="mx-qb-l2"></em></span><i class="fa-solid fa-cloud-arrow-down mx-qb-ico" aria-hidden="true"></i></span>';
         backupBtn.removeAttribute('title');
-        backupBtn.setAttribute('aria-label', lang() === 'en' ? 'Back up data' : 'Sao lưu dữ liệu');
-        var backupHoverTimer = null;
-        var backupStampKey = 'mxQuickBackupLastTimestamp';
-        function backupInfoText() {
-            var stamp = 0;
-            try { stamp = Number(localStorage.getItem(backupStampKey) || 0); } catch (e) {}
-            var en = lang() === 'en';
-            if (!stamp) return en ? 'No backup has been made yet.' : 'Chưa có bản sao lưu';
-            var d = new Date(stamp);
-            var dateText = d.toLocaleDateString(en ? 'en-US' : 'vi-VN', en ? {weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'} : {weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
-            var timeText = d.toLocaleTimeString(en ? 'en-US' : 'vi-VN', {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
-            return (en ? 'Last backup: ' : 'Lần sao lưu gần nhất: ') + dateText + ' · ' + timeText;
+        var backupStampKey = 'mxQuickBackupLastTimestamp';      // khóa cũ (chỉ có thời điểm), vẫn đọc để tương thích
+        var backupInfoKey = 'mxQuickBackupInfo:';               // + mã giáo viên → {t, hash, size, classes, students}
+        var backupDirty = true;                                 // mặc định: cam, cho tới khi biết dữ liệu khớp bản sao lưu
+        function bridge() { return window.mxBackupBridge || null; }
+        function backupKey() { var br = bridge(), id = 'default'; try { if (br) id = br.teacherKey(); } catch (e) {} return backupInfoKey + id; }
+        function readBackupInfo() {
+            try {
+                var raw = localStorage.getItem(backupKey());
+                if (raw) { var o = JSON.parse(raw); if (o && o.t) return o; }
+                var legacy = Number(localStorage.getItem(backupStampKey) || 0);
+                if (legacy) return { t: legacy };
+            } catch (e) {}
+            return null;
         }
-        function updateBackupInfo() { backupBtn.setAttribute('data-backup-info', backupInfoText()); }
-        updateBackupInfo();
-        backupBtn.addEventListener('mouseenter', function () {
-            clearTimeout(backupHoverTimer);
-            backupHoverTimer = setTimeout(function () {
-                updateBackupInfo();
-                backupBtn.classList.add('show-backup-info');
-            }, 1000);
-        });
-        backupBtn.addEventListener('mouseleave', function () {
-            clearTimeout(backupHoverTimer);
-            backupHoverTimer = null;
-            backupBtn.classList.remove('show-backup-info');
-        });
-        backupBtn.addEventListener('focus', function () { updateBackupInfo(); });
+        function fmtSize(bytes, en) {
+            var loc = en ? 'en-US' : 'vi-VN';
+            if (!(bytes > 0)) return '';
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toLocaleString(loc, { maximumFractionDigits: 0 }) + ' KB';
+            return (bytes / 1048576).toLocaleString(loc, { maximumFractionDigits: 1 }) + ' MB';
+        }
+        function backupTexts() {
+            var en = lang() === 'en', info = readBackupInfo();
+            if (!info) return { l1: en ? 'No backup yet' : 'Chưa có bản sao lưu', l2: en ? 'Click to back up now' : 'Bấm để sao lưu ngay' };
+            var d = new Date(info.t), loc = en ? 'en-US' : 'vi-VN';
+            var dateText = d.toLocaleDateString(loc, { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+            var timeText = d.toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
+            var parts = [];
+            if (info.classes >= 0 && info.students >= 0 && info.classes !== undefined && info.students !== undefined) {
+                parts.push(en ? info.classes + (info.classes === 1 ? ' class' : ' classes') : info.classes + ' lớp');
+                parts.push(en ? info.students + (info.students === 1 ? ' student' : ' students') : info.students + ' học sinh');
+            }
+            var sz = fmtSize(info.size, en); if (sz) parts.push(sz);
+            var detail = parts.join(' · ');
+            var status;
+            if (backupDirty) status = en ? '⚠ Unsaved changes since this backup' : '⚠ Có thay đổi chưa sao lưu';
+            else status = en ? '✔ Backed up, no changes since' : '✔ Đã sao lưu, chưa có thay đổi';
+            return {
+                l1: (en ? 'Last backup: ' : 'Lần sao lưu gần nhất: ') + dateText + ' · ' + timeText,
+                l2: status + (detail ? ' · ' + detail : '')
+            };
+        }
+        function updateBackupUI() {
+            var t = backupTexts();
+            backupBtn.classList.toggle('is-synced', !backupDirty);
+            backupBtn.classList.toggle('is-dirty', backupDirty);
+            var s1 = backupBtn.querySelector('.mx-qb-l1'), s2 = backupBtn.querySelector('.mx-qb-l2');
+            if (s1 && s1.textContent !== t.l1) s1.textContent = t.l1;
+            if (s2 && s2.textContent !== t.l2) s2.textContent = t.l2;
+            backupBtn.setAttribute('aria-label', (lang() === 'en' ? 'Back up data' : 'Sao lưu dữ liệu') + '. ' + t.l1 + '. ' + t.l2);
+        }
+        // So dữ liệu hiện tại với dấu vân tay lúc sao lưu gần nhất → cam hoặc xanh.
+        window.mxBackupRefresh = function () {
+            var br = bridge(), snap = null;
+            try { snap = br && br.snapshot(); } catch (e) {}
+            if (snap) { var info = readBackupInfo(); backupDirty = !(info && info.hash && info.hash === snap.hash); }
+            updateBackupUI();
+        };
+        // Gọi ngay khi một bản sao lưu được tạo (exportData / nhắc sao lưu hằng ngày).
+        window.mxBackupMark = function () {
+            var br = bridge(), snap = null;
+            try { snap = br && br.snapshot(); } catch (e) {}
+            var info = { t: Date.now() };
+            if (snap) { info.hash = snap.hash; info.size = snap.size; info.classes = snap.classes; info.students = snap.students; }
+            try { localStorage.setItem(backupKey(), JSON.stringify(info)); localStorage.setItem(backupStampKey, String(info.t)); } catch (e) {}
+            backupDirty = !snap;
+            updateBackupUI();
+        };
+        window.mxBackupUIUpdate = updateBackupUI;
+        updateBackupUI();
+        // Ưu tiên kéo dài sang mép phải; chỉ kéo sang trái khi bên phải không đủ chỗ hiển thị.
+        function pickBackupSide() {
+            var info = backupBtn.querySelector('.mx-qb-info'); if (!info) return;
+            var need = Math.min(info.scrollWidth, 460) + backupBtn.offsetWidth + 24;
+            var r = backupBtn.getBoundingClientRect();
+            var roomRight = window.innerWidth - r.left - 8;
+            backupBtn.classList.toggle('qb-left', need > roomRight && r.right > roomRight);
+        }
+        backupBtn.addEventListener('mouseenter', pickBackupSide);
+        backupBtn.addEventListener('focus', pickBackupSide);
         backupBtn.addEventListener('click', function () {
             if (typeof window.exportData === 'function') {
-                try { localStorage.setItem(backupStampKey, String(Date.now())); } catch (e) {}
-                updateBackupInfo();
-                window.exportData();
+                window.exportData();   // exportData tự gọi mxBackupMark() ngay khi file sao lưu được tạo
             } else alert(lang() === 'en' ? 'Backup function is not available yet. Please try again.' : 'Chức năng sao lưu chưa sẵn sàng. Vui lòng thử lại.');
         });
         if (host) host.appendChild(backupBtn); else document.body.appendChild(backupBtn);
@@ -14026,13 +14159,7 @@ html.mx-dark .gc-bar{background:#334155}
     function setOpen(on) { menu.hidden = !on; btn.setAttribute('aria-expanded', on ? 'true' : 'false'); }
     function render() {
         var d = new Date(), l = L[lang()], h = d.getHours(), ap = '';
-        var quickBackup = document.getElementById('mxQuickBackupBtn');
-        if (quickBackup) {
-            var en = lang() === 'en';
-            quickBackup.innerHTML = '<i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i>';
-            quickBackup.removeAttribute('title');
-            quickBackup.setAttribute('aria-label', en ? 'Back up data' : 'Sao lưu dữ liệu');
-        }
+        if (window.mxBackupUIUpdate) window.mxBackupUIUpdate();   // đồng bộ song ngữ cho nút sao lưu
         if (fmt === '12') { ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; }
         tEl.textContent = (fmt === '12' ? String(h) : pad(h)) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
         apEl.textContent = ap;
@@ -14176,10 +14303,11 @@ html.mx-dark .gc-bar{background:#334155}
 
 <div id="dailyBackupReminder" role="alertdialog" aria-modal="true" aria-labelledby="dailyBackupTitle">
  <div class="backup-panel">
-  <div style="font-size:clamp(48px,8vw,86px);line-height:1">🚨</div>
+  <div id="dailyBackupIcon" class="backup-siren">🚨</div>
   <div id="dailyBackupEyebrow" style="font-size:14px;font-weight:1000;letter-spacing:.18em;color:#dc2626">NHẮC NHỞ SAO LƯU HẰNG NGÀY</div>
   <h2 class="backup-title" id="dailyBackupTitle">ĐÃ ĐẾN GIỜ SAO LƯU DỮ LIỆU!</h2>
   <p id="dailyBackupMessage" style="font-size:clamp(15px,2.3vw,20px);font-weight:800;color:#7f1d1d">Vui lòng tải bản sao lưu JSON để bảo vệ dữ liệu lớp học. Cửa sổ này chỉ có thể tắt sau khi bắt đầu tải bản sao lưu.</p>
+  <p id="dailyBackupInfo" style="font-size:13px;font-weight:800;color:#9a3412;margin:10px 0 0"></p>
   <button id="dailyBackupDownload" class="backup-download" type="button">⬇ SAO LƯU DỮ LIỆU NGAY</button>
   <button id="dailyBackupClose" class="backup-close" type="button">Đã sao lưu — Đóng thông báo</button>
   <p id="dailyBackupStatus" style="font-size:12px;color:#991b1b;font-weight:700;margin-top:14px"></p>
@@ -14192,28 +14320,53 @@ html.mx-dark .gc-bar{background:#334155}
  const root=document.getElementById('dailyBackupReminder');
  if(!root)return;
  const $=id=>document.getElementById(id);
- let audioCtx=null, soundTimer=null, triggeredDate='', downloaded=false;
+ let audioCtx=null, soundTimer=null, triggeredDate='', downloaded=false, dueInfo=null, statusKind='idle', flashTimer=null, origTitle='';
  const lang=()=>((window.appData&&appData.language)==='en'?'en':'vi');
  const words={
-  vi:{eyebrow:'NHẮC NHỞ SAO LƯU HẰNG NGÀY',title:'ĐÃ ĐẾN GIỜ SAO LƯU DỮ LIỆU!',message:'Vui lòng tải bản sao lưu JSON để bảo vệ dữ liệu lớp học. Cửa sổ này chỉ có thể tắt sau khi bắt đầu tải bản sao lưu.',download:'⬇ SAO LƯU DỮ LIỆU NGAY',close:'Đã sao lưu — Đóng thông báo',status:'Hãy bấm nút đỏ cam để tải tệp JSON. Sau khi bắt đầu tải, nút đóng sẽ xuất hiện.',started:'Đã khởi chạy tải xuống tệp sao lưu JSON. Hãy kiểm tra thư mục tải xuống trước khi đóng.',err:'Không thể tạo bản sao lưu. Vui lòng thử lại.'},
-  en:{eyebrow:'DAILY DATA BACKUP REMINDER',title:'IT’S TIME TO BACK UP YOUR DATA!',message:'Download a JSON backup to protect your class data. This alert can only be dismissed after you start the backup download.',download:'⬇ BACK UP DATA NOW',close:'Backup started — Dismiss alert',status:'Press the red-orange button to download the JSON file. The close button appears after the download starts.',started:'The JSON backup download has been initiated. Check your Downloads folder before dismissing.',err:'Could not create the backup. Please try again.'}
+  vi:{eyebrow:'NHẮC NHỞ SAO LƯU HẰNG NGÀY',title:'ĐÃ ĐẾN GIỜ SAO LƯU DỮ LIỆU!',message:'Vui lòng tải bản sao lưu JSON để bảo vệ dữ liệu lớp học. Cửa sổ này chỉ có thể tắt sau khi bắt đầu tải bản sao lưu.',download:'⬇ SAO LƯU DỮ LIỆU NGAY',close:'Đã sao lưu — Đóng thông báo',status:'Hãy bấm nút đỏ cam để tải tệp JSON. Sau khi bắt đầu tải, nút đóng sẽ xuất hiện.',started:'Đã khởi chạy tải xuống tệp sao lưu JSON. Hãy kiểm tra thư mục tải xuống trước khi đóng.',err:'Không thể tạo bản sao lưu. Vui lòng thử lại.',info:(t,d)=>`Buổi học cuối hôm nay bắt đầu lúc ${t} · giờ nhắc sao lưu ${d}`,doneEyebrow:'ĐÃ BẮT ĐẦU SAO LƯU',doneTitle:'SAO LƯU ĐÃ ĐƯỢC KHỞI CHẠY!',doneMsg:'Bản sao lưu JSON đang được tải xuống. Hãy kiểm tra thư mục tải xuống rồi đóng thông báo.',again:'⬇ TẢI LẠI BẢN SAO LƯU',pageTitle:'🚨 ĐẾN GIỜ SAO LƯU!'},
+  en:{eyebrow:'DAILY DATA BACKUP REMINDER',title:'IT’S TIME TO BACK UP YOUR DATA!',message:'Download a JSON backup to protect your class data. This alert can only be dismissed after you start the backup download.',download:'⬇ BACK UP DATA NOW',close:'Backup started — Dismiss alert',status:'Press the red-orange button to download the JSON file. The close button appears after the download starts.',started:'The JSON backup download has been initiated. Check your Downloads folder before dismissing.',err:'Could not create the backup. Please try again.',info:(t,d)=>`Today’s last class starts at ${t} · backup reminder time ${d}`,doneEyebrow:'BACKUP STARTED',doneTitle:'BACKUP HAS BEEN STARTED!',doneMsg:'The JSON backup is downloading. Check your Downloads folder, then dismiss this alert.',again:'⬇ DOWNLOAD AGAIN',pageTitle:'🚨 TIME TO BACK UP!'}
  };
- function paintLanguage(){const w=words[lang()];$('dailyBackupEyebrow').textContent=w.eyebrow;$('dailyBackupTitle').textContent=w.title;$('dailyBackupMessage').textContent=w.message;$('dailyBackupDownload').textContent=w.download;$('dailyBackupClose').textContent=w.close;if(!downloaded)$('dailyBackupStatus').textContent=w.status;}
+ function paintLanguage(){const w=words[lang()];
+  $('dailyBackupEyebrow').textContent=downloaded?w.doneEyebrow:w.eyebrow;
+  $('dailyBackupTitle').textContent=downloaded?w.doneTitle:w.title;
+  $('dailyBackupMessage').textContent=downloaded?w.doneMsg:w.message;
+  $('dailyBackupDownload').textContent=downloaded?w.again:w.download;
+  $('dailyBackupClose').textContent=w.close;
+  $('dailyBackupStatus').textContent=statusKind==='ok'?w.started:statusKind==='err'?w.err:w.status;
+  $('dailyBackupInfo').textContent=dueInfo?w.info(dueInfo.t,dueInfo.d):'';
+  $('dailyBackupIcon').textContent=downloaded?'✅':'🚨';}
  function playAlarm(){
   try{
    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
    audioCtx=audioCtx||new AC(); if(audioCtx.state==='suspended')audioCtx.resume();
    const start=audioCtx.currentTime;
    [880,660,880,990].forEach((hz,i)=>{const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();osc.type='sawtooth';osc.frequency.value=hz;gain.gain.setValueAtTime(.0001,start+i*.22);gain.gain.exponentialRampToValueAtTime(.12,start+i*.22+.025);gain.gain.exponentialRampToValueAtTime(.0001,start+i*.22+.19);osc.connect(gain);gain.connect(audioCtx.destination);osc.start(start+i*.22);osc.stop(start+i*.22+.2);});
+   try{if(navigator.vibrate)navigator.vibrate([350,120,350]);}catch(e){}
   }catch(e){}
  }
+ function playChime(){
+  try{
+   const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+   audioCtx=audioCtx||new AC();if(audioCtx.state==='suspended')audioCtx.resume();
+   const t=audioCtx.currentTime;
+   [523.25,659.25,783.99].forEach((hz,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=hz;g.gain.setValueAtTime(.0001,t+i*.14);g.gain.exponentialRampToValueAtTime(.16,t+i*.14+.03);g.gain.exponentialRampToValueAtTime(.0001,t+i*.14+.5);o.connect(g);g.connect(audioCtx.destination);o.start(t+i*.14);o.stop(t+i*.14+.55);});
+  }catch(e){}
+ }
+ // Nhấp nháy tiêu đề tab để gây chú ý khi đang ở tab/cửa sổ khác; dừng và khôi phục tiêu đề khi xong.
+ function startAttention(){if(flashTimer)return;origTitle=document.title;let on=false;flashTimer=setInterval(()=>{on=!on;document.title=on?words[lang()].pageTitle:origTitle;},900);}
+ function stopAttention(){if(flashTimer){clearInterval(flashTimer);flashTimer=null;document.title=origTitle;}try{if(navigator.vibrate)navigator.vibrate(0);}catch(e){}}
+ // Trình duyệt chặn âm thanh tự phát nếu người dùng chưa chạm vào trang: mở khóa ở lần tương tác đầu tiên để còi kêu được.
+ function unlockAudio(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;audioCtx=audioCtx||new AC();if(audioCtx.state==='suspended')audioCtx.resume();}catch(e){}}
+ ['pointerdown','keydown','touchstart'].forEach(ev=>document.addEventListener(ev,unlockAudio,{once:true,passive:true}));
  function stopAlarm(){if(soundTimer){clearInterval(soundTimer);soundTimer=null;}}
  function showReminder(){
   const today=localDateKey(); if(triggeredDate===today||root.classList.contains('active'))return;
-  triggeredDate=today;downloaded=false;paintLanguage();$('dailyBackupClose').classList.remove('ready');root.classList.add('active');
-  playAlarm();soundTimer=setInterval(playAlarm,1500);
+  triggeredDate=today;downloaded=false;statusKind='idle';root.classList.remove('done');paintLanguage();$('dailyBackupClose').classList.remove('ready');root.classList.add('active');
+  playAlarm();soundTimer=setInterval(playAlarm,1500);startAttention();
  }
  function localDateKey(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+ // Đã có bản sao lưu từ giờ nhắc trở đi (kể cả sau khi tải lại trang) thì không nhắc lại nữa.
+ function backedUpSince(ts){try{let id='default';if(window.mxBackupBridge)id=window.mxBackupBridge.teacherKey();const o=JSON.parse(localStorage.getItem('mxQuickBackupInfo:'+id)||'null');return !!(o&&o.t>=ts);}catch(e){return false;}}
  function checkSchedule(){
   if(!window.appData||!Array.isArray(appData.classes)||!appData.classes.length)return;
   const now=new Date(),dow=now.getDay(),schedules=appData.classSchedules||{};
@@ -14227,9 +14380,12 @@ html.mx-dark .gc-bar{background:#334155}
    if(latest===null||mins>latest)latest=mins;
   });
   if(!hasSchedule||latest===null)return;
+  const dueMins=Math.min(latest+89,1439);   // buổi học rất muộn: nhắc chậm nhất lúc 23:59 cùng ngày, không tràn sang ngày sau
   const due=new Date(now.getFullYear(),now.getMonth(),now.getDate(),0,0,0,0);
-  due.setMinutes(latest+89);
-  if(now>=due&&triggeredDate!==localDateKey())showReminder();
+  due.setMinutes(dueMins);
+  const hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+  dueInfo={t:hm(latest),d:hm(dueMins)};
+  if(now>=due&&triggeredDate!==localDateKey()&&!backedUpSince(due.getTime()))showReminder();
  }
  function startDownload(){
   try{
@@ -14239,12 +14395,13 @@ html.mx-dark .gc-bar{background:#334155}
    const url=URL.createObjectURL(blob),a=document.createElement('a');
    a.href=url;a.download='Sao_Luu_Quan_Ly_Hoc_Sinh_'+localDateKey()+'.json';
    document.body.appendChild(a);a.click();a.remove();
+   try{if(window.mxBackupMark)window.mxBackupMark();}catch(e){}
    setTimeout(()=>URL.revokeObjectURL(url),60000);
-   downloaded=true;stopAlarm();$('dailyBackupClose').classList.add('ready');$('dailyBackupStatus').textContent=words[lang()].started;
-  }catch(e){$('dailyBackupStatus').textContent=words[lang()].err;console.error('Daily backup failed',e);}
+   downloaded=true;statusKind='ok';stopAlarm();stopAttention();root.classList.add('done');paintLanguage();playChime();$('dailyBackupClose').classList.add('ready');
+  }catch(e){statusKind='err';$('dailyBackupStatus').textContent=words[lang()].err;console.error('Daily backup failed',e);}
  }
  $('dailyBackupDownload').addEventListener('click',startDownload);
- $('dailyBackupClose').addEventListener('click',()=>{if(!downloaded)return;root.classList.remove('active');stopAlarm();});
+ $('dailyBackupClose').addEventListener('click',()=>{if(!downloaded)return;root.classList.remove('active','done');stopAlarm();stopAttention();});
  // Deliberately block Escape and outside clicks while reminder is active.
  root.addEventListener('click',e=>{if(e.target===root)e.preventDefault();});
  document.addEventListener('keydown',e=>{if(root.classList.contains('active')&&e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();}},true);
