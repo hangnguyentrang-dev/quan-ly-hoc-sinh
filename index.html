@@ -2903,6 +2903,19 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
 .ps-art svg{transition:transform .25s ease}
 .ps-card:hover .ps-art svg,.pq-row:hover .ps-art svg{transform:perspective(220px) rotateY(14deg) rotateX(-8deg) scale(1.07)}
 </style>
+
+<style id="mx-ticket-shop-v2">
+.psh-ticket-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px}
+.psh-ticket-wallet{display:flex;align-items:center;gap:14px;padding:12px 23px;border-radius:18px;background:linear-gradient(115deg,#4c1d95,#7c3aed 45%,#c026d3 82%,#f59e0b);box-shadow:0 9px 24px rgba(124,58,237,.24);color:white;border:1px solid rgba(255,255,255,.4);min-width:235px}
+.psh-ticket-icon{display:grid;place-items:center;width:51px;height:51px;border-radius:15px;background:rgba(255,255,255,.2);font-size:28px;transform:rotate(-14deg);text-shadow:0 2px 7px #4c1d95}
+.psh-ticket-meta{display:flex;flex-direction:column;line-height:1.1;gap:5px}.psh-ticket-meta small{font-size:10px;font-weight:800;letter-spacing:.08em;color:#f3e8ff}.psh-ticket-meta strong{font-size:34px;font-weight:950;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+@keyframes mxTicketRainbow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.gift-card.gift-sp-item_ticket{--gb:#a855f7;--wm:#fff; background:linear-gradient(120deg,#fecdd3,#fde68a,#bbf7d0,#bae6fd,#ddd6fe,#f5d0fe,#fecdd3)!important;background-size:260% 260%!important;animation:mxTicketRainbow 9s ease infinite;box-shadow:0 6px 20px rgba(147,51,234,.19)!important;border:2px solid rgba(147,51,234,.5)!important}
+.gift-card.gift-sp-item_ticket .gift-wm{color:#7c3aed;opacity:.18}.gift-card.gift-sp-item_ticket .gift-emoji-wrap{color:#6d28d9;font-size:30px}.gift-card.gift-sp-item_ticket .gift-name{color:#4c1d95;font-weight:900}.gift-card.gift-sp-item_ticket .gift-cost{color:#6d28d9}.gift-card.gift-sp-item_ticket .gift-note{color:#6d28d9}
+html.mx-dark .gift-card.gift-sp-item_ticket{background:linear-gradient(120deg,#4c1d95,#7e22ce,#1d4ed8,#047857,#a16207,#4c1d95)!important;background-size:260% 260%!important;animation:mxTicketRainbow 9s ease infinite}
+html.mx-dark .gift-card.gift-sp-item_ticket .gift-name,html.mx-dark .gift-card.gift-sp-item_ticket .gift-note{color:#fff}
+@media(prefers-reduced-motion:reduce){.gift-card.gift-sp-item_ticket{animation:none!important}}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -4429,7 +4442,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             fix_change_9:  { vi: 'Đổi một điểm có sẵn thành 9',  en: 'Change existing score to 9' },
             fix_change_8:  { vi: 'Đổi một điểm có sẵn thành 8',  en: 'Change existing score to 8' },
             fix_lucky_spin: { vi: '1 lượt quay may mắn', en: '1 Lucky Wheel spin' },
-            fix_streak_shield: { vi: 'Khiên giữ chuỗi', en: 'Streak Shield' }
+            fix_streak_shield: { vi: 'Khiên giữ chuỗi', en: 'Streak Shield' },
+            fix_item_ticket_1: { vi: '1 Phiếu Vật Phẩm', en: '1 Item Ticket' }
         };
 
         const DEFAULT_FIXED_ITEMS = [
@@ -4441,7 +4455,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             { id: 'fix_change_8',  name: 'Đổi một điểm có sẵn thành 8',  cost: 8,  isFixed: true, targetScore: 8,  type: 'change' },
             { id: 'fix_lucky_spin', name: '1 lượt quay may mắn', cost: 0, isFixed: true, type: 'lucky_spin' },
             { id: 'fix_plus_exam_1', name: 'Cộng 1 điểm vào bài kiểm tra', nameEn: '+1 point to Test score', cost: 10, isFixed: true, type: 'plus_exam', deltaScore: 1 },
-            { id: 'fix_streak_shield', name: 'Khiên giữ chuỗi', nameEn: 'Streak Shield', cost: 10, isFixed: true, type: 'streak_shield' }
+            { id: 'fix_streak_shield', name: 'Khiên giữ chuỗi', nameEn: 'Streak Shield', cost: 10, isFixed: true, type: 'streak_shield' },
+            { id: 'fix_item_ticket_1', name: '1 Phiếu Vật Phẩm', nameEn: '1 Item Ticket', cost: 10, isFixed: true, type: 'item_ticket', ticketQty: 1 }
         ];
         // Quà cố định cộng 1 điểm Test score: cho phép sửa tên (theo từng ngôn ngữ) và giá; luôn +1, luôn quét ô Test score thấp nhất
         const EXAM_PLUS_ID = 'fix_plus_exam_1';
@@ -4449,6 +4464,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         // Quà cố định Khiên giữ chuỗi: bị điểm dưới 9 thì tự tiêu 1 khiên và miễn trừ chuỗi. Sửa được tên (theo ngôn ngữ) và giá, không xóa khỏi cửa hàng.
         const SHIELD_ID = 'fix_streak_shield';
         const SHIELD_DEFAULT = { vi: 'Khiên giữ chuỗi', en: 'Streak Shield' };
+        const SHOP_TICKET_GIFT_ID = 'fix_item_ticket_1';
 
         const FIXED_VIOLATION_NAMES = {
             vt_1: { vi: 'Không làm bài tập về nhà', en: 'Did not complete homework' },
@@ -4525,6 +4541,10 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             if (String(item.itemId || item.id || '') === EXAM_PLUS_ID) {
                 const live = (appData.globalShopItems || []).find(i => i.id === EXAM_PLUS_ID) || item;
                 return lang === 'en' ? (live.nameEn || EXAM_PLUS_DEFAULT.en) : (live.name || EXAM_PLUS_DEFAULT.vi);
+            }
+            if (String(item.itemId || item.id || '') === SHOP_TICKET_GIFT_ID) {
+                const live=(appData.globalShopItems||[]).find(i=>i.id===SHOP_TICKET_GIFT_ID)||item;
+                return lang==='en' ? (live.nameEn||'1 Item Ticket') : (live.name||'1 Phiếu Vật Phẩm');
             }
             if (item.isFixed && FIXED_ITEM_NAMES[item.id]) {
                 return FIXED_ITEM_NAMES[item.id][lang] || item.name;
@@ -5766,12 +5786,15 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         const qgClamp = v => Math.min(10, Math.max(0, Math.round(v * 10) / 10));
         function qgKind(g) {
             const t = String(g.type || '').toLowerCase();
+            if (t === 'item_ticket' || String(g.itemId || g.id || '') === 'fix_item_ticket_1') return 'item_ticket';
             if (t === 'lucky_spin' || String(g.itemId || g.id || '') === 'fix_lucky_spin') return 'lucky';
             if (t === 'plus' || t === 'add' || t === 'change' || t === 'delete_score' || t === 'plus_match' || t === 'plus_exam' || t === 'streak_ten' || t === 'streak_shield') return t;
             return 'none';
         }
-        const QG_ICON = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', streak_shield: 'fa-shield-halved', none: 'fa-gift', lucky: 'fa-dice' };
-        const QG_TYPE_KEY = { plus: 'qg_type_plus', add: 'qg_type_add', change: 'qg_type_change', delete_score: 'qg_type_delete', plus_match: 'qg_type_plus_match', plus_exam: 'qg_type_plus_exam', streak_ten: 'qg_type_streak', streak_shield: 'qg_type_shield', none: 'qg_type_none', lucky: 'qg_type_wheel' };
+        const QG_ICON = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', streak_shield: 'fa-shield-halved', none: 'fa-gift', lucky: 'fa-dice', item_ticket: 'fa-ticket' };
+        const QG_TYPE_KEY = { plus: 'qg_type_plus', add: 'qg_type_add', change: 'qg_type_change', delete_score: 'qg_type_delete', plus_match: 'qg_type_plus_match', plus_exam: 'qg_type_plus_exam', streak_ten: 'qg_type_streak', streak_shield: 'qg_type_shield', none: 'qg_type_none', lucky: 'qg_type_wheel', item_ticket: 'qg_type_ticket' };
+        Object.assign(translations.vi,{qg_type_ticket:'Phiếu Vật Phẩm'});
+        Object.assign(translations.en,{qg_type_ticket:'Item Ticket'});
         const PM_OPS = { lte: '≤', eq: '=', gte: '≥' };
         function matchGiftCond(g, v) {
             const m = parseFloat(g.matchScore);
@@ -6158,7 +6181,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                                 if (fix.targetScore !== undefined) exists.targetScore = fix.targetScore;
                                 else delete exists.targetScore;
                                 if (fix.id === EXAM_PLUS_ID) { exists.deltaScore = fix.deltaScore; if (exists.nameEn === undefined) exists.nameEn = fix.nameEn; if (!exists.name) exists.name = fix.name; }
-                                if (fix.id === SHIELD_ID) { if (exists.nameEn === undefined) exists.nameEn = fix.nameEn; if (!exists.name) exists.name = fix.name; }
+                                if (fix.id === SHIELD_ID || fix.id === SHOP_TICKET_GIFT_ID) { if (exists.nameEn === undefined) exists.nameEn = fix.nameEn; if (!exists.name) exists.name = fix.name; }
+                                if (fix.id === SHOP_TICKET_GIFT_ID) exists.ticketQty = 1;
                                 exists.type = fix.type;
                             }
                         });
@@ -7582,7 +7606,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     const _wmIco = _gk === 'lucky' ? 'fa-dharmachakra' : _gIco;
                     card.className = "gift-card border border-slate-200 rounded-xl p-4 bg-white text-center shadow-sm flex flex-col justify-between relative group" + (asList ? " as-list" : "") + " gift-special gift-sp-" + _gk;
                     const _wmHtml = `<span class="gift-wm" aria-hidden="true"><i class="fa-solid ${_wmIco}"></i></span>`;
-                    const _noteHtml = _isExam ? `<div class="gift-note">${en ? 'Only for regular tests' : 'Chỉ dùng cho bài kiểm tra thường xuyên'}</div>` : (_gk === 'streak_shield' ? `<div class="gift-note">${qgT('shield_card_note')}</div>` : '');
+                    const _noteHtml = _gk === 'item_ticket' ? `<div class="gift-note">${en?'Adds 1 ticket directly to the student wallet':'Cộng trực tiếp 1 phiếu vào ví học sinh'}</div>` : _isExam ? `<div class="gift-note">${en ? 'Only for regular tests' : 'Chỉ dùng cho bài kiểm tra thường xuyên'}</div>` : (_gk === 'streak_shield' ? `<div class="gift-note">${qgT('shield_card_note')}</div>` : '');
                     card.dataset.id = item.id;
 
                     let deleteBtnHtml = "";
@@ -7769,10 +7793,11 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         }
         /* Icon theo loại quà: dùng chung bộ icon với Túi quà ở Matrix Score (QG_ICON) */
         function giftTypeIconHtml(item) {
-            const MAP = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', streak_shield: 'fa-shield-halved', none: 'fa-gift', lucky: 'fa-dice' };
+            const MAP = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', streak_shield: 'fa-shield-halved', none: 'fa-gift', lucky: 'fa-dice', item_ticket: 'fa-ticket' };
             const t = String((item && item.type) || '').toLowerCase();
             let k = 'none';
-            if (t === 'lucky_spin' || String((item && (item.itemId || item.id)) || '') === 'fix_lucky_spin') k = 'lucky';
+            if (t === 'item_ticket' || String((item && (item.itemId || item.id)) || '') === 'fix_item_ticket_1') k = 'item_ticket';
+            else if (t === 'lucky_spin' || String((item && (item.itemId || item.id)) || '') === 'fix_lucky_spin') k = 'lucky';
             else if (['plus', 'add', 'change', 'delete_score', 'plus_match', 'plus_exam', 'streak_ten', 'streak_shield'].includes(t)) k = t;
             return `<i class="fa-solid ${MAP[k]}"></i>`;
         }
@@ -7862,6 +7887,14 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             student.rewardPoints = (student.rewardPoints || 0) - item.cost * qty;
             try { window.petNoteSpend && window.petNoteSpend(student, item.cost * qty); } catch (e) {}
             try { (window.__ehHints = window.__ehHints || []).push({ sid: student.id, itemId: item.id, cost: item.cost, qty, t: Date.now() }); } catch (e) {}
+            if (item.type === 'item_ticket' && item.id === SHOP_TICKET_GIFT_ID) {
+                const earned=qty;
+                const before=Math.max(0,Math.floor(Number(student.itemTickets)||0));
+                student.itemTickets=before+earned;
+                student.itemTicketHistory=Array.isArray(student.itemTicketHistory)?student.itemTicketHistory:[];
+                student.itemTicketHistory.push({id:'gift_ticket_'+Date.now()+'_'+Math.random().toString(36).slice(2,9),type:'gift_shop_reward',amount:earned,before,after:student.itemTickets,source:'gift_shop',ref:item.id,at:new Date().toISOString()});
+                return {invId:'ticket_reward_'+Date.now(),itemId:item.id,name:getRewardName(item),type:'item_ticket',ticketQty:earned,date:dateStr};
+            }
             if (!student.inventory) student.inventory = [];
             let lastInv = null;
             for (let k = 0; k < qty; k++) {
@@ -8416,7 +8449,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const typeSelect = document.getElementById('editItemType');
             const itemType = item.type || 'none';
             const isLuckySpinSpecial = String(item.id || '') === 'fix_lucky_spin' || String(item.type || '').toLowerCase() === 'lucky_spin';
-            const isExamPlusSpecial = String(item.id || '') === EXAM_PLUS_ID || String(item.id || '') === SHIELD_ID;
+            const isExamPlusSpecial = String(item.id || '') === EXAM_PLUS_ID || String(item.id || '') === SHIELD_ID || String(item.id || '') === SHOP_TICKET_GIFT_ID;
             const editTypeRow = document.getElementById('editGiftTypeRow');
             const editValueRow = document.getElementById('editGiftValueInputContainer');
             if (editTypeRow) editTypeRow.classList.toggle('hidden', isLuckySpinSpecial || isExamPlusSpecial);
@@ -8520,6 +8553,11 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     saveData();
                     closeEditItemModal();
                     return;
+                }
+                if (String(item.id || '') === SHOP_TICKET_GIFT_ID) {
+                    if (name) { if (appData.language === 'en') item.nameEn=name; else item.name=name; }
+                    item.cost=Math.max(1,cost);item.type='item_ticket';item.ticketQty=1;
+                    saveData();closeEditItemModal();return;
                 }
                 if (String(item.id || '') === SHIELD_ID) {
                     // Chỉ sửa tên (theo ngôn ngữ đang dùng) và giá; loại quà luôn là Khiên giữ chuỗi
@@ -11802,7 +11840,7 @@ window.openStudentProfile=function(studentId){
         function wheelTypeTag(p){
           const it=wheelItemOf(p),en=appData.language==='en',t=it&&it.type;
           const M={plus:['Cộng điểm','Add points'],add:['Tạo điểm','Set empty cell'],change:['Sửa điểm','Change score'],delete_score:['Xóa điểm','Delete score'],plus_match:['Cộng theo điều kiện','Conditional add'],plus_exam:['Cộng điểm kiểm tra','Add to exam score'],lucky_spin:['Lượt quay','Spin turn'],streak_shield:['Khiên giữ chuỗi','Streak shield']};
-          if(!t)return en?'Regular gift (not added to bag)':'Quà thường (không vào túi)';
+          if(p.ticketPrize||p.itemId==='mx_item_ticket')return en?'Item Tickets · wallet':'Phiếu Vật Phẩm · vào ví';if(!t)return en?'Regular gift (not added to bag)':'Quà thường (không vào túi)';
           const v=it.deltaScore!==undefined?' '+(it.deltaScore>0?'+':'')+it.deltaScore:(it.targetScore!==undefined?' → '+it.targetScore:'');
           return (M[t]||[t,t])[en?1:0]+v+(en?' · goes to bag':' · vào túi quà');
         }
@@ -11818,6 +11856,11 @@ window.openStudentProfile=function(studentId){
           if(wheelBusy)return;
           if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(wheelText('Khóa đã lưu trữ chỉ được xem.','Archived course is read-only.'));return;}
           window.openCreateItemModal();wheelApplyCreateMode(true);
+        };
+        window.addWheelTicketPrize=async function(){
+          if(wheelBusy)return;ensureWheelData();const qty=await showAppPrompt(wheelText('Số Phiếu Vật Phẩm mỗi lần trúng:','Item Tickets per win:'),'2');if(qty===null)return;const q=Number(qty);if(!Number.isInteger(q)||q<1||q>999)return;
+          const w=await showAppPrompt(wheelText('Trọng số 0,1–100:','Weight 0.1–100:'),'1');if(w===null)return;const weight=Number(w);if(!Number.isFinite(weight)||weight<0.1||weight>100)return;
+          const ps=wheelPrizes(),p={id:'prize_'+Date.now()+'_ticket',name:wheelText('Phiếu Vật Phẩm','Item Tickets'),weight,qty:q,color:'#a855f7',enabled:true,order:ps.length,itemId:'mx_item_ticket',ticketPrize:true};ps.push(p);if(await saveData()!==true){ps.pop();alert(wheelText('Không lưu được.','Save failed.'));}renderWheelView();
         };
         window.addWheelLuckyPrize=async function(){
           if(wheelBusy)return;ensureWheelData();
@@ -11844,6 +11887,8 @@ window.openStudentProfile=function(studentId){
           document.getElementById('wheelProbabilities').innerHTML=wheelProbabilityRows().map(p=>`<div class="wheel-fx flex items-center gap-2 text-sm rounded-lg border bg-white px-3 py-2"><span class="w-3 h-3 rounded-sm shrink-0" style="background:${wheelEsc(p.color||'#64748b')}"></span><span class="flex-1 break-words">${wheelEsc(p.name)}${wheelQty(p)>1?' ×'+wheelQty(p):''}</span><b>${p.prob.toFixed(2)}%</b></div>`).join('')||`<p class="text-sm text-slate-500">${labels.empty}</p>`;
           document.getElementById('wheelPrizeList').innerHTML=wheelPrizes().map(p=>`<div class="wheel-fx flex flex-wrap items-center gap-2 bg-white border rounded-lg p-2"><span class="w-4 h-4 rounded shrink-0" style="background:${wheelEsc(p.color||'#64748b')}"></span><span class="flex-1 min-w-28 text-sm font-semibold">${wheelEsc(p.name)}<small class="block text-[11px] font-normal text-slate-500">${wheelEsc(wheelTypeTag(p))}</small></span><span class="text-xs text-slate-500">${en?'Weight':'Trọng số'}: ${Number(p.weight)}</span><span class="text-xs text-slate-500">${en?'Qty / spin':'Số lượng/lần'}: ${wheelQty(p)}</span><span class="text-xs">${p.enabled===false?(en?'Disabled':'Đã tắt'):(en?'Enabled':'Đang bật')}</span><button onclick="editWheelPrize('${p.id}')" class="border rounded px-2 py-1 text-xs">${labels.edit}</button><button onclick="toggleWheelPrize('${p.id}')" class="border rounded px-2 py-1 text-xs">${p.enabled===false?labels.enable:labels.disable}</button><button onclick="deleteWheelPrize('${p.id}')" class="border border-rose-200 text-rose-700 rounded px-2 py-1 text-xs">${labels.del}</button></div>`).join('')||`<p class="text-sm text-slate-500">${labels.empty}</p>`;
           document.getElementById('wheelHistory').innerHTML=appData.luckyWheel.history.slice().reverse().slice(0,200).map(h=>`<div class="border rounded-lg p-3 flex flex-wrap gap-2 items-center text-sm"><span class="font-bold">${wheelEsc(h.prizeName)}${Number(h.qty)>1?' ×'+Number(h.qty):''}</span><span class="text-slate-500">${wheelEsc(h.studentName|| (en?'Free spin':'Quay tự do'))}</span><span class="text-slate-400 text-xs">${wheelEsc(h.at||'')}</span><span class="ml-auto text-xs text-slate-500">${wheelEsc(h.spinId||'')}</span></div>`).join('')||`<p class="text-sm text-slate-500">${labels.none}</p>`;
+          // Ticket prizes remain available in the wheel prize configuration; no separate shortcut button.
+          const obsoleteTicketButton=document.getElementById('mxWheelTicketBtn');if(obsoleteTicketButton)obsoleteTicketButton.remove();
           drawWheel();
         }
         // Expose the renderer because the wheel controls use inline onchange handlers.
@@ -11875,7 +11920,7 @@ window.openStudentProfile=function(studentId){
         };
         function selectWeightedPrize(){const ps=wheelEnabled(),total=ps.reduce((n,p)=>n+Number(p.weight),0);if(!ps.length||!Number.isFinite(total)||total<=0)return null;if(ps.length===1)return ps[0];let n=Math.random()*total;for(const p of ps){n-=Number(p.weight);if(n<0)return p;}return ps[ps.length-1];}
         function animateWheelToPrize(prize){return new Promise(resolve=>{const ps=wheelPrizes().filter(p=>p.enabled!==false),index=ps.findIndex(p=>p.id===prize.id);if(index<0){resolve(false);return;}const step=Math.PI*2/ps.length;const desired=(-(index*step+step/2))%(Math.PI*2);const start=wheelAngle;const end=desired+Math.PI*2*6;const t0=performance.now(),duration=4200,token=++wheelAnimationToken;const frame=now=>{if(token!==wheelAnimationToken){resolve(false);return;}const t=Math.min(1,(now-t0)/duration),ease=1-Math.pow(1-t,4);wheelAngle=start+(end-start)*ease;drawWheel();if(t<1)requestAnimationFrame(frame);else{wheelAngle=((desired%(Math.PI*2))+Math.PI*2)%(Math.PI*2);drawWheel();resolve(true);}};requestAnimationFrame(frame);});}
-        window.spinLuckyWheel=async function(){if(wheelBusy)return;if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(wheelText('Khóa đã lưu trữ chỉ được xem.','Archived course is read-only.'));return;}ensureWheelData();const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';const studentId=document.getElementById('wheelStudentPicker').value;const student=(appData.students||[]).find(x=>String(x.id)===String(studentId));if(mode==='student'&&(!student||!wheelInventory(student).length)){alert(wheelText('Học sinh này không có quà lượt quay may mắn.','This student has no Lucky Wheel turn gift.'));return;}const prize=selectWeightedPrize();if(!prize){alert(wheelText('Không có phần thưởng đang bật với trọng số hợp lệ.','No enabled prize has a valid weight.'));return;}const giftItem=wheelItemOf(prize),giftSnap=giftItem?deepCopy(giftItem):null,qty=wheelQty(prize),awardInvId='inv_'+Date.now()+'_wheel_'+Math.random().toString(36).slice(2,8);const teacherAtStart=currentTeacherId||LEGACY_TEACHER_ID,courseId=appData.courseManager?.activeCourseId||null,spinId='spin_'+Date.now()+'_'+Math.random().toString(36).slice(2,10),studentName=student?.name||'',className=(appData.classes||[]).find(c=>String(c.id)===String(student?.classId))?.name||'';const record={spinId,teacherId:teacherAtStart,courseId,studentId:mode==='student'?student.id:null,studentName:mode==='student'?studentName:null,className:mode==='student'?className:null,mode,prizeId:prize.id,prizeName:prize.name,prizeColor:prize.color,prizeWeight:Number(prize.weight),qty,prizeSnapshot:deepCopy(prize),status:'completed',at:new Date().toISOString()};wheelBusy=true;document.getElementById('wheelSpinBtn').disabled=true;try{const path=`appDataMultiTeacher/teacherData/${teacherAtStart}`;const result=await runTransaction(ref(db,path),current=>{if(!current||typeof current!=='object')return;current.luckyWheel=current.luckyWheel&&typeof current.luckyWheel==='object'?current.luckyWheel:{prizes:[],history:[],transactions:{}};current.luckyWheel.history=Array.isArray(current.luckyWheel.history)?current.luckyWheel.history:[];current.luckyWheel.transactions=current.luckyWheel.transactions||{};if(current.luckyWheel.transactions[spinId])return current;if(mode==='student'){const st=(current.students||[]).find(x=>String(x.id)===String(student.id));if(!st||!Array.isArray(st.inventory))return;const inv=st.inventory.findIndex(i=>isLuckyWheelGift(i));if(inv<0)return;const consumed=st.inventory.splice(inv,1)[0];record.giftInventoryId=consumed.invId||consumed.id||null;record.consumedGiftItemId=consumed.itemId||consumed.id||LUCKY_GIFT_ID;record.turnsBefore=st.inventory.length+1;record.turnsAfter=st.inventory.length;const itm=(current.globalShopItems||[]).find(x=>x&&x.id===prize.itemId)||giftSnap;if(itm&&itm.type){const awardedIds=[];for(let q=0;q<qty;q++){const invId=q===0?awardInvId:awardInvId+'_'+q;const inv={invId,itemId:itm.id,name:itm.name,itemName:itm.name,isFixed:!!itm.isFixed,type:itm.type,date:new Date().toISOString().split('T')[0],fromWheel:true};['targetScore','deltaScore','matchScore','matchOp'].forEach(k=>{if(itm[k]!==undefined)inv[k]=itm[k];});st.inventory.push(inv);awardedIds.push(invId);}record.awardedInvId=awardInvId;record.awardedInvIds=awardedIds;record.awardedQty=qty;record.awardedItemName=itm.name;}}current.luckyWheel.transactions[spinId]={spinId,status:'completed',at:record.at,studentId:record.studentId,giftInventoryId:record.giftInventoryId||null,prizeId:record.prizeId};current.luckyWheel.history.push(record);return current;},{applyLocally:false});if(!result.committed){throw new Error('transaction_not_committed');}const committed=result.snapshot.val();if(!committed?.luckyWheel?.transactions?.[spinId]){throw new Error('transaction_not_confirmed');}if(currentTeacherId!==teacherAtStart){return;}appData=committed;if(sessionViewMode)appData.activeViewMode=sessionViewMode;else appData.activeViewMode='wheel';ensureWheelData();lastPersistedSnapshot=deepCopy(appData);try{if(mode==='student'&&student)window.petOnWheel&&window.petOnWheel(student.id,prize);}catch(e){}renderClassTabs();renderCurrentView();const shownName=prize.name+(qty>1?' ×'+qty:'');const animated=await animateWheelToPrize(prize);document.getElementById('wheelResult').textContent=shownName;wheelApplyPrizeColor(prize);document.getElementById('wheelStatus').textContent=wheelText('Sẵn sàng','Ready');showWheelResultModal(shownName,mode==='student'?studentName:'');if(window.showAppToast){if(mode==='student'&&record.awardedInvId)window.showAppToast(wheelText(`Đã cộng “${prize.name}”${qty>1?' ×'+qty:''} vào túi quà của ${studentName}.`,`Added “${prize.name}”${qty>1?' ×'+qty:''} to ${studentName}'s gift bag.`),'success');else if(mode!=='student'&&giftItem&&giftItem.type)window.showAppToast(wheelText('Quay tự do nên quà này không được cộng vào túi học sinh nào.','Free spin: this gift was not added to any student\'s bag.'),'info');}wheelApplyPrizeColor(prize);renderWheelView();}catch(err){console.error('Lucky Wheel transaction failed or uncertain:',err);document.getElementById('wheelStatus').textContent=wheelText('Chưa xác nhận được lượt quay. Hãy tải lại dữ liệu/kiểm tra Firebase trước khi thử lại.','Spin status could not be confirmed. Refresh/check Firebase before retrying.');alert(wheelText('Không thể xác nhận giao dịch. Không tự động thử lại để tránh dùng lượt hai lần. Hãy kiểm tra lịch sử sau khi kết nối ổn định.','Could not confirm the transaction. It will not retry automatically to avoid using a turn twice. Check history when the connection is stable.'));}finally{wheelBusy=false;const b=document.getElementById('wheelSpinBtn');if(b)b.disabled=false;renderWheelView();}};
+        window.spinLuckyWheel=async function(){if(wheelBusy)return;if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(wheelText('Khóa đã lưu trữ chỉ được xem.','Archived course is read-only.'));return;}ensureWheelData();const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';const studentId=document.getElementById('wheelStudentPicker').value;const student=(appData.students||[]).find(x=>String(x.id)===String(studentId));if(mode==='student'&&(!student||!wheelInventory(student).length)){alert(wheelText('Học sinh này không có quà lượt quay may mắn.','This student has no Lucky Wheel turn gift.'));return;}const prize=selectWeightedPrize();if(!prize){alert(wheelText('Không có phần thưởng đang bật với trọng số hợp lệ.','No enabled prize has a valid weight.'));return;}const giftItem=wheelItemOf(prize),giftSnap=giftItem?deepCopy(giftItem):null,qty=wheelQty(prize),awardInvId='inv_'+Date.now()+'_wheel_'+Math.random().toString(36).slice(2,8);const teacherAtStart=currentTeacherId||LEGACY_TEACHER_ID,courseId=appData.courseManager?.activeCourseId||null,spinId='spin_'+Date.now()+'_'+Math.random().toString(36).slice(2,10),studentName=student?.name||'',className=(appData.classes||[]).find(c=>String(c.id)===String(student?.classId))?.name||'';const record={spinId,teacherId:teacherAtStart,courseId,studentId:mode==='student'?student.id:null,studentName:mode==='student'?studentName:null,className:mode==='student'?className:null,mode,prizeId:prize.id,prizeName:prize.name,prizeColor:prize.color,prizeWeight:Number(prize.weight),qty,prizeSnapshot:deepCopy(prize),status:'completed',at:new Date().toISOString()};wheelBusy=true;document.getElementById('wheelSpinBtn').disabled=true;try{const path=`appDataMultiTeacher/teacherData/${teacherAtStart}`;const result=await runTransaction(ref(db,path),current=>{if(!current||typeof current!=='object')return;current.luckyWheel=current.luckyWheel&&typeof current.luckyWheel==='object'?current.luckyWheel:{prizes:[],history:[],transactions:{}};current.luckyWheel.history=Array.isArray(current.luckyWheel.history)?current.luckyWheel.history:[];current.luckyWheel.transactions=current.luckyWheel.transactions||{};if(current.luckyWheel.transactions[spinId])return current;if(mode==='student'){const st=(current.students||[]).find(x=>String(x.id)===String(student.id));if(!st||!Array.isArray(st.inventory))return;const inv=st.inventory.findIndex(i=>isLuckyWheelGift(i));if(inv<0)return;const consumed=st.inventory.splice(inv,1)[0];record.giftInventoryId=consumed.invId||consumed.id||null;record.consumedGiftItemId=consumed.itemId||consumed.id||LUCKY_GIFT_ID;record.turnsBefore=st.inventory.length+1;record.turnsAfter=st.inventory.length;if(prize.ticketPrize||prize.itemId==='mx_item_ticket'){st.itemTickets=Math.max(0,Math.floor(Number(st.itemTickets)||0))+qty;st.itemTicketHistory=Array.isArray(st.itemTicketHistory)?st.itemTicketHistory:[];st.itemTicketHistory.push({id:spinId,type:'wheel_reward',amount:qty,after:st.itemTickets,source:'wheel',ref:spinId,at:record.at});record.awardedTickets=qty;}const itm=(current.globalShopItems||[]).find(x=>x&&x.id===prize.itemId)||giftSnap;if(itm&&itm.type){const awardedIds=[];for(let q=0;q<qty;q++){const invId=q===0?awardInvId:awardInvId+'_'+q;const inv={invId,itemId:itm.id,name:itm.name,itemName:itm.name,isFixed:!!itm.isFixed,type:itm.type,date:new Date().toISOString().split('T')[0],fromWheel:true};['targetScore','deltaScore','matchScore','matchOp'].forEach(k=>{if(itm[k]!==undefined)inv[k]=itm[k];});st.inventory.push(inv);awardedIds.push(invId);}record.awardedInvId=awardInvId;record.awardedInvIds=awardedIds;record.awardedQty=qty;record.awardedItemName=itm.name;}}current.luckyWheel.transactions[spinId]={spinId,status:'completed',at:record.at,studentId:record.studentId,giftInventoryId:record.giftInventoryId||null,prizeId:record.prizeId};current.luckyWheel.history.push(record);return current;},{applyLocally:false});if(!result.committed){throw new Error('transaction_not_committed');}const committed=result.snapshot.val();if(!committed?.luckyWheel?.transactions?.[spinId]){throw new Error('transaction_not_confirmed');}if(currentTeacherId!==teacherAtStart){return;}appData=committed;if(sessionViewMode)appData.activeViewMode=sessionViewMode;else appData.activeViewMode='wheel';ensureWheelData();lastPersistedSnapshot=deepCopy(appData);try{if(mode==='student'&&student)window.petOnWheel&&window.petOnWheel(student.id,prize);}catch(e){}renderClassTabs();renderCurrentView();const shownName=prize.name+(qty>1?' ×'+qty:'');const animated=await animateWheelToPrize(prize);document.getElementById('wheelResult').textContent=shownName;wheelApplyPrizeColor(prize);document.getElementById('wheelStatus').textContent=wheelText('Sẵn sàng','Ready');showWheelResultModal(shownName,mode==='student'?studentName:'');if(window.showAppToast){if(mode==='student'&&record.awardedInvId)window.showAppToast(wheelText(`Đã cộng “${prize.name}”${qty>1?' ×'+qty:''} vào túi quà của ${studentName}.`,`Added “${prize.name}”${qty>1?' ×'+qty:''} to ${studentName}'s gift bag.`),'success');else if(mode!=='student'&&giftItem&&giftItem.type)window.showAppToast(wheelText('Quay tự do nên quà này không được cộng vào túi học sinh nào.','Free spin: this gift was not added to any student\'s bag.'),'info');}wheelApplyPrizeColor(prize);renderWheelView();}catch(err){console.error('Lucky Wheel transaction failed or uncertain:',err);document.getElementById('wheelStatus').textContent=wheelText('Chưa xác nhận được lượt quay. Hãy tải lại dữ liệu/kiểm tra Firebase trước khi thử lại.','Spin status could not be confirmed. Refresh/check Firebase before retrying.');alert(wheelText('Không thể xác nhận giao dịch. Không tự động thử lại để tránh dùng lượt hai lần. Hãy kiểm tra lịch sử sau khi kết nối ổn định.','Could not confirm the transaction. It will not retry automatically to avoid using a turn twice. Check history when the connection is stable.'));}finally{wheelBusy=false;const b=document.getElementById('wheelSpinBtn');if(b)b.disabled=false;renderWheelView();}};
         window.clearWheelHistoryView=async function(){if(wheelBusy)return;const en=appData.language==='en';const message=wheelText('Xóa lịch sử quay đang hiển thị? Các bản ghi giao dịch vẫn được giữ lại để ngăn sử dụng một lượt quay nhiều lần.','Clear the visible spin history? Transaction records will be retained to prevent the same turn from being used more than once.');if(!await showAppConfirm(message,wheelText('Xóa lịch sử hiển thị','Clear visible history')))return;const old=deepCopy(appData.luckyWheel.history);appData.luckyWheel.history=[];const ok=await saveData();if(!ok){appData.luckyWheel.history=old;await showAppNotice(wheelText('Không thể xóa lịch sử.','Could not clear history.'),wheelText('Lỗi lưu dữ liệu','Save error'));}renderWheelView();};
 
         // Multi-teacher routing on the existing Firebase Realtime Database.
@@ -13301,7 +13346,17 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             const rays = r >= 4 ? `<g class="px-ray" opacity=".3">${[0, 1, 2, 3, 4, 5, 6, 7].map(k => `<path d="M32 32L27-8h10z" fill="#ffd86b" transform="rotate(${k * 45} 32 32)"/>`).join('')}</g>` : '';
             return `<svg viewBox="0 0 64 64" class="px${r >= 4 ? ' px4' : r >= 3 ? ' px3' : ''}" style="--c:${fc}" aria-hidden="true"><defs>${gd}<radialGradient id="pxb${n}" cx=".5" cy=".4" r=".75"><stop offset="0" stop-color="${B[0]}"/><stop offset="1" stop-color="${B[1]}"/></radialGradient><linearGradient id="pxa${n}" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="${P[0]}"/><stop offset=".5" stop-color="${P[1]}"/><stop offset="1" stop-color="${P[2]}"/></linearGradient><linearGradient id="pxg${n}" x1="0" y1="0" x2=".4" y2="1"><stop offset="0" stop-color="${G[0]}"/><stop offset=".5" stop-color="${G[1]}"/><stop offset="1" stop-color="${G[2]}"/></linearGradient><linearGradient id="pxw${n}"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><clipPath id="pxc${n}"><rect x="2" y="2" width="60" height="60" rx="11"/></clipPath></defs><rect x="2" y="2" width="60" height="60" rx="11" fill="url(#pxb${n})" stroke="${fc}" stroke-width="2.4"/><g clip-path="url(#pxc${n})"><circle cx="32" cy="30" r="24" fill="#fff" opacity=".7"/>${rays}</g><rect x="5" y="5" width="54" height="54" rx="8.5" fill="none" stroke="${fc}" stroke-width=".8" opacity=".5"/><g class="px-ic" filter="url(#pxf${n})"><g transform="translate(2.6 .7) scale(.92)">${body}</g></g>${fx}</svg>`;
         }
-        const pshPrice = it => { const c = appData && appData.petShopPrice, v = c && c[it.id]; return Number.isInteger(v) && v >= 0 ? v : it.price; };
+        // ===== Item Ticket economy / Kinh tế Phiếu Vật Phẩm =====
+        const mxTicketWeek = () => { const d=new Date(), x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-(x.getDay()+6)%7);return [x.getFullYear(),String(x.getMonth()+1).padStart(2,'0'),String(x.getDate()).padStart(2,'0')].join('-'); };
+        const mxTicketCfg = () => Object.assign({rate:10,weeklyLimit:3,limitEnabled:true,exchangeEnabled:true,starPrices:[1,2,4,7,10]},appData.itemTicketSettings||{});
+        const mxTicketBalance = st => Math.max(0,Math.floor(Number(st&&st.itemTickets)||0));
+        const mxTicketLog = (st,type,amount,source,ref) => { const before=mxTicketBalance(st); st.itemTickets=before+amount;st.itemTicketHistory=Array.isArray(st.itemTicketHistory)?st.itemTicketHistory:[];st.itemTicketHistory.push({id:'ticket_'+Date.now()+'_'+Math.random().toString(36).slice(2),type,amount,before,after:st.itemTickets,source,ref,at:new Date().toISOString()});if(st.itemTicketHistory.length>500)st.itemTicketHistory.splice(0,st.itemTicketHistory.length-500); };
+        const mxTicketPrice = it => {const overrides=appData.petTicketPrices||{},v=overrides[it.id];if(Number.isInteger(v)&&v>=0)return v;const defaults=mxTicketCfg().starPrices;return Math.max(0,Math.floor(Number(defaults[it.r])||0));};
+        window.mxTicketExchange=async sid=>{const st=pshSt(sid);if(!st||pshRO())return;const cfg=mxTicketCfg();if(!cfg.exchangeEnabled)return;const used=st.itemTicketWeekly&&st.itemTicketWeekly.week===mxTicketWeek()?st.itemTicketWeekly.count:0;const rem=cfg.limitEnabled?Math.max(0,cfg.weeklyLimit-used):9999;const input=await showAppPrompt(L2('Số phiếu muốn mua (còn '+rem+' lượt tuần này):','How many tickets to buy (remaining this week: '+rem+'):'),'1');if(input===null)return;const qty=Number(input),cost=qty*cfg.rate;if(!Number.isInteger(qty)||qty<1||qty>rem||!Number.isInteger(cost)||cost<0||cost>(st.rewardPoints||0)){pshT(L2('Số lượng không hợp lệ, vượt giới hạn hoặc không đủ Pts.','Invalid amount, weekly limit exceeded or insufficient Pts.'),'error');return;}if(!await showAppConfirm(L2('Đổi '+cost+' Pts lấy '+qty+' phiếu?','Exchange '+cost+' Pts for '+qty+' tickets?')))return;const now=pshSt(sid),prev={pts:now.rewardPoints,tickets:now.itemTickets,weekly:now.itemTicketWeekly,hist:now.itemTicketHistory};const nowUsed=now.itemTicketWeekly&&now.itemTicketWeekly.week===mxTicketWeek()?now.itemTicketWeekly.count:0;if((now.rewardPoints||0)<cost||(cfg.limitEnabled&&nowUsed+qty>cfg.weeklyLimit))return;now.rewardPoints-=cost;mxTicketLog(now,'ticket_purchase',qty,'pts',null);now.itemTicketWeekly={week:mxTicketWeek(),count:nowUsed+qty};if(await saveData()!==true){now.rewardPoints=prev.pts;now.itemTickets=prev.tickets;now.itemTicketWeekly=prev.weekly;now.itemTicketHistory=prev.hist;pshT(L2('Lỗi lưu dữ liệu; giao dịch đã hoàn nguyên.','Save failed; transaction reverted.'),'error');}else pshT(L2('Đã nhận '+qty+' Phiếu Vật Phẩm.','Received '+qty+' Item Tickets.'));pshRefresh();};
+        window.mxTicketSettings=async()=>{if(pshRO())return;const old=appData.itemTicketSettings,base=mxTicketCfg();const rate=await showAppPrompt(L2('Pts cho 1 phiếu (số nguyên ≥1):','Pts per ticket (integer ≥1):'),String(base.rate));if(rate===null)return;const limit=await showAppPrompt(L2('Giới hạn mua phiếu mỗi tuần (0 = không giới hạn):','Weekly ticket purchase limit (0 = unlimited):'),String(base.limitEnabled?base.weeklyLimit:0));if(limit===null)return;const r=Number(rate),l=Number(limit);if(!Number.isInteger(r)||r<1||!Number.isInteger(l)||l<0){pshT(L2('Thiết lập không hợp lệ.','Invalid settings.'),'error');return;}const starInput=await showAppPrompt(L2('Giá phiếu theo sao 1★,2★,3★,4★,5★ (cách nhau bằng dấu phẩy):','Ticket prices by star 1★,2★,3★,4★,5★ (comma separated):'),base.starPrices.join(','));if(starInput===null)return;const starPrices=starInput.split(',').map(x=>Number(x.trim()));if(starPrices.length!==5||starPrices.some(x=>!Number.isInteger(x)||x<0||x>9999)){pshT(L2('Bảng giá không hợp lệ.','Invalid star price list.'),'error');return;}appData.itemTicketSettings={...base,rate:r,weeklyLimit:l,limitEnabled:l>0,starPrices};if(await saveData()!==true){appData.itemTicketSettings=old;pshT(L2('Không lưu được thiết lập.','Could not save settings.'),'error');}pshRefresh();};
+        window.mxTicketAdjust=async sid=>{if(pshRO())return;const st=pshSt(sid);if(!st)return;const v=await showAppPrompt(L2('Điều chỉnh phiếu (+/-), hiện có '+mxTicketBalance(st)+':','Adjust tickets (+/-), current '+mxTicketBalance(st)+':'),'1');if(v===null)return;const a=Number(v);if(!Number.isInteger(a)||!a||mxTicketBalance(st)+a<0)return;const old={t:st.itemTickets,h:st.itemTicketHistory};if(!await showAppConfirm(L2('Xác nhận điều chỉnh '+a+' phiếu?','Confirm adjustment of '+a+' tickets?')))return;mxTicketLog(st,a>0?'teacher_grant':'teacher_deduct',a,'teacher',null);if(await saveData()!==true){st.itemTickets=old.t;st.itemTicketHistory=old.h;pshT(L2('Không lưu được điều chỉnh.','Adjustment not saved.'),'error');}pshRefresh();};
+        window.mxTicketHistory= sid=>{const st=pshSt(sid);if(!st)return;const h=(st.itemTicketHistory||[]).slice(-30).reverse();const msg=h.map(x=>new Date(x.at).toLocaleString()+' | '+x.type+' | '+(x.amount>0?'+':'')+x.amount+' → '+x.after).join('\n')||L2('Chưa có giao dịch.','No transactions yet.');showAppNotice(msg,L2('Lịch sử phiếu','Ticket history'));};
+        const pshPrice = mxTicketPrice;
         const pshEq = st => { const e = (st && st.petEquip && typeof st.petEquip === 'object') ? st.petEquip : {}; return [0, 1, 2].map(i => e['s' + i] || null); };
         const pshOwned = (st, id) => ((st && st.petItems && st.petItems[id]) | 0);
         const pshOn = (it, p, lv) => it.s === 'm' ? lv === +p : it.s === 'p' ? (lv === +p || lv === +p + 1) : it.s === '4' ? lv >= 3 : it.s === '3' ? lv >= 4 : it.s === '5' ? lv === 6 : true;
@@ -13357,7 +13412,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
         function pshCard(st, it) {
             const own = pshOwned(st, it.id), has = st.petSp !== undefined && PET_SP[st.petSp], c = has ? pshCompat(st.petSp, it) : null, rr = PSH_RAR[it.r];
             const cm = !has ? `<div class="ps-cm na">${L2('Chọn trứng để xem tương thích', 'Pick an egg to check compatibility')}</div>` : c.ok ? `<div class="ps-cm ok">✓ ${L2('Tương thích', 'Compatible')}: ${escapeHtml(L2(PET_SP[st.petSp][0], PET_SP[st.petSp][1]))}</div>` : `<div class="ps-cm no">✕ ${escapeHtml(c.why)}</div>`;
-            return `<div class="ps-card r${it.r}" data-id="${it.id}"><div class="ps-art">${pshArt(it)}</div><div class="ps-nm">${escapeHtml(L2(it.vi, it.en))}</div><div class="ps-rar" style="color:${rr[2]}"><span style="font-size:19px;line-height:1;letter-spacing:1px;vertical-align:middle;text-shadow:0 1px 0 rgba(0,0,0,.12)">${'★'.repeat(it.r + 1)}<span style="opacity:.3">${'★'.repeat(5 - it.r - 1)}</span></span> ${L2(rr[0], rr[1])}</div><div class="ps-fx">${escapeHtml(pshFx(it))}</div><div class="ps-ds">${escapeHtml(L2(it.dvi, it.den))}</div>${cm}<div class="ps-ft"><span>${pshPrice(it)} pts <button class="ps-chip" style="padding:1px 6px" title="${L2('Sửa giá', 'Edit price')}" onclick="pshEditPrice('${it.id}')">✏️</button></span><span>${L2('Sở hữu', 'Owned')} ${own}/1</span><button class="pet-tabbtn on" ${own >= 1 ? 'disabled' : ''} onclick="pshBuy('${st.id}','${it.id}')">${own >= 1 ? L2('Đã sở hữu', 'Owned') : L2('Mua', 'Buy')}</button></div></div>`;
+            return `<div class="ps-card r${it.r}" data-id="${it.id}"><div class="ps-art">${pshArt(it)}</div><div class="ps-nm">${escapeHtml(L2(it.vi, it.en))}</div><div class="ps-rar" style="color:${rr[2]}"><span style="font-size:19px;line-height:1;letter-spacing:1px;vertical-align:middle;text-shadow:0 1px 0 rgba(0,0,0,.12)">${'★'.repeat(it.r + 1)}<span style="opacity:.3">${'★'.repeat(5 - it.r - 1)}</span></span> ${L2(rr[0], rr[1])}</div><div class="ps-fx">${escapeHtml(pshFx(it))}</div><div class="ps-ds">${escapeHtml(L2(it.dvi, it.den))}</div>${cm}<div class="ps-ft"><span>${pshPrice(it)} 🎟️ <button class="ps-chip" style="padding:1px 6px" title="${L2('Sửa giá', 'Edit price')}" onclick="pshEditPrice('${it.id}')">✏️</button></span><span>${L2('Sở hữu', 'Owned')} ${own}/1</span><button class="pet-tabbtn on" ${own >= 1 ? 'disabled' : ''} onclick="pshBuy('${st.id}','${it.id}')">${own >= 1 ? L2('Đã sở hữu', 'Owned') : L2('Mua', 'Buy')}</button></div></div>`;
         }
         function pshInner(st) {
             const has = st.petSp !== undefined && PET_SP[st.petSp];
@@ -13365,40 +13420,37 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             const chips = `<div class="ps-bar"><button class="ps-chip ${pshG < 0 ? 'on' : ''}" onclick="pshSet('g',-1)">${L2('Tất cả', 'All')} (${PSH_IT.length})</button>${PSH_GRP.map((g, i) => `<button class="ps-chip ${pshG === i ? 'on' : ''}" onclick="pshSet('g',${i})">${g[0]} ${L2(g[1], g[2])}</button>`).join('')}</div><div class="ps-bar"><select class="pq-in" style="flex:none;min-width:0" onchange="pshSet('r',+this.value)"><option value="-1">${L2('Mọi độ hiếm', 'All rarities')}</option>${PSH_RAR.map((r, i) => `<option value="${i}" ${pshR === i ? 'selected' : ''}>${L2(r[0], r[1])}</option>`).join('')}</select><button class="ps-chip ${pshC ? 'on' : ''}" onclick="pshSet('c',0)">✓ ${L2('Chỉ món tương thích', 'Compatible only')}</button></div>`;
             let body = '';
             PSH_GRP.forEach((g, gi) => { const L = list.filter(it => it.g === gi); if (L.length) body += `<h4 class="pq-h">${g[0]} ${L2(g[1], g[2])}</h4><div class="ps-grid">${L.map(it => pshCard(st, it)).join('')}</div>`; });
-            return `<div class="flex flex-wrap items-center justify-between gap-2"><h3 class="font-black text-slate-800">🛍️ ${L2('Cửa hàng vật phẩm Pet', 'Pet Item Shop')} — ${escapeHtml(getStudentDisplayName(st))}</h3><span class="pet-chip">💰 ${st.rewardPoints || 0} pts</span></div>${chips}${body || `<div class="text-sm text-slate-500 p-3">${L2('Không có vật phẩm phù hợp bộ lọc.', 'No items match the filters.')}</div>`}`;
+            return `<div class="psh-ticket-head"><h3 class="font-black text-slate-800">🛍️ ${L2('Cửa hàng vật phẩm Pet', 'Pet Item Shop')} — ${escapeHtml(getStudentDisplayName(st))}</h3><div class="psh-ticket-wallet" aria-live="polite"><span class="psh-ticket-icon"><i class="fa-solid fa-ticket"></i></span><span class="psh-ticket-meta"><small>${L2('PHIẾU VẬT PHẨM ĐANG SỞ HỮU','ITEM TICKETS OWNED')}</small><strong>${mxTicketBalance(st).toLocaleString('vi-VN')}</strong></span></div></div>${chips}${body || `<div class="text-sm text-slate-500 p-3">${L2('Không có vật phẩm phù hợp bộ lọc.', 'No items match the filters.')}</div>`}`;
         }
         window.petShopHtml = st => `<div id="pshBox" class="mt-4 rounded-xl bg-slate-50 border border-slate-200 p-3">${pshInner(st)}</div>`;
         function pshRefresh(pop) { const b = document.getElementById('pshBox'), st = pshSt(petTarget); if (b && st) { b.innerHTML = pshInner(st); if (pop) { const c = b.querySelector('.ps-card[data-id="' + pop + '"]'); if (c) c.classList.add('ps-pop'); } } }
         window.pshSet = (k, v) => { if (k === 'g') pshG = v; else if (k === 'r') pshR = v; else pshC = !pshC; pshRefresh(); };
         window.pshBuy = async (sid, id) => {
-            let st = pshSt(sid); const it = PSH_BY[id]; if (!st || !it) return;
-            if (pshRO()) { pshT(L2('Khóa đã lưu trữ chỉ được xem.', 'Archived course is read-only.'), 'error'); return; }
-            if (pshOwned(st, id) >= 1) { pshT(L2('Đã đạt giới hạn sở hữu (1/1).', 'Ownership limit reached (1/1).'), 'error'); return; }
-            if ((st.rewardPoints || 0) < pshPrice(it)) { pshT(L2(`Không đủ pts: cần ${pshPrice(it)}, hiện có ${st.rewardPoints || 0}.`, `Not enough pts: need ${pshPrice(it)}, you have ${st.rewardPoints || 0}.`), 'error'); return; }
-            const ok = await window.showAppConfirm(L2(`Mua “${it.vi}” với ${pshPrice(it)} pts cho ${getStudentDisplayName(st)}?`, `Buy “${it.en}” for ${pshPrice(it)} pts for ${getStudentDisplayName(st)}?`), L2('Mua vật phẩm Pet', 'Buy Pet item'));
-            if (!ok) return;
-            st = pshSt(sid); if (!st || pshOwned(st, id) >= 1 || (st.rewardPoints || 0) < pshPrice(it)) { pshRefresh(); return; }
-            const p0 = st.rewardPoints || 0, i0 = st.petItems, b0 = st.petBuys;
-            st.rewardPoints = p0 - pshPrice(it); st.petItems = Object.assign({}, i0 || {}, { [id]: 1 }); st.petBuys = (b0 || []).concat([{ id, p: pshPrice(it), d: petPd(new Date()) }]).slice(-30);
-            const saved = await saveData();
-            if (saved !== true) { st.rewardPoints = p0; if (i0) st.petItems = i0; else delete st.petItems; if (b0) st.petBuys = b0; else delete st.petBuys; pshT(L2('Mua thất bại: không lưu được dữ liệu, pts đã được hoàn nguyên.', 'Purchase failed: data could not be saved; pts were restored.'), 'error'); pshRefresh(); return; }
-            pshT(L2(`Đã mua “${it.vi}”! Còn ${st.rewardPoints} pts.`, `Bought “${it.en}”! ${st.rewardPoints} pts left.`));
-            try { if (!xfRM()) tfBeep(784, .1, .15, 0); } catch (e) {}
+            let st=pshSt(sid),it=PSH_BY[id];if(!st||!it||pshRO())return;
+            const price=pshPrice(it);if(pshOwned(st,id)>=1){pshT(L2('Đã sở hữu.','Already owned.'),'error');return;}
+            if(mxTicketBalance(st)<price){pshT(L2('Không đủ Phiếu Vật Phẩm.','Not enough Item Tickets.'),'error');return;}
+            if(!await showAppConfirm(L2('Mua “'+it.vi+'” với '+price+' phiếu?','Buy “'+it.en+'” for '+price+' tickets?')))return;
+            st=pshSt(sid);if(!st||pshOwned(st,id)||mxTicketBalance(st)<price)return;
+            const old={t:st.itemTickets,h:st.itemTicketHistory,items:st.petItems,buys:st.petBuys};
+            mxTicketLog(st,'equipment_purchase',-price,'pet_shop',id);
+            st.petItems=Object.assign({},st.petItems||{},{[id]:1});st.petBuys=(st.petBuys||[]).concat([{id,p:price,currency:'itemTickets',d:petPd(new Date())}]).slice(-30);
+            if(await saveData()!==true){st.itemTickets=old.t;st.itemTicketHistory=old.h;st.petItems=old.items;st.petBuys=old.buys;pshT(L2('Không lưu được giao dịch; đã hoàn nguyên.','Transaction failed; reverted.'),'error');}
+            else pshT(L2('Đã mua '+it.vi+'!','Bought '+it.en+'!'));
             pshRefresh(id);
         };
         window.pshEditPrice = id => {
             const it = PSH_BY[id]; if (!it) return; if (pshRO()) { pshT(L2('Khóa đã lưu trữ chỉ được xem.', 'Archived course is read-only.'), 'error'); return; }
             const old = document.getElementById('pqPrice'); if (old) old.remove();
             const m = document.createElement('div'); m.id = 'pqPrice'; m.className = 'pq-back'; m.onclick = e => { if (e.target === m) m.remove(); };
-            m.innerHTML = `<div class="pq-card" style="max-width:340px"><span class="pq-x" onclick="document.getElementById('pqPrice').remove()">✕</span><div class="ps-art">${pshArt(it)}</div><div class="ps-nm">${escapeHtml(L2(it.vi, it.en))}</div><div class="pq-stat" style="text-align:center">${L2('Giá mặc định', 'Default price')}: ${it.price} pts</div><div class="flex gap-1 items-center mt-2"><input id="pqPriceIn" type="number" min="0" max="9999" step="1" class="pq-in" value="${pshPrice(it)}"><span class="pq-stat">pts</span></div><div class="flex gap-1 mt-3 justify-end"><button class="ps-chip" onclick="pshSavePrice('${id}',1)">${L2('Mặc định', 'Default')}</button><button class="ps-chip on" onclick="pshSavePrice('${id}')">${L2('Lưu giá', 'Save price')}</button></div></div>`;
+            m.innerHTML = `<div class="pq-card" style="max-width:340px"><span class="pq-x" onclick="document.getElementById('pqPrice').remove()">✕</span><div class="ps-art">${pshArt(it)}</div><div class="ps-nm">${escapeHtml(L2(it.vi, it.en))}</div><div class="pq-stat" style="text-align:center">${L2('Giá mặc định', 'Default price')}: ${[1,2,4,7,10][it.r]} 🎟️</div><div class="flex gap-1 items-center mt-2"><input id="pqPriceIn" type="number" min="0" max="9999" step="1" class="pq-in" value="${pshPrice(it)}"><span class="pq-stat">🎟️</span></div><div class="flex gap-1 mt-3 justify-end"><button class="ps-chip" onclick="pshSavePrice('${id}',1)">${L2('Mặc định', 'Default')}</button><button class="ps-chip on" onclick="pshSavePrice('${id}')">${L2('Lưu giá', 'Save price')}</button></div></div>`;
             document.body.appendChild(m); const i = document.getElementById('pqPriceIn'); if (i) { i.focus(); i.select(); }
         };
         window.pshSavePrice = async (id, reset) => {
             const inp = document.getElementById('pqPriceIn'), v = reset ? null : Number(inp && inp.value);
             if (!reset && !(Number.isInteger(v) && v >= 0 && v <= 9999)) { pshT(L2('Giá phải là số nguyên từ 0 đến 9999.', 'Price must be a whole number from 0 to 9999.'), 'error'); return; }
-            const prev = appData.petShopPrice, nx = Object.assign({}, prev || {}); if (reset) delete nx[id]; else nx[id] = v; appData.petShopPrice = nx;
+            const prev = appData.petTicketPrices, nx = Object.assign({}, prev || {}); if (reset) delete nx[id]; else nx[id] = v; appData.petTicketPrices = nx;
             const saved = await saveData();
-            if (saved !== true) { if (prev) appData.petShopPrice = prev; else delete appData.petShopPrice; pshT(L2('Không lưu được giá. Đã hoàn nguyên.', 'Could not save the price. Reverted.'), 'error'); return; }
+            if (saved !== true) { if (prev) appData.petTicketPrices = prev; else delete appData.petTicketPrices; pshT(L2('Không lưu được giá. Đã hoàn nguyên.', 'Could not save the price. Reverted.'), 'error'); return; }
             const m = document.getElementById('pqPrice'); if (m) m.remove(); pshT(L2('Đã cập nhật giá.', 'Price updated.')); pshRefresh();
         };
         // ---------- Giao diện Trang bị ----------
@@ -14297,7 +14349,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
   const toast=(m,t)=>{try{window.showAppToast&&window.showAppToast(m,t||'info')}catch(e){}};
   function rate5(n,c){const soft=Math.max(1,c.hard5-16);if(n>=c.hard5)return 1;if(n>=soft)return Math.min(1,c.base5/100+0.06*(n-soft+1));return c.base5/100;}
   const DEL_ID='gacha_delete_low';
-  function pool(){const out=[{id:DEL_ID,name:'Xóa điểm thấp nhất',type:'delete_score',isFixed:false,special:true}];
+  function pool(){const out=[{id:DEL_ID,name:'Xóa điểm thấp nhất',type:'delete_score',isFixed:false,special:true},{id:'mx_item_ticket',name:T('Phiếu Vật Phẩm','Item Tickets'),type:'item_ticket',isFixed:true,ticketQty:1}];
     (appData.globalShopItems||[]).forEach(it=>{if(it&&it.id&&it.type!=='streak_ten'&&!it.wheelOnly)out.push(it);});return out;}
   const gname=it=>it.special?T('Xóa điểm thấp nhất','Delete lowest score'):getRewardName(it);
   const find=id=>pool().find(x=>x.id===id)||null;
@@ -14622,12 +14674,12 @@ html.mx-dark .gc-bar{background:#334155}
     const st=cur();if(!st)return;const c=cfg(),need=c.cost*n;
     if((st.rewardPoints||0)<need){toast(T('Không đủ điểm dư.','Not enough bonus points.'),'error');return;}
     const g=G();const s=g.st[st.id]=Object.assign({p5:0,p4:0,gu:false,total:0},g.st[st.id]);
-    st.rewardPoints=(st.rewardPoints||0)-need;if(!Array.isArray(st.inventory))st.inventory=[];
-    const res=[];for(let i=0;i<n;i++){const r=pullOne(s,c);itemsOf(r).forEach(it=>st.inventory.push(it));res.push(r);}
+    const before=deepCopy({pts:st.rewardPoints,inventory:st.inventory,gs:g.st[st.id],history:g.history,tickets:st.itemTickets,ticketHistory:st.itemTicketHistory});st.rewardPoints=(st.rewardPoints||0)-need;if(!Array.isArray(st.inventory))st.inventory=[];
+    const res=[];let awardedTickets=0;for(let i=0;i<n;i++){const r=pullOne(s,c);if(r.key==='mx_item_ticket'){awardedTickets+=(r.star===5?r.n:1);}else itemsOf(r).forEach(it=>st.inventory.push(it));res.push(r);}if(awardedTickets){st.itemTickets=Math.max(0,Math.floor(Number(st.itemTickets)||0))+awardedTickets;st.itemTicketHistory=Array.isArray(st.itemTicketHistory)?st.itemTicketHistory:[];st.itemTicketHistory.push({id:'gacha_'+Date.now()+'_'+Math.random().toString(36).slice(2),type:'mystery_box_reward',amount:awardedTickets,after:st.itemTickets,source:'gacha',at:new Date().toISOString()});}
     g.history.push({sid:st.id,t:Date.now(),n,stars:res.map(r=>r.star),g:res.map(r=>({star:r.star,key:r.key,n:r.star===5?r.n:1}))});if(g.history.length>1000)g.history.splice(0,g.history.length-1000);
     busy=true;const sid=st.id;$('gcStatus').textContent=T('Đang mở hộp...','Opening...');
     $('gcBtn1').disabled=$('gcBtn10').disabled=true;
-    try{saveData();}catch(e){console.warn(e);}   /* lưu TRƯỚC khi chạy hiệu ứng: tải lại trang cũng không quay lại được */
+    let saved=false;try{saved=await saveData()===true;}catch(e){console.warn(e);}if(!saved){st.rewardPoints=before.pts;st.inventory=before.inventory;st.itemTickets=before.tickets;st.itemTicketHistory=before.ticketHistory;g.st[st.id]=before.gs;g.history=before.history;busy=false;$('gcBtn1').disabled=$('gcBtn10').disabled=false;toast(T('Không lưu được hộp quà, đã hoàn nguyên.','Mystery box save failed; reverted.'),'error');renderGachaView();return;}
     await animate(res);busy=false;selId=sid;selSig='';renderGachaView();
     toast(res.some(r=>r.star===5)?T('🌟 Trúng 5★! Quà đã vào túi quà.','5★! Added to the gift bag.'):T('Quà đã được cộng vào túi quà.','Prizes added to the gift bag.'),'success');
   }
