@@ -12996,7 +12996,6 @@ window.openStudentProfile=function(studentId){
         function petShopPreview(st) {
             const pk = petPeakOf(st), f = petFormOf(pk), has = st.petSp !== undefined && !!PET_SP[st.petSp];
             const cur = (() => { try { return tenStreakInfo(st.id).cur; } catch (_) { return 0; } })();
-            const nxt = PET_MS.find(m => m > pk);
             const art = has ? petArt(st.petSp, f, pk >= 1) : '<div class="pet-art" style="font-size:72px">🥚</div>';
             const petName = has ? (typeof pshDisp === 'function' ? pshDisp(st) : L2(PET_SP[st.petSp][0], PET_SP[st.petSp][1])) : L2('Chưa chọn trứng', 'No egg chosen');
             const slots = [0,1,2].map(i => {
@@ -13012,16 +13011,14 @@ window.openStudentProfile=function(studentId){
                 ${art}
                 <div class="pet-preview-metrics">
                     <div class="pet-preview-metric">${L2('Chuỗi hiện tại', 'Current streak')}<strong>🔥 ${cur}</strong></div>
-                    <div class="pet-preview-metric">${L2('Chuỗi cao nhất', 'Peak streak')}<strong>★ ${pk}</strong></div>
                     <div class="pet-preview-metric">${L2('Dạng tiến hóa', 'Evolution form')}<strong>${f}/8</strong></div>
-                    <div class="pet-preview-metric">${L2('Mốc tiếp theo', 'Next milestone')}<strong>${nxt || '✓'}</strong></div>
                 </div>
                 <div class="pet-preview-blessing" aria-label="${L2('Nội tại thú cưng hiện tại', 'Current pet passive')}">
                     <div class="pet-preview-blessing-title">✨ ${L2('Nội tại hiện tại', 'Current passive')}</div>
                     ${has ? (() => {
                         const level = petLv(pk);
                         const info = petBInfo(st.petSp, level, st);
-                        return info ? `<div class="pet-preview-blessing-name">${info.ic} ${escapeHtml(info.name)} · ${L2('Cấp', 'Level')} ${level + 1}/7</div><div class="pet-preview-blessing-desc">${info.html}</div>` : `<div class="pet-preview-blessing-desc">${L2('Nội tại chưa mở khóa. Đạt mốc chuỗi 5 để kích hoạt.', 'Passive locked. Reach streak 5 to unlock.')}</div>`;
+                        return info ? `<div class="pet-preview-blessing-name" style="display:flex;align-items:center;justify-content:space-between;gap:6px"><span>${info.ic} ${escapeHtml(info.name)}</span>${petLvTag(level + 1)}</div><div class="pet-preview-blessing-desc">${info.html}</div>` : `<div class="pet-preview-blessing-desc">${L2('Nội tại chưa mở khóa. Đạt mốc chuỗi 5 để kích hoạt.', 'Passive locked. Reach streak 5 to unlock.')}</div>`;
                     })() : `<div class="pet-preview-blessing-desc">${L2('Chọn trứng để xem nội tại.', 'Choose an egg to see its passive.')}</div>`}
                 </div>
                 <div class="pet-preview-gear"><b>⚔️ ${L2('Trang bị hiện tại', 'Equipped items')}</b>${slots}</div>
@@ -13559,7 +13556,12 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
         window.mxTicketHistory= sid=>{const st=pshSt(sid);if(!st)return;const h=(st.itemTicketHistory||[]).slice(-30).reverse();const msg=h.map(x=>new Date(x.at).toLocaleString()+' | '+x.type+' | '+(x.amount>0?'+':'')+x.amount+' → '+x.after).join('\n')||L2('Chưa có giao dịch.','No transactions yet.');showAppNotice(msg,L2('Lịch sử phiếu','Ticket history'));};
         const pshPrice = mxTicketPrice;
         const pshEq = st => { const e = (st && st.petEquip && typeof st.petEquip === 'object') ? st.petEquip : {}; return [0, 1, 2].map(i => e['s' + i] || null); };
+        // Cấp thú (theo mốc nội tại 5·10·15·20·30·40·50 → 1..7), khung vàng cạnh Dạng
+        const petLvTag = n => `<span class="pet-chip pet-lvchip">${L2('Cấp', 'Lv')} ${n}/7</span>`;
         const pshOwned = (st, id) => ((st && st.petItems && st.petItems[id]) | 0);
+        // Chỉ được mua khi thú đã nở ở streak 5 (nội tại được kích hoạt)
+        const pshCanBuy = st => !!(st && st.petSp !== undefined && PET_SP[st.petSp] && petLv(petPeakOf(st)) >= 0);
+        const pshLockWhy = () => L2('Thú cưng cần nở ở streak 5 (kích hoạt nội tại) mới được mua vật phẩm.', 'The pet must hatch at streak 5 (innate activated) before items can be bought.');
         const pshOn = (it, p, lv) => it.s === 'm' ? lv === +p : it.s === 'p' ? (lv === +p || lv === +p + 1) : it.s === '4' ? lv >= 1 : it.s === '3' ? lv >= 2 : it.s === '5' ? lv === 3 : true;
         function pshCompat(sp, it) {
             if (it.k === 'n' || it.k === 'm') return { ok: false, why: it.k === 'm' ? L2('Chưa có nội tại với hệ số nhân thực sự; không thể trang bị để tránh thưởng sai.', 'No innate has a real multiplier yet; equipping is disabled to prevent incorrect rewards.') : L2('Hệ thống nội tại hiện chưa có cơ chế tương ứng nên vật phẩm này chưa thể kích hoạt.', 'The innate engine has no matching mechanic yet, so this item cannot activate.') };
@@ -13616,9 +13618,9 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
         // ---------- Cửa hàng (trong Kho trứng) ----------
         let pshG = -1, pshC = false, pshR = -1;
         function pshCard(st, it) {
-            const own = pshOwned(st, it.id), has = st.petSp !== undefined && PET_SP[st.petSp], c = has ? pshCompat(st.petSp, it) : null, rr = PSH_RAR[it.r];
+            const own = pshOwned(st, it.id), can = pshCanBuy(st), has = st.petSp !== undefined && PET_SP[st.petSp], c = has ? pshCompat(st.petSp, it) : null, rr = PSH_RAR[it.r];
             const cm = !has ? `<div class="ps-cm na">${L2('Chọn trứng để xem tương thích', 'Pick an egg to check compatibility')}</div>` : c.ok ? `<div class="ps-cm ok">✓ ${L2('Tương thích', 'Compatible')}: ${escapeHtml(L2(PET_SP[st.petSp][0], PET_SP[st.petSp][1]))}</div>` : `<div class="ps-cm no">✕ ${escapeHtml(c.why)}</div>`;
-            return `<div class="ps-card r${it.r}" data-id="${it.id}"><div class="ps-art">${pshArt(it)}</div><div class="ps-nm">${escapeHtml(L2(it.vi, it.en))}</div><div class="ps-rar" style="color:${rr[2]}"><span style="font-size:19px;line-height:1;letter-spacing:1px;vertical-align:middle;text-shadow:0 1px 0 rgba(0,0,0,.12)">${'★'.repeat(it.r + 1)}<span style="opacity:.3">${'★'.repeat(5 - it.r - 1)}</span></span> ${L2(rr[0], rr[1])}</div><div class="ps-fx">${escapeHtml(pshFx(it))}</div><div class="ps-ds">${escapeHtml(L2(it.dvi, it.den))}</div>${cm}<div class="ps-ft"><span>${pshPrice(it)} 🎟️ <button class="ps-chip" style="padding:1px 6px" title="${L2('Sửa giá', 'Edit price')}" onclick="pshEditPrice('${it.id}')">✏️</button></span><span>${L2('Sở hữu', 'Owned')} ${own}/1</span><button class="pet-tabbtn on" ${own >= 1 ? 'disabled' : ''} onclick="pshBuy('${st.id}','${it.id}')">${own >= 1 ? L2('Đã sở hữu', 'Owned') : L2('Mua', 'Buy')}</button></div></div>`;
+            return `<div class="ps-card r${it.r}" data-id="${it.id}"><div class="ps-art">${pshArt(it)}</div><div class="ps-nm">${escapeHtml(L2(it.vi, it.en))}</div><div class="ps-rar" style="color:${rr[2]}"><span style="font-size:19px;line-height:1;letter-spacing:1px;vertical-align:middle;text-shadow:0 1px 0 rgba(0,0,0,.12)">${'★'.repeat(it.r + 1)}<span style="opacity:.3">${'★'.repeat(5 - it.r - 1)}</span></span> ${L2(rr[0], rr[1])}</div><div class="ps-fx">${escapeHtml(pshFx(it))}</div><div class="ps-ds">${escapeHtml(L2(it.dvi, it.den))}</div>${cm}<div class="ps-ft"><span>${pshPrice(it)} 🎟️ <button class="ps-chip" style="padding:1px 6px" title="${L2('Sửa giá', 'Edit price')}" onclick="pshEditPrice('${it.id}')">✏️</button></span><span>${L2('Sở hữu', 'Owned')} ${own}/1</span><button class="pet-tabbtn on" ${own >= 1 || !can ? 'disabled' : ''} ${!can && own < 1 ? `title="${escapeHtml(pshLockWhy())}"` : ''} onclick="pshBuy('${st.id}','${it.id}')">${own >= 1 ? L2('Đã sở hữu', 'Owned') : L2('Mua', 'Buy')}</button></div></div>`;
         }
         function pshInner(st) {
             const has = st.petSp !== undefined && PET_SP[st.petSp];
@@ -13626,17 +13628,19 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             const chips = `<div class="ps-bar"><button class="ps-chip ${pshG < 0 ? 'on' : ''}" onclick="pshSet('g',-1)">${L2('Tất cả', 'All')} (${PSH_IT.length})</button>${PSH_GRP.map((g, i) => `<button class="ps-chip ${pshG === i ? 'on' : ''}" onclick="pshSet('g',${i})">${g[0]} ${L2(g[1], g[2])}</button>`).join('')}</div><div class="ps-bar"><select class="pq-in" style="flex:none;min-width:0" onchange="pshSet('r',+this.value)"><option value="-1">${L2('Mọi độ hiếm', 'All rarities')}</option>${PSH_RAR.map((r, i) => `<option value="${i}" ${pshR === i ? 'selected' : ''}>${L2(r[0], r[1])}</option>`).join('')}</select><button class="ps-chip ${pshC ? 'on' : ''}" onclick="pshSet('c',0)">✓ ${L2('Chỉ món tương thích', 'Compatible only')}</button></div>`;
             let body = '';
             PSH_GRP.forEach((g, gi) => { const L = list.filter(it => it.g === gi); if (L.length) body += `<h4 class="pq-h">${g[0]} ${L2(g[1], g[2])}</h4><div class="ps-grid">${L.map(it => pshCard(st, it)).join('')}</div>`; });
-            return `<div class="psh-ticket-head"><div class="psh-title-controls"><h3 class="font-black text-slate-800">🛍️ ${L2('Cửa hàng vật phẩm Pet', 'Pet Item Shop')} — ${escapeHtml(getStudentDisplayName(st))}</h3></div><div class="psh-wallet-settings-group"><div class="psh-ticket-wallet" aria-live="polite"><span class="psh-ticket-icon"><i class="fa-solid fa-ticket"></i></span><span class="psh-ticket-meta"><small>${L2('PHIẾU VẬT PHẨM ĐANG SỞ HỮU','ITEM TICKETS OWNED')}</small><strong>${mxTicketBalance(st).toLocaleString('vi-VN')}</strong></span></div><button type="button" class="psh-settings-btn" onclick="mxTicketSettings()" ${pshRO() ? 'disabled' : ''} title="${L2('Cài đặt cửa hàng thú cưng', 'Pet shop settings')}" aria-label="${L2('Cài đặt cửa hàng thú cưng', 'Pet shop settings')}"><i class="fa-solid fa-gear"></i></button></div></div>${chips}${body || `<div class="text-sm text-slate-500 p-3">${L2('Không có vật phẩm phù hợp bộ lọc.', 'No items match the filters.')}</div>`}`;
+            const lockNote = pshCanBuy(st) ? '' : `<div class="psh-lock-note">🔒 ${escapeHtml(pshLockWhy())}</div>`;
+            return `<div class="psh-ticket-head"><div class="psh-title-controls"><h3 class="font-black text-slate-800">🛍️ ${L2('Cửa hàng vật phẩm Pet', 'Pet Item Shop')} — ${escapeHtml(getStudentDisplayName(st))}</h3></div><div class="psh-wallet-settings-group"><div class="psh-ticket-wallet" aria-live="polite"><span class="psh-ticket-icon"><i class="fa-solid fa-ticket"></i></span><span class="psh-ticket-meta"><small>${L2('PHIẾU VẬT PHẨM ĐANG SỞ HỮU','ITEM TICKETS OWNED')}</small><strong>${mxTicketBalance(st).toLocaleString('vi-VN')}</strong></span></div><button type="button" class="psh-settings-btn" onclick="mxTicketSettings()" ${pshRO() ? 'disabled' : ''} title="${L2('Cài đặt cửa hàng thú cưng', 'Pet shop settings')}" aria-label="${L2('Cài đặt cửa hàng thú cưng', 'Pet shop settings')}"><i class="fa-solid fa-gear"></i></button></div></div>${lockNote}${chips}${body || `<div class="text-sm text-slate-500 p-3">${L2('Không có vật phẩm phù hợp bộ lọc.', 'No items match the filters.')}</div>`}`;
         }
         window.petShopHtml = st => `<div id="pshBox" class="mt-4 rounded-xl bg-slate-50 border border-slate-200 p-3">${pshInner(st)}</div>`;
         function pshRefresh(pop) { const b = document.getElementById('pshBox'), st = pshSt(petTarget); if (b && st) { b.innerHTML = pshInner(st); if (pop) { const c = b.querySelector('.ps-card[data-id="' + pop + '"]'); if (c) c.classList.add('ps-pop'); } } }
         window.pshSet = (k, v) => { if (k === 'g') pshG = v; else if (k === 'r') pshR = v; else pshC = !pshC; pshRefresh(); };
         window.pshBuy = async (sid, id) => {
             let st=pshSt(sid),it=PSH_BY[id];if(!st||!it||pshRO())return;
+            if(!pshCanBuy(st)){pshT(pshLockWhy(),'error');return;}
             const price=pshPrice(it);if(pshOwned(st,id)>=1){pshT(L2('Đã sở hữu.','Already owned.'),'error');return;}
             if(mxTicketBalance(st)<price){pshT(L2('Không đủ Phiếu Vật Phẩm.','Not enough Item Tickets.'),'error');return;}
             if(!await showAppConfirm(L2('Mua “'+it.vi+'” với '+price+' phiếu?','Buy “'+it.en+'” for '+price+' tickets?')))return;
-            st=pshSt(sid);if(!st||pshOwned(st,id)||mxTicketBalance(st)<price)return;
+            st=pshSt(sid);if(!st||pshOwned(st,id)||!pshCanBuy(st)||mxTicketBalance(st)<price)return;
             const old={t:st.itemTickets,h:st.itemTicketHistory,items:st.petItems,buys:st.petBuys};
             mxTicketLog(st,'equipment_purchase',-price,'pet_shop',id);
             st.petItems=Object.assign({},st.petItems||{},{[id]:1});st.petBuys=(st.petBuys||[]).concat([{id,p:price,currency:'itemTickets',d:petPd(new Date())}]).slice(-30);
@@ -13726,7 +13730,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             pqSet(m.querySelector('#pqWho'), `${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}`);
             pqSet(m.querySelector('#pqDef'), `${L2('Tên mặc định', 'Default name')}: ${escapeHtml(pshDef(st))}` + (pshNickRaw(st) ? `<div class="text-[11px] font-bold text-slate-500">${L2('Đang hiển thị', 'Shown as')}: ${escapeHtml(pshDisp(st))}</div>` : ''));
             pqSet(m.querySelector('#pqChips'), `<span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${escapeHtml(petFormLevelName(f))}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span>`);
-            pqSet(m.querySelector('#pqInn'), `${b.ic} ${escapeHtml(b.n[w])} ${lv >= 0 ? '· ' + L2('Cấp', 'Lv') + ' ' + (lv + 1) + '/7' : '· ' + L2('Nở ở streak 5 để mở nội tại', 'Hatch at streak 5 to unlock')}`);
+            pqSet(m.querySelector('#pqInn'), `${b.ic} ${escapeHtml(b.n[w])} ${lv >= 0 ? petLvTag(lv + 1) : '· ' + L2('Nở ở streak 5 để mở nội tại', 'Hatch at streak 5 to unlock')}`);
             pqSet(m.querySelector('#pqStats'), stats);
             pqPatch(m.querySelector('#pqSlots'), [0, 1, 2].map(i => ({ k: 's' + i, h: slotH(i) })), pqPop);
             Array.from(m.querySelectorAll('#pqSlots .pq-slot')).forEach((el, i) => el.classList.toggle('on', pqSlot === i));
@@ -13789,7 +13793,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             } else {
                 const b = PET_B[st.petSp], bi = petBInfo(st.petSp, lv, st);
                 const blessing = bi
-                    ? `<div class="pl-bless"><div class="pl-bn">${bi.ic} ${escapeHtml(bi.name)}<span>${L2('Cấp', 'Lv')} ${lv + 1}/7</span></div><div class="pl-bt">${bi.html}</div><div class="pl-next">${lv < 6 ? L2('Cấp tiếp theo', 'Next level') + ' (streak ' + PET_LV[lv + 1] + '): ' + petFmtHl(b.t[w], petEff(st, st.petSp, lv + 1), b.v[lv + 1]) : L2('Đã đạt cấp nội tại tối đa!', 'Innate blessing at max level!')}</div></div>`
+                    ? `<div class="pl-bless"><div class="pl-bn">${bi.ic} <b>${escapeHtml(bi.name)}</b>${petLvTag(lv + 1)}</div><div class="pl-bt">${bi.html}</div><div class="pl-next">${lv < 6 ? L2('Cấp tiếp theo', 'Next level') + ' (streak ' + PET_LV[lv + 1] + '): ' + petFmtHl(b.t[w], petEff(st, st.petSp, lv + 1), b.v[lv + 1]) : L2('Đã đạt cấp nội tại tối đa!', 'Innate blessing at max level!')}</div></div>`
                     : `<div class="pl-bless pl-lock"><div class="pl-bn">${b.ic} ${escapeHtml(b.n[w])}</div><div class="pl-bt">${L2('🥚 Nở ở streak 5 để mở nội tại này.', '🥚 Hatch at streak 5 to unlock this blessing.')}</div></div>`;
                 const P = appData.petBless, logs = ((P && P.log) || []).filter(e => e.sid === st.id).slice(-3).reverse();
                 const logHtml = logs.length ? `<div class="pl-log"><b>${L2('✨ Phúc lành gần đây', '✨ Recent blessings')}</b>${logs.map(e => `<div>${escapeHtml(e.d)} · ${escapeHtml(L2(e.vi, e.en))}</div>`).join('')}</div>` : '';
@@ -13956,7 +13960,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             if (st.petSp === undefined || !PET_SP[st.petSp]) return '';
             const lv = petLv(petPeakOf(st)), bi = petBInfo(st.petSp, lv, st);
             if (!bi) return `<div class="text-[10px] text-slate-400 mt-1">${L2('🥚 Nở ở streak 5 để mở nội tại', '🥚 Hatches at streak 5 to unlock its blessing')}</div>`;
-            return `<div class="mt-1 rounded-lg bg-violet-50 border border-violet-200 px-1.5 py-1 text-left"><div class="text-[10px] font-black text-violet-700">${bi.ic} ${escapeHtml(bi.name)} · ${L2('Cấp', 'Lv')} ${lv + 1}/7</div><div class="text-[10px] text-slate-600 leading-snug">${bi.html}</div></div>`;
+            return `<div class="pet-inn-box mt-1 rounded-lg bg-violet-50 border border-violet-200 px-1.5 py-1 text-left"><div class="text-[10px] font-black text-violet-700 flex items-center justify-between gap-1"><span>${bi.ic} ${escapeHtml(bi.name)}</span>${petLvTag(lv + 1)}</div><div class="text-[10px] text-slate-600 leading-snug">${bi.html}</div></div>`;
         };
         const petBlessPanel = sp => {
             petApplyCfg();
@@ -15733,6 +15737,25 @@ html.mx-dark #mxBkGuard .bk-no{background:#334155;color:#e2e8f0}
 /* Quy tắc .pet-art.egg.cr (168px) đè kích thước thẻ → ép lại bằng trứng chưa nở (124px) */
 .pet-line .pet-art.egg.cr{width:124px;height:124px}
 @media (prefers-reduced-motion:reduce){#viewPetContainer .pet-shop-preview-card{transition:none !important}}
+</style>
+<style id="patch-pet-innate-frame">
+/* Khung "nội tại" nổi bật (tĩnh, không hiệu ứng) ở mọi thẻ pet: Thú của lớp · Kho trứng · Cửa hàng · cửa sổ nội tại */
+.pet-card .pet-inn-box,
+.pet-shop-preview-card .pet-preview-blessing,
+#viewPetContainer #petBP,
+.pl-bless:not(.pl-lock){background:#ede9fe !important;border:2px solid #7c3aed !important;box-shadow:0 0 0 3px rgba(124,58,237,.16) !important}
+.pet-card .pet-inn-box > div:first-child,
+.pet-shop-preview-card .pet-preview-blessing-title,.pet-shop-preview-card .pet-preview-blessing-name{color:#4c1d95 !important}
+html.mx-dark .pet-card .pet-inn-box,
+html.mx-dark .pet-shop-preview-card .pet-preview-blessing,
+html.mx-dark #viewPetContainer #petBP,
+html.mx-dark .pl-bless:not(.pl-lock){background:#312e81 !important;border-color:#a78bfa !important;box-shadow:0 0 0 3px rgba(167,139,250,.28) !important}
+html.mx-dark .pet-card .pet-inn-box > div:first-child,
+html.mx-dark .pet-shop-preview-card .pet-preview-blessing-title,html.mx-dark .pet-shop-preview-card .pet-preview-blessing-name{color:#ede9fe !important}
+.pet-chip.pet-lvchip,.pl-bn .pet-lvchip{background:#fef3c7 !important;color:#92400e !important;border:2px solid #f59e0b !important;padding:0 8px;font-weight:900;font-size:10px;white-space:nowrap;flex-shrink:0;border-radius:9999px}
+html.mx-dark .pet-chip.pet-lvchip,html.mx-dark .pl-bn .pet-lvchip{background:#78350f !important;border-color:#fbbf24 !important;color:#fef3c7 !important}
+.psh-lock-note{margin-top:.6rem;padding:.5rem .75rem;border-radius:.75rem;border:1px solid #fcd34d;background:#fffbeb;color:#92400e;font-size:12px;font-weight:800;line-height:1.4}
+html.mx-dark .psh-lock-note{background:#451a03;border-color:#b45309;color:#fde68a}
 </style>
 <script id="patch-pet-follow-js">
 (function(){
