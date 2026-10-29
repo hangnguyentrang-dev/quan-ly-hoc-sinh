@@ -2728,8 +2728,9 @@ html.mx-dark #petBP .pc-edit-pad{background:rgba(30,27,75,.5);border-color:#6d28
 @media (prefers-reduced-motion:reduce){#petBP .pc-row,#petBP .pc-b,#petBP .pc-rs,#petBP .pc-pop{animation:none!important;transition:none!important}}
 </style>
 <style id="patch-pet-unique">
-.pet-sp.taken{filter:grayscale(.9) brightness(.55);opacity:.7;position:relative;transition:filter .25s,opacity .25s}
-.pet-sp.taken:hover{filter:grayscale(.6) brightness(.7);opacity:.85}
+/* Trứng đã có chủ: vẫn sáng đủ màu, chỉ khoá không cho chọn (nhãn 🔒 + con trỏ cấm) */
+.pet-sp.taken{position:relative;cursor:not-allowed;border-color:#ddd6fe}
+.pet-sp.taken:hover{transform:none;background:transparent}
 .pet-sp.taken.on{outline:2px dashed #94a3b8}
 .pet-owner{margin-top:2px;font-size:9px;font-weight:800;color:#475569;background:rgba(148,163,184,.25);border-radius:999px;padding:1px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .pet-sp:not(.taken) .pet-owner{color:#047857;background:rgba(16,185,129,.18)}
@@ -13054,7 +13055,11 @@ window.openStudentProfile=function(studentId){
                 const selOwner = ownerOf(petSel), takenSel = !!(selOwner && selOwner.id !== petTarget), ownSel = !!(selOwner && selOwner.id === petTarget);
                 body = (tgt ? `<div class="mt-4 flex flex-wrap items-center gap-2"><button class="pet-tabbtn on pet-who" onclick="petSetMode('class')" title="${L2('Quay lại Thú của lớp để chọn học sinh khác', 'Back to Class pets to choose another student')}"><i class="fa-solid fa-user mr-1"></i>${L2('Đang chọn cho', 'Choosing for')}: ${tgt.icon || '🎓'} ${escapeHtml(getStudentDisplayName(tgt))} <span class="opacity-70 ml-1">· ${L2('Đổi học sinh', 'Change student')}</span></button></div>` : '') + `<div class="mt-3 grid gap-1" style="grid-template-columns:repeat(auto-fill,minmax(116px,1fr))">` + PET_SP.map((p, i) => { const ow = ownerOf(i), tk = !!(ow && ow.id !== petTarget); return `<div class="pet-sp ${i === petSel ? 'on' : ''} ${tk ? 'taken' : ''}" onclick="petSetSel(${i})">${petArt(i, 1, false)}<div class="pet-level-tag">${petFormLevelName(1)}</div><div class="text-[10px] font-black text-slate-800 truncate">${L2(p[0], p[1])}</div>${ow ? `<div class="pet-owner">${tk ? '🔒' : '✓'} ${escapeHtml(getStudentDisplayName(ow))}</div>` : ''}</div>`; }).join('') + `</div>
                 <div class="mt-4 rounded-xl bg-slate-50 border border-slate-200 p-3"><div class="flex flex-wrap items-center justify-between gap-2 mb-3"><h3 class="font-black text-slate-800">${L2(sp[0], sp[1])} — ${L2('8 dạng tiến hoá', '8 evolution forms')}</h3><div class="flex items-center gap-2"><button class="pet-tabbtn on ${takenSel || ownSel ? 'pet-chosen' : ''}" ${!tgt || locked || takenSel || ownSel ? 'disabled style="opacity:.6;cursor:not-allowed"' : ''} onclick="petPick('${petTarget}',${petSel})">${takenSel ? '🔒 ' + L2('Đã chọn', 'Chosen') + ' · ' + escapeHtml(getStudentDisplayName(selOwner)) : ownSel ? '✓ ' + L2('Đã chọn', 'Chosen') + ' · ' + escapeHtml(getStudentDisplayName(selOwner)) : locked ? L2('Đã nở, không đổi được', 'Hatched, locked') : L2('Chọn trứng này', 'Choose this egg')}</button></div></div><div class="pet-line">` +
-                    [1, 2, 3, 4, 5, 6, 7, 8].map(f => { const need = f === 1 ? L2('Streak 0 (nứt ở 1)', 'Streak 0 (cracks at 1)') : L2('Streak ', 'Streak ') + PET_MS[f]; return `<div>${petArt(petSel, f, false)}<div class="pet-level-tag">${escapeHtml(petFormLevelName(f))}</div><div class="text-[11px] font-extrabold text-violet-700">${escapeHtml(petFormName(petSel, f))}</div><div class="text-[10px] text-slate-500">${need}</div></div>`; }).join('') + `</div>` + petBlessPanel(petSel) + `</div>`;
+                    [1, 2, 3, 4, 5, 6, 7, 8].map(f => {
+                        const card = (crack, need) => `<div${crack ? ' class="pet-hatching"' : ''}>${petArt(petSel, f, crack)}<div class="pet-level-tag">${escapeHtml(petFormLevelName(f))}</div><div class="text-[11px] font-extrabold text-violet-700">${escapeHtml(petFormName(petSel, f))}</div><div class="text-[10px] text-slate-500">${need}</div></div>`;
+                        if (f === 1) return card(false, L2('Streak 0 · Chưa nở', 'Streak 0 · Unhatched')) + card(true, L2('Streak 1 - đang nở', 'Streak 1 - Hatching'));
+                        return card(false, L2('Streak ', 'Streak ') + PET_MS[f]);
+                    }).join('') + `</div>` + petBlessPanel(petSel) + `</div>`;
             }
             const slide = window.__petSlide || 0; window.__petSlide = 0;
             root.innerHTML = head + `<div class="pet-pane${slide ? ' pet-in' : ''}" style="--dir:${slide || 1}">` + body + (petMode === 'class' ? petLogHtml() : '') + `</div></section>`;
@@ -13077,12 +13082,12 @@ window.openStudentProfile=function(studentId){
         const PSH_IT = [
             // CÂN BẰNG LẠI: [kind, scope, amount, (cũ), vi, en, descVi, descEn, nhóm, sao-1]
             // Thang sao (mọi cấp): tỷ lệ 2/3/5/8/12 · pts 1/2/3/5/8 · %pts 5/8/12/20/35 · tích lũy 1/2/3/4/6 · trần tuần 2/3/5/8/12 · %hoàn 1/2/3/5/8 · hoàn tối đa 1/2/4/6/10 · giữ lại 1..5 · quà % 10/15/25/40/60
-            // Hệ số phạm vi: mọi cấp ×1 · từ cấp 4 ×1,25 · từ cấp 5 ×1,5 · 2 cấp liền kề ×1,75 · 1 cấp ×2,5
+            // Hệ số phạm vi: mọi cấp ×1 · từ cấp 2 ×1,25 · từ cấp 3 ×1,5 · 2 cấp liền kề ×1,75 · 1 cấp ×2,5
             ["ch", "", 2, 0, "Kẹp Áo Cỏ May", "Four-Leaf Clover Pin", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở mọi cấp.", "Adds trigger chance to innates that have one, at every level.", 0, 0],
-            ["ch", "4", 3, 0, "Vòng Cổ Dấu Chân", "Pawprint Necklace", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 4 trở lên.", "Adds trigger chance to innates that have one, from level 4 up.", 0, 0],
+            ["ch", "4", 3, 0, "Vòng Cổ Dấu Chân", "Pawprint Necklace", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 2 trở lên.", "Adds trigger chance to innates that have one, from level 2 up.", 0, 0],
             ["ch", "m", 8, 0, "Nhẫn Ngọc Vận Mệnh", "Fate Jade Ring", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 1 cấp bạn chọn.", "Adds trigger chance to innates that have one, at 1 level you choose.", 0, 1],
             ["ch", "", 5, 0, "Nơ Khởi Vận", "First Blessing Bow", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở mọi cấp.", "Adds trigger chance to innates that have one, at every level.", 0, 2],
-            ["ch", "4", 6, 0, "Vương Miện Sao May", "Lucky Star Crown", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 4 trở lên.", "Adds trigger chance to innates that have one, from level 4 up.", 0, 2],
+            ["ch", "4", 6, 0, "Vương Miện Sao May", "Lucky Star Crown", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 2 trở lên.", "Adds trigger chance to innates that have one, from level 2 up.", 0, 2],
             ["a", "", 1, 0, "Vòng Tay Ngọc Lục", "Jade Bead Bracelet", "Cộng điểm tích lũy trong quà. Dùng cho Kẹo Thưởng Bất Ngờ, Niết Bàn Phúc Lộc, Lôi Quang Liên Kết.", "Adds accumulated pts to the gift. Works with Surprise Candy Bonus, Nirvana Blessing, Linked Lightning.", 1, 0],
             ["p", "", 1, 0, "Dây Chuyền Năng Lượng", "Energy Crystal Necklace", "Cộng Pts cho nội tại có thưởng Pts, ở mọi cấp.", "Adds Pts to innates that give Pts, at every level.", 1, 0],
             ["pp", "", 5, 0, "Nhẫn Ánh Dương", "Sunlight Ring", "Tăng % Pts nhận từ nội tại có thưởng Pts, ở mọi cấp.", "Boosts the Pts from innates that give Pts by a %, at every level.", 1, 0],
@@ -13111,22 +13116,22 @@ window.openStudentProfile=function(studentId){
             ["ch", "p", 4, 0, "Vòng Tay Chuỗi Sao", "Star Chain Bracelet", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 2 cấp liền kề bạn chọn.", "Adds trigger chance to innates that have one, at 2 adjacent levels you choose.", 6, 0],
             ["p", "m", 3, 0, "Vòng Cổ Chiến Thắng", "Victory Necklace", "Cộng Pts cho nội tại có thưởng Pts, ở 1 cấp bạn chọn.", "Adds Pts to innates that give Pts, at 1 level you choose.", 6, 0],
             ["ch", "p", 9, 0, "Trâm Cài Tiến Hóa", "Evolution Brooch", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 2 cấp liền kề bạn chọn.", "Adds trigger chance to innates that have one, at 2 adjacent levels you choose.", 6, 2],
-            ["p", "3", 3, 0, "Mũ Trưởng Thành", "Maturity Cap", "Cộng Pts cho nội tại có thưởng Pts, từ cấp 5 trở lên.", "Adds Pts to innates that give Pts, from level 5 up.", 6, 1],
-            ["ch", "5", 12, 0, "Áo Choàng Huyền Thoại", "Legendary Cloak", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở cấp 7.", "Adds trigger chance to innates that have one, at level 7.", 6, 2],
+            ["p", "3", 3, 0, "Mũ Trưởng Thành", "Maturity Cap", "Cộng Pts cho nội tại có thưởng Pts, từ cấp 3 trở lên.", "Adds Pts to innates that give Pts, from level 3 up.", 6, 1],
+            ["ch", "5", 12, 0, "Áo Choàng Huyền Thoại", "Legendary Cloak", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở cấp 4.", "Adds trigger chance to innates that have one, at level 4.", 6, 2],
             ["ch", "m", 5, 0, "Nơ Khai Vận", "Luck Awakening Bow", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 1 cấp bạn chọn.", "Adds trigger chance to innates that have one, at 1 level you choose.", 7, 0],
             ["p", "", 2, 0, "Kính Mắt Phúc Lộc", "Fortune Glasses", "Cộng Pts cho nội tại có thưởng Pts, ở mọi cấp.", "Adds Pts to innates that give Pts, at every level.", 7, 1],
-            ["gp", "4", 30, 0, "Vòng Cổ Song Quà", "Double Gift Necklace", "Nội tại trao quà: có % nhận thêm 1 quà cùng loại từ cấp 4 trở lên. Tối đa +1 quà/lần.", "Gift innates: chance of 1 more gift of the same kind from level 4 up. Max +1 gift per trigger.", 7, 2],
+            ["gp", "4", 30, 0, "Vòng Cổ Song Quà", "Double Gift Necklace", "Nội tại trao quà: có % nhận thêm 1 quà cùng loại từ cấp 2 trở lên. Tối đa +1 quà/lần.", "Gift innates: chance of 1 more gift of the same kind from level 2 up. Max +1 gift per trigger.", 7, 2],
             ["a", "", 2, 0, "Hoa Tai Tích Lũy", "Accrual Earrings", "Cộng điểm tích lũy trong quà. Dùng cho Kẹo Thưởng Bất Ngờ, Niết Bàn Phúc Lộc, Lôi Quang Liên Kết.", "Adds accumulated pts to the gift. Works with Surprise Candy Bonus, Nirvana Blessing, Linked Lightning.", 7, 1],
-            ["ch", "3", 8, 0, "Khăn Đồng Hành", "Companion Scarf", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 5 trở lên.", "Adds trigger chance to innates that have one, from level 5 up.", 7, 2],
+            ["ch", "3", 8, 0, "Khăn Đồng Hành", "Companion Scarf", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 3 trở lên.", "Adds trigger chance to innates that have one, from level 3 up.", 7, 2],
             ["ch", "", 8, 0, "Trâm Cỏ Bốn Lá Hoàng Gia", "Royal Clover Brooch", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở mọi cấp.", "Adds trigger chance to innates that have one, at every level.", 0, 3],
-            ["ch", "4", 10, 0, "Nhẫn Mắt Ngọc", "Jade Eye Ring", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 4 trở lên.", "Adds trigger chance to innates that have one, from level 4 up.", 0, 3],
-            ["ch", "3", 12, 0, "Vương Miện May Mắn", "Crown of Luck", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 5 trở lên.", "Adds trigger chance to innates that have one, from level 5 up.", 0, 3],
+            ["ch", "4", 10, 0, "Nhẫn Mắt Ngọc", "Jade Eye Ring", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 2 trở lên.", "Adds trigger chance to innates that have one, from level 2 up.", 0, 3],
+            ["ch", "3", 12, 0, "Vương Miện May Mắn", "Crown of Luck", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 3 trở lên.", "Adds trigger chance to innates that have one, from level 3 up.", 0, 3],
             ["p", "", 5, 0, "Hoa Tai Kim Cương", "Diamond Earrings", "Cộng Pts cho nội tại có thưởng Pts, ở mọi cấp.", "Adds Pts to innates that give Pts, at every level.", 1, 3],
-            ["p", "3", 8, 0, "Dây Chuyền Hoàng Kim", "Golden Necklace", "Cộng Pts cho nội tại có thưởng Pts, từ cấp 5 trở lên.", "Adds Pts to innates that give Pts, from level 5 up.", 1, 3],
+            ["p", "3", 8, 0, "Dây Chuyền Hoàng Kim", "Golden Necklace", "Cộng Pts cho nội tại có thưởng Pts, từ cấp 3 trở lên.", "Adds Pts to innates that give Pts, from level 3 up.", 1, 3],
             ["pp", "", 20, 0, "Ngọc Bội Thịnh Vượng", "Prosperity Jade Pendant", "Tăng % Pts nhận từ nội tại có thưởng Pts, ở mọi cấp.", "Boosts the Pts from innates that give Pts by a %, at every level.", 1, 3],
             ["g", "p", 1, 0, "Nơ Hoàng Gia", "Royal Bow", "Nội tại trao quà: chắc chắn nhận thêm 1 quà cùng loại ở 2 cấp liền kề bạn chọn. Tối đa +1 quà/lần.", "Gift innates: always get 1 more gift of the same kind at 2 adjacent levels you choose. Max +1 gift per trigger.", 2, 2],
             ["gp", "", 40, 0, "Trâm Pha Lê", "Crystal Hairpin", "Nội tại trao quà: có % nhận thêm 1 quà cùng loại ở mọi cấp. Tối đa +1 quà/lần.", "Gift innates: chance of 1 more gift of the same kind at every level. Max +1 gift per trigger.", 2, 3],
-            ["g", "3", 1, 0, "Áo Khoác Ma Thuật", "Magic Jacket", "Nội tại trao quà: chắc chắn nhận thêm 1 quà cùng loại từ cấp 5 trở lên. Tối đa +1 quà/lần.", "Gift innates: always get 1 more gift of the same kind from level 5 up. Max +1 gift per trigger.", 2, 3],
+            ["g", "3", 1, 0, "Áo Khoác Ma Thuật", "Magic Jacket", "Nội tại trao quà: chắc chắn nhận thêm 1 quà cùng loại từ cấp 3 trở lên. Tối đa +1 quà/lần.", "Gift innates: always get 1 more gift of the same kind from level 3 up. Max +1 gift per trigger.", 2, 3],
             ["a", "", 3, 0, "Vòng Tay Tích Lũy", "Accrual Bracelet", "Cộng điểm tích lũy trong quà. Dùng cho Kẹo Thưởng Bất Ngờ, Niết Bàn Phúc Lộc, Lôi Quang Liên Kết.", "Adds accumulated pts to the gift. Works with Surprise Candy Bonus, Nirvana Blessing, Linked Lightning.", 1, 2],
             ["a", "", 4, 0, "Nhẫn Tích Lũy Cao Cấp", "Premium Accrual Ring", "Cộng điểm tích lũy trong quà. Dùng cho Kẹo Thưởng Bất Ngờ, Niết Bàn Phúc Lộc, Lôi Quang Liên Kết.", "Adds accumulated pts to the gift. Works with Surprise Candy Bonus, Nirvana Blessing, Linked Lightning.", 1, 3],
             ["k", "", 8, 0, "Giáp Vai Bạch Kim", "Platinum Pauldrons", "Tăng mức pts bù tối đa mỗi tuần. Chỉ dùng cho Mây Che Chở.", "Raises the weekly pts cap. Works only with Cloud Cover.", 4, 3],
@@ -13137,11 +13142,11 @@ window.openStudentProfile=function(studentId){
             ["ch", "m", 20, 0, "Huy Hiệu Tinh Anh", "Elite Badge", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 1 cấp bạn chọn.", "Adds trigger chance to innates that have one, at 1 level you choose.", 6, 3],
             ["p", "m", 13, 0, "Vòng Cổ Thịnh Vượng", "Prosperity Necklace", "Cộng Pts cho nội tại có thưởng Pts, ở 1 cấp bạn chọn.", "Adds Pts to innates that give Pts, at 1 level you choose.", 6, 3],
             ["ch", "p", 14, 0, "Hoa Tai Song Tinh", "Twin Star Earrings", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 2 cấp liền kề bạn chọn.", "Adds trigger chance to innates that have one, at 2 adjacent levels you choose.", 6, 3],
-            ["p", "4", 6, 0, "Dải Băng Phúc Lộc", "Fortune Sash", "Cộng Pts cho nội tại có thưởng Pts, từ cấp 4 trở lên.", "Adds Pts to innates that give Pts, from level 4 up.", 6, 3],
+            ["p", "4", 6, 0, "Dải Băng Phúc Lộc", "Fortune Sash", "Cộng Pts cho nội tại có thưởng Pts, từ cấp 2 trở lên.", "Adds Pts to innates that give Pts, from level 2 up.", 6, 3],
             ["ch", "", 12, 0, "Vương Miện Thiên Mệnh", "Crown of Destiny", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở mọi cấp.", "Adds trigger chance to innates that have one, at every level.", 0, 4],
-            ["ch", "4", 15, 0, "Kính Thiên Nhãn", "Heaven's Eye Glasses", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 4 trở lên.", "Adds trigger chance to innates that have one, from level 4 up.", 0, 4],
+            ["ch", "4", 15, 0, "Kính Thiên Nhãn", "Heaven's Eye Glasses", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 2 trở lên.", "Adds trigger chance to innates that have one, from level 2 up.", 0, 4],
             ["p", "", 8, 0, "Dây Chuyền Trái Tim Kim Cương", "Diamond Heart Necklace", "Cộng Pts cho nội tại có thưởng Pts, ở mọi cấp.", "Adds Pts to innates that give Pts, at every level.", 1, 4],
-            ["p", "4", 10, 0, "Nhẫn Phồn Vinh", "Prosperity Ring", "Cộng Pts cho nội tại có thưởng Pts, từ cấp 4 trở lên.", "Adds Pts to innates that give Pts, from level 4 up.", 1, 4],
+            ["p", "4", 10, 0, "Nhẫn Phồn Vinh", "Prosperity Ring", "Cộng Pts cho nội tại có thưởng Pts, từ cấp 2 trở lên.", "Adds Pts to innates that give Pts, from level 2 up.", 1, 4],
             ["pp", "", 35, 0, "Vương Miện Thái Dương", "Solar Crown", "Tăng % Pts nhận từ nội tại có thưởng Pts, ở mọi cấp.", "Boosts the Pts from innates that give Pts by a %, at every level.", 1, 4],
             ["g", "", 1, 0, "Áo Choàng Thần Linh", "Divine Cloak", "Nội tại trao quà: chắc chắn nhận thêm 1 quà cùng loại ở mọi cấp. Tối đa +1 quà/lần.", "Gift innates: always get 1 more gift of the same kind at every level. Max +1 gift per trigger.", 2, 4],
             ["gp", "", 60, 0, "Hoa Tai Song Ảnh", "Twin Shadow Earrings", "Nội tại trao quà: có % nhận thêm 1 quà cùng loại ở mọi cấp. Tối đa +1 quà/lần.", "Gift innates: chance of 1 more gift of the same kind at every level. Max +1 gift per trigger.", 2, 4],
@@ -13507,7 +13512,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
         const pshPrice = mxTicketPrice;
         const pshEq = st => { const e = (st && st.petEquip && typeof st.petEquip === 'object') ? st.petEquip : {}; return [0, 1, 2].map(i => e['s' + i] || null); };
         const pshOwned = (st, id) => ((st && st.petItems && st.petItems[id]) | 0);
-        const pshOn = (it, p, lv) => it.s === 'm' ? lv === +p : it.s === 'p' ? (lv === +p || lv === +p + 1) : it.s === '4' ? lv >= 3 : it.s === '3' ? lv >= 4 : it.s === '5' ? lv === 6 : true;
+        const pshOn = (it, p, lv) => it.s === 'm' ? lv === +p : it.s === 'p' ? (lv === +p || lv === +p + 1) : it.s === '4' ? lv >= 1 : it.s === '3' ? lv >= 2 : it.s === '5' ? lv === 3 : true;
         function pshCompat(sp, it) {
             if (it.k === 'n' || it.k === 'm') return { ok: false, why: it.k === 'm' ? L2('Chưa có nội tại với hệ số nhân thực sự; không thể trang bị để tránh thưởng sai.', 'No innate has a real multiplier yet; equipping is disabled to prevent incorrect rewards.') : L2('Hệ thống nội tại hiện chưa có cơ chế tương ứng nên vật phẩm này chưa thể kích hoạt.', 'The innate engine has no matching mechanic yet, so this item cannot activate.') };
             const ro = it.k === 'ch' ? 'c' : (PSH_KR[it.k] || it.k), R = PSH_ROLE[sp] || {};
@@ -13544,14 +13549,19 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             } catch (e) { return 0; }
         }
         const pshDef = st => petFormName(st.petSp, petFormOf(petPeakOf(st)));
-        const pshDisp = st => (typeof st.petNick === 'string' && st.petNick.trim()) ? st.petNick : pshDef(st);
+        const pshStageName = st => { const f = petFormOf(petPeakOf(st)); return L2(PET_FORM_VI[f - 1], PET_FORM_EN[f - 1]); };
+        const pshNickRaw = st => (typeof st.petNick === 'string' && st.petNick.trim()) ? st.petNick.trim() : '';
+        // Tên hiển thị = tên đã đặt + (cấp hiện tại). Cấp lấy động nên tự đổi khi thú tiến hoá.
+        const pshDisp = st => { const n = pshNickRaw(st); return n ? n + ' (' + pshStageName(st) + ')' : pshDef(st); };
+        // Bỏ hậu tố cấp nếu người dùng tự gõ kèm, tránh bị lặp "Bông (Nhí) (Nhí)"
+        const pshStripStage = v => { const all = PET_FORM_VI.concat(PET_FORM_EN).join('|'); const r = v.replace(new RegExp('\\s*[(\\[·\\-–—|]*\\s*(?:' + all + ')\\s*[)\\]]*\\s*$', 'i'), '').trim(); return r || v; };
         const pshSt = sid => (appData.students || []).find(x => x.id === sid);
         const pshRO = () => typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId;
         const pshT = (m, t) => { try { window.showAppToast && window.showAppToast(m, t || 'success'); } catch (e) {} };
         const pshN = a => String(a).replace('.', L2(',', '.'));
         function pshFx(it) {
             const a = pshN(it.a), A = { ch: [`+${a}% tỷ lệ kích hoạt`, `+${a}% trigger chance`], p: [`+${a} pts thưởng`, `+${a} reward pts`], pp: [`+${a}% pts thưởng`, `+${a}% reward pts`], a: [`+${a} điểm tích lũy trong quà`, `+${a} accumulated pt in the gift`], g: [`+${a} quà bổ sung`, `+${a} bonus gift`], gp: [`${a}% nhận thêm 1 quà`, `${a}% chance of 1 extra gift`], gw: ['+1 quà bổ sung/tuần', '+1 bonus gift/week'], m: [`+${a} hệ số nhân (tối đa ×15)`, `+${a} multiplier (cap ×15)`], k: [`+${a} pts giới hạn bù/tuần`, `+${a} pts weekly cap`], r: [`+${a}% tỷ lệ hoàn trả`, `+${a}% refund rate`], x: [`+${a} pts thưởng tối đa/lần`, `+${a} pts max per trigger`], b: [`+${a} pts giữ lại/lần`, `+${a} pts kept per time`], w: [`+${a} lần kích hoạt/tuần`, `+${a} activation/week`], n: ['Cơ chế chưa có trong nội tại hiện tại', 'Mechanic not in current innates'] }[it.k];
-            const S = { m: [' tại cấp nội tại đã chọn', ' at the chosen innate level'], p: [' tại 2 cấp nội tại liền kề', ' at 2 adjacent innate levels'], '4': [' khi nội tại đạt cấp 4 trở lên', ' once the innate reaches level 4+'], '3': [' từ cấp nội tại 5 trở lên', ' from innate level 5 onward'], '5': [' tại cấp nội tại 7', ' at innate level 7'], g: [' (nội tại của Pet đang trang bị)', " (equipped Pet's innate)"], c: [' (nội tại có điều kiện thưởng)', ' (reward-condition innates)'] }[it.s] || ['', ''];
+            const S = { m: [' tại cấp nội tại đã chọn', ' at the chosen innate level'], p: [' tại 2 cấp nội tại liền kề', ' at 2 adjacent innate levels'], '4': [' khi nội tại đạt cấp 2 trở lên', ' once the innate reaches level 2+'], '3': [' từ cấp nội tại 3 trở lên', ' from innate level 3 onward'], '5': [' tại cấp nội tại 4', ' at innate level 4'], g: [' (nội tại của Pet đang trang bị)', " (equipped Pet's innate)"], c: [' (nội tại có điều kiện thưởng)', ' (reward-condition innates)'] }[it.s] || ['', ''];
             return L2(A[0] + S[0], A[1] + S[1]);
         }
         const pshStat = it => { const k = it.k === 'ch' ? 'c' : (PSH_KR[it.k] || it.k); return (it.k === 'n' || it.k === 'm') ? L2('Chưa hỗ trợ', 'Not supported') : L2(PSH_LB[k][0], PSH_LB[k][1]); };
@@ -13658,7 +13668,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                 m = document.createElement('div'); m.id = 'pqModal'; m.className = 'pq-back'; m.dataset.sid = pqSid; m.onclick = e => { if (e.target === m) pqClose(); };
                 m.innerHTML = `<div class="pq-card pq-duo" role="dialog" aria-modal="true">
                     <section class="pq-pane"><div class="pq-pane-h"><div class="pq-pt">🎒 ${L2('Trang bị của Pet', 'Pet equipment')}</div><span class="pq-x l" onclick="pqClose()" aria-label="${L2('Đóng', 'Close')}">✕</span></div>
-                        <div class="pq-pane-b"><div class="flex items-center gap-3"><div id="pqArt"></div><div style="flex:1;min-width:0"><div class="text-xs font-black text-slate-500" id="pqWho"></div><div class="text-sm font-black text-violet-700" id="pqDef"></div><div class="flex gap-1 items-center mt-1 flex-wrap"><input id="pqName" class="pq-in" maxlength="34" value="${escapeHtml(pshDisp(st))}" placeholder="${escapeHtml(pshDef(st))}" oninput="pqCnt()" ${pshRO() ? 'disabled' : ''}><span id="pqCnt" class="pq-stat"></span><button class="ps-chip on" onclick="pqSaveName()">${L2('Lưu tên', 'Save name')}</button><button class="ps-chip" onclick="pqResetName()">${L2('Mặc định', 'Default')}</button></div><div class="mt-1" id="pqChips"></div></div></div>
+                        <div class="pq-pane-b"><div class="flex items-center gap-3"><div id="pqArt"></div><div style="flex:1;min-width:0"><div class="text-xs font-black text-slate-500" id="pqWho"></div><div class="text-sm font-black text-violet-700" id="pqDef"></div><div class="flex gap-1 items-center mt-1 flex-wrap"><input id="pqName" class="pq-in" maxlength="34" value="${escapeHtml(pshNickRaw(st))}" placeholder="${escapeHtml(pshDef(st))}" oninput="pqCnt()" ${pshRO() ? 'disabled' : ''}><span id="pqCnt" class="pq-stat"></span><button class="ps-chip on" onclick="pqSaveName()">${L2('Lưu tên', 'Save name')}</button><button class="ps-chip" onclick="pqResetName()">${L2('Mặc định', 'Default')}</button></div><div class="mt-1" id="pqChips"></div></div></div>
                         <div class="pq-h" id="pqInn"></div><div id="pqStats"></div><div class="pq-h">${L2('Ba ô trang bị', 'Three equipment slots')}</div><div class="pq-slots" id="pqSlots"></div></div></section>
                     <section class="pq-pane"><div class="pq-pane-h"><div class="pq-pt" id="pqRT"></div><span class="pq-x r" onclick="pqClose()" aria-label="${L2('Đóng', 'Close')}">✕</span></div>
                         <div class="pq-pane-b"><div id="pqRows"></div><div id="pqNone"></div></div></section></div>`;
@@ -13666,7 +13676,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             }
             pqSet(m.querySelector('#pqArt'), petArt(sp, f, pk >= 1));
             pqSet(m.querySelector('#pqWho'), `${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}`);
-            pqSet(m.querySelector('#pqDef'), `${L2('Tên mặc định', 'Default name')}: ${escapeHtml(pshDef(st))}`);
+            pqSet(m.querySelector('#pqDef'), `${L2('Tên mặc định', 'Default name')}: ${escapeHtml(pshDef(st))}` + (pshNickRaw(st) ? `<div class="text-[11px] font-bold text-slate-500">${L2('Đang hiển thị', 'Shown as')}: ${escapeHtml(pshDisp(st))}</div>` : ''));
             pqSet(m.querySelector('#pqChips'), `<span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${escapeHtml(petFormLevelName(f))}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span>`);
             pqSet(m.querySelector('#pqInn'), `${b.ic} ${escapeHtml(b.n[w])} ${lv >= 0 ? '· ' + L2('Cấp', 'Lv') + ' ' + (lv + 1) + '/7' : '· ' + L2('Nở ở streak 5 để mở nội tại', 'Hatch at streak 5 to unlock')}`);
             pqSet(m.querySelector('#pqStats'), stats);
@@ -13699,11 +13709,12 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
         };
         window.pqUnequip = async i => { const st = pshSt(pqSid); if (!st) return; { const e = pshEq(st)[i]; pqPop = e ? e.id : ''; } await pqCommit(st, () => { const o = Object.assign({}, st.petEquip || {}); delete o['s' + i]; st.petEquip = o; }, 'Đã tháo trang bị.', 'Item unequipped.'); };
         window.pqSaveName = async () => {
-            const st = pshSt(pqSid), inp = document.getElementById('pqName'); if (!st || !inp) return; const v = inp.value.trim();
+            const st = pshSt(pqSid), inp = document.getElementById('pqName'); if (!st || !inp) return; const v = pshStripStage(inp.value.trim());
             if (pqLen(v) > 34) { pshT(L2('Tên tối đa 34 ký tự.', 'Name is limited to 34 characters.'), 'error'); return; }
-            await pqCommit(st, () => { if (!v || v === pshDef(st)) delete st.petNick; else st.petNick = v; }, 'Đã lưu tên Pet.', 'Pet name saved.');
+            const ok = await pqCommit(st, () => { if (!v || v === pshDef(st)) delete st.petNick; else st.petNick = v; }, 'Đã lưu tên Pet.', 'Pet name saved.');
+            if (ok) { inp.value = pshNickRaw(st); pqCnt(); if (v && v !== pshDef(st)) pshT(L2('Tên hiển thị: ', 'Display name: ') + pshDisp(st)); }
         };
-        window.pqResetName = async () => { const st = pshSt(pqSid); if (!st) return; const ok = await pqCommit(st, () => { delete st.petNick; }, 'Đã khôi phục tên mặc định.', 'Default name restored.'); const i = document.getElementById('pqName'); if (ok && i) { i.value = pshDisp(st); pqCnt(); } };
+        window.pqResetName = async () => { const st = pshSt(pqSid); if (!st) return; const ok = await pqCommit(st, () => { delete st.petNick; }, 'Đã khôi phục tên mặc định.', 'Default name restored.'); const i = document.getElementById('pqName'); if (ok && i) { i.value = ''; pqCnt(); } };
         window.__pshSelfTest = { PSH_IT, PSH_GRP, PSH_ROLE, PSH_GR, pshCompat, petEff, petGiftX, pshArt };
 
         /* ===== Leaderboard: cột Thú cưng + bấm xem nội tại ===== */
@@ -15657,6 +15668,47 @@ html.mx-dark #mxBkGuard .bk-no{background:#334155;color:#e2e8f0}
     }
     install();
     setInterval(install, 1000);
+})();
+</script>
+
+<style id="patch-pet-follow">
+/* Thẻ thú cưng của học sinh luôn trượt theo khi cuộn xuống xem vật phẩm (màn hình rộng) */
+@media(min-width:1180px){
+  #viewPetContainer .pet-shop-preview-card{position:relative !important;top:auto !important;will-change:transform;transition:transform .16s ease-out}
+}
+/* Thẻ trứng đang nở: giống thẻ trứng thường, bỏ vầng sáng lớn để cùng kích thước đồ hoạ */
+.pet-line>div.pet-hatching .p3-aura{display:none}
+/* Quy tắc .pet-art.egg.cr (168px) đè kích thước thẻ → ép lại bằng trứng chưa nở (124px) */
+.pet-line .pet-art.egg.cr{width:124px;height:124px}
+@media (prefers-reduced-motion:reduce){#viewPetContainer .pet-shop-preview-card{transition:none !important}}
+</style>
+<script id="patch-pet-follow-js">
+(function(){
+  var raf=0;
+  function upd(){
+    raf=0;
+    var root=document.getElementById('viewPetContainer'); if(!root||root.classList.contains('hidden')) return;
+    var aside=root.querySelector('.pet-shop-preview'), card=aside&&aside.querySelector('.pet-shop-preview-card'); if(!card) return;
+    if(!window.matchMedia('(min-width:1180px)').matches){card.style.transform='';card.style.maxHeight='';return;}
+    var vr=root.getBoundingClientRect(), ar=aside.getBoundingClientRect(), gap=12;
+    // Nếu container không tự cuộn mà cả trang cuộn, dùng mép trên viewport làm mốc
+    var top=Math.max(vr.top,0);
+    var avail=Math.min(vr.bottom,window.innerHeight)-top-gap*2;
+    card.style.maxHeight=Math.max(260,avail)+'px';
+    var ty=top+gap-ar.top, maxTy=aside.offsetHeight-card.offsetHeight;
+    ty=Math.max(0,Math.min(ty,Math.max(0,maxTy)));
+    card.style.transform='translateY('+Math.round(ty)+'px)';
+  }
+  function sch(){ if(!raf) raf=requestAnimationFrame(upd); }
+  document.addEventListener('scroll',sch,true);
+  window.addEventListener('resize',sch);
+  function hook(){
+    var root=document.getElementById('viewPetContainer'); if(!root) return false;
+    new MutationObserver(sch).observe(root,{childList:true,subtree:true});
+    return true;
+  }
+  if(!hook()) document.addEventListener('DOMContentLoaded',hook);
+  sch();
 })();
 </script>
 </body>
