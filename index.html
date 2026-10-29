@@ -2949,6 +2949,51 @@ html.mx-dark .gift-card.gift-sp-item_ticket .gift-name,html.mx-dark .gift-card.g
 @media(max-width:560px){.mx-pet-settings-stars{grid-template-columns:repeat(3,minmax(0,1fr))}.mx-pet-settings-grid:not(.mx-pet-settings-stars){grid-template-columns:1fr}.mx-pet-settings-body,.mx-pet-settings-top{padding:16px}.mx-pet-settings-actions{padding:14px 16px}}
 @media(prefers-reduced-motion:reduce){.mx-pet-settings-overlay,.mx-pet-settings-panel{animation:none}}
 </style>
+<style id="pet-shop-live-preview">
+/* Independent, scroll-following pet preview beside the item shop */
+.pet-shop-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start}
+.pet-shop-preview{position:relative;min-width:0}
+.pet-shop-preview-card{position:sticky;top:18px;z-index:5;border:2px solid #c4b5fd;border-radius:20px;padding:16px;background:linear-gradient(155deg,#faf5ff,#eef2ff 55%,#fff);box-shadow:0 12px 32px rgba(91,33,182,.12);text-align:center;overflow:hidden}
+.pet-shop-preview-card .pet-art{margin:8px auto;max-width:190px}
+.pet-shop-preview-card .pet-art svg{max-width:100%}
+.pet-shop-preview-card .pet-preview-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.pet-shop-preview-card .pet-preview-metric{padding:9px 5px;border-radius:11px;background:rgba(255,255,255,.82);border:1px solid #ddd6fe;font-size:12px;font-weight:800;color:#5b21b6}
+.pet-shop-preview-card .pet-preview-metric strong{display:block;font-size:19px;color:#312e81;margin-top:2px}
+.pet-shop-preview-card .pet-preview-gear{margin-top:12px;border-top:1px solid #ddd6fe;padding-top:10px;font-size:12px;text-align:left;color:#5b21b6}
+.pet-shop-preview-card .pet-preview-gear div{padding:4px 0}
+.pet-shop-main{min-width:0}
+@media(min-width:1180px){.pet-shop-layout{grid-template-columns:270px minmax(0,1fr)}.pet-shop-preview{align-self:stretch}.pet-shop-preview-card{top:20px}}
+@media(min-width:1500px){.pet-shop-layout{grid-template-columns:305px minmax(0,1fr)}}
+@media(max-width:1179px){.pet-shop-preview-card{position:relative;top:auto;display:grid;grid-template-columns:140px 1fr;text-align:left;gap:10px}.pet-shop-preview-card .pet-art{grid-row:1 / span 3;max-width:135px;margin:auto}.pet-shop-preview-card .pet-preview-metrics{margin-top:0}.pet-shop-preview-card .pet-preview-gear{grid-column:1/-1}}
+@media(max-width:560px){.pet-shop-preview-card{display:block;text-align:center}.pet-shop-preview-card .pet-art{max-width:150px;margin:8px auto}}
+html.mx-dark .pet-shop-preview-card{background:linear-gradient(155deg,#312e81,#1e1b4b 65%,#0f172a);border-color:#7c3aed;color:#f5f3ff}
+html.mx-dark .pet-shop-preview-card .pet-preview-metric{background:rgba(15,23,42,.6);border-color:#6d28d9;color:#ddd6fe}
+html.mx-dark .pet-shop-preview-card .pet-preview-metric strong{color:#fff}
+html.mx-dark .pet-shop-preview-card .pet-preview-gear{color:#e9d5ff;border-color:#6d28d9}
+
+.pet-preview-blessing{margin-top:12px;padding:12px;border-radius:13px;background:linear-gradient(135deg,#f5f3ff,#eef2ff);border:1px solid #c4b5fd;text-align:left;overflow-wrap:anywhere}
+.pet-preview-blessing-title{font-size:12px;font-weight:900;color:#6d28d9;margin-bottom:6px}
+.pet-preview-blessing-name{font-size:13px;font-weight:850;color:#4c1d95;margin-bottom:5px}
+.pet-preview-blessing-desc{font-size:12px;line-height:1.5;color:#475569}
+</style>
+
+<style id="pet-layout-refinement-2026">
+/* Match the Mystery Box tab's available width without changing other tabs. */
+main:has(#viewPetContainer:not(.hidden)){max-width:min(1500px,100%) !important;padding-left:clamp(12px,2.2vw,36px);padding-right:clamp(12px,2.2vw,36px)}
+#viewPetContainer{width:100%;min-width:0}
+#viewPetContainer>section{width:100%;padding:clamp(18px,2vw,30px)}
+#viewPetContainer .pet-pane{width:100%;min-width:0;overflow:visible}
+#viewPetContainer .pet-card{padding:clamp(11px,1.1vw,17px)}
+#viewPetContainer .pet-card .pet-art{transform:scale(1.045);transform-origin:center center}
+#viewPetContainer .pet-tabbtn{font-size:clamp(12px,.92vw,14px);padding:8px 13px}
+#viewPetContainer .pet-shop-layout{grid-template-columns:minmax(0,1fr);gap:20px;align-items:stretch}
+@media(min-width:1180px){#viewPetContainer .pet-shop-layout{grid-template-columns:clamp(280px,24%,335px) minmax(0,1fr)}}
+/* The preview stays visible while the shop scrolls, without becoming a second shop. */
+#viewPetContainer .pet-shop-preview{position:relative;align-self:stretch;min-height:100%}
+#viewPetContainer .pet-shop-preview-card{position:sticky;top:12px;max-height:calc(100vh - 90px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+@media(max-width:1179px){#viewPetContainer .pet-shop-preview-card{position:relative;top:auto;max-height:none;overflow:visible}}
+@media(max-width:640px){#viewPetContainer>section{padding:16px}#viewPetContainer .pet-card .pet-art{transform:none}}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -12946,6 +12991,45 @@ window.openStudentProfile=function(studentId){
         window.petPickStu = sid => { petTarget = sid; renderPetView(); };
         window.petSetSel = i => { petSel = i; renderPetView(); };
         window.petGoPick = sid => { petTarget = sid; if (petMode !== 'bank') window.__petSlide = 1; petMode = 'bank'; renderPetView(); };
+        // Live preview uses the SAME student and Pet data as the Class Pets cards.
+        function petShopPreview(st) {
+            const pk = petPeakOf(st), f = petFormOf(pk), has = st.petSp !== undefined && !!PET_SP[st.petSp];
+            const cur = (() => { try { return tenStreakInfo(st.id).cur; } catch (_) { return 0; } })();
+            const nxt = PET_MS.find(m => m > pk);
+            const art = has ? petArt(st.petSp, f, pk >= 1) : '<div class="pet-art" style="font-size:72px">🥚</div>';
+            const petName = has ? (typeof pshDisp === 'function' ? pshDisp(st) : L2(PET_SP[st.petSp][0], PET_SP[st.petSp][1])) : L2('Chưa chọn trứng', 'No egg chosen');
+            const slots = [0,1,2].map(i => {
+                const rec = st.petEquip && st.petEquip['s'+i];
+                let itemName = L2('Trống', 'Empty');
+                if (rec && rec.id && typeof PSH_ITEMS !== 'undefined') {
+                    const it = PSH_ITEMS.find(x => x.id === rec.id);
+                    if (it) itemName = L2(it.vi, it.en);
+                }
+                return '<div>🎒 '+L2('Ô ', 'Slot ')+(i+1)+': '+escapeHtml(itemName)+'</div>';
+            }).join('');
+            return `<aside class="pet-shop-preview" aria-label="${L2('Thông số thú cưng', 'Pet statistics')}"><div class="pet-shop-preview-card">
+                <div><div class="text-xs font-black uppercase tracking-wide text-violet-600">🐾 ${L2('Thú cưng của học sinh', 'Student pet')}</div>
+                <div class="font-black text-lg mt-1 text-slate-800">${escapeHtml((st.icon||'🎓')+' '+getStudentDisplayName(st))}</div>
+                <div class="font-extrabold text-violet-700 text-sm mt-1">${escapeHtml(petName)}</div></div>
+                ${art}
+                <div class="pet-preview-metrics">
+                    <div class="pet-preview-metric">${L2('Chuỗi hiện tại', 'Current streak')}<strong>🔥 ${cur}</strong></div>
+                    <div class="pet-preview-metric">${L2('Chuỗi cao nhất', 'Peak streak')}<strong>★ ${pk}</strong></div>
+                    <div class="pet-preview-metric">${L2('Dạng tiến hóa', 'Evolution form')}<strong>${f}/8</strong></div>
+                    <div class="pet-preview-metric">${L2('Mốc tiếp theo', 'Next milestone')}<strong>${nxt || '✓'}</strong></div>
+                </div>
+                <div class="pet-preview-blessing" aria-label="${L2('Nội tại thú cưng hiện tại', 'Current pet passive')}">
+                    <div class="pet-preview-blessing-title">✨ ${L2('Nội tại hiện tại', 'Current passive')}</div>
+                    ${has ? (() => {
+                        const level = petLv(pk);
+                        const info = petBInfo(st.petSp, level);
+                        return info ? `<div class="pet-preview-blessing-name">${info.ic} ${escapeHtml(info.name)} · ${L2('Cấp', 'Level')} ${level + 1}/7</div><div class="pet-preview-blessing-desc">${escapeHtml(info.txt)}</div>` : `<div class="pet-preview-blessing-desc">${L2('Nội tại chưa mở khóa. Đạt mốc chuỗi 5 để kích hoạt.', 'Passive locked. Reach streak 5 to unlock.')}</div>`;
+                    })() : `<div class="pet-preview-blessing-desc">${L2('Chọn trứng để xem nội tại.', 'Choose an egg to see its passive.')}</div>`}
+                </div>
+                <div class="pet-preview-gear"><b>⚔️ ${L2('Trang bị hiện tại', 'Equipped items')}</b>${slots}</div>
+                <div class="text-xs text-slate-500 mt-3">${L2('Thông số cập nhật theo học sinh đang chọn.', 'Stats follow the selected student.')}</div>
+            </div></aside>`;
+        }
         window.renderPetView = function renderPetView() {
             const root = document.getElementById('viewPetContainer'); if (!root || !appData) return;
             const list = (appData.students || []).filter(s => s.classId === appData.activeClassId);
@@ -12963,7 +13047,7 @@ window.openStudentProfile=function(studentId){
                 }).join('') + `</div>`;
             } else if (petMode === 'shop') {
                 const tg = list.find(s => s.id === petTarget);
-                body = tg ? `<div class="mt-4 flex flex-wrap items-center gap-2"><label class="text-xs font-black text-slate-600"><i class="fa-solid fa-user mr-1"></i>${L2('Mua cho học sinh', 'Buying for')}</label><select class="pq-in" style="flex:none;max-width:260px" onchange="petPickStu(this.value)">${list.map(s => `<option value="${s.id}" ${s.id === petTarget ? 'selected' : ''}>${escapeHtml((s.icon || '🎓') + ' ' + getStudentDisplayName(s))} · ${s.rewardPoints || 0} pts</option>`).join('')}</select></div>` + petShopHtml(tg) : `<div class="text-sm text-slate-500 mt-4">${L2('Lớp chưa có học sinh.', 'This class has no students.')}</div>`;
+                body = tg ? `<div class="mt-4 flex flex-wrap items-center gap-2"><label class="text-xs font-black text-slate-600"><i class="fa-solid fa-user mr-1"></i>${L2('Mua cho học sinh', 'Buying for')}</label><select class="pq-in" style="flex:none;max-width:260px" onchange="petPickStu(this.value)">${list.map(s => `<option value="${s.id}" ${s.id === petTarget ? 'selected' : ''}>${escapeHtml((s.icon || '🎓') + ' ' + getStudentDisplayName(s))} · ${s.rewardPoints || 0} pts</option>`).join('')}</select></div>` + `<div class="pet-shop-layout mt-4">${petShopPreview(tg)}<div class="pet-shop-main">${petShopHtml(tg)}</div></div>` : `<div class="text-sm text-slate-500 mt-4">${L2('Lớp chưa có học sinh.', 'This class has no students.')}</div>`;
             } else {
                 const sp = PET_SP[petSel], tgt = list.find(s => s.id === petTarget), locked = tgt && tgt.petSp !== undefined && petFormOf(petPeakOf(tgt)) > 1;
                 const ownerOf = i => { const o = list.filter(s => s.petSp === i); return o.find(s => s.id === petTarget) || o[0] || null; };
