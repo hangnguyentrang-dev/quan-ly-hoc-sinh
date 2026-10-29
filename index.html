@@ -14155,10 +14155,10 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                 const lv = petLv(petPeakOf(st)); if (lv < 0) return;
                 const it = (appData.globalShopItems || []).find(i => i && i.id === prize.itemId); if (it && it.type) return;
                 if (!/chúc\s*bạn\s*may\s*mắn|better\s*luck/i.test(String(prize.name || ''))) return;
-                const wk = petMon(petPd(new Date())), P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led['n:sq:' + wk]) return;
+                const wk = petMon(petPd(new Date())), P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led['t:sq:' + wk]) return;
                 // Ghi nhận lần thử ngay sau khi đã xác nhận lượt quay thành công và trúng ô hụt.
                 // Đánh dấu trước khi tung xác suất để cả thành công lẫn thất bại đều chỉ thử một lần/tuần.
-                led['n:sq:' + wk] = 1; _petChanged = true;
+                led['t:sq:' + wk] = 1; _petChanged = true;
                 if (Math.random() * 100 >= petEff(st, 19, lv)[0]) { Promise.resolve(saveData()).catch(() => {}); return; }
                 _petChanged = false; petGiveInv(st, 'n:sq:' + wk, 'plus1', 1, 'đền bù "Chúc bạn may mắn lần sau"', 'compensation for "Better luck next time"');
                 if (_petChanged) Promise.resolve(saveData()).catch(() => {});
@@ -14319,7 +14319,21 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                             const me = arr.find(x => x.id === st.id);
                             chance(st, 'n:dk:' + w, v[0], () => petGive(st, 'n:dk:' + w, v[1], 'quà dâu tây (top 4)', 'berry gift (top 4)'), !!me && arr.filter(x => x.a > me.a + 1e-9).length < 4);
                         }
-                        if (sp === 15) { const s = statsOf(st.id); if (s) { const a = Number(s.avg); if (a >= 9 - 1e-9) petGive(st, 'n:pa:' + w, v[0], 'ĐTB ≥ 9,0 cuối tuần', 'weekly average 9.0+'); else if (a >= 8 - 1e-9) petGive(st, 'n:pa:' + w, v[1], 'ĐTB ≥ 8,0 cuối tuần', 'weekly average 8.0+'); } }
+                        if (sp === 15) {
+                            // Panda: tính theo NGÀY NHẬP điểm (ts trong lịch sử), không theo ngày của ô điểm.
+                            // Tuần được xác định bởi Lịch học của lớp: thứ Hai đến hết Chủ nhật.
+                            const weeklyScores = (EVENTS[st.id] || []).filter(e => {
+                                const ts = Number(e.raw.ts);
+                                if (!Number.isFinite(ts) || ts <= 0 || e.abs || !Number.isFinite(e.v)) return false;
+                                const entered = petPd(new Date(ts));
+                                return entered >= w && entered <= wEnd && entered >= hatch && entered <= today;
+                            });
+                            if (weeklyScores.length) {
+                                const a = weeklyScores.reduce((sum, e) => sum + e.v, 0) / weeklyScores.length;
+                                if (a >= 9 - 1e-9) petGive(st, 'n:pa:' + w, v[0], 'ĐTB điểm nhập trong tuần ≥ 9,0', 'weekly entered-score average 9.0+');
+                                else if (a >= 8 - 1e-9) petGive(st, 'n:pa:' + w, v[1], 'ĐTB điểm nhập trong tuần ≥ 8,0', 'weekly entered-score average 8.0+');
+                            }
+                        }
                         if (sp === 11) {
                             // Chỉ xét tuần đã kết thúc và có dữ liệu cho mọi buổi học theo lịch.
                             // Thiếu dữ liệu => tuần chưa xác định, không đạt cũng không trượt.
