@@ -13000,13 +13000,10 @@ window.openStudentProfile=function(studentId){
             const art = has ? petArt(st.petSp, f, pk >= 1) : '<div class="pet-art" style="font-size:72px">🥚</div>';
             const petName = has ? (typeof pshDisp === 'function' ? pshDisp(st) : L2(PET_SP[st.petSp][0], PET_SP[st.petSp][1])) : L2('Chưa chọn trứng', 'No egg chosen');
             const slots = [0,1,2].map(i => {
-                const rec = st.petEquip && st.petEquip['s'+i];
-                let itemName = L2('Trống', 'Empty');
-                if (rec && rec.id && typeof PSH_ITEMS !== 'undefined') {
-                    const it = PSH_ITEMS.find(x => x.id === rec.id);
-                    if (it) itemName = L2(it.vi, it.en);
-                }
-                return '<div>🎒 '+L2('Ô ', 'Slot ')+(i+1)+': '+escapeHtml(itemName)+'</div>';
+                const rec = st.petEquip && st.petEquip['s'+i], it = rec && rec.id && PSH_BY[rec.id];
+                if (!it) return '<div>🎒 '+L2('Ô ', 'Slot ')+(i+1)+': '+L2('Trống', 'Empty')+'</div>';
+                const ok = has ? pshCompat(st.petSp, it).ok : true;
+                return '<div>🎒 '+L2('Ô ', 'Slot ')+(i+1)+': <b>'+escapeHtml(L2(it.vi, it.en))+'</b> <span style="color:'+(ok ? '#16a34a' : '#dc2626')+';font-size:11px;font-weight:800">'+escapeHtml(pshFx(it))+(ok ? '' : ' ✕')+'</span></div>';
             }).join('');
             return `<aside class="pet-shop-preview" aria-label="${L2('Thông số thú cưng', 'Pet statistics')}"><div class="pet-shop-preview-card">
                 <div><div class="text-xs font-black uppercase tracking-wide text-violet-600">🐾 ${L2('Thú cưng của học sinh', 'Student pet')}</div>
@@ -13023,8 +13020,8 @@ window.openStudentProfile=function(studentId){
                     <div class="pet-preview-blessing-title">✨ ${L2('Nội tại hiện tại', 'Current passive')}</div>
                     ${has ? (() => {
                         const level = petLv(pk);
-                        const info = petBInfo(st.petSp, level);
-                        return info ? `<div class="pet-preview-blessing-name">${info.ic} ${escapeHtml(info.name)} · ${L2('Cấp', 'Level')} ${level + 1}/7</div><div class="pet-preview-blessing-desc">${escapeHtml(info.txt)}</div>` : `<div class="pet-preview-blessing-desc">${L2('Nội tại chưa mở khóa. Đạt mốc chuỗi 5 để kích hoạt.', 'Passive locked. Reach streak 5 to unlock.')}</div>`;
+                        const info = petBInfo(st.petSp, level, st);
+                        return info ? `<div class="pet-preview-blessing-name">${info.ic} ${escapeHtml(info.name)} · ${L2('Cấp', 'Level')} ${level + 1}/7</div><div class="pet-preview-blessing-desc">${info.html}</div>` : `<div class="pet-preview-blessing-desc">${L2('Nội tại chưa mở khóa. Đạt mốc chuỗi 5 để kích hoạt.', 'Passive locked. Reach streak 5 to unlock.')}</div>`;
                     })() : `<div class="pet-preview-blessing-desc">${L2('Chọn trứng để xem nội tại.', 'Choose an egg to see its passive.')}</div>`}
                 </div>
                 <div class="pet-preview-gear"><b>⚔️ ${L2('Trang bị hiện tại', 'Equipped items')}</b>${slots}</div>
@@ -13702,7 +13699,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             const pk = petPeakOf(st), f = petFormOf(pk), lv = petLv(pk), eq = pshEq(st), w = (appData.language || 'vi') === 'en' ? 1 : 0, R = PSH_ROLE[sp];
             let cur = 0; try { cur = tenStreakInfo(st.id).cur; } catch (e) {}
             const b = PET_B[sp]; petApplyCfg();
-            const stats = (PET_PM[sp] || []).map((pm, j) => { const base = lv >= 0 ? b.v[lv][j] : null, ef = lv >= 0 ? petEff(st, sp, lv)[j] : null; return `<div class="pq-stat">• ${L2(pm.vi, pm.en)}: ${base === null ? '—' : (ef !== base ? `${pshN(base)} → <b style="color:#16a34a">${pshN(ef)}</b>` : pshN(base))} ${pm.u}</div>`; }).join('') + (R.g ? `<div class="pq-stat">• ${L2('Quà thưởng: hỗ trợ quà bổ sung', 'Gifts: supports bonus gifts')}</div>` : '');
+            const stats = (PET_PM[sp] || []).map((pm, j) => { const base = lv >= 0 ? b.v[lv][j] : null, ef = lv >= 0 ? petEff(st, sp, lv)[j] : null; return `<div class="pq-stat">• ${L2(pm.vi, pm.en)}: ${base === null ? '—' : (ef !== base ? `${pshN(base)} → <b style="color:#16a34a">${pshN(ef)}</b>` : pshN(base))} ${pm.u}</div>`; }).join('') + (R.g ? `<div class="pq-stat">• ${L2('Quà thưởng: hỗ trợ quà bổ sung', 'Gifts: supports bonus gifts')}</div>` : '') + petGiftHl(st, lv);
             const needLv = (it, e) => (it.s === 'm' || it.s === 'p') && e && e.p === undefined;
             const slotH = i => {
                 const e = eq[i], it = e && PSH_BY[e.id], c = it && pshCompat(sp, it);
@@ -13790,9 +13787,9 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             if (!has) {
                 inner = `<div class="pet-art pet-none">🥚</div><div class="pl-form">${L2('Chưa chọn trứng', 'No egg chosen')}</div><div class="pl-bless pl-lock">${L2('Chọn một quả trứng để thú cưng đồng hành và ban phúc cho bạn.', 'Pick an egg so a pet can join you and bless you.')}</div><button class="pet-tabbtn on pl-go" onclick="petLbClose();switchViewMode('pet');petGoPick('${st.id}')">${L2('Chọn trứng', 'Pick egg')}</button>`;
             } else {
-                const b = PET_B[st.petSp], bi = petBInfo(st.petSp, lv);
+                const b = PET_B[st.petSp], bi = petBInfo(st.petSp, lv, st);
                 const blessing = bi
-                    ? `<div class="pl-bless"><div class="pl-bn">${bi.ic} ${escapeHtml(bi.name)}<span>${L2('Cấp', 'Lv')} ${lv + 1}/7</span></div><div class="pl-bt">${escapeHtml(bi.txt)}</div><div class="pl-next">${lv < 6 ? L2('Cấp tiếp theo', 'Next level') + ' (streak ' + PET_LV[lv + 1] + '): ' + escapeHtml(petFmt(b.t[w], b.v[lv + 1])) : L2('Đã đạt cấp nội tại tối đa!', 'Innate blessing at max level!')}</div></div>`
+                    ? `<div class="pl-bless"><div class="pl-bn">${bi.ic} ${escapeHtml(bi.name)}<span>${L2('Cấp', 'Lv')} ${lv + 1}/7</span></div><div class="pl-bt">${bi.html}</div><div class="pl-next">${lv < 6 ? L2('Cấp tiếp theo', 'Next level') + ' (streak ' + PET_LV[lv + 1] + '): ' + petFmtHl(b.t[w], petEff(st, st.petSp, lv + 1), b.v[lv + 1]) : L2('Đã đạt cấp nội tại tối đa!', 'Innate blessing at max level!')}</div></div>`
                     : `<div class="pl-bless pl-lock"><div class="pl-bn">${b.ic} ${escapeHtml(b.n[w])}</div><div class="pl-bt">${L2('🥚 Nở ở streak 5 để mở nội tại này.', '🥚 Hatch at streak 5 to unlock this blessing.')}</div></div>`;
                 const P = appData.petBless, logs = ((P && P.log) || []).filter(e => e.sid === st.id).slice(-3).reverse();
                 const logHtml = logs.length ? `<div class="pl-log"><b>${L2('✨ Phúc lành gần đây', '✨ Recent blessings')}</b>${logs.map(e => `<div>${escapeHtml(e.d)} · ${escapeHtml(L2(e.vi, e.en))}</div>`).join('')}</div>` : '';
@@ -13950,12 +13947,16 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             petApplyCfg(); petCfgRefresh(sp);
         };
         const petFmt = (s, a) => s.replace(/\{(\d)\}/g, (m, i) => { const x = a[+i]; return Number.isInteger(x) ? x : String(x).replace('.', L2(',', '.')); });
-        const petBInfo = (sp, lv) => { petApplyCfg(); const b = PET_B[sp]; if (!b || lv < 0) return null; const w = (appData.language || 'vi') === 'en' ? 1 : 0; return { ic: b.ic, name: b.n[w], txt: petFmt(b.t[w], b.v[lv]) }; };
+        // Bản có tô xanh lá những chỉ số đã được cộng từ vật phẩm trang bị (cùng nguồn petEff với ô trang bị)
+        const petFmtHl = (s, a, base) => { let out = '', last = 0; s.replace(/\{(\d)\}/g, (m, i, off) => { out += escapeHtml(s.slice(last, off)); const x = a[+i], t = Number.isInteger(x) ? x : String(x).replace('.', L2(',', '.')); out += (base && base[+i] !== x) ? `<b style="color:#16a34a">${t}</b>` : t; last = off + m.length; return m; }); return out + escapeHtml(s.slice(last)); };
+        // Quà bổ sung từ vật phẩm đang có hiệu lực ở cấp nội tại hiện tại (không nằm trong mảng chỉ số)
+        const petGiftHl = (st, lv) => { try { if (!st || st.petSp === undefined || lv < 0) return ''; const seen = {}; let h = ''; pshEq(st).forEach(e => { const it = e && PSH_BY[e.id]; if (!it || seen[it.id] || !pshOwned(st, it.id) || !['g', 'gp', 'gw'].includes(it.k) || !pshCompat(st.petSp, it).ok || !pshOn(it, e.p, lv)) return; seen[it.id] = 1; h += `<div style="color:#16a34a;font-weight:800">🎁 ${escapeHtml(pshFx(it))}</div>`; }); return h; } catch (x) { return ''; } };
+        const petBInfo = (sp, lv, st) => { petApplyCfg(); const b = PET_B[sp]; if (!b || lv < 0) return null; const w = (appData.language || 'vi') === 'en' ? 1 : 0; const base = b.v[lv], ef = st ? petEff(st, sp, lv) : base; return { ic: b.ic, name: b.n[w], txt: petFmt(b.t[w], ef), html: petFmtHl(b.t[w], ef, base) + (st ? petGiftHl(st, lv) : '') }; };
         const petBlessLine = st => {
             if (st.petSp === undefined || !PET_SP[st.petSp]) return '';
-            const lv = petLv(petPeakOf(st)), bi = petBInfo(st.petSp, lv);
+            const lv = petLv(petPeakOf(st)), bi = petBInfo(st.petSp, lv, st);
             if (!bi) return `<div class="text-[10px] text-slate-400 mt-1">${L2('🥚 Nở ở streak 5 để mở nội tại', '🥚 Hatches at streak 5 to unlock its blessing')}</div>`;
-            return `<div class="mt-1 rounded-lg bg-violet-50 border border-violet-200 px-1.5 py-1 text-left"><div class="text-[10px] font-black text-violet-700">${bi.ic} ${escapeHtml(bi.name)} · ${L2('Cấp', 'Lv')} ${lv + 1}/7</div><div class="text-[10px] text-slate-600 leading-snug">${escapeHtml(bi.txt)}</div></div>`;
+            return `<div class="mt-1 rounded-lg bg-violet-50 border border-violet-200 px-1.5 py-1 text-left"><div class="text-[10px] font-black text-violet-700">${bi.ic} ${escapeHtml(bi.name)} · ${L2('Cấp', 'Lv')} ${lv + 1}/7</div><div class="text-[10px] text-slate-600 leading-snug">${bi.html}</div></div>`;
         };
         const petBlessPanel = sp => {
             petApplyCfg();
