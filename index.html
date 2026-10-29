@@ -3312,6 +3312,9 @@ main:has(#viewPetContainer:not(.hidden)){max-width:min(1500px,100%) !important;p
             </div>
         </div>
 
+        <!-- CLASS TIMELINE (cửa sổ riêng nằm dưới bảng điểm) -->
+        <div id="classTimelinePanel" class="ctl-panel hidden" aria-live="off"></div>
+
         <!-- MODE 2: RANKING UI -->
         <div id="viewRankingContainer" class="hidden flex-1 overflow-y-auto space-y-6">
             <!-- Top 3 Podium Cards -->
@@ -5547,7 +5550,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             if (sig === qsToolbarSig) return;
             qsToolbarSig = sig;
             const collapsed = !!window.__qsToolbarCollapsed;
-            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-full-btn" onclick="mxToggleFullscreen()" aria-pressed="${!!window.__mxFs}" aria-label="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}" title="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}"><i class="fa-solid ${window.__mxFs ? 'fa-compress' : 'fa-expand'}"></i></button><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle qs-toggle-speak ${qsSpeak ? 'on' : ''}" onclick="qsToggleSpeak()" aria-pressed="${qsSpeak}" title="${qsT('speakTitle')}"><i class="fa-solid fa-comments"></i><span class=\"qs-lbl\">${qsT('speakLbl')}<b>${qsOnOff(qsSpeak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i><span class=\"qs-lbl\">${qsT('testLbl')}<b>${qsOnOff(qsTest)}</b></span></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i><span class=\"qs-lbl\">${qsT('editLbl')}<b>${qsOnOff(qsEdit)}</b></span></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i><span class=\"qs-lbl\">${qsT('trendLbl')}<b>${qsOnOff(qsTrend)}</b></span></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-shield-halved"></i><span class=\"qs-lbl\">${qsT('keepLbl')}<b>${qsOnOff(appData.keepStreak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i><span class=\"qs-lbl\">${qsT('tplLbl')}<b>${qsOnOff(qsTpl)}</b></span></button><button type="button" class="qs-toggle qs-toggle-ten ${qsTen ? 'on' : ''}" onclick="qsToggleTen()" aria-pressed="${qsTen}" title="${qsT('tenHint')}"><i class="fa-solid fa-star"></i><span class=\"qs-lbl\">${qsT('tenLbl')}<b>${qsOnOff(qsTen)}</b></span></button><button type="button" class="qs-toggle qs-toggle-chain ${qsChain ? 'on' : ''}" onclick="qsToggleChain()" aria-pressed="${qsChain}" title="${qsT('chainHint')}"><i class="fa-solid fa-fire"></i><span class="qs-lbl">${qsT('chainLbl')}<b>${qsOnOff(qsChain)}</b></span></button><button type="button" class="qs-toggle ${qsPresent ? 'on' : ''}" onclick="qsTogglePresent()" aria-pressed="${qsPresent}" title="${appData.language==='en'?'Attendance check-in':'Ghi nhận có mặt'}"><i class="fa-solid fa-check"></i><span class="qs-lbl">${appData.language==='en'?'Present':'Có mặt'}<b>${qsOnOff(qsPresent)}</b></span></button><span class="mx-today-group" role="group"><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i><span class="qs-lbl">${qsT('todayLbl')}</span></button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button></span><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsSpeakPrev" class="qs-speak-prev" style="display:none"></span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span><div class="qs-legend" role="group"><span class="qs-lg"><span style="color:#059669;font-weight:900">✓</span>${appData.language==='en'?'Present':'Có mặt'}</span><span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>${qsT('legAbsent')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>${qsT('legScored')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>${qsT('legExam')}</span><span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>${qsT('legManual')}</span><span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>${qsT('legStreak')}</span></div></div>`;
+            tb.innerHTML = `<div class="qs-toolbar-head"><button type="button" class="qs-full-btn" onclick="mxToggleFullscreen()" aria-pressed="${!!window.__mxFs}" aria-label="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}" title="${appData.language === 'en' ? (window.__mxFs ? 'Exit full screen' : 'Full screen') : (window.__mxFs ? 'Thoát toàn màn hình' : 'Toàn màn hình')}"><i class="fa-solid ${window.__mxFs ? 'fa-compress' : 'fa-expand'}"></i></button><button type="button" class="qs-collapse-btn" onclick="qsToggleToolbar()" aria-label="${appData.language === 'en' ? 'Collapse quick entry bar' : 'Thu gọn thanh nhập nhanh'}" aria-expanded="${!collapsed}" title="${appData.language === 'en' ? (collapsed ? 'Expand' : 'Collapse') : (collapsed ? 'Mở rộng' : 'Thu gọn')}"><i class="fa-solid fa-chevron-up"></i></button></div><div class="qs-toolbar-content"><button type="button" class="qs-toggle qs-toggle-speak ${qsSpeak ? 'on' : ''}" onclick="qsToggleSpeak()" aria-pressed="${qsSpeak}" title="${qsT('speakTitle')}"><i class="fa-solid fa-comments"></i><span class=\"qs-lbl\">${qsT('speakLbl')}<b>${qsOnOff(qsSpeak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-test ${qsTest ? 'on' : ''}" onclick="qsToggleTest()" aria-pressed="${qsTest}"><i class="fa-solid fa-file-pen"></i><span class=\"qs-lbl\">${qsT('testLbl')}<b>${qsOnOff(qsTest)}</b></span></button><button type="button" class="qs-toggle qs-toggle-edit ${qsEdit ? 'on' : ''}" onclick="qsToggleEdit()" aria-pressed="${qsEdit}" title="${qsT('editTitle')}"><i class="fa-solid fa-pen-to-square"></i><span class=\"qs-lbl\">${qsT('editLbl')}<b>${qsOnOff(qsEdit)}</b></span></button><button type="button" class="qs-toggle qs-toggle-trend ${qsTrend ? 'on' : ''}" onclick="qsToggleTrend()" aria-pressed="${qsTrend}" title="${qsT('trendHint')}"><i class="fa-solid fa-arrow-trend-up"></i><span class=\"qs-lbl\">${qsT('trendLbl')}<b>${qsOnOff(qsTrend)}</b></span></button><button type="button" class="qs-toggle qs-toggle-keep ${appData.keepStreak ? 'on' : ''}" onclick="qsToggleKeep()" aria-pressed="${!!appData.keepStreak}" title="${qsT('keepHint')}"><i class="fa-solid fa-shield-halved"></i><span class=\"qs-lbl\">${qsT('keepLbl')}<b>${qsOnOff(appData.keepStreak)}</b></span></button><button type="button" class="qs-toggle qs-toggle-tpl ${qsTpl ? 'on' : ''}" onclick="qsToggleTpl()" aria-pressed="${qsTpl}" title="${qsT('tplHint')}"><i class="fa-solid fa-palette"></i><span class=\"qs-lbl\">${qsT('tplLbl')}<b>${qsOnOff(qsTpl)}</b></span></button><button type="button" class="qs-toggle qs-toggle-ten ${qsTen ? 'on' : ''}" onclick="qsToggleTen()" aria-pressed="${qsTen}" title="${qsT('tenHint')}"><i class="fa-solid fa-star"></i><span class=\"qs-lbl\">${qsT('tenLbl')}<b>${qsOnOff(qsTen)}</b></span></button><button type="button" class="qs-toggle qs-toggle-chain ${qsChain ? 'on' : ''}" onclick="qsToggleChain()" aria-pressed="${qsChain}" title="${qsT('chainHint')}"><i class="fa-solid fa-fire"></i><span class="qs-lbl">${qsT('chainLbl')}<b>${qsOnOff(qsChain)}</b></span></button><button type="button" class="qs-toggle ${qsPresent ? 'on' : ''}" onclick="qsTogglePresent()" aria-pressed="${qsPresent}" title="${appData.language==='en'?'Attendance check-in':'Ghi nhận có mặt'}"><i class="fa-solid fa-check"></i><span class="qs-lbl">${appData.language==='en'?'Present':'Có mặt'}<b>${qsOnOff(qsPresent)}</b></span></button><span class="mx-today-group" role="group"><button type="button" class="qs-toggle mx-today-btn" onclick="mxGoToday()" title="${qsT('todayTitle')}"><i class="fa-solid fa-calendar-day"></i><span class="qs-lbl">${qsT('todayLbl')}</span></button><button type="button" id="mxTodayBadge" class="mx-today-badge" onclick="mxGoToday(true)" title="${qsT('badgeTitle')}" style="display:none"></button></span><span id="mxMultiInfo" class="mx-multi-info" style="display:none"></span><span id="qsSpeakPrev" class="qs-speak-prev" style="display:none"></span><span id="qsStatus"><i class="fa-solid fa-check"></i> ${qsT('saved')}</span><div class="qs-legend" role="group"><span class="qs-lg"><span style="color:#059669;font-weight:900">✓</span>${appData.language==='en'?'Present':'Có mặt'}</span><span class="qs-lg"><span style="color:#dc2626;font-weight:900;font-size:14px">✕</span>${appData.language==='en'?'Class day off':'Lớp nghỉ'}</span><span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>${qsT('legAbsent')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>${qsT('legScored')}</span><span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>${qsT('legExam')}</span><span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>${qsT('legManual')}</span><span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>${qsT('legStreak')}</span></div></div>`;
             tb.classList.toggle('qs-toolbar-collapsed', collapsed);
             const mt = qsEl('scoreMatrix'); if (mt) { mt.classList.toggle('qs-edit-on', qsEdit); mt.classList.toggle('qs-test-on', qsTest); mt.classList.toggle('qs-speak-on', qsSpeak); mt.classList.toggle('qs-ten-on', qsTen); mt.classList.toggle('qs-chain-on', qsChain); }
             mxUpdateTodayBadge(); mxUpdateMultiInfo(); qsSpeakPreview();
@@ -10104,13 +10107,14 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 const m = sl.m, year = sl.y, daysInMonth = sl.dim;
                 monthsHeader.push({ month: m, year, daysCount: daysInMonth });
                 for (let d = 1; d <= daysInMonth; d++) {
-                    daysHeader.push({ month: m, day: d, dateStr: `${year}-${m}-${d}`, realStr: `${year}-${m}-${d}` });
+                    daysHeader.push({ month: m, day: d, dateStr: `${year}-${m}-${d}`, realStr: `${year}-${m}-${d}`, iso: `${year}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}` });
                 }
             });
 
             const mxNow = new Date(), mxTodayKey = `${mxNow.getFullYear()}-${mxNow.getMonth() + 1}-${mxNow.getDate()}`;
             const mxTodayD = daysHeader.find(x => x.realStr === mxTodayKey);
             window.mxTodayCol = mxTodayD ? mxTodayD.dateStr : null;
+            const mxRestSet = mxRestDates(activeClass.id);   // ngày nghỉ của lớp đang xem
             let html = `<thead>`;
             html += `<tr class="bg-slate-800 text-white font-bold sticky-header" style="top: 0; z-index: 35;">`;
             html += `<th class="px-2 py-2 min-w-[45px] w-[45px] bg-slate-900 border-r border-b border-slate-700 sticky-col-1">${lang === 'en' ? 'Rank' : 'Hạng'}</th>`;
@@ -10203,6 +10207,10 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                             }
                         }
 
+                        if (mxRestSet.has(d.iso)) {   // ngày nghỉ: ô hiện dấu X đỏ (dữ liệu điểm cũ, nếu có, vẫn được giữ nguyên)
+                            cellClass = "grid-cell border-r border-b border-slate-200 text-center cell-rest" + (d.realStr === mxTodayKey ? " mx-today" : "");
+                            cellText = "✕"; sgFlame = ''; examTag = ' · ' + (lang === 'en' ? 'Day off' : 'Nghỉ');
+                        }
                         html += `<td class="${cellClass}" data-sid="${student.id}" data-d="${d.dateStr}" onclick="qsCellClick(event, '${student.id}', '${d.dateStr}')" title="${getStudentDisplayName(student)} - ${lang === 'en' ? 'Date' : 'Ngày'} ${d.day}/${d.month}${examTag}">`;
                         html += sgFlame + cellText;
                         html += `</td>`;
@@ -11757,6 +11765,31 @@ window.openStudentProfile=function(studentId){
             return `<section class="teaching-day-card rounded-lg overflow-hidden bg-white" style="border:1px solid #94a3b8"><button type="button" onclick="toggleTeachingDay('${w.id}','${date}')" class="w-full px-2 py-1.5 flex items-center gap-2 text-left hover:brightness-95" style="background:#e2e8f0;border-bottom:1px solid #94a3b8"><span class="text-xs font-black text-slate-900" style="width:12px">${dayCollapsed?'▸':'▾'}</span><b class="text-xs font-black text-slate-900" style="letter-spacing:.02em;font-weight:900">${days[i]||''}</b><span class="text-[11px] font-extrabold text-slate-800">${date}</span>${isToday?`<span class="teaching-today-tag">${appData.language==='en'?'Today':'Hôm nay'}</span>`:''}<span class="ml-auto text-[10px] font-semibold text-slate-500">${dayCollapsed?(appData.language==='en'?'Expand day':'Mở ngày'):(appData.language==='en'?'Collapse day':'Thu gọn ngày')}</span></button>${dayCollapsed?'':`<div class="teaching-day-table-scroll" data-sl="d:${dayKey}">${rows||noClass}</div>`}</section>`;
           }).join('')}</div>`;
         }
+
+        /* ===== Nhận diện ngày NGHỈ: nội dung giảng dạy bắt đầu bằng chữ "Nghỉ" ===== */
+        function mxIsRestText(txt){
+          const t=String(txt==null?'':txt).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().trim();
+          return /^nghi(?![a-z0-9])/.test(t);
+        }
+        function mxRestDates(classId){
+          const out=new Set();
+          try{
+            const cm=appData.courseManager; if(!cm||!appData.teachingPlans)return out;
+            const plans=appData.teachingPlans[cm.activeCourseId]||[]; const course=activeCourse();
+            plans.forEach(w=>{
+              const st=mondayOfDate(w.startDate||course?.startDate||`${Number(w.year)||2026}-01-01`);
+              (w.lessons||[]).forEach(l=>{
+                if(String(l.classId)!==String(classId)||!mxIsRestText(l.content))return;
+                if(l.date){out.add(String(l.date).slice(0,10));return;}
+                if(!l.makeupDate&&st&&l.weekday!==undefined&&l.weekday!==''&&l.weekday!==null){
+                  const wd=Number(l.weekday); if(Number.isFinite(wd))out.add(datePlus(st,wd===0?6:wd-1));
+                }
+              });
+            });
+          }catch(e){console.warn('mxRestDates',e);}
+          return out;
+        }
+        window.mxRestDates=mxRestDates;
         /* ===== Huy hiệu: số buổi học đã đến giờ nhưng chưa điền nội dung giảng dạy ===== */
         function tpIsDue(date,timeStr){
           const m=String(timeStr||'').match(/(\d{1,2})\s*[:h.]\s*(\d{2})/); const p=String(date||'').split('-').map(Number);
@@ -14206,18 +14239,47 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                 // Lịch học (tab Nội dung giảng dạy): classSchedules[lớp][thứ 0-6] = giờ học
                 const schedC = {};
                 const sched = cid => schedC[cid] || (schedC[cid] = (() => { const sc = (appData.classSchedules || {})[cid] || {}; return { has: Object.keys(sc).some(k => sc[k]), sc }; })());
-                const isSched = (cid, d) => { const s = sched(cid); return s.has ? !!s.sc[petDow(d)] : false; };
-                // Only configured class meeting days qualify for attendance-based blessings.
+                // Teaching Plan marks a class-wide day off when its content starts with "Nghỉ".
+                // Cache per class during this pass; cancelled days are not sessions, not absences.
+                const restC = {};
+                const isRest = (cid, d) => {
+                    const key = String(cid);
+                    if (!Object.prototype.hasOwnProperty.call(restC, key)) {
+                        try { restC[key] = typeof window.mxRestDates === 'function' ? window.mxRestDates(cid) : new Set(); }
+                        catch (e) { restC[key] = new Set(); }
+                    }
+                    return restC[key].has(d);
+                };
+                const isSched = (cid, d) => { const s = sched(cid); return s.has && !!s.sc[petDow(d)] && !isRest(cid, d); };
+                // Only actual class meeting days qualify for attendance-based blessings.
                 const attended = (cid, mine, d) => isSched(cid, d) && !!mine[d] && !mine[d].abs && !!mine[d].present;
                 const weekInfo = (cid, w) => {
                     const s = sched(cid), ds = [];
-                    for (let i = 0; i < 7; i++) { const d = petAdd(w, i); if (s.has && s.sc[petDow(d)]) ds.push(d); }
+                    for (let i = 0; i < 7; i++) { const d = petAdd(w, i); if (isSched(cid, d)) ds.push(d); }
                     return ds.length ? { first: ds[0], last: ds[ds.length - 1], fb: !s.has } : null;
                 };
-                const dayDone = (cid, d) => ((cnt[cid] || {})[d] || 0) >= Math.max(1, Math.ceil((N[cid] || 1) * 0.5));
+                // Shared schedule clock: same classSchedules and 90-minute duration as Class Timeline.
+                // A session is time-complete only after its scheduled end, not when points are entered early.
+                const petSessionEnd = (cid, d) => {
+                    if (!isSched(cid, d)) return null;
+                    const time = sched(cid).sc[petDow(d)];
+                    const m = String(time == null ? '' : time).match(/(\d{1,2})\s*[:h.]\s*(\d{2})/);
+                    if (!m || +m[1] > 23 || +m[2] > 59) return null;
+                    const [y, mo, da] = d.split('-').map(Number);
+                    return new Date(y, mo - 1, da, +m[1], +m[2], 0, 0).getTime() + 90 * 60000;
+                };
+                const petSessionEnded = (cid, d) => { const end = petSessionEnd(cid, d); return end !== null && Date.now() >= end; };
+                const dayDone = (cid, d) => isSched(cid, d) && ((cnt[cid] || {})[d] || 0) >= Math.max(1, Math.ceil((N[cid] || 1) * 0.5));
                 const weekAny = (cid, w) => { for (let i = 0; i < 7; i++) if ((cnt[cid] || {})[petAdd(w, i)]) return true; return false; };
-                // Buổi học cuối tuần đã hoàn thành = đã nhập điểm (từ 50% lớp) cho ngày học cuối cùng của tuần theo lịch
-                const lastDone = (cid, w, wi) => wi.last <= today && dayDone(cid, wi.last);
+                // Nội tại CUỐI TUẦN: mở xét sớm 5 phút trước khi Timeline của buổi cuối đạt 100%.
+                // Chỉ thay đổi mốc thời gian; vẫn giữ điều kiện dữ liệu buổi cuối hiện có.
+                // Điểm hợp lệ HOẶC ô được tích điểm danh (present) đều là dữ liệu buổi học;
+                // các nội tại đòi hỏi học sinh có mặt vẫn dùng attended() riêng.
+                const petLastWeekReady = (cid, d) => {
+                    const end = petSessionEnd(cid, d);
+                    return end !== null && Date.now() >= end - 5 * 60000;
+                };
+                const lastDone = (cid, w, wi) => petLastWeekReady(cid, wi.last) && dayDone(cid, wi.last);
                 const chance = (st, key, pct, fn, ok) => { const led = P.led[st.id] = P.led[st.id] || {}, rk = 'r:' + key; if (led[rk]) return; led[rk] = 1; _petChanged = true; if (ok !== false && Math.random() * 100 < pct) fn(); };
                 const statsOf = id => { try { const s = calculateStudentStats(id); return s && s.hasData ? s : null; } catch (e) { return null; } };
                 appData.students.forEach(st => {
@@ -14303,7 +14365,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                     const owSeq = [];
                     for (let w = petMon(hatch); w <= thisW; w = petAdd(w, 7)) {
                         const wi = weekInfo(cid, w); if (!wi) continue;
-                        const firstOk = wi.first >= hatch && wi.first <= today && attended(cid, mine, wi.first);
+                        const firstOk = wi.first >= hatch && petSessionEnded(cid, wi.first) && attended(cid, mine, wi.first);
                         const lastOk = wi.last >= hatch && lastDone(cid, w, wi), wEnd = petAdd(w, 6);
                         if (sp === 0 && firstOk) petGive(st, 'n:cat:' + w, v[0], 'lửa đầu tuần', 'first-day flame');
                         if (sp === 6 && firstOk) chance(st, 'n:moon:' + w, v[0], () => petGiveInv(st, 'n:moon:' + w, 'plus2', 1, 'trăng tròn đầu tuần', 'full moon'));
@@ -15798,6 +15860,263 @@ html.mx-dark .psh-lock-note{background:#451a03;border-color:#b45309;color:#fde68
   }
   if(!hook()) document.addEventListener('DOMContentLoaded',hook);
   sch();
+})();
+</script>
+
+<style id="rest-day-css">
+#scoreMatrix td.grid-cell.cell-rest{background-color:#fef2f2 !important;color:#dc2626 !important;font-size:14px;font-weight:900;line-height:1;text-shadow:none}
+#scoreMatrix .score-row:hover > td.grid-cell.cell-rest,#scoreMatrix .score-row > td.grid-cell.cell-rest:hover{background-color:#fee2e2 !important;color:#b91c1c !important;outline:1px dashed #f87171;outline-offset:-2px}
+html.mx-dark #scoreMatrix td.grid-cell.cell-rest{background-color:rgba(239,68,68,.16) !important;color:#f87171 !important}
+html.mx-dark #scoreMatrix .score-row:hover > td.grid-cell.cell-rest,html.mx-dark #scoreMatrix .score-row > td.grid-cell.cell-rest:hover{background-color:rgba(239,68,68,.28) !important;color:#fca5a5 !important}
+</style>
+<style id="class-timeline-css">
+.ctl-panel{flex:0 0 auto;max-height:44vh;overflow:auto;background:#fff;border:1px solid #e2e8f0;border-radius:.9rem;box-shadow:0 4px 14px rgba(15,23,42,.08);padding:.65rem .85rem .8rem}
+.ctl-panel.hidden{display:none}
+.ctl-head{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.ctl-title{font-weight:900;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:#334155;display:flex;align-items:center;gap:.45rem}
+.ctl-title i{color:#4f46e5}
+.ctl-clock{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:800;font-size:.78rem;color:#475569;background:#f1f5f9;border-radius:999px;padding:.15rem .6rem}
+.ctl-toggle{border:1px solid #cbd5e1;background:#fff;color:#475569;border-radius:999px;width:1.7rem;height:1.7rem;font-size:.7rem;cursor:pointer;transition:.15s}
+.ctl-toggle:hover{background:#eef2ff;color:#4338ca;border-color:#a5b4fc}
+.ctl-body{margin-top:.55rem;display:flex;flex-direction:column;gap:.55rem}
+.ctl-panel.collapsed .ctl-body{display:none}
+.ctl-card{--c:#6366f1;position:relative;border-radius:.8rem;padding:.6rem .8rem .5rem;background:color-mix(in srgb,var(--c) 7%,#fff);border:1px solid color-mix(in srgb,var(--c) 35%,#fff);border-left:5px solid var(--c)}
+.ctl-card-top{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem}
+.ctl-name{font-weight:900;font-size:.95rem;color:var(--c);filter:brightness(.82)}
+.ctl-tag{display:inline-flex;align-items:center;gap:.35rem;font-size:.65rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:.12rem .55rem;color:#fff;background:var(--c)}
+.ctl-tag.warn{background:#f59e0b}
+.ctl-tag.soon{background:#0ea5e9}
+.ctl-dot{width:.5rem;height:.5rem;border-radius:50%;background:#fff;animation:ctlPulse 1.4s ease-in-out infinite}
+@keyframes ctlPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.5)}}
+.ctl-range{margin-left:auto;font-weight:800;font-size:.8rem;color:#475569;font-variant-numeric:tabular-nums}
+.ctl-stat{display:flex;justify-content:space-between;gap:.5rem;margin-top:.45rem;font-size:.72rem;font-weight:700;color:#475569}
+.ctl-stat b{color:#0f172a;font-variant-numeric:tabular-nums}
+.ctl-track{position:relative;height:.95rem;margin:.55rem .5rem .1rem;border-radius:999px;background:color-mix(in srgb,var(--c) 16%,#e2e8f0);overflow:visible}
+.ctl-fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 70%,#fff),var(--c));box-shadow:0 0 10px color-mix(in srgb,var(--c) 45%,transparent)}
+.ctl-seg{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:rgba(255,255,255,.85)}
+.ctl-now{position:absolute;top:50%;width:1.25rem;height:1.25rem;margin:-.625rem 0 0 -.625rem;border-radius:50%;background:#fff;border:4px solid var(--c);box-shadow:0 2px 8px rgba(15,23,42,.35);z-index:2}
+.ctl-now-lbl{position:absolute;bottom:1.45rem;left:50%;transform:translateX(-50%);background:var(--c);color:#fff;font-size:.62rem;font-weight:900;border-radius:.4rem;padding:.05rem .35rem;white-space:nowrap}
+.ctl-scale{position:relative;height:1.1rem;margin:.15rem .5rem 0}
+.ctl-scale span{position:absolute;top:0;transform:translateX(-50%);font-size:.62rem;font-weight:700;color:#64748b;font-variant-numeric:tabular-nums}
+.ctl-scale span:first-child{transform:none}
+.ctl-scale span:last-child{transform:translateX(-100%)}
+.ctl-card.idle .ctl-track{background:color-mix(in srgb,var(--c) 12%,#e2e8f0)}
+.ctl-next{display:flex;align-items:center;flex-wrap:wrap;gap:.45rem;font-size:.75rem;font-weight:700;color:#475569;border:1px dashed color-mix(in srgb,var(--c,#94a3b8) 55%,#fff);border-radius:.7rem;padding:.4rem .65rem;--c:#6366f1;background:color-mix(in srgb,var(--c) 5%,#fff)}
+.ctl-next .sw{width:.7rem;height:.7rem;border-radius:50%;background:var(--c)}
+.ctl-next b{color:#0f172a}
+.ctl-next.soon{border-style:solid;animation:ctlGlow 1.6s ease-in-out infinite}
+@keyframes ctlGlow{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 40%,transparent)}50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--c) 0%,transparent)}}
+.ctl-chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.ctl-chips .ctl-chip{--c:#6366f1;display:inline-flex;align-items:center;gap:.35rem;font-size:.68rem;font-weight:800;border-radius:999px;padding:.12rem .55rem;border:1px solid color-mix(in srgb,var(--c) 45%,#fff);color:#334155;background:color-mix(in srgb,var(--c) 8%,#fff);font-variant-numeric:tabular-nums}
+.ctl-chips .ctl-chip i{width:.5rem;height:.5rem;border-radius:50%;background:var(--c)}
+.ctl-chips .ctl-chip.done{opacity:.5;text-decoration:line-through}
+.ctl-chips .ctl-chip.live{background:var(--c);color:#fff;border-color:var(--c)}
+.ctl-chips .ctl-chip.live i{background:#fff}
+.ctl-card.rest{opacity:.5;filter:grayscale(.9)}
+.ctl-card.rest .ctl-name{text-decoration:line-through}
+.ctl-card.rest .ctl-track{background:repeating-linear-gradient(135deg,#e2e8f0 0 6px,#f1f5f9 6px 12px)}
+.ctl-tag.rest{background:#64748b}
+.ctl-chips .ctl-chip.rest{opacity:.55;text-decoration:line-through;border-style:dashed}
+html.mx-dark .ctl-card.rest .ctl-track{background:repeating-linear-gradient(135deg,#1e293b 0 6px,#273449 6px 12px)}
+.ctl-empty{font-size:.78rem;font-weight:700;color:#64748b;padding:.35rem .2rem}
+html.mx-dark .ctl-panel{background:#0f172a;border-color:#334155}
+html.mx-dark .ctl-title{color:#e2e8f0}
+html.mx-dark .ctl-clock{background:#1e293b;color:#cbd5e1}
+html.mx-dark .ctl-toggle{background:#1e293b;border-color:#475569;color:#cbd5e1}
+html.mx-dark .ctl-card{background:color-mix(in srgb,var(--c) 16%,#0f172a);border-color:color-mix(in srgb,var(--c) 45%,#0f172a);border-left-color:var(--c)}
+html.mx-dark .ctl-name{filter:brightness(1.35)}
+html.mx-dark .ctl-range,html.mx-dark .ctl-stat,html.mx-dark .ctl-next,html.mx-dark .ctl-empty,html.mx-dark .ctl-scale span{color:#cbd5e1}
+html.mx-dark .ctl-stat b,html.mx-dark .ctl-next b{color:#f8fafc}
+html.mx-dark .ctl-track{background:color-mix(in srgb,var(--c) 22%,#1e293b)}
+html.mx-dark .ctl-seg{background:rgba(15,23,42,.8)}
+html.mx-dark .ctl-now{background:#0f172a}
+html.mx-dark .ctl-next{background:color-mix(in srgb,var(--c) 12%,#0f172a)}
+html.mx-dark .ctl-chips .ctl-chip{color:#e2e8f0;background:color-mix(in srgb,var(--c) 18%,#0f172a)}
+html.mx-dark .ctl-chips .ctl-chip.live{color:#fff;background:var(--c)}
+@media (max-width:640px){.ctl-range{margin-left:0}.ctl-now-lbl{font-size:.56rem}}
+</style>
+<script id="class-timeline-js">
+(function(){
+ 'use strict';
+ var DURATION=90;                 // phút / buổi (mặc định)
+ var WARN_LEFT=10;                // còn <= 10 phút: cảnh báo "sắp hết giờ"
+ var SOON_BEFORE=15;              // <= 15 phút trước giờ học: cảnh báo "sắp vào lớp"
+ var LOOKAHEAD_DAYS=7;
+ var panel=null,matrixBox=null,collapsed=false,lastHtml='';
+ try{collapsed=localStorage.getItem('mxTimelineCollapsed')==='1';}catch(e){}
+
+ var T={
+  vi:{rest:'Nghỉ',restOn:' nghỉ — không có buổi học',title:'Dòng thời gian lớp học',live:'Đang học',soon:'Sắp vào lớp',warn:'Sắp hết giờ',done:'Đã học',left:'Còn lại',total:'Tổng',min:'phút',
+      next:'Lớp sắp tới',in:'sau',today:'Hôm nay',tomorrow:'Ngày mai',nothing:'Hiện chưa có lớp nào đang học.',
+      none:'Chưa có lịch học. Hãy thiết lập lịch ở tab “Nội dung giảng dạy” để theo dõi tại đây.',
+      noMore:'Không còn lớp nào trong 7 ngày tới.',schedToday:'Lịch hôm nay',h:'g',m:'p',at:'lúc',
+      wd:['Chủ nhật','Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7'],collapse:'Thu gọn / mở rộng'},
+  en:{rest:'Day off',restOn:' — day off, no class',title:'Class timeline',live:'In session',soon:'Starting soon',warn:'Ending soon',done:'Elapsed',left:'Remaining',total:'Total',min:'min',
+      next:'Next class',in:'in',today:'Today',tomorrow:'Tomorrow',nothing:'No class is in session right now.',
+      none:'No schedule yet. Set it up in the “Teaching content” tab to track it here.',
+      noMore:'No more classes in the next 7 days.',schedToday:'Today',h:'h',m:'m',at:'at',
+      wd:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],collapse:'Collapse / expand'}
+ };
+ function L(){return (window.appData&&window.appData.language==='en')?T.en:T.vi;}
+ function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+ function pad(n){return (n<10?'0':'')+n;}
+ function hm(d){return pad(d.getHours())+':'+pad(d.getMinutes());}
+ function colorHex(color){
+  var m=String(color||'').match(/bg-([a-z]+)-(\d+)/);
+  var pal={emerald:'#10b981',amber:'#f59e0b',purple:'#9333ea',indigo:'#6366f1',sky:'#0ea5e9',blue:'#3b82f6',rose:'#f43f5e',red:'#ef4444',orange:'#f97316',teal:'#14b8a6',cyan:'#06b6d4',pink:'#ec4899',lime:'#84cc16',slate:'#64748b',green:'#22c55e',yellow:'#eab308'};
+  return m?(pal[m[1]]||'#6366f1'):'#6366f1';
+ }
+ function fmtDur(ms,t){
+  var mins=Math.max(0,Math.ceil(ms/60000)),h=Math.floor(mins/60),m=mins%60;
+  if(h>=24){var d=Math.floor(h/24);h=h%24;return d+(t===T.en?'d ':' ngày ')+(h?h+t.h+' ':'')+(m?m+t.m:'');}
+  if(h>0)return h+t.h+' '+pad(m)+t.m;
+  return m+t.m;
+ }
+ // Gom các buổi học: hôm qua (phòng khi lớp học qua nửa đêm) -> 7 ngày tới
+ function buildSessions(now){
+  var out=[],cls=(window.appData&&window.appData.classes)||[],sch=(window.appData&&window.appData.classSchedules)||{},restMap={};
+  function restOf(id){if(!restMap[id]){try{restMap[id]=window.mxRestDates?window.mxRestDates(id):new Set();}catch(e){restMap[id]=new Set();}}return restMap[id];}
+  for(var off=-1;off<=LOOKAHEAD_DAYS;off++){
+   var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+off),dow=d.getDay();
+   cls.forEach(function(c){
+    var sc=sch[String(c.id)]||sch[c.id];if(!sc||typeof sc!=='object')return;
+    var t=sc[String(dow)];if(t===undefined||t===null||t==='')return;
+    var m=String(t).match(/(\d{1,2})\s*[:h.]\s*(\d{2})/);if(!m)return;
+    var h=+m[1],mi=+m[2];if(h>23||mi>59)return;
+    var start=new Date(d.getFullYear(),d.getMonth(),d.getDate(),h,mi,0,0);
+    out.push({c:c,start:start,end:new Date(start.getTime()+DURATION*60000),off:off,hex:colorHex(c.color),rest:restOf(c.id).has(d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()))});
+   });
+  }
+  out.sort(function(a,b){return a.start-b.start;});
+  return out;
+ }
+ function hasAnySchedule(){
+  var sch=(window.appData&&window.appData.classSchedules)||{};
+  return Object.keys(sch).some(function(k){var o=sch[k];return o&&typeof o==='object'&&Object.keys(o).some(function(d){return o[d];});});
+ }
+ function dayLabel(s,now,t){
+  var a=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+  var b=new Date(s.start.getFullYear(),s.start.getMonth(),s.start.getDate()).getTime();
+  var diff=Math.round((b-a)/86400000);
+  if(diff===0)return t.today;if(diff===1)return t.tomorrow;return t.wd[s.start.getDay()];
+ }
+ function timelineHtml(s,now,t){
+  var total=DURATION*60000,el=Math.min(total,Math.max(0,now-s.start)),pct=el/total*100;
+  var elMin=Math.floor(el/60000),leftMs=s.end-now,leftMin=Math.ceil(leftMs/60000);
+  var warn=leftMin<=WARN_LEFT;
+  var ticks='',scale='';
+  for(var i=0;i<=6;i++){
+   var left=(i/6*100).toFixed(3);
+   if(i>0&&i<6)ticks+='<i class="ctl-seg" style="left:'+left+'%"></i>';
+   scale+='<span style="left:'+left+'%">'+hm(new Date(s.start.getTime()+i*15*60000))+'</span>';
+  }
+  var secs=Math.floor(el/1000)%60;
+  return '<div class="ctl-card" style="--c:'+s.hex+'">'+
+   '<div class="ctl-card-top"><span class="ctl-name">'+esc(s.c.name)+'</span>'+
+   '<span class="ctl-tag"><span class="ctl-dot"></span>'+t.live+'</span>'+
+   (warn?'<span class="ctl-tag warn">'+t.warn+'</span>':'')+
+   '<span class="ctl-range">'+hm(s.start)+' → '+hm(s.end)+'</span></div>'+
+   '<div class="ctl-track"><div class="ctl-fill" style="width:'+pct.toFixed(3)+'%"></div>'+ticks+
+   '<div class="ctl-now" style="left:'+pct.toFixed(3)+'%"><span class="ctl-now-lbl">'+hm(now)+'</span></div></div>'+
+   '<div class="ctl-scale">'+scale+'</div>'+
+   '<div class="ctl-stat"><span>'+t.done+': <b>'+elMin+"'"+pad(secs)+'"</b> / '+DURATION+' '+t.min+' ('+Math.round(pct)+'%)</span>'+
+   '<span>'+t.left+': <b>'+fmtDur(leftMs,t)+'</b></span></div></div>';
+ }
+ function restCardHtml(s,now,t){
+  var ticks='',scale='';
+  for(var i=0;i<=6;i++){var left=(i/6*100).toFixed(3);if(i>0&&i<6)ticks+='<i class="ctl-seg" style="left:'+left+'%"></i>';scale+='<span style="left:'+left+'%">'+hm(new Date(s.start.getTime()+i*15*60000))+'</span>';}
+  return '<div class="ctl-card idle rest" style="--c:'+s.hex+'">'+
+   '<div class="ctl-card-top"><span class="ctl-name">'+esc(s.c.name)+'</span>'+
+   '<span class="ctl-tag rest">✕ '+t.rest+'</span>'+
+   '<span class="ctl-range">'+hm(s.start)+' → '+hm(s.end)+'</span></div>'+
+   '<div class="ctl-track">'+ticks+'</div><div class="ctl-scale">'+scale+'</div>'+
+   '<div class="ctl-stat"><span><b>'+dayLabel(s,now,t)+'</b>'+t.restOn+'</span><span>'+t.total+': <b>'+DURATION+' '+t.min+'</b></span></div></div>';
+ }
+ function nextCardHtml(s,now,t,idle){
+  var diff=s.start-now,soon=diff<=SOON_BEFORE*60000;
+  var when=dayLabel(s,now,t)+' '+t.at+' '+hm(s.start);
+  return '<div class="ctl-next'+(soon?' soon':'')+'" style="--c:'+s.hex+'"><span class="sw"></span>'+
+   '<span>'+(soon?'<b style="color:'+s.hex+'">'+t.soon+'</b> · ':'')+t.next+': <b>'+esc(s.c.name)+'</b></span>'+
+   '<span>· '+when+' ('+t.in+' <b>'+fmtDur(diff,t)+'</b>)</span></div>';
+ }
+ function idleCardHtml(s,now,t){
+  // Chưa vào giờ: vẽ trước timeline rỗng của lớp sắp tới
+  var ticks='',scale='';
+  for(var i=0;i<=6;i++){var left=(i/6*100).toFixed(3);if(i>0&&i<6)ticks+='<i class="ctl-seg" style="left:'+left+'%"></i>';scale+='<span style="left:'+left+'%">'+hm(new Date(s.start.getTime()+i*15*60000))+'</span>';}
+  var diff=s.start-now,soon=diff<=SOON_BEFORE*60000;
+  return '<div class="ctl-card idle" style="--c:'+s.hex+'">'+
+   '<div class="ctl-card-top"><span class="ctl-name">'+esc(s.c.name)+'</span>'+
+   '<span class="ctl-tag '+(soon?'soon':'')+'" style="'+(soon?'':'background:'+s.hex+';opacity:.75')+'">'+(soon?t.soon:t.next)+'</span>'+
+   '<span class="ctl-range">'+dayLabel(s,now,t)+' · '+hm(s.start)+' → '+hm(s.end)+'</span></div>'+
+   '<div class="ctl-track">'+ticks+'</div><div class="ctl-scale">'+scale+'</div>'+
+   '<div class="ctl-stat"><span>'+t.in+' <b>'+fmtDur(diff,t)+'</b></span><span>'+t.total+': <b>'+DURATION+' '+t.min+'</b></span></div></div>';
+ }
+ function chipsHtml(sess,now,t){
+  var today=sess.filter(function(s){return s.off===0;});
+  if(!today.length)return '';
+  return '<div class="ctl-chips"><span class="ctl-chip" style="--c:#64748b;border-style:dashed">'+t.schedToday+'</span>'+today.map(function(s){
+   var cls=s.rest?' rest':(now>=s.end?' done':(now>=s.start?' live':''));
+   return '<span class="ctl-chip'+cls+'" style="--c:'+s.hex+'"><i></i>'+(s.rest?'✕ ':'')+esc(s.c.name)+' · '+hm(s.start)+'–'+hm(s.end)+(s.rest?' · '+t.rest:'')+'</span>';
+  }).join('')+'</div>';
+ }
+ function build(){
+  var now=new Date(),t=L(),sess=buildSessions(now);
+  var live=sess.filter(function(s){return now>=s.start&&now<s.end;});
+  var upcoming=sess.filter(function(s){return s.start>now;});
+  var firstUp=upcoming[0]||null;
+  var nextS=upcoming.filter(function(s){return !s.rest;})[0]||null;   // lớp sắp tới bỏ qua các buổi nghỉ
+  var body='';
+  if(!hasAnySchedule()){
+   body='<div class="ctl-empty"><i class="fa-regular fa-calendar-xmark"></i> '+t.none+'</div>';
+  }else{
+   if(live.length){
+    body+=live.map(function(s){return s.rest?restCardHtml(s,now,t):timelineHtml(s,now,t);}).join('');
+    // lớp kế tiếp (không tính các lớp đang học)
+    if(nextS)body+=nextCardHtml(nextS,now,t);
+   }else if(firstUp&&firstUp.rest&&firstUp.off===0){
+    body+=restCardHtml(firstUp,now,t);
+    if(nextS)body+=nextCardHtml(nextS,now,t);
+   }else if(nextS){
+    body+=idleCardHtml(nextS,now,t);
+   }else{
+    body+='<div class="ctl-empty">'+t.noMore+'</div>';
+   }
+   body+=chipsHtml(sess,now,t);
+  }
+  var clock=t.wd[now.getDay()]+' · '+hm(now)+':'+pad(now.getSeconds());
+  return '<div class="ctl-head"><span class="ctl-title"><i class="fa-solid fa-hourglass-half"></i>'+t.title+'</span>'+
+   '<span class="ctl-clock">'+clock+'</span>'+
+   '<button type="button" class="ctl-toggle" title="'+t.collapse+'" aria-label="'+t.collapse+'" onclick="window.__ctlToggle()"><i class="fa-solid fa-chevron-'+(collapsed?'up':'down')+'"></i></button></div>'+
+   '<div class="ctl-body">'+body+'</div>';
+ }
+ function syncVisibility(){
+  if(!panel||!matrixBox)return false;
+  var show=!matrixBox.classList.contains('hidden');
+  panel.classList.toggle('hidden',!show);
+  return show;
+ }
+ function tick(){
+  if(!panel)return;
+  if(!syncVisibility()||document.hidden)return;
+  panel.classList.toggle('collapsed',collapsed);
+  var html;try{html=build();}catch(e){console.warn('class timeline',e);return;}
+  if(html!==lastHtml){lastHtml=html;panel.innerHTML=html;}
+ }
+ window.__ctlToggle=function(){
+  collapsed=!collapsed;
+  try{localStorage.setItem('mxTimelineCollapsed',collapsed?'1':'0');}catch(e){}
+  lastHtml='';tick();
+ };
+ function init(){
+  panel=document.getElementById('classTimelinePanel');
+  matrixBox=document.getElementById('viewMatrixContainer');
+  if(!panel||!matrixBox)return;
+  new MutationObserver(function(){lastHtml='';tick();}).observe(matrixBox,{attributes:true,attributeFilter:['class']});
+  tick();
+  setInterval(tick,1000);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)tick();});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
 </body>
