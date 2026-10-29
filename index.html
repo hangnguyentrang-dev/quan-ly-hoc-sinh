@@ -2879,6 +2879,30 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
 @media(prefers-reduced-motion:reduce){#dailyBackupReminder.active,#dailyBackupReminder .backup-panel,#dailyBackupReminder .backup-download,#dailyBackupReminder .backup-siren,#dailyBackupReminder.done .backup-panel{animation:none}#dailyBackupReminder .backup-download::after{display:none}}
 </style>
 
+<style id="patch-pshop-art">
+.ps-art svg{width:72px!important;height:72px!important;overflow:visible}
+.pq-slot svg,.pq-row svg{overflow:visible}
+.px-sp{transform-box:fill-box;transform-origin:center;opacity:0;animation:pxTw 2.4s ease-in-out infinite}
+@keyframes pxTw{0%,100%{opacity:0;transform:scale(.2) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(90deg)}}
+.px-ray{transform-box:view-box;transform-origin:32px 32px;animation:pxSpin 12s linear infinite}
+@keyframes pxSpin{to{transform:rotate(360deg)}}
+.px-sw{animation:pxSw 3.4s ease-in-out infinite}
+@keyframes pxSw{0%{transform:translateX(-30px)}55%,100%{transform:translateX(130px)}}
+.px-pt{opacity:0;animation:pxUp 2.6s ease-in infinite}
+@keyframes pxUp{0%{transform:translateY(0);opacity:0}25%{opacity:1}100%{transform:translateY(-16px);opacity:0}}
+.px-dash{animation:pxDs 1.8s linear infinite}
+@keyframes pxDs{to{stroke-dashoffset:-64}}
+.px3{animation:pxG3 2.4s ease-in-out infinite}
+.px4{animation:pxG4 1.8s ease-in-out infinite}
+@keyframes pxG3{0%,100%{filter:drop-shadow(0 0 2px var(--c))}50%{filter:drop-shadow(0 0 8px var(--c))}}
+@keyframes pxG4{0%,100%{filter:drop-shadow(0 0 4px var(--c))}50%{filter:drop-shadow(0 0 9px var(--c))}}
+.px4 .px-ic{animation:pxBob 2.6s ease-in-out infinite}
+@keyframes pxBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6px)}}
+@media (prefers-reduced-motion:reduce){.px3,.px4,.px4 .px-ic,.px-ray,.px-sw,.px-pt,.px-dash{animation:none!important}.px-sp{animation:none!important;opacity:1}}
+/* hiệu ứng 3D: nghiêng nhẹ khi rê chuột */
+.ps-art svg{transition:transform .25s ease}
+.ps-card:hover .ps-art svg,.pq-row:hover .ps-art svg{transform:perspective(220px) rotateY(14deg) rotateX(-8deg) scale(1.07)}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -3913,6 +3937,62 @@ html.mx-dark .pl-x{background:#4338ca;color:#fff}
         <div id="seatingPlan" class="overflow-x-auto"></div>
       </div>
     </div>
+
+<style id="patch-pet-shop">
+.ps-bar{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.6rem 0}
+.ps-chip{border:1px solid #c7d2fe;background:#fff;color:#4338ca;border-radius:9999px;padding:.25rem .65rem;font-size:11px;font-weight:800;cursor:pointer;transition:transform .15s,background .15s}
+.ps-chip:hover{transform:translateY(-1px);background:#eef2ff}.ps-chip.on{background:linear-gradient(90deg,#4338ca,#7c3aed);color:#fff;border-color:transparent}
+.ps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.6rem}
+.ps-card{position:relative;border:1.5px solid #e2e8f0;border-radius:.9rem;background:linear-gradient(170deg,#fff,#f5f3ff);padding:.55rem;display:flex;flex-direction:column;gap:.2rem;transition:transform .15s,box-shadow .15s}
+.ps-card:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(99,102,241,.2)}
+.ps-card.r0{border-color:#cbd5e1;background:linear-gradient(170deg,#fff,#f1f5f9)}.ps-card.r1{border-color:#86efac;background:linear-gradient(170deg,#fff,#f0fdf4)}.ps-card.r2{border-color:#93c5fd;background:linear-gradient(170deg,#fff,#eff6ff)}.ps-card.r3{border-color:#d8b4fe;background:linear-gradient(170deg,#fff,#faf5ff)}.ps-card.r4{border-color:#fbbf24;background:linear-gradient(170deg,#fff,#fffbeb);box-shadow:0 0 12px rgba(251,191,36,.3)}
+.ps-art svg{width:64px;height:64px;display:block;margin:0 auto;filter:drop-shadow(0 3px 3px rgba(0,0,0,.25))}
+.ps-nm{font-size:12px;font-weight:900;color:#1e1b4b;text-align:center}.ps-rar{font-size:10px;font-weight:900;text-align:center}
+.ps-fx{font-size:11px;font-weight:800;color:#6d28d9;text-align:center}.ps-ds{font-size:10.5px;color:#475569;text-align:center}
+.ps-cm{font-size:10px;font-weight:800;border-radius:.5rem;padding:2px 6px;text-align:center}.ps-cm.ok{background:#dcfce7;color:#166534}.ps-cm.no{background:#fee2e2;color:#991b1b}.ps-cm.na{background:#f1f5f9;color:#64748b}
+.ps-ft{display:flex;align-items:center;justify-content:space-between;gap:.3rem;margin-top:auto;font-size:11px;font-weight:900;color:#b45309}
+.ps-ft button:disabled{opacity:.55;cursor:not-allowed}
+.ps-pop{animation:psPop .5s ease-out}@keyframes psPop{0%{transform:scale(1)}40%{transform:scale(1.07);box-shadow:0 0 0 6px rgba(250,204,21,.45)}100%{transform:scale(1)}}
+.pq-back{position:fixed;inset:0;z-index:9500;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:10px;animation:pqFade .2s ease-out}
+.pq-card{position:relative;width:100%;max-width:720px;max-height:92vh;overflow:auto;background:#fff;border-radius:1.1rem;padding:1rem;box-shadow:0 20px 50px rgba(0,0,0,.35);animation:pqIn .28s cubic-bezier(.22,1,.36,1)}
+@keyframes pqFade{from{opacity:0}}@keyframes pqIn{from{opacity:0;transform:translateY(18px) scale(.97)}}
+.pq-x{position:absolute;top:8px;right:10px;font-size:18px;font-weight:900;color:#64748b;cursor:pointer}
+.pq-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.5rem 0}
+.pq-slot{border:2px dashed #c4b5fd;border-radius:.85rem;padding:.4rem;text-align:center;min-height:128px;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.pq-slot.on{border-color:#6d28d9;background:#f5f3ff}.pq-slot.f{border-style:solid}
+.pq-slot svg{width:44px;height:44px}.pq-slot .t{font-size:11px;font-weight:900;color:#1e1b4b}.pq-slot .s{font-size:10px;color:#6d28d9;font-weight:800}
+.pq-row{display:flex;align-items:center;gap:.5rem;border:1px solid #e2e8f0;border-radius:.7rem;padding:.35rem .5rem;margin-top:.35rem;flex-wrap:wrap}
+.pq-row svg{width:38px;height:38px}.pq-row.no{opacity:.7;background:#f8fafc}
+.pq-in{flex:1;min-width:140px;border:1.5px solid #c7d2fe;border-radius:.6rem;padding:.3rem .5rem;font-weight:800;font-size:13px}
+.pq-h{font-size:12px;font-weight:900;color:#4338ca;margin-top:.7rem}
+.pq-stat{font-size:11px;color:#334155;font-weight:700}
+html.mx-dark .ps-card,html.mx-dark .pq-card,html.mx-dark .pq-row{background:#1e1b4b;border-color:#4c1d95;color:#e2e8f0}
+html.mx-dark .ps-nm,html.mx-dark .pq-slot .t{color:#f1f5f9}html.mx-dark .ps-ds,html.mx-dark .pq-stat{color:#cbd5e1}
+html.mx-dark .pq-in{background:#0f172a;color:#f1f5f9;border-color:#4c1d95}html.mx-dark .ps-chip{background:#1e1b4b;color:#c7d2fe;border-color:#4c1d95}
+@media(max-width:520px){.pq-slots{grid-template-columns:1fr}.pq-slot{min-height:0;flex-direction:row;text-align:left}}
+@media (prefers-reduced-motion:reduce){.ps-card,.pq-card,.pq-back,.ps-pop{animation:none!important;transition:none!important}}
+/* ===== Trang bị Pet: hai cửa sổ song song, cập nhật mượt ===== */
+#pqArt{flex:none;width:118px}#pqArt .pet-art{width:112px!important;height:112px!important;margin:0 auto}
+.pq-card.pq-duo{max-width:1120px;max-height:none;overflow:visible;background:transparent;box-shadow:none;padding:0;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:12px;align-items:stretch}
+.pq-pane{position:relative;background:#fff;border-radius:1.1rem;box-shadow:0 20px 50px rgba(0,0,0,.35);display:flex;flex-direction:column;max-height:90vh;min-height:0;overflow:hidden}
+.pq-pane-h{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.6rem 1rem;border-bottom:1px solid #e2e8f0;background:linear-gradient(90deg,#f5f3ff,#fff);flex:none}
+.pq-pt{font-size:13px;font-weight:900;color:#4338ca}
+.pq-pane-h .pq-x{position:static;flex:none}.pq-x.l{display:none}
+.pq-pane-b{overflow:auto;padding:.4rem 1rem 1rem;flex:1;min-height:0;scrollbar-gutter:stable;overscroll-behavior:contain}
+.pq-slot,.pq-row{transition:border-color .2s,background .2s,box-shadow .2s,transform .15s}
+.pq-row:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(99,102,241,.18)}
+.pq-ri{flex:1;min-width:150px}.pq-si{display:flex;flex-direction:column;align-items:center;gap:2px}.pq-sb{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.pq-row.r0,.pq-slot.f.r0{border-color:#cbd5e1;background:linear-gradient(170deg,#fff,#f1f5f9)}.pq-row.r1,.pq-slot.f.r1{border-color:#86efac;background:linear-gradient(170deg,#fff,#f0fdf4)}.pq-row.r2,.pq-slot.f.r2{border-color:#93c5fd;background:linear-gradient(170deg,#fff,#eff6ff)}.pq-row.r3,.pq-slot.f.r3{border-color:#d8b4fe;background:linear-gradient(170deg,#fff,#faf5ff)}.pq-row.r4,.pq-slot.f.r4{border-color:#fbbf24;background:linear-gradient(170deg,#fff,#fffbeb);box-shadow:0 0 12px rgba(251,191,36,.3)}
+.pq-slot.f.on{border-color:#6d28d9;box-shadow:0 0 0 3px rgba(109,40,217,.25)}
+.pq-slot.on:not(.f){border-color:#6d28d9;background:#f5f3ff}
+html.mx-dark .pq-card.pq-duo{background:transparent}
+html.mx-dark .pq-pane{background:#1e1b4b;color:#e2e8f0}html.mx-dark .pq-pane-h{background:#17154a;border-color:#4c1d95}html.mx-dark .pq-pt{color:#c7d2fe}
+html.mx-dark .pq-row.r1,html.mx-dark .pq-slot.f.r1{border-color:#22c55e}html.mx-dark .pq-row.r2,html.mx-dark .pq-slot.f.r2{border-color:#3b82f6}html.mx-dark .pq-row.r3,html.mx-dark .pq-slot.f.r3{border-color:#a855f7}html.mx-dark .pq-row.r4,html.mx-dark .pq-slot.f.r4{border-color:#f59e0b}
+html.mx-dark .pq-slot.f{background:#1e1b4b}
+@media(max-width:820px){.pq-back{align-items:flex-start;overflow:auto}.pq-card.pq-duo{grid-template-columns:1fr}.pq-pane{max-height:none;overflow:visible}.pq-pane-b{overflow:visible}.pq-x.l{display:inline}.pq-x.r{display:none}}
+@media (prefers-reduced-motion:reduce){.pq-slot,.pq-row{transition:none!important}}
+
+</style>
 
     <!-- JavaScript Logic with Firebase Integration -->
     <div id="classScheduleModal" class="fixed inset-0 z-[82] hidden items-center justify-center bg-slate-900/60 p-3"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-5"><div class="flex justify-between items-center mb-4"><h2 class="font-black text-lg" data-i18n="classScheduleTitle">Lịch học theo lớp</h2><button onclick="closeClassSchedule()" class="text-xl px-2">×</button></div><p class="text-xs text-slate-500 mb-3" data-i18n="classScheduleHelp">Thiết lập ngày và giờ học thường lệ cho từng lớp.</p><div id="classScheduleEditor" class="space-y-3"></div><div class="flex justify-end gap-2 mt-4"><button onclick="closeClassSchedule()" class="rounded-lg bg-slate-100 px-3 py-2 text-sm" data-i18n="cancelBtn">Hủy</button><button onclick="saveClassSchedule()" class="rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-bold" data-i18n="saveBtn">Lưu</button></div></div></div>
@@ -12777,17 +12857,19 @@ window.openStudentProfile=function(studentId){
         };
         window.petSetMode = m => {
             if (m === petMode) return;
-            const root = document.getElementById('viewPetContainer'), pane = root && root.querySelector('.pet-pane'), dir = m === 'bank' ? 1 : -1;
+            const root = document.getElementById('viewPetContainer'), pane = root && root.querySelector('.pet-pane'), dir = ({ class: 0, bank: 1, shop: 2 })[m] > ({ class: 0, bank: 1, shop: 2 })[petMode] ? 1 : -1;
             const go = () => { petMode = m; window.__petSlide = dir; renderPetView(); };
             if (pane && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) { pane.style.setProperty('--dir', dir); pane.classList.remove('pet-in'); pane.classList.add('pet-out'); setTimeout(go, 210); } else go();
         };
+        window.petGoShop = sid => { petTarget = sid; if (petMode !== 'shop') window.__petSlide = 1; petMode = 'shop'; renderPetView(); };
+        window.petPickStu = sid => { petTarget = sid; renderPetView(); };
         window.petSetSel = i => { petSel = i; renderPetView(); };
         window.petGoPick = sid => { petTarget = sid; if (petMode !== 'bank') window.__petSlide = 1; petMode = 'bank'; renderPetView(); };
         window.renderPetView = function renderPetView() {
             const root = document.getElementById('viewPetContainer'); if (!root || !appData) return;
             const list = (appData.students || []).filter(s => s.classId === appData.activeClassId);
             if (!petTarget || !list.some(s => s.id === petTarget)) petTarget = list.length ? list[0].id : '';
-            const head = `<section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="text-xl font-black text-slate-800"><i class="fa-solid fa-egg mr-2 text-violet-600"></i>${L2('Thú Cưng', 'Pets')}</h2><p class="text-sm text-slate-500 mt-1">${L2('Mốc streak 1 · 5 · 10 · 15 · 20 · 30 · 40 · 50 giúp thú cưng tiến hoá. Mất chuỗi không ảnh hưởng đến thú. Thú nở ở streak 5 sẽ có nội tại ban phúc, mạnh dần theo từng mốc.', 'Streak milestones 1 · 5 · 10 · 15 · 20 · 30 · 40 · 50 evolve your pet. Losing a streak never affects it. A pet that hatches at streak 5 unlocks an innate blessing that grows with each milestone.')}</p></div><div class="flex gap-2"><button class="pet-tabbtn ${petMode === 'class' ? 'on' : ''}" onclick="petSetMode('class')"><i class="fa-solid fa-paw mr-1"></i>${L2('Thú của lớp', 'Class pets')}</button><button class="pet-tabbtn ${petMode === 'bank' ? 'on' : ''}" onclick="petSetMode('bank')"><i class="fa-solid fa-egg mr-1"></i>${L2('Kho trứng', 'Egg bank')}</button></div></div>`;
+            const head = `<section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="text-xl font-black text-slate-800"><i class="fa-solid fa-egg mr-2 text-violet-600"></i>${L2('Thú Cưng', 'Pets')}</h2><p class="text-sm text-slate-500 mt-1">${L2('Mốc streak 1 · 5 · 10 · 15 · 20 · 30 · 40 · 50 giúp thú cưng tiến hoá. Mất chuỗi không ảnh hưởng đến thú. Thú nở ở streak 5 sẽ có nội tại ban phúc, mạnh dần theo từng mốc.', 'Streak milestones 1 · 5 · 10 · 15 · 20 · 30 · 40 · 50 evolve your pet. Losing a streak never affects it. A pet that hatches at streak 5 unlocks an innate blessing that grows with each milestone.')}</p></div><div class="flex gap-2"><button class="pet-tabbtn ${petMode === 'class' ? 'on' : ''}" onclick="petSetMode('class')"><i class="fa-solid fa-paw mr-1"></i>${L2('Thú của lớp', 'Class pets')}</button><button class="pet-tabbtn ${petMode === 'bank' ? 'on' : ''}" onclick="petSetMode('bank')"><i class="fa-solid fa-egg mr-1"></i>${L2('Kho trứng', 'Egg bank')}</button><button class="pet-tabbtn ${petMode === 'shop' ? 'on' : ''}" onclick="petSetMode('shop')"><i class="fa-solid fa-store mr-1"></i>${L2('Cửa hàng vật phẩm', 'Item shop')}</button></div></div>`;
             let body = '', evo = [];
             if (petMode === 'class') {
                 body = `<div class="grid gap-3 mt-4" style="grid-template-columns:repeat(auto-fill,minmax(214px,1fr))">` + list.map(st => {
@@ -12796,8 +12878,11 @@ window.openStudentProfile=function(studentId){
                     const pbl = (has && appData.petBless && appData.petBless.pend && appData.petBless.pend[st.id]) || [], pbn = pbl.length && PET_B[st.petSp] ? PET_B[st.petSp].n[(appData.language || 'vi') === 'en' ? 1 : 0] : '';
                     const art = has ? petArt(st.petSp, f, pk >= 1) : `<div class="pet-art" style="display:flex;align-items:center;justify-content:center;font-size:64px;opacity:.45">🥚</div>`;
                     const pct = nxt ? Math.round(((pk - PET_MS[PET_MS.indexOf(nxt) - 1]) / (nxt - PET_MS[PET_MS.indexOf(nxt) - 1])) * 100) : 100;
-                    return `<div class="pet-card ${f === 8 && has ? 'pet-f8' : ''} ${isEvo ? 'pet-evo' : ''} ${pbl.length ? 'pet-bless' : ''}" data-sid="${st.id}"${pbl.length ? ` role="button" tabindex="0" onclick="petClaim('${st.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();petClaim('${st.id}')}"` : ''}>${pbl.length ? '<i class="pet-st a">✦</i><i class="pet-st b">✨</i><i class="pet-st c">✦</i><i class="pet-st e">✨</i>' : ''}<div class="text-xs font-black text-slate-800 truncate">${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}</div>${art}<div class="text-[11px] font-extrabold text-violet-700 mt-1 min-h-[1.2em]">${has ? escapeHtml(petFormName(st.petSp, f)) : L2('Chưa chọn trứng', 'No egg chosen')}</div>${pbl.length ? `<div class="pet-claim"><div class="pet-claim-t">🎁 ${L2('Đã nhận', 'Received')} ${escapeHtml(pbn)}${pbl.length > 1 ? ' ×' + pbl.length : ''}</div><div class="pet-claim-s">${L2('(bấm để nhận)', '(tap to claim)')}</div></div>` : ''}<div class="mt-1"><span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span></div>${petBlessLine(st)}<div class="pet-bar mt-2"><i style="width:${pct}%"></i></div><div class="text-[10px] text-slate-500 mt-1">${nxt ? L2('Mốc tiếp theo: ', 'Next milestone: ') + nxt : L2('Đã đạt dạng cuối!', 'Final form reached!')}</div>${!has || f === 1 ? `<button class="pet-tabbtn mt-2" onclick="event.stopPropagation();petGoPick('${st.id}')">${has ? L2('Đổi trứng', 'Change egg') : L2('Chọn trứng', 'Pick egg')}</button>` : ''}</div>`;
+                    return `<div class="pet-card ${f === 8 && has ? 'pet-f8' : ''} ${isEvo ? 'pet-evo' : ''} ${pbl.length ? 'pet-bless' : ''}" data-sid="${st.id}"${pbl.length ? ` role="button" tabindex="0" onclick="petClaim('${st.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();petClaim('${st.id}')}"` : ''}>${pbl.length ? '<i class="pet-st a">✦</i><i class="pet-st b">✨</i><i class="pet-st c">✦</i><i class="pet-st e">✨</i>' : ''}<div class="text-xs font-black text-slate-800 truncate">${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}</div>${art}<div class="text-[11px] font-extrabold text-violet-700 mt-1 min-h-[1.2em]">${has ? escapeHtml(pshDisp(st)) : L2('Chưa chọn trứng', 'No egg chosen')}</div>${pbl.length ? `<div class="pet-claim"><div class="pet-claim-t">🎁 ${L2('Đã nhận', 'Received')} ${escapeHtml(pbn)}${pbl.length > 1 ? ' ×' + pbl.length : ''}</div><div class="pet-claim-s">${L2('(bấm để nhận)', '(tap to claim)')}</div></div>` : ''}<div class="mt-1"><span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span></div>${petBlessLine(st)}<div class="pet-bar mt-2"><i style="width:${pct}%"></i></div><div class="text-[10px] text-slate-500 mt-1">${nxt ? L2('Mốc tiếp theo: ', 'Next milestone: ') + nxt : L2('Đã đạt dạng cuối!', 'Final form reached!')}</div>${has ? `<button class="pet-tabbtn mt-2 mr-1" onclick="event.stopPropagation();petEqOpen('${st.id}')">🎒 ${L2('Trang bị', 'Equip')}</button>` : ''}${!has || f === 1 ? `<button class="pet-tabbtn mt-2" onclick="event.stopPropagation();petGoPick('${st.id}')">${has ? L2('Đổi trứng', 'Change egg') : L2('Chọn trứng', 'Pick egg')}</button>` : ''}</div>`;
                 }).join('') + `</div>`;
+            } else if (petMode === 'shop') {
+                const tg = list.find(s => s.id === petTarget);
+                body = tg ? `<div class="mt-4 flex flex-wrap items-center gap-2"><label class="text-xs font-black text-slate-600"><i class="fa-solid fa-user mr-1"></i>${L2('Mua cho học sinh', 'Buying for')}</label><select class="pq-in" style="flex:none;max-width:260px" onchange="petPickStu(this.value)">${list.map(s => `<option value="${s.id}" ${s.id === petTarget ? 'selected' : ''}>${escapeHtml((s.icon || '🎓') + ' ' + getStudentDisplayName(s))} · ${s.rewardPoints || 0} pts</option>`).join('')}</select></div>` + petShopHtml(tg) : `<div class="text-sm text-slate-500 mt-4">${L2('Lớp chưa có học sinh.', 'This class has no students.')}</div>`;
             } else {
                 const sp = PET_SP[petSel], tgt = list.find(s => s.id === petTarget), locked = tgt && tgt.petSp !== undefined && petFormOf(petPeakOf(tgt)) > 1;
                 const ownerOf = i => { const o = list.filter(s => s.petSp === i); return o.find(s => s.id === petTarget) || o[0] || null; };
@@ -12817,7 +12902,607 @@ window.openStudentProfile=function(studentId){
         };
         // Cập nhật lại khi dữ liệu thay đổi (đồng bộ Firebase / nhập điểm)
         let _petSig = '';
-        setInterval(() => { try { if (appData && appData.activeViewMode === 'pet' && !document.hidden && !document.querySelector('#viewPetContainer select:focus')) { const sg = (appData.students || []).filter(s => s.classId === appData.activeClassId).map(s => s.id + ':' + s.petSp + ':' + petPeakOf(s) + ':' + (s.petShown || 0) + ':' + getStudentDisplayName(s) + ':' + ((appData.petBless && appData.petBless.pend && appData.petBless.pend[s.id]) || []).length).join('|') + '#' + appData.activeClassId + '#' + (appData.language || 'vi'); if (sg !== _petSig) { _petSig = sg; window.renderPetView(); } } } catch (e) {} }, 15000);
+        setInterval(() => { try { if (appData && appData.activeViewMode === 'pet' && !document.hidden && !document.querySelector('#viewPetContainer select:focus')) { const sg = (appData.students || []).filter(s => s.classId === appData.activeClassId).map(s => s.id + ':' + s.petSp + ':' + petPeakOf(s) + ':' + (s.petShown || 0) + ':' + getStudentDisplayName(s) + ':' + (s.petNick || '') + ':' + JSON.stringify(s.petEquip || {}) + ':' + ((appData.petBless && appData.petBless.pend && appData.petBless.pend[s.id]) || []).length).join('|') + '#' + appData.activeClassId + '#' + (appData.language || 'vi'); if (sg !== _petSig) { _petSig = sg; window.renderPetView(); } } } catch (e) {} }, 15000);
+        /* ===================== PET SHOP: cửa hàng 40 vật phẩm · trang bị 3 ô · đổi tên =====================
+           Dữ liệu trên học sinh: petItems {id:1}, petEquip {s0,s1,s2:{id,p?}}, petNick, petBuys[]. Lưu bằng saveData() (Firebase hiện có).
+           Hiệu ứng được tính tại MỘT chỗ: petEff(st,sp,lv) — không ghi đè PET_B, không cộng dồn khi tải lại. */
+        const PSH_RAR = [['1 sao', '1 star', '#94a3b8', 2], ['2 sao', '2 stars', '#22c55e', 4], ['3 sao', '3 stars', '#3b82f6', 6], ['4 sao', '4 stars', '#a855f7', 8], ['5 sao', '5 stars', '#f59e0b', 10]]; // màu: xám · xanh lá · xanh dương · tím · vàng
+        const PSH_GRP = [['🍀', 'Tăng tỷ lệ kích hoạt', 'Trigger Chance', '#4ade80', '#15803d'], ['💎', 'Tăng phần thưởng điểm', 'Point Rewards', '#67e8f9', '#0e7490'], ['🎁', 'Tăng quà thưởng', 'Gift Rewards', '#f9a8d4', '#be185d'], ['⚡', 'Tăng Pts nâng cao', 'Advanced Pts', '#fde047', '#b45309'], ['🛡️', 'Giới hạn & hoàn trả', 'Caps & Refunds', '#93c5fd', '#1d4ed8'], ['🗓️', 'Số lần kích hoạt', 'Activations', '#c4b5fd', '#6d28d9'], ['🔮', 'Sức mạnh theo streak', 'Streak Power', '#f0abfc', '#a21caf'], ['🎯', 'Bùa hỗ trợ', 'Support Charms', '#fdba74', '#c2410c']];
+        // [kind, scope, amount, rarity, vi, en, descVi, descEn] — scope: ''=mọi mốc, g=nhóm nội tại của Pet, m=1 mốc streak, p=2 mốc liền kề, 3=streak≥30, 5=streak 50, c=nội tại có điều kiện thưởng theo điểm
+        const PSH_IT = [
+            // CÂN BẰNG LẠI: [kind, scope, amount, (cũ), vi, en, descVi, descEn, nhóm, sao-1]
+            // Thang sao (mọi cấp): tỷ lệ 2/3/5/8/12 · pts 1/2/3/5/8 · %pts 5/8/12/20/35 · tích lũy 1/2/3/4/6 · trần tuần 2/3/5/8/12 · %hoàn 1/2/3/5/8 · hoàn tối đa 1/2/4/6/10 · giữ lại 1..5 · quà % 10/15/25/40/60
+            // Hệ số phạm vi: mọi cấp ×1 · từ cấp 4 ×1,25 · từ cấp 5 ×1,5 · 2 cấp liền kề ×1,75 · 1 cấp ×2,5
+            ["ch", "", 2, 0, "Kẹp Áo Cỏ May", "Four-Leaf Clover Pin", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở mọi cấp.", "Adds trigger chance to innates that have one, at every level.", 0, 0],
+            ["ch", "4", 3, 0, "Vòng Cổ Dấu Chân", "Pawprint Necklace", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 4 trở lên.", "Adds trigger chance to innates that have one, from level 4 up.", 0, 0],
+            ["ch", "m", 8, 0, "Nhẫn Ngọc Vận Mệnh", "Fate Jade Ring", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 1 cấp bạn chọn.", "Adds trigger chance to innates that have one, at 1 level you choose.", 0, 1],
+            ["ch", "", 5, 0, "Nơ Khởi Vận", "First Blessing Bow", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở mọi cấp.", "Adds trigger chance to innates that have one, at every level.", 0, 2],
+            ["ch", "4", 6, 0, "Vương Miện Sao May", "Lucky Star Crown", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 4 trở lên.", "Adds trigger chance to innates that have one, from level 4 up.", 0, 2],
+            ["a", "", 1, 0, "Vòng Tay Ngọc Lục", "Jade Bead Bracelet", "Cộng điểm tích lũy trong quà. Dùng cho Kẹo Thưởng Bất Ngờ, Niết Bàn Phúc Lộc, Lôi Quang Liên Kết.", "Adds accumulated pts to the gift. Works with Surprise Candy Bonus, Nirvana Blessing, Linked Lightning.", 1, 0],
+            ["p", "", 1, 0, "Dây Chuyền Năng Lượng", "Energy Crystal Necklace", "Cộng Pts cho nội tại có thưởng Pts, ở mọi cấp.", "Adds Pts to innates that give Pts, at every level.", 1, 0],
+            ["pp", "", 5, 0, "Nhẫn Ánh Dương", "Sunlight Ring", "Tăng % Pts nhận từ nội tại có thưởng Pts, ở mọi cấp.", "Boosts the Pts from innates that give Pts by a %, at every level.", 1, 0],
+            ["p", "c", 3, 0, "Khăn Choàng Phú Quý", "Fortune Scarf", "Cộng Pts khi nội tại thưởng theo điểm số kích hoạt.", "Adds Pts when a score-based innate triggers.", 1, 1],
+            ["p", "m", 8, 0, "Áo Choàng Cổ Đại", "Ancient Cloak", "Cộng Pts cho nội tại có thưởng Pts, ở 1 cấp bạn chọn.", "Adds Pts to innates that give Pts, at 1 level you choose.", 1, 2],
+            ["gp", "", 10, 0, "Nơ Quà Phép Thuật", "Magic Gift Bow", "Nội tại trao quà: có % nhận thêm 1 quà cùng loại ở mọi cấp. Tối đa +1 quà/lần.", "Gift innates: chance of 1 more gift of the same kind at every level. Max +1 gift per trigger.", 2, 0],
+            ["gp", "", 15, 0, "Vòng Tay Song Hỷ", "Double Joy Bracelet", "Nội tại trao quà: có % nhận thêm 1 quà cùng loại ở mọi cấp. Tối đa +1 quà/lần.", "Gift innates: chance of 1 more gift of the same kind at every level. Max +1 gift per trigger.", 2, 1],
+            ["g", "m", 1, 0, "Mũ Báu Vật", "Treasure Hat", "Nội tại trao quà: chắc chắn nhận thêm 1 quà cùng loại ở 1 cấp bạn chọn. Tối đa +1 quà/lần.", "Gift innates: always get 1 more gift of the same kind at 1 level you choose. Max +1 gift per trigger.", 2, 1],
+            ["gp", "", 25, 0, "Kẹp Tóc Song Sao", "Twin Star Hairclip", "Nội tại trao quà: có % nhận thêm 1 quà cùng loại ở mọi cấp. Tối đa +1 quà/lần.", "Gift innates: chance of 1 more gift of the same kind at every level. Max +1 gift per trigger.", 2, 2],
+            ["gw", "", 1, 0, "Thắt Lưng Không Gian", "Space Belt", "Mỗi tuần, lần trao quà đầu tiên của nội tại được thêm 1 quà cùng loại.", "Once a week, the first gift your innate gives comes with 1 more of the same kind.", 2, 1],
+            ["p", "p", 2, 0, "Vòng Tay Năng Lượng", "Energy Bracelet", "Cộng Pts cho nội tại có thưởng Pts, ở 2 cấp liền kề bạn chọn.", "Adds Pts to innates that give Pts, at 2 adjacent levels you choose.", 3, 0],
+            ["pp", "", 8, 0, "Nhẫn Pha Lê Phú Quý", "Fortune Crystal Ring", "Tăng % Pts nhận từ nội tại có thưởng Pts, ở mọi cấp.", "Boosts the Pts from innates that give Pts by a %, at every level.", 3, 1],
+            ["p", "m", 5, 0, "Huy Hiệu Điểm Thưởng", "Bonus Points Badge", "Cộng Pts cho nội tại có thưởng Pts, ở 1 cấp bạn chọn.", "Adds Pts to innates that give Pts, at 1 level you choose.", 3, 1],
+            ["pp", "", 12, 0, "Dây Chuyền Thịnh Vượng", "Prosperity Coin Pendant", "Tăng % Pts nhận từ nội tại có thưởng Pts, ở mọi cấp.", "Boosts the Pts from innates that give Pts by a %, at every level.", 3, 2],
+            ["p", "", 3, 0, "Áo Gile Phú Quý", "Fortune Vest", "Cộng Pts cho nội tại có thưởng Pts, ở mọi cấp.", "Adds Pts to innates that give Pts, at every level.", 3, 2],
+            ["k", "", 2, 0, "Áo Khoác Hộ Mệnh", "Guardian Jacket", "Tăng mức pts bù tối đa mỗi tuần. Chỉ dùng cho Mây Che Chở.", "Raises the weekly pts cap. Works only with Cloud Cover.", 4, 0],
+            ["r", "", 1, 0, "Vòng Cổ Tài Lộc", "Fortune Bell Necklace", "Tăng % pts được hoàn lại. Chỉ dùng cho Hũ Mật.", "Raises the % of pts refunded. Works only with Honey Pot.", 4, 0],
+            ["x", "", 2, 0, "Thắt Lưng Tài Lộc", "Fortune Belt", "Tăng mức pts hoàn tối đa. Dùng cho Hũ Mật, Lãi Tiết Kiệm.", "Raises the max pts refunded. Works with Honey Pot, Savings Interest.", 4, 1],
+            ["b", "", 2, 0, "Khăn Quàng Bảo Hộ", "Guardian Scarf", "Tăng pts bù mỗi vi phạm / mỗi lần mất streak. Dùng cho Mây Che Chở, Tro Tàn Hồi Sinh.", "Raises the pts paid per violation / per streak loss. Works with Cloud Cover, Ashes Reborn.", 4, 1],
+            ["w", "", 2, 0, "Nhẫn Vô Cực", "Infinity Ring", "Tăng số lần kích hoạt mỗi tuần. Chỉ dùng cho Mầm Hồi Phục.", "Adds weekly activations. Works only with Comeback Sprout.", 4, 2],
+            ["w", "", 1, 0, "Đồng Hồ Đeo Cổ", "Pendant Watch", "Tăng số lần kích hoạt mỗi tuần. Chỉ dùng cho Mầm Hồi Phục.", "Adds weekly activations. Works only with Comeback Sprout.", 5, 0],
+            ["w", "3", 2, 0, "Lắc Chân Chuông Vàng", "Golden Bell Anklet", "Tăng số lần kích hoạt mỗi tuần. Chỉ dùng cho Mầm Hồi Phục.", "Adds weekly activations. Works only with Comeback Sprout.", 5, 1],
+            ["w", "m", 2, 0, "Vòng Tay Hồi Phục", "Recovery Bracelet", "Tăng số lần kích hoạt mỗi tuần. Chỉ dùng cho Mầm Hồi Phục.", "Adds weekly activations. Works only with Comeback Sprout.", 5, 0],
+            ["w", "p", 3, 0, "Nơ Ngày May Mắn", "Lucky Day Bow", "Tăng số lần kích hoạt mỗi tuần. Chỉ dùng cho Mầm Hồi Phục.", "Adds weekly activations. Works only with Comeback Sprout.", 5, 2],
+            ["w", "3", 4, 0, "Giày Tiếp Sức", "Relay Sneakers", "Tăng số lần kích hoạt mỗi tuần. Chỉ dùng cho Mầm Hồi Phục.", "Adds weekly activations. Works only with Comeback Sprout.", 5, 3],
+            ["ch", "p", 4, 0, "Vòng Tay Chuỗi Sao", "Star Chain Bracelet", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 2 cấp liền kề bạn chọn.", "Adds trigger chance to innates that have one, at 2 adjacent levels you choose.", 6, 0],
+            ["p", "m", 3, 0, "Vòng Cổ Chiến Thắng", "Victory Necklace", "Cộng Pts cho nội tại có thưởng Pts, ở 1 cấp bạn chọn.", "Adds Pts to innates that give Pts, at 1 level you choose.", 6, 0],
+            ["ch", "p", 9, 0, "Trâm Cài Tiến Hóa", "Evolution Brooch", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 2 cấp liền kề bạn chọn.", "Adds trigger chance to innates that have one, at 2 adjacent levels you choose.", 6, 2],
+            ["p", "3", 3, 0, "Mũ Trưởng Thành", "Maturity Cap", "Cộng Pts cho nội tại có thưởng Pts, từ cấp 5 trở lên.", "Adds Pts to innates that give Pts, from level 5 up.", 6, 1],
+            ["ch", "5", 12, 0, "Áo Choàng Huyền Thoại", "Legendary Cloak", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở cấp 7.", "Adds trigger chance to innates that have one, at level 7.", 6, 2],
+            ["ch", "m", 5, 0, "Nơ Khai Vận", "Luck Awakening Bow", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 1 cấp bạn chọn.", "Adds trigger chance to innates that have one, at 1 level you choose.", 7, 0],
+            ["p", "", 2, 0, "Kính Mắt Phúc Lộc", "Fortune Glasses", "Cộng Pts cho nội tại có thưởng Pts, ở mọi cấp.", "Adds Pts to innates that give Pts, at every level.", 7, 1],
+            ["gp", "4", 30, 0, "Vòng Cổ Song Quà", "Double Gift Necklace", "Nội tại trao quà: có % nhận thêm 1 quà cùng loại từ cấp 4 trở lên. Tối đa +1 quà/lần.", "Gift innates: chance of 1 more gift of the same kind from level 4 up. Max +1 gift per trigger.", 7, 2],
+            ["a", "", 2, 0, "Hoa Tai Tích Lũy", "Accrual Earrings", "Cộng điểm tích lũy trong quà. Dùng cho Kẹo Thưởng Bất Ngờ, Niết Bàn Phúc Lộc, Lôi Quang Liên Kết.", "Adds accumulated pts to the gift. Works with Surprise Candy Bonus, Nirvana Blessing, Linked Lightning.", 7, 1],
+            ["ch", "3", 8, 0, "Khăn Đồng Hành", "Companion Scarf", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 5 trở lên.", "Adds trigger chance to innates that have one, from level 5 up.", 7, 2],
+            ["ch", "", 8, 0, "Trâm Cỏ Bốn Lá Hoàng Gia", "Royal Clover Brooch", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở mọi cấp.", "Adds trigger chance to innates that have one, at every level.", 0, 3],
+            ["ch", "4", 10, 0, "Nhẫn Mắt Ngọc", "Jade Eye Ring", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 4 trở lên.", "Adds trigger chance to innates that have one, from level 4 up.", 0, 3],
+            ["ch", "3", 12, 0, "Vương Miện May Mắn", "Crown of Luck", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 5 trở lên.", "Adds trigger chance to innates that have one, from level 5 up.", 0, 3],
+            ["p", "", 5, 0, "Hoa Tai Kim Cương", "Diamond Earrings", "Cộng Pts cho nội tại có thưởng Pts, ở mọi cấp.", "Adds Pts to innates that give Pts, at every level.", 1, 3],
+            ["p", "3", 8, 0, "Dây Chuyền Hoàng Kim", "Golden Necklace", "Cộng Pts cho nội tại có thưởng Pts, từ cấp 5 trở lên.", "Adds Pts to innates that give Pts, from level 5 up.", 1, 3],
+            ["pp", "", 20, 0, "Ngọc Bội Thịnh Vượng", "Prosperity Jade Pendant", "Tăng % Pts nhận từ nội tại có thưởng Pts, ở mọi cấp.", "Boosts the Pts from innates that give Pts by a %, at every level.", 1, 3],
+            ["g", "p", 1, 0, "Nơ Hoàng Gia", "Royal Bow", "Nội tại trao quà: chắc chắn nhận thêm 1 quà cùng loại ở 2 cấp liền kề bạn chọn. Tối đa +1 quà/lần.", "Gift innates: always get 1 more gift of the same kind at 2 adjacent levels you choose. Max +1 gift per trigger.", 2, 2],
+            ["gp", "", 40, 0, "Trâm Pha Lê", "Crystal Hairpin", "Nội tại trao quà: có % nhận thêm 1 quà cùng loại ở mọi cấp. Tối đa +1 quà/lần.", "Gift innates: chance of 1 more gift of the same kind at every level. Max +1 gift per trigger.", 2, 3],
+            ["g", "3", 1, 0, "Áo Khoác Ma Thuật", "Magic Jacket", "Nội tại trao quà: chắc chắn nhận thêm 1 quà cùng loại từ cấp 5 trở lên. Tối đa +1 quà/lần.", "Gift innates: always get 1 more gift of the same kind from level 5 up. Max +1 gift per trigger.", 2, 3],
+            ["a", "", 3, 0, "Vòng Tay Tích Lũy", "Accrual Bracelet", "Cộng điểm tích lũy trong quà. Dùng cho Kẹo Thưởng Bất Ngờ, Niết Bàn Phúc Lộc, Lôi Quang Liên Kết.", "Adds accumulated pts to the gift. Works with Surprise Candy Bonus, Nirvana Blessing, Linked Lightning.", 1, 2],
+            ["a", "", 4, 0, "Nhẫn Tích Lũy Cao Cấp", "Premium Accrual Ring", "Cộng điểm tích lũy trong quà. Dùng cho Kẹo Thưởng Bất Ngờ, Niết Bàn Phúc Lộc, Lôi Quang Liên Kết.", "Adds accumulated pts to the gift. Works with Surprise Candy Bonus, Nirvana Blessing, Linked Lightning.", 1, 3],
+            ["k", "", 8, 0, "Giáp Vai Bạch Kim", "Platinum Pauldrons", "Tăng mức pts bù tối đa mỗi tuần. Chỉ dùng cho Mây Che Chở.", "Raises the weekly pts cap. Works only with Cloud Cover.", 4, 3],
+            ["r", "", 5, 0, "Khăn Choàng Hoàn Trả", "Refund Scarf", "Tăng % pts được hoàn lại. Chỉ dùng cho Hũ Mật.", "Raises the % of pts refunded. Works only with Honey Pot.", 4, 3],
+            ["x", "", 6, 0, "Thắt Lưng Dung Lượng", "Capacity Belt", "Tăng mức pts hoàn tối đa. Dùng cho Hũ Mật, Lãi Tiết Kiệm.", "Raises the max pts refunded. Works with Honey Pot, Savings Interest.", 4, 3],
+            ["w", "", 3, 0, "Đồng Hồ Cổ Tay Phúc Lộc", "Fortune Wristwatch", "Tăng số lần kích hoạt mỗi tuần. Chỉ dùng cho Mầm Hồi Phục.", "Adds weekly activations. Works only with Comeback Sprout.", 5, 3],
+            ["w", "4", 5, 0, "Vòng Tay Gia Hạn", "Extension Bracelet", "Tăng số lần kích hoạt mỗi tuần. Chỉ dùng cho Mầm Hồi Phục.", "Adds weekly activations. Works only with Comeback Sprout.", 5, 4],
+            ["ch", "m", 20, 0, "Huy Hiệu Tinh Anh", "Elite Badge", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 1 cấp bạn chọn.", "Adds trigger chance to innates that have one, at 1 level you choose.", 6, 3],
+            ["p", "m", 13, 0, "Vòng Cổ Thịnh Vượng", "Prosperity Necklace", "Cộng Pts cho nội tại có thưởng Pts, ở 1 cấp bạn chọn.", "Adds Pts to innates that give Pts, at 1 level you choose.", 6, 3],
+            ["ch", "p", 14, 0, "Hoa Tai Song Tinh", "Twin Star Earrings", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 2 cấp liền kề bạn chọn.", "Adds trigger chance to innates that have one, at 2 adjacent levels you choose.", 6, 3],
+            ["p", "4", 6, 0, "Dải Băng Phúc Lộc", "Fortune Sash", "Cộng Pts cho nội tại có thưởng Pts, từ cấp 4 trở lên.", "Adds Pts to innates that give Pts, from level 4 up.", 6, 3],
+            ["ch", "", 12, 0, "Vương Miện Thiên Mệnh", "Crown of Destiny", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở mọi cấp.", "Adds trigger chance to innates that have one, at every level.", 0, 4],
+            ["ch", "4", 15, 0, "Kính Thiên Nhãn", "Heaven's Eye Glasses", "Cộng xác suất kích hoạt cho nội tại có xác suất, từ cấp 4 trở lên.", "Adds trigger chance to innates that have one, from level 4 up.", 0, 4],
+            ["p", "", 8, 0, "Dây Chuyền Trái Tim Kim Cương", "Diamond Heart Necklace", "Cộng Pts cho nội tại có thưởng Pts, ở mọi cấp.", "Adds Pts to innates that give Pts, at every level.", 1, 4],
+            ["p", "4", 10, 0, "Nhẫn Phồn Vinh", "Prosperity Ring", "Cộng Pts cho nội tại có thưởng Pts, từ cấp 4 trở lên.", "Adds Pts to innates that give Pts, from level 4 up.", 1, 4],
+            ["pp", "", 35, 0, "Vương Miện Thái Dương", "Solar Crown", "Tăng % Pts nhận từ nội tại có thưởng Pts, ở mọi cấp.", "Boosts the Pts from innates that give Pts by a %, at every level.", 1, 4],
+            ["g", "", 1, 0, "Áo Choàng Thần Linh", "Divine Cloak", "Nội tại trao quà: chắc chắn nhận thêm 1 quà cùng loại ở mọi cấp. Tối đa +1 quà/lần.", "Gift innates: always get 1 more gift of the same kind at every level. Max +1 gift per trigger.", 2, 4],
+            ["gp", "", 60, 0, "Hoa Tai Song Ảnh", "Twin Shadow Earrings", "Nội tại trao quà: có % nhận thêm 1 quà cùng loại ở mọi cấp. Tối đa +1 quà/lần.", "Gift innates: chance of 1 more gift of the same kind at every level. Max +1 gift per trigger.", 2, 4],
+            ["gp", "m", 60, 0, "Thắt Lưng Vô Tận", "Infinite Belt", "Nội tại trao quà: có % nhận thêm 1 quà cùng loại ở 1 cấp bạn chọn. Tối đa +1 quà/lần.", "Gift innates: chance of 1 more gift of the same kind at 1 level you choose. Max +1 gift per trigger.", 2, 2],
+            ["a", "4", 5, 0, "Dây Chuyền Sáng Thế", "Genesis Necklace", "Cộng điểm tích lũy trong quà. Dùng cho Kẹo Thưởng Bất Ngờ, Niết Bàn Phúc Lộc, Lôi Quang Liên Kết.", "Adds accumulated pts to the gift. Works with Surprise Candy Bonus, Nirvana Blessing, Linked Lightning.", 1, 3],
+            ["a", "", 6, 0, "Nhẫn Thần Thạch", "Divine Stone Ring", "Cộng điểm tích lũy trong quà. Dùng cho Kẹo Thưởng Bất Ngờ, Niết Bàn Phúc Lộc, Lôi Quang Liên Kết.", "Adds accumulated pts to the gift. Works with Surprise Candy Bonus, Nirvana Blessing, Linked Lightning.", 1, 4],
+            ["k", "", 12, 0, "Áo Giáp Bất Diệt", "Immortal Armor", "Tăng mức pts bù tối đa mỗi tuần. Chỉ dùng cho Mây Che Chở.", "Raises the weekly pts cap. Works only with Cloud Cover.", 4, 4],
+            ["r", "", 8, 0, "Khăn Choàng Hoàn Nguyên", "Restoration Scarf", "Tăng % pts được hoàn lại. Chỉ dùng cho Hũ Mật.", "Raises the % of pts refunded. Works only with Honey Pot.", 4, 4],
+            ["x", "", 10, 0, "Áo Gile Hoàng Kim", "Golden Hoard Vest", "Tăng mức pts hoàn tối đa. Dùng cho Hũ Mật, Lãi Tiết Kiệm.", "Raises the max pts refunded. Works with Honey Pot, Savings Interest.", 4, 4],
+            ["w", "", 4, 0, "Vòng Cổ Vĩnh Hằng", "Eternal Necklace", "Tăng số lần kích hoạt mỗi tuần. Chỉ dùng cho Mầm Hồi Phục.", "Adds weekly activations. Works only with Comeback Sprout.", 5, 4],
+            ["ch", "p", 21, 0, "Vương Miện Tinh Tú", "Stellar Crown", "Cộng xác suất kích hoạt cho nội tại có xác suất, ở 2 cấp liền kề bạn chọn.", "Adds trigger chance to innates that have one, at 2 adjacent levels you choose.", 6, 4]
+        ].map((a, i) => { const r = a[9] !== undefined ? a[9] : [0, 0, 1, 2, 2][a[3]]; return { id: 'pi' + String(i + 1).padStart(2, '0'), g: a[8] !== undefined ? a[8] : Math.floor(i / 5), k: a[0], s: a[1], a: a[2], r, vi: a[4], en: a[5], dvi: a[6], den: a[7], price: PSH_RAR[r][3] }; });
+        { const cnt = {}; PSH_IT.forEach(it => { it.c = cnt[it.g] = (cnt[it.g] === undefined ? 0 : cnt[it.g] + 1); }); } // thứ tự trong nhóm → khung + họa tiết riêng cho từng món
+        const PSH_BY = Object.fromEntries(PSH_IT.map(x => [x.id, x]));
+        const PSH_KR = { pp: 'p', gp: 'g', gw: 'g' };
+        const PSH_LB = { c: ['tỷ lệ kích hoạt', 'trigger chance'], p: ['phần thưởng pts', 'pts reward'], a: ['quà điểm tích lũy', 'accumulated-point gift'], g: ['quà có thể nhân thêm', 'gift that can be extended'], m: ['hệ số nhân', 'multiplier'], k: ['giới hạn bù điểm theo tuần', 'weekly compensation cap'], r: ['tỷ lệ hoàn trả', 'refund rate'], x: ['mức thưởng tối đa mỗi lần', 'per-trigger reward cap'], b: ['điểm giữ lại/bồi hoàn mỗi lần', 'kept/refunded points'], w: ['giới hạn kích hoạt theo tuần', 'weekly activation limit'] };
+        // Vai trò chỉ số thật của từng loài (chỉ số j trong PET_B[sp].v): c=xác suất, p=pts, a=điểm tích lũy, g=quà trao, m=hệ số, k=trần bù/tuần, r=% hoàn, x=trần/lần, b=giữ lại, w=giới hạn/tuần
+        const PSH_ROLE = ['p0', 'k0b1p1', 'c0p1', 'c0g0', 'c0p1', 'c0a1', 'c0g0', 'r0x1', 'x0', 'p0w1', 'c0p1', 'p1', 'c0p1', 'p0', 'c0g0', 'p0p1', 'p0', 'p0p1', 'b0p0', 'c0g0', 'c0p1', 'c0g0', 'c0g0', 'c0g0', 'c0g0', 'c0a1', 'c0p1', 'c0g0', 'c0a1', 'c0p1'].map(s => { const o = {}; s.replace(/([a-z])(\d)/g, (m, k, i) => { (o[k] = o[k] || []).push(+i); }); return o; });
+        const PSH_GR = 'a w a a s e a w e s w s w s w w a e e e s e s s s s s e s s'.split(' '); // nhóm nội tại: a điểm danh · s điểm số · w cuối tuần · e sự kiện
+        const PSH_GN = { a: ['Điểm danh', 'Attendance'], s: ['Điểm số', 'Scores'], w: ['Cuối tuần', 'Week-end'], e: ['Sự kiện', 'Events'] };
+        const PSH_GL = [
+            '<g fill="#fff" stroke="rgba(0,0,0,.35)" stroke-width="1.4"><circle cx="26" cy="26" r="7"/><circle cx="38" cy="26" r="7"/><circle cx="26" cy="37" r="7"/><circle cx="38" cy="37" r="7"/></g><path d="M32 40q2 9 8 13" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>',
+            '<path d="M19 27l7-9h12l7 9-13 20z" fill="#fff" stroke="rgba(0,0,0,.35)" stroke-width="1.4"/><path d="M19 27h26M26 18l6 9 6-9M32 27v20" fill="none" stroke="rgba(0,0,0,.3)" stroke-width="1.2"/>',
+            '<rect x="19" y="29" width="26" height="19" rx="2" fill="#fff" stroke="rgba(0,0,0,.35)" stroke-width="1.4"/><rect x="17" y="23" width="30" height="8" rx="2" fill="#fff" stroke="rgba(0,0,0,.35)" stroke-width="1.4"/><path d="M32 23v25M32 23q-9-9-11-3t11 3q9-9 11-3t-11 3" fill="none" stroke="rgba(0,0,0,.4)" stroke-width="2"/>',
+            '<path d="M36 13L21 36h10l-3 15 16-25H33z" fill="#fff" stroke="rgba(0,0,0,.35)" stroke-width="1.4" stroke-linejoin="round"/>',
+            '<path d="M32 14l14 5v11c0 10-6 16-14 19-8-3-14-9-14-19V19z" fill="#fff" stroke="rgba(0,0,0,.35)" stroke-width="1.4"/><path d="M32 22v20M24 31h16" stroke="rgba(0,0,0,.35)" stroke-width="3" stroke-linecap="round"/>',
+            '<circle cx="32" cy="32" r="15" fill="#fff" stroke="rgba(0,0,0,.35)" stroke-width="1.4"/><path d="M32 22v10l7 5M32 17v3M32 44v3M17 32h3M44 32h3" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="2.4" stroke-linecap="round"/>',
+            '<path d="M32 13l5.5 11.5 12.5 1.5-9.3 8.4 2.6 12.4L32 40.5l-11.3 6.3 2.6-12.4L14 26l12.5-1.5z" fill="#fff" stroke="rgba(0,0,0,.35)" stroke-width="1.4" stroke-linejoin="round"/>',
+            '<path d="M11 32q21-22 42 0-21 22-42 0z" fill="#fff" stroke="rgba(0,0,0,.35)" stroke-width="1.4"/><circle cx="32" cy="32" r="7" fill="rgba(0,0,0,.45)"/><circle cx="34" cy="30" r="2.2" fill="#fff"/>'
+        ];
+        const PSH_FR = ['<circle cx="32" cy="32" r="29"/>', '<path d="M32 3l26 15v28L32 61 6 46V18z"/>', '<path d="M32 2l29 30-29 30L3 32z"/>', '<rect x="4" y="4" width="56" height="56" rx="17"/>', '<path d="M9 7h46v24c0 16-10 26-23 30C19 57 9 47 9 31z"/>'];
+        /* ===== Đồ họa vật phẩm kiểu RPG (75 icon vẽ tay bằng SVG): ô khung theo hạng sao, 4★ lấp lánh + quét sáng, 5★ thêm tia sáng xoay + hạt bay ===== */
+        const PX_P = { g: ['#fff3b0', '#f5b82e', '#8a4b08'], b: ['#c4f0ff', '#3b9dff', '#1b3a9e'], p: ['#f0ccff', '#a050e8', '#4a1a8c'], r: ['#ffc8b8', '#e63c34', '#6e0f1a'], e: ['#d0ffc8', '#34c759', '#0b5a2a'], c: ['#d8fbff', '#2cc8e8', '#0b5a86'], k: ['#ffd6ee', '#ff5fb0', '#9a1a62'], o: ['#ffe2ac', '#f08a24', '#7a2f08'], w: ['#ffffff', '#b8c8e0', '#4a5878'], n: ['#e8c89a', '#a8642c', '#4a2a12'], y: ['#fff6d8', '#e8c88a', '#8a5a24'], v: ['#d6c8ff', '#6a58f0', '#1a1070'] };
+        const PX_BG = [['#fbfcfd', '#dde4ee'], ['#f3fff6', '#bff0cd'], ['#f3f8ff', '#bfd8ff'], ['#faf4ff', '#dfc6fb'], ['#fffbee', '#fddf9c']];
+        const PX_FC = ['#94a3b8', '#22c55e', '#3b82f6', '#a855f7', '#f59e0b']; // = màu sao trên thẻ (PSH_RAR)
+        const PX_D = 'clover:e,medal:c:1,medal:b,sun:g,chest:g,gem:e,cluster:c,orb:g,bag:r,chest:n,bag:p,chest:o,gift:k,scroll:y:p,bag:v:s,battery:e,gem:g,book:b:p,orb:o,chest:k:1,shield:b,jar:r,pack:n,medal:b:1,inf:g,clock:g,bell:g,cycle:o,cal:r,gem:c:1,gem:r,neck:r,cluster:b,sun:o,book:p:s,scroll:y:s,ball:b,coin:g,key:g,medal:b:2,clover:e:1,eye:e,crown:g,diamond:c,coin:o,medal:e,gift:p,mirror:c,pack:p,gem:k,gem:o,shield:w,potion:b,chest:b,clock:o,scroll:r,sun:b,neck:b,cluster:v,medal:g:2,crown:b,eye:c,heart:c,grail:g,sun:g:1,chest:p,mirror:v,bag:c:s,heart:p,cluster:p,shield:g,hourglass:o,chest:g:1,clock:v:i,orb:v:s'.split(',').map(t => t.split(':'));
+        const pxPaw = (f, x, y, k) => `<g fill="${f}" transform="translate(${x - 32 * k} ${y - 32 * k}) scale(${k})"><ellipse cx="32" cy="38" rx="6.5" ry="5.5"/><circle cx="24" cy="31" r="2.7"/><circle cx="29.5" cy="26.5" r="2.9"/><circle cx="35.5" cy="26.5" r="2.9"/><circle cx="41" cy="31" r="2.7"/></g>`;
+        const pxStar = (f, x, y, k) => `<path fill="${f}" transform="translate(${x} ${y}) scale(${k})" d="M0-10l2.9 6.6 7.1.7-5.4 4.7 1.6 7L0 5.2-6.2 9l1.6-7L-10-2.7l7.1-.7z"/>`;
+        const PX_SUN = 'M32 6l5 13 13-5-5 13 13 5-13 5 5 13-13-5-5 13-5-13-13 5 5-13-13-5 13-5-5-13 13 5z', PX_INF = 'M32 32C27 22 12 22 12 32C12 42 27 42 32 32C37 22 52 22 52 32C52 42 37 42 32 32Z';
+        const PX_S = {
+            clover: (A, G, P, x, s) => `<path d="M32 31q3 11 9 19" fill="none" stroke="${x ? G : P[2]}" stroke-width="3" stroke-linecap="round"/><g fill="${A}" stroke="${x ? G : P[2]}" stroke-width="1.4" stroke-linejoin="round">${[0, 90, 180, 270].map(r => `<path d="M32 31C22 25 19 15 26 14c4 0 6 3 6 6 0-3 2-6 6-6 7 1 4 11-6 17z" transform="rotate(${r} 32 31)"/>`).join('')}</g><path d="M28 18q-4 3-3 7" stroke="#fff" stroke-width="1.6" fill="none" opacity=".7" stroke-linecap="round"/><circle cx="32" cy="31" r="2.6" fill="${G}"/>`,
+            medal: (A, G, P, x, s) => `${x ? `<path d="M19 32C8 20 4 34 9 41c4 3 9 0 13-5zM45 32c11-12 15 2 10 9-4 3-9 0-13-5z" fill="${G}" ${s}/>` : ''}<circle cx="32" cy="14" r="3.2" fill="none" stroke="${G}" stroke-width="2"/><circle cx="32" cy="34" r="16" fill="${G}" ${s}/><circle cx="32" cy="34" r="11" fill="${A}" ${s}/>${x == 2 ? pxPaw('#fff', 32, 35, .5) : `<path d="M32 25l2.6 6.4 6.4.8-6.4 2.8-2.6 6.6-2.6-6.6-6.4-2.8 6.4-.8z" fill="${P[0]}" opacity=".95"/>`}`,
+            sun: (A, G, P, x, s) => `<path d="${PX_SUN}" fill="${G}" ${s}/>${x ? `<path d="${PX_SUN}" transform="translate(6.4 6.4) scale(.8) rotate(22.5 32 32)" fill="${A}" opacity=".55"/>` : ''}<circle cx="32" cy="32" r="11.5" fill="${A}" ${s}/><circle cx="32" cy="32" r="7" fill="${P[0]}" opacity=".5"/>${pxStar('#fff', 32, 32, .6)}`,
+            chest: (A, G, P, x, s) => `<path d="M11 28h42v21q0 3-3 3H14q-3 0-3-3z" fill="${A}" ${s}/><path d="M11 28v-6q0-10 21-10t21 10v6z" fill="${A}" ${s}/><path d="M11 28h42M21 14v38M43 14v38" stroke="${G}" stroke-width="4"/><rect x="27" y="25" width="10" height="12" rx="2.5" fill="${G}" ${s}/><circle cx="32" cy="30" r="2" fill="${P[2]}"/><path d="M16 22q3-6 10-8" stroke="#fff" stroke-width="1.8" fill="none" opacity=".6" stroke-linecap="round"/>${x ? `<circle cx="25" cy="11" r="4" fill="#ffe27a" ${s}/><circle cx="39" cy="11" r="4" fill="#ff7ab8" ${s}/><circle cx="32" cy="8" r="4.4" fill="#7ad8ff" ${s}/>` : ''}`,
+            gem: (A, G, P, x, s) => `${x ? `<path d="M20 30C8 22 6 34 10 40c4 3 9 0 12-4zM44 30c12-8 14 4 10 10-4 3-9 0-12-4z" fill="${G}" ${s}/>` : ''}<path d="M32 7L47 21L43 46L32 57L21 46L17 21Z" fill="${A}" ${s}/><path d="M32 7L27 23L32 57L37 23Z" fill="${P[0]}" opacity=".5"/><path d="M17 21L27 23M47 21L37 23M21 46L27 23M43 46L37 23" stroke="${P[0]}" stroke-width="1" opacity=".8"/>`,
+            cluster: (A, G, P, x, s) => `<path d="M17 24l7 6v19l-9 5-5-5V31z" fill="${A}" ${s}/><path d="M47 24l-7 6v19l9 5 5-5V31z" fill="${A}" ${s}/><path d="M32 6l9 11v31l-9 9-9-9V17z" fill="${A}" ${s}/><path d="M32 6l-4 12v37l4 2z" fill="${P[0]}" opacity=".45"/><path d="M23 17l5 1M41 17l-5 1" stroke="${P[0]}" stroke-width="1"/><path d="M12 56h40" stroke="${G}" stroke-width="3" stroke-linecap="round"/>`,
+            orb: (A, G, P, x, s) => `<circle cx="32" cy="32" r="16" fill="${A}" ${s}/><ellipse cx="26" cy="25" rx="6" ry="4" fill="#fff" opacity=".55" transform="rotate(-30 26 25)"/><ellipse cx="32" cy="34" rx="26" ry="8" transform="rotate(-18 32 34)" fill="none" stroke="${G}" stroke-width="3.4"/>${x == 's' ? [[38, 36], [28, 38], [36, 27]].map(p => pxStar('#fff', p[0], p[1], .35)).join('') : ''}`,
+            bag: (A, G, P, x, s) => `<path d="M32 20C16 21 9 38 13 47c3 7 11 8 19 8s16-1 19-8c4-9-3-26-19-27z" fill="${A}" ${s}/><path d="M24 12l3 9h10l3-9q-8 4-16 0z" fill="${G}" ${s}/><path d="M23 22q9 4 18 0" stroke="${G}" stroke-width="3.2" fill="none" stroke-linecap="round"/><path d="M19 32q-2 8 2 13" stroke="#fff" stroke-width="2" fill="none" opacity=".5" stroke-linecap="round"/>${x == 's' ? [[26, 36], [39, 34], [24, 46], [40, 46]].map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="1.3" fill="#fff"/>`).join('') + pxStar('#fff', 33, 40, .8) : pxPaw(G, 32, 40, .75)}`,
+            pack: (A, G, P, x, s) => `<path d="M25 15q7-9 14 0" fill="none" stroke="${G}" stroke-width="3.4"/><rect x="13" y="15" width="38" height="40" rx="12" fill="${A}" ${s}/><path d="M13 30q0-15 19-15t19 15q-19 7-38 0z" fill="${P[1]}" ${s}/><rect x="21" y="38" width="22" height="13" rx="4" fill="${P[2]}" opacity=".55" ${s}/><rect x="28" y="27" width="8" height="8" rx="2" fill="${G}" ${s}/><path d="M18 38v12" stroke="#fff" stroke-width="2" opacity=".4" stroke-linecap="round"/>`,
+            gift: (A, G, P, x, s) => `<rect x="12" y="28" width="40" height="26" rx="3" fill="${A}" ${s}/><rect x="9" y="20" width="46" height="11" rx="3" fill="${A}" ${s}/><rect x="28" y="20" width="8" height="34" fill="${G}" ${s}/><path d="M32 20C22 5 12 14 22 20zM32 20C42 5 52 14 42 20z" fill="${G}" ${s}/><path d="M15 34v14" stroke="#fff" stroke-width="2" opacity=".45" stroke-linecap="round"/>`,
+            scroll: (A, G, P, x, s) => `<rect x="16" y="11" width="32" height="42" rx="3" fill="${A}" ${s}/><rect x="11" y="8" width="42" height="8" rx="4" fill="${G}" ${s}/><rect x="11" y="48" width="42" height="8" rx="4" fill="${G}" ${s}/>${x == 'p' ? pxPaw(P[2], 32, 32, .9) : x == 's' ? pxStar(P[2], 32, 32, 1.2) : [24, 31, 38].map(y => `<path d="M22 ${y}h20" stroke="${P[2]}" stroke-width="2" opacity=".6" stroke-linecap="round"/>`).join('')}`,
+            battery: (A, G, P, x, s) => `<rect x="20" y="13" width="24" height="42" rx="6" fill="#12263b" ${s}/><rect x="25" y="8" width="14" height="7" rx="2" fill="${G}" ${s}/><rect x="24" y="19" width="16" height="32" rx="3.5" fill="${A}"/><path d="M34 22l-8 14h6l-3 12 9-16h-6z" fill="#fff" opacity=".92"/>`,
+            book: (A, G, P, x, s) => `<path d="M13 11h31q7 0 7 7v34H20q-7 0-7-7z" fill="${A}" ${s}/><path d="M13 11h8v42h-1q-7 0-7-7z" fill="${P[2]}" opacity=".7"/><path d="M44 11h7v7zM51 46v6h-7z" fill="${G}" ${s}/><path d="M16 56h35" stroke="#fff3d0" stroke-width="3" stroke-linecap="round"/>${x == 'p' ? pxPaw(G, 36, 32, .85) : pxStar(G, 36, 32, 1.5)}`,
+            shield: (A, G, P, x, s) => `<path d="M32 6l20 7v17c0 13-9 22-20 27-11-5-20-14-20-27V13z" fill="${G}" ${s}/><path d="M32 12l14 5v13c0 9-6 16-14 20-8-4-14-11-14-20V17z" fill="${A}" ${s}/><path d="M32 12v38" stroke="${P[0]}" stroke-width="1" opacity=".5"/>${pxStar('#fff', 32, 31, 1.5)}<path d="M21 20v10" stroke="#fff" stroke-width="2" opacity=".45" stroke-linecap="round"/>`,
+            jar: (A, G, P, x, s) => `<path d="M24 14h16v6c9 3 14 11 14 19 0 10-7 16-22 16S10 49 10 39c0-8 5-16 14-19z" fill="${A}" ${s}/><rect x="21" y="9" width="22" height="8" rx="3" fill="${G}" ${s}/><circle cx="32" cy="38" r="9" fill="${G}" ${s}/>${pxPaw(P[2], 32, 39, .55)}<path d="M16 34q-2 7 1 12" stroke="#fff" stroke-width="2" fill="none" opacity=".45" stroke-linecap="round"/>`,
+            inf: (A, G, P, x, s) => `<path d="${PX_INF}" fill="none" stroke="${P[2]}" stroke-width="9.5" stroke-linejoin="round"/><path d="${PX_INF}" fill="none" stroke="${G}" stroke-width="7"/><path d="${PX_INF}" fill="none" stroke="${P[0]}" stroke-width="2" opacity=".8"/><circle cx="32" cy="32" r="4.5" fill="${A}" ${s}/>`,
+            clock: (A, G, P, x, s) => `<rect x="28" y="9" width="8" height="7" rx="2" fill="${G}" ${s}/><circle cx="32" cy="36" r="20" fill="${G}" ${s}/><circle cx="32" cy="36" r="15.5" fill="${P[0]}" ${s}/><path d="M32 23v3M32 46v3M19 36h3M42 36h3M23 27l2 2M41 27l-2 2M23 45l2-2M41 45l-2-2" stroke="${P[2]}" stroke-width="1.6" stroke-linecap="round"/>${x == 'i' ? `<path d="M26 42c0-4 6-4 6 0s6 4 6 0c0-4-6-4-6 0s-6 4-6 0z" fill="none" stroke="${P[1]}" stroke-width="1.8"/>` : ''}<path d="M32 36V26M32 36l7 4" stroke="${P[2]}" stroke-width="2.4" stroke-linecap="round"/><circle cx="32" cy="36" r="2.4" fill="${A}" ${s}/><path d="M17 31q3-9 12-11" stroke="#fff" stroke-width="2" fill="none" opacity=".6" stroke-linecap="round"/>`,
+            bell: (A, G, P, x, s) => `<path d="M32 8c-3 0-5 2-5 5-9 3-13 11-13 21 0 6-3 9-6 12h48c-3-3-6-6-6-12 0-10-4-18-13-21 0-3-2-5-5-5z" fill="${A}" ${s}/><circle cx="32" cy="50" r="5" fill="${G}" ${s}/><path d="M22 18l10 8 10-8-3 9H25z" fill="#e8403a" ${s}/><path d="M21 22q-5 7-4 16" stroke="#fff" stroke-width="2.2" fill="none" opacity=".5" stroke-linecap="round"/>`,
+            cycle: (A, G, P, x, s) => `<circle cx="32" cy="32" r="22" fill="${P[2]}" stroke="${G}" stroke-width="3"/><path d="M44 24A14 14 0 1 0 46 36" fill="none" stroke="${A}" stroke-width="6" stroke-linecap="round"/><path d="M38 14l12 4-1 12z" fill="${A}" ${s}/><circle cx="32" cy="32" r="3.5" fill="${P[0]}"/>`,
+            cal: (A, G, P, x, s) => `<rect x="12" y="14" width="40" height="42" rx="6" fill="#fff8ea" ${s}/><path d="M12 20q0-6 6-6h28q6 0 6 6v8H12z" fill="${A}" ${s}/><rect x="20" y="8" width="5" height="12" rx="2.5" fill="${G}" ${s}/><rect x="39" y="8" width="5" height="12" rx="2.5" fill="${G}" ${s}/>${pxPaw(P[1], 32, 43, .85)}`,
+            neck: (A, G, P, x, s) => `<path d="M9 12C10 36 22 45 32 46C42 45 54 36 55 12" fill="none" stroke="${P[2]}" stroke-width="5" stroke-linecap="round"/><path d="M9 12C10 36 22 45 32 46C42 45 54 36 55 12" fill="none" stroke="${G}" stroke-width="3" stroke-dasharray="1 4.5" stroke-linecap="round"/><path d="M32 40l9 9-9 12-9-12z" fill="${G}" ${s}/><path d="M32 43l5.5 6-5.5 7.5-5.5-7.5z" fill="${A}" ${s}/>`,
+            ball: (A, G, P, x, s) => `<path d="M18 56h28l-5-10H23z" fill="${G}" ${s}/><circle cx="32" cy="28" r="19" fill="${A}" ${s}/><ellipse cx="25" cy="19" rx="7" ry="4.5" fill="#fff" opacity=".6" transform="rotate(-35 25 19)"/>${pxStar('#fff', 34, 32, 1.1)}<circle cx="26" cy="36" r="1.3" fill="#fff"/><circle cx="40" cy="26" r="1.1" fill="#fff"/>`,
+            coin: (A, G, P, x, s) => `<circle cx="32" cy="32" r="22" fill="${G}" ${s}/><circle cx="32" cy="32" r="17" fill="${A}" ${s}/><circle cx="32" cy="32" r="17" fill="none" stroke="${P[0]}" stroke-width="1" stroke-dasharray="2 3" opacity=".8"/>${pxPaw(P[2], 32, 33, .95)}<path d="M17 24q3-8 12-10" stroke="#fff" stroke-width="2.2" fill="none" opacity=".7" stroke-linecap="round"/>`,
+            key: (A, G, P, x, s) => `<g transform="rotate(-38 32 32)"><rect x="29" y="22" width="6" height="34" rx="2.5" fill="${G}" ${s}/><path d="M35 44h8v5h-8zM35 52h6v4h-6z" fill="${G}" ${s}/><circle cx="32" cy="15" r="11" fill="${G}" ${s}/><circle cx="32" cy="15" r="6" fill="${A}" ${s}/></g>`,
+            eye: (A, G, P, x, s) => `<path d="M4 32Q32 6 60 32Q32 58 4 32z" fill="${G}" ${s}/><path d="M11 32Q32 13 53 32Q32 51 11 32z" fill="#f4fff0" ${s}/><circle cx="32" cy="32" r="11" fill="${A}" ${s}/><ellipse cx="32" cy="32" rx="4" ry="8.5" fill="${P[2]}"/><circle cx="28.5" cy="28" r="2.6" fill="#fff"/>`,
+            crown: (A, G, P, x, s) => `<path d="M9 47L7 20l15 12 10-19 10 19 15-12-2 27z" fill="${G}" ${s}/><rect x="9" y="46" width="46" height="9" rx="2.5" fill="${G}" ${s}/>${[[7, 20], [32, 13], [57, 20]].map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="${A}" ${s}/>`).join('')}${[19, 32, 45].map(q => `<circle cx="${q}" cy="50.5" r="3" fill="${A}" ${s}/>`).join('')}<path d="M32 26l5 7-5 8-5-8z" fill="${A}" ${s}/>`,
+            diamond: (A, G, P, x, s) => `<path d="M17 13h30l11 13-26 30L6 26z" fill="${A}" ${s}/><path d="M6 26h52M17 13l7 13 8 30 8-30 7-13M24 26l8-13 8 13" fill="none" stroke="${P[0]}" stroke-width="1.2" opacity=".85"/><path d="M24 26l8 30 8-30z" fill="${P[0]}" opacity=".3"/>`,
+            mirror: (A, G, P, x, s) => `<ellipse cx="32" cy="26" rx="19" ry="21" fill="${G}" ${s}/><ellipse cx="32" cy="26" rx="14.5" ry="16.5" fill="${A}" ${s}/><path d="M23 18q4-7 12-7" stroke="#fff" stroke-width="2.4" fill="none" opacity=".75" stroke-linecap="round"/><path d="M27 47h10l-2-6h-6z" fill="${G}" ${s}/><circle cx="32" cy="47" r="3.5" fill="${A}" ${s}/><rect x="24" y="52" width="16" height="5" rx="2" fill="${G}" ${s}/>`,
+            potion: (A, G, P, x, s) => `<path d="M26 9h12v6l-2 2v9l13 21q4 8-4 9H19q-8-1-4-9l13-21v-9l-2-2z" fill="${P[0]}" fill-opacity=".35" ${s}/><path d="M22 40h20l7 11q3 6-4 6H19q-7 0-4-6z" fill="${A}"/><rect x="25" y="5" width="14" height="7" rx="2.5" fill="#b87838" ${s}/><circle cx="29" cy="47" r="2" fill="#fff" opacity=".7"/><circle cx="36" cy="44" r="1.4" fill="#fff" opacity=".7"/><path d="M22 30l-6 11" stroke="#fff" stroke-width="2" opacity=".5" stroke-linecap="round"/>`,
+            heart: (A, G, P, x, s) => `<path d="M32 57C6 40 6 14 21 11c6 0 10 4 11 8 1-4 5-8 11-8 15 3 15 29-11 46z" fill="${A}" stroke="${G}" stroke-width="3" stroke-linejoin="round"/><path d="M32 19l-7 9 7 28 7-28zM19 28h26" fill="none" stroke="${P[0]}" stroke-width="1.2" opacity=".7"/><path d="M17 20q2-4 6-4" stroke="#fff" stroke-width="2.4" fill="none" opacity=".8" stroke-linecap="round"/>`,
+            grail: (A, G, P, x, s) => `<path d="M15 14C6 14 7 29 19 30M49 14c9 0 8 15-4 16" fill="none" stroke="${G}" stroke-width="3.4" stroke-linecap="round"/><path d="M14 12h36c0 15-7 25-18 27C21 37 14 27 14 12z" fill="${G}" ${s}/><ellipse cx="32" cy="12" rx="18" ry="4.5" fill="${A}" ${s}/><rect x="29" y="38" width="6" height="11" fill="${G}" ${s}/><path d="M19 57q0-9 13-9t13 9z" fill="${G}" ${s}/><circle cx="32" cy="26" r="4.5" fill="${A}" ${s}/>`,
+            hourglass: (A, G, P, x, s) => `<path d="M17 13h30c0 13-8 15-10 19 2 4 10 6 10 19H17c0-13 8-15 10-19-2-4-10-6-10-19z" fill="${P[0]}" fill-opacity=".35" ${s}/><path d="M21 16h22c-1 6-6 9-11 12-5-3-10-6-11-12z" fill="${A}"/><path d="M32 40c-6 3-10 7-12 11h24c-2-4-6-8-12-11z" fill="${A}"/><path d="M32 30v10" stroke="${A}" stroke-width="1.6"/><rect x="12" y="7" width="40" height="7" rx="3" fill="${G}" ${s}/><rect x="12" y="50" width="40" height="7" rx="3" fill="${G}" ${s}/>`
+        };
+        /* ===== Bộ icon trang sức / trang phục mới (75 vật phẩm) — vẽ tay bằng SVG, chỉ đổi hình, không đổi sức mạnh ===== */
+        const PXC = {
+            gold: ['#fff1a8', '#f5b82e', '#8a4b08'], silver: ['#ffffff', '#c9d5ea', '#56688a'], plat: ['#ffffff', '#e2e8f6', '#6a7a9e'],
+            green: ['#c8f7b0', '#3fc95a', '#0b5a2a'], lime: ['#eaffb0', '#9be02e', '#41620a'], blue: ['#c4f0ff', '#3b9dff', '#1b3a9e'], sky: ['#e8f8ff', '#86cdf7', '#2a6aa8'],
+            purple: ['#ecd0ff', '#a050e8', '#4a1a8c'], violet: ['#d6c8ff', '#6a58f0', '#1a1070'], red: ['#ffc8b8', '#e63c34', '#6e0f1a'],
+            pink: ['#ffd6ee', '#ff6fb8', '#9a1a62'], orange: ['#ffe2ac', '#f08a24', '#7a2f08'], yellow: ['#fff8b0', '#ffd23a', '#9a6a00'],
+            brown: ['#e8c89a', '#b3703a', '#4a2a12'], cream: ['#fffdf4', '#f3e5bf', '#9a7a44'], teal: ['#c8fff4', '#2cc8b8', '#0b5a56'],
+            cyan: ['#d8fbff', '#2cc8e8', '#0b5a86'], white: ['#ffffff', '#f4f7fb', '#8a96ae'], navy: ['#8fb4e8', '#2b4fa0', '#12265e'], sand: ['#f4dcaa', '#c99a5a', '#5e3c18']
+        };
+        let PXG = { n: 0, used: {} };
+        const pxF = k => { const id = 'pxk' + PXG.n + '_' + k; PXG.used[k] = id; return 'url(#' + id + ')'; };
+        const pxD = k => PXC[k][2], pxM = k => PXC[k][1], pxL = k => PXC[k][0];
+        const pxS = k => `stroke="${pxD(k)}" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"`;
+        const pxP = (d, k, ex) => `<path d="${d}" fill="${pxF(k)}" ${pxS(k)} ${ex || ''}/>`;
+        const pxHi = d => `<path d="${d}" fill="#fff" opacity=".6"/>`;
+        const pxCi = (x, y, r, k) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${pxF(k)}" ${pxS(k)}/>`;
+        const pxEl = (x, y, rx, ry, k, rot) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${pxF(k)}" ${pxS(k)}${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}/>`;
+        const pxStarD = (x, y, R, r) => { let d = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, q = i % 2 ? (r || R * .45) : R; d += (i ? 'L' : 'M') + (x + q * Math.cos(a)).toFixed(1) + ' ' + (y + q * Math.sin(a)).toFixed(1); } return d + 'Z'; };
+        const pxSt = (x, y, R, k) => pxP(pxStarD(x, y, R), k);
+        const pxHeartD = (x, y, s) => `M${x} ${y + 9 * s}C${x - 14 * s} ${y - 1 * s} ${x - 9 * s} ${y - 11 * s} ${x} ${y - 4 * s}C${x + 9 * s} ${y - 11 * s} ${x + 14 * s} ${y - 1 * s} ${x} ${y + 9 * s}Z`;
+        // viên đá: round | drop | kite | oval | heart | square
+        function pxGem(t, x, y, r, k) {
+            let b;
+            if (t === 'drop') b = pxP(`M${x} ${y - r * 1.3}C${x + r * 1.1} ${y - r * .2} ${x + r} ${y + r} ${x} ${y + r}C${x - r} ${y + r} ${x - r * 1.1} ${y - r * .2} ${x} ${y - r * 1.3}Z`, k);
+            else if (t === 'kite') b = pxP(`M${x} ${y - r}L${x + r * .95} ${y - r * .1}L${x} ${y + r * 1.2}L${x - r * .95} ${y - r * .1}Z`, k) + `<path d="M${x - r * .95} ${y - r * .1}H${x + r * .95}M${x - r * .4} ${y - r * .1}L${x} ${y - r}L${x + r * .4} ${y - r * .1}" fill="none" stroke="#fff" stroke-width=".9" opacity=".8"/>`;
+            else if (t === 'oval') b = pxEl(x, y, r * .78, r, k);
+            else if (t === 'heart') b = pxP(pxHeartD(x, y, r / 8), k);
+            else if (t === 'square') b = pxP(`M${x - r} ${y - r * .6}L${x - r * .6} ${y - r}H${x + r * .6}L${x + r} ${y - r * .6}V${y + r * .6}L${x + r * .6} ${y + r}H${x - r * .6}L${x - r} ${y + r * .6}Z`, k);
+            else b = pxCi(x, y, r, k);
+            return b + `<ellipse cx="${x - r * .35}" cy="${y - r * .35}" rx="${r * .28}" ry="${r * .2}" fill="#fff" opacity=".75" transform="rotate(-35 ${x - r * .35} ${y - r * .35})"/>`;
+        }
+        const pxChain = (d, k, w) => `<path d="${d}" fill="none" stroke="${pxD(k)}" stroke-width="${(w || 1.8) + 1.8}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${pxM(k)}" stroke-width="${w || 1.8}" stroke-linecap="round" stroke-dasharray="2.4 1.2"/>`;
+        const pxCord = (d, k) => `<path d="${d}" fill="none" stroke="${pxD(k)}" stroke-width="4.2" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${pxM(k)}" stroke-width="2.6" stroke-linecap="round"/>`;
+        // biểu tượng nhỏ
+        const pxPawN = (x, y, s, k) => `<g fill="${k}" transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="4" rx="6" ry="5"/><circle cx="-8" cy="-3" r="2.8"/><circle cx="-3" cy="-8" r="3"/><circle cx="3" cy="-8" r="3"/><circle cx="8" cy="-3" r="2.8"/></g>`;
+        const pxClover = (x, y, s, k) => { const L = ['M0 0C-9-3-9-12 0-13', 'M0 0C3-9 12-9 13 0', 'M0 0C9 3 9 12 0 13', 'M0 0C-3 9-12 9-13 0']; return `<g transform="translate(${x} ${y}) scale(${s})">` + [0, 90, 180, 270].map(a => `<path d="M0 0C-9-2-11-12 0-12C11-12 9-2 0 0Z" fill="${pxF(k)}" ${pxS(k)} transform="rotate(${a + 45})"/>`).join('') + `<path d="M0 0L3 15" stroke="${pxD(k)}" stroke-width="2" fill="none" stroke-linecap="round"/></g>`; };
+        const pxGift = (x, y, s, k) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-8" y="-4" width="16" height="12" rx="1.5" fill="${pxF(k)}" ${pxS(k)}/><rect x="-9" y="-8" width="18" height="5" rx="1.5" fill="${pxF(k)}" ${pxS(k)}/><path d="M0-8V8" stroke="#fff" stroke-width="2.4"/><path d="M0-8C-6-15-9-8 0-8C9-8 6-15 0-8" fill="#fff" stroke="${pxD(k)}" stroke-width="1"/></g>`;
+        const pxCal = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-8" y="-7" width="16" height="15" rx="2.5" fill="#fff8ea" stroke="#7a3a08" stroke-width="1.3"/><path d="M-8-2h16" stroke="#7a3a08" stroke-width="1.2"/><rect x="-8" y="-7" width="16" height="5" rx="2" fill="#e63c34"/><rect x="-4" y="-10" width="2.5" height="5" rx="1" fill="#7a3a08"/><rect x="2" y="-10" width="2.5" height="5" rx="1" fill="#7a3a08"/><path d="M0 1.5l1.2 2.4 2.6.3-1.9 1.8.5 2.6L0 7.3l-2.4 1.3.5-2.6-1.9-1.8 2.6-.3z" fill="#f5b82e"/></g>`;
+        const pxCrownS = (x, y, s, k) => `<g transform="translate(${x} ${y}) scale(${s})">${pxP('M-9 6L-10-6-4 0 0-9 4 0 10-6 9 6Z', k)}</g>`;
+        const pxWing = (x, y, s, k, f) => `<g transform="translate(${x} ${y}) scale(${s * (f || 1)} ${s})">${pxP('M0 6C-3-4-10-8-16-8-14-3-13 2-9 7-6 9-3 9 0 6Z', k)}<path d="M-4 5L-12-2M-2 2L-9-5" stroke="${pxD(k)}" stroke-width=".8" fill="none" opacity=".6"/></g>`;
+        const pxDrop = (x, y, s, k) => `<g transform="translate(${x} ${y}) scale(${s})">${pxP('M0-9C6-1 8 3 8 6 8 11 4 13 0 13-4 13-8 11-8 6-8 3-6-1 0-9Z', k)}<ellipse cx="-2.5" cy="5" rx="1.8" ry="3" fill="#fff" opacity=".7"/></g>`;
+        const pxShieldS = (x, y, s, k, k2) => `<g transform="translate(${x} ${y}) scale(${s})">${pxP('M0-10L9-7V1C9 7 5 11 0 13-5 11-9 7-9 1V-7Z', k)}<path d="M0-6L5-4.5V1C5 4.5 3 7 0 8.5-3 7-5 4.5-5 1V-4.5Z" fill="${pxF(k2 || 'gold')}"/></g>`;
+        const pxHour = (x, y, s, k) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-7-9H7C7-3 2-2 0 0 2 2 7 3 7 9H-7C-7 3-2 2 0 0-2-2-7-3-7-9Z" fill="#fff8ea" stroke="${pxD(k)}" stroke-width="1.3"/><path d="M-4-7H4C3-4 1-3 0-2-1-3-3-4-4-7Z" fill="${pxM(k)}"/><path d="M-3 7C-2 4 2 4 3 7Z" fill="${pxM(k)}"/><path d="M-8-9H8M-8 9H8" stroke="${pxD(k)}" stroke-width="2" stroke-linecap="round"/></g>`;
+        const pxArrows = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M-7-2A8 8 0 0 1 6-5"/><path d="M7 2A8 8 0 0 1-6 5"/><path d="M3-9L7-5 2-3M-3 9L-7 5-2 3" stroke-width="2.4"/></g>`;
+        const pxGal = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#2a1060" stroke="#d8b8ff" stroke-width="1.4"/><path d="M${x} ${y}m-${r * .6} 0a${r * .6} ${r * .6} 0 1 1 ${r * .6} ${r * .6}a${r * .3} ${r * .3} 0 1 1 -${r * .3}-${r * .3}" fill="none" stroke="#ff9be8" stroke-width="1.6" stroke-linecap="round"/><circle cx="${x + r * .4}" cy="${y - r * .45}" r="1" fill="#fff"/><circle cx="${x - r * .45}" cy="${y + r * .35}" r=".9" fill="#9be8ff"/>`;
+        
+        /* ===== Mẫu trang phục ===== */
+        function pxBow(k, emb, k2) {
+            return pxP('M32 31C22 14 6 14 8 31 6 48 22 48 32 31Z', k) + pxP('M32 31C42 14 58 14 56 31 58 48 42 48 32 31Z', k)
+                + pxP('M28 36L17 57 27 52 32 58V38Z', k) + pxP('M36 36L47 57 37 52 32 58V38Z', k)
+                + `<path d="M14 26C16 22 20 21 24 24M50 26C48 22 44 21 40 24" stroke="#fff" stroke-width="2" fill="none" opacity=".55" stroke-linecap="round"/>`
+                + pxCi(32, 31, 8.5, k2 || k) + emb;
+        }
+        function pxCrown(k, g, style, gk) {
+            gk = gk || 'gold'; let b = '';
+            if (style === 'sun') {
+                const rays = [-60, -40, -20, 0, 20, 40, 60].map(a => `<path d="M-4 0L0-26 4 0Z" transform="translate(32 40) rotate(${a})" fill="${pxF(k)}" ${pxS(k)}/>`).join('');
+                return rays + pxP('M9 54L12 36Q32 28 52 36L55 54Z', k) + pxCi(32, 40, 8, 'orange') + `<ellipse cx="29" cy="37" rx="3" ry="2" fill="#fff" opacity=".7"/>` + [14, 50].map(x => pxCi(x, 46, 2.6, g)).join('') + pxCi(32, 52, 2.4, g);
+            }
+            const tall = style === 'tall', sm = style === 'small';
+            const t = sm ? 'M12 46L10 26 22 35 32 20 42 35 54 26 52 46Z' : tall ? 'M7 47L5 14 20 31 32 8 44 31 59 14 57 47Z' : 'M8 47L6 19 21 33 32 13 43 33 58 19 56 47Z';
+            b = pxP(t, k) + pxP('M8 46H56V55Q56 57 54 57H10Q8 57 8 55Z', k);
+            const tips = sm ? [[10, 26], [32, 20], [54, 26]] : tall ? [[5, 14], [32, 8], [59, 14]] : [[6, 19], [32, 13], [58, 19]];
+            b += tips.map(p => pxCi(p[0], p[1], 3, g)).join('') + `<path d="M14 49H50" stroke="#fff" stroke-width="1.4" opacity=".6"/>` + [18, 46].map(x => pxGem('round', x, 51.5, 2.2, g)).join('');
+            b += style === 'star' ? pxSt(32, 37, 8.5, 'yellow') : pxGem('kite', 32, 37, tall ? 7 : 6, g);
+            return b;
+        }
+        function pxCape(k, trim, clasp, pat) {
+            let b = pxP('M18 9Q32 3 46 9L61 56Q47 51 32 59 17 51 3 56Z', k)
+                + `<path d="M32 22L41 55Q32 58 23 55Z" fill="${pxD(k)}" opacity=".55"/><path d="M30 24L26 55M34 24L38 55" stroke="${pxL(k)}" stroke-width="1.2" opacity=".5" fill="none"/>`
+                + `<path d="M4 55Q17 51 32 58 47 51 60 55" fill="none" stroke="${pxM(trim)}" stroke-width="3.4" stroke-linecap="round"/>`
+                + pxP('M16 10Q32 3 48 10L45 20Q32 15 19 20Z', trim) + pxP('M20 12Q32 6 44 12L32 27Z', k) ;
+            if (pat === 'dots') b += [[14, 38], [50, 38], [20, 48], [44, 48], [10, 48]].map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="1.7" fill="${pxM(trim)}"/>`).join('');
+            if (pat === 'stars') b += [[13, 38, 3], [51, 38, 3], [18, 48, 2.6], [46, 48, 2.6]].map(p => pxSt(p[0], p[1], p[2], trim)).join('');
+            if (pat === 'ancient') b += `<path d="M9 40H21M43 40H55M12 47H22M42 47H52" stroke="${pxM(trim)}" stroke-width="1.8" stroke-dasharray="3 2"/>`;
+            return b + pxGem('round', 32, 19, 3.8, clasp || 'red');
+        }
+        function pxScarf(k, emb, k2) {
+            const fr = (x1, x2, y) => `<path d="M${x1} ${y}V${y + 4}M${x1 + (x2 - x1) * .33} ${y}V${y + 4.5}M${x1 + (x2 - x1) * .66} ${y}V${y + 4}M${x2} ${y}V${y + 4}" stroke="${pxD(k)}" stroke-width="1.6" stroke-linecap="round"/>`;
+            return pxP('M25 30L38 26 46 56H31Z', k2 || k) + fr(31, 46, 56) + pxP('M16 30L30 28 31 59H18Z', k) + fr(18, 31, 59)
+                + `<path d="M21 36H30M20 44H30.5M19 52H31" stroke="${pxL(k)}" stroke-width="1.4" opacity=".7" stroke-linecap="round"/>`
+                + `<ellipse cx="32" cy="17" rx="21" ry="7.5" fill="none" stroke="${pxD(k)}" stroke-width="10.5"/><ellipse cx="32" cy="17" rx="21" ry="7.5" fill="none" stroke="${pxF(k)}" stroke-width="8"/><path d="M14 14Q22 9 32 9" stroke="#fff" stroke-width="2" fill="none" opacity=".55" stroke-linecap="round"/>`
+                + pxP('M19 20Q26 16 33 21 35 30 27 33 18 31 19 20Z', k) + `<path d="M22 22Q27 26 31 24" stroke="#fff" stroke-width="1.4" fill="none" opacity=".6"/>` + emb;
+        }
+        function pxVest(k, trim, btn) {
+            return pxP('M16 8H27L32 22 37 8H48L55 22 52 57H12L9 22Z', k) + pxP('M27 8L32 22 37 8Z', 'white')
+                + `<path d="M32 22V57" stroke="${pxD(k)}" stroke-width="1.3"/>` + `<path d="M9 22L12 57M55 22L52 57" fill="none" stroke="${pxM(trim)}" stroke-width="2.6" stroke-linecap="round"/>`
+                + [30, 39, 48].map(y => pxCi(32, y, 3.1, btn || 'gold')).join('') + [[19, 40], [45, 40]].map(p => `<path d="M${p[0] - 5} ${p[1]}H${p[0] + 5}" stroke="${pxD(k)}" stroke-width="1.3" opacity=".7"/>`).join('');
+        }
+        function pxJacket(k, emb, trim) {
+            return pxP('M21 8H43L58 20 52 38 46 33V57H18V33L12 38 6 20Z', k) + `<path d="M32 12V57" stroke="${pxD(k)}" stroke-width="1.3"/>`
+                + pxP('M21 8L32 19 43 8 40 7Q32 12 24 7Z', trim || 'white') + `<path d="M12 38L6 20M52 38L58 20" stroke="${pxD(k)}" stroke-width="1"/><path d="M13 36L18 38M51 36L46 38" stroke="${pxM(trim || 'white')}" stroke-width="2.6" stroke-linecap="round"/>` + emb;
+        }
+        function pxBelt(k, buckle, mid) {
+            return pxP('M3 17Q32 12 61 17V32Q32 27 3 32Z', k) + `<path d="M6 24Q32 19 58 24" fill="none" stroke="${pxL(k)}" stroke-width="1.2" stroke-dasharray="2.6 2.2" opacity=".85"/>` + buckle;
+        }
+        function pxGlasses(rim, lens, tint) {
+            const ln = x => `<circle cx="${x}" cy="35" r="12.5" fill="${tint || '#d8f3ff'}" fill-opacity=".55" stroke="${pxD(rim)}" stroke-width="4.2"/><circle cx="${x}" cy="35" r="12.5" fill="none" stroke="${pxF(rim)}" stroke-width="2.6"/><path d="M${x - 8} ${x < 30 ? 31 : 31}Q${x - 5} 26 ${x} 25" stroke="#fff" stroke-width="2.2" fill="none" opacity=".8" stroke-linecap="round"/>`;
+            return `<path d="M4 33L8 27M60 33L56 27" stroke="${pxD(rim)}" stroke-width="2.6" stroke-linecap="round"/>` + ln(19) + ln(45) + `<path d="M31 33Q32 30 33 33" stroke="${pxD(rim)}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+        }
+        function pxEar(item, k) {
+            const one = x => `<path d="M${x} 7C${x - 6} 6 ${x - 6} 16 ${x} 16" fill="none" stroke="${pxD(k)}" stroke-width="3.6" stroke-linecap="round"/><path d="M${x} 7C${x - 6} 6 ${x - 6} 16 ${x} 16" fill="none" stroke="${pxM(k)}" stroke-width="2" stroke-linecap="round"/><path d="M${x} 16V21" stroke="${pxD(k)}" stroke-width="2"/>` + item(x);
+            return one(18) + one(46);
+        }
+        function pxBead(k, n, rr, mid, ry) {
+            let b = '', arr = [];
+            for (let i = 0; i < n; i++) { const a = Math.PI * 2 * i / n + .3; arr.push([32 + 22 * Math.cos(a), 33 + (ry || 15) * Math.sin(a), Math.sin(a)]); }
+            arr.sort((p, q) => p[2] - q[2]);
+            arr.forEach(p => { b += pxGem('round', p[0].toFixed(1), p[1].toFixed(1), rr * (.85 + .15 * (p[2] + 1) / 2), k); });
+            return b;
+        }
+        function pxBangle(k, emb) {
+            return `<ellipse cx="32" cy="33" rx="23" ry="15" fill="none" stroke="${pxD(k)}" stroke-width="8"/><ellipse cx="32" cy="33" rx="23" ry="15" fill="none" stroke="${pxF(k)}" stroke-width="5.6"/><path d="M12 28Q20 20 32 19" fill="none" stroke="#fff" stroke-width="1.8" opacity=".6" stroke-linecap="round"/>` + emb;
+        }
+        function pxRing(metal, gem) {
+            return `<ellipse cx="32" cy="41" rx="14" ry="13.5" fill="none" stroke="${pxD(metal)}" stroke-width="7.4"/><ellipse cx="32" cy="41" rx="14" ry="13.5" fill="none" stroke="${pxF(metal)}" stroke-width="5"/><path d="M21 35Q23 30 28 28" stroke="#fff" stroke-width="1.6" fill="none" opacity=".7" stroke-linecap="round"/>`
+                + pxP('M23 31L26 25H38L41 31Q32 34 23 31Z', metal) + gem;
+        }
+        function pxNeck(chainK, pend, cord) {
+            const d = 'M8 8C9 32 22 40 32 40C42 40 55 32 56 8';
+            return (cord ? pxCord(d, cord) : pxChain(d, chainK)) + pend;
+        }
+        function pxBadge(k, inner, ribbon) {
+            return pxP('M22 34L14 58 24 54 29 60 32 38Z', ribbon || 'red') + pxP('M42 34L50 58 40 54 35 60 32 38Z', ribbon || 'red') + pxP('M32 6L36.5 9 42 8 44.5 13 49.5 15.5 49 21 52 26 48.5 30 48.5 35.5 43 37 39.5 41.5 34 40 29.5 41.5 26 37 20.5 35.5 20 30 16.5 26 19.5 21 19 15.5 24 13 26.5 8 32 9Z', k).replace(/^<path d="[^"]*"/, m => m) + inner;
+        }
+        function pxAnk() {
+            const bell = x => `<path d="M${x} 36V41" stroke="${pxD('gold')}" stroke-width="2"/>` + pxCi(x, 46, 5.2, 'gold') + `<path d="M${x - 4.6} 47H${x + 4.6}" stroke="${pxD('gold')}" stroke-width="1.2"/><circle cx="${x}" cy="49.5" r="1.1" fill="${pxD('gold')}"/>`;
+            return pxChain('M6 26C8 46 56 46 58 26', 'gold', 2) + bell(18) + bell(32) + bell(46) + pxP('M32 26L24 20 25 31Z', 'red') + pxP('M32 26L40 20 39 31Z', 'red') + pxCi(32, 26, 2.8, 'red');
+        }
+        function pxShoe(k, trim) {
+            return pxWing(15, 20, 1.05, 'white', 1) + pxP('M6 36Q6 26 15 24L24 24Q27 31 35 33L47 35Q60 37 60 47H6Z', k) + pxP('M5 46H61V51Q61 55 57 55H9Q5 55 5 51Z', 'white')
+                + `<path d="M6 49H60" stroke="${pxM(trim)}" stroke-width="2"/><path d="M26 27L30 23M31 30L35 26M36 33L40 29" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>` + pxP('M42 36Q55 38 59 46H46Z', 'white') + `<path d="M8 34Q12 28 20 27" stroke="#fff" stroke-width="1.6" fill="none" opacity=".6"/>`;
+        }
+        function pxPauld(k, trim) {
+            const one = f => `<g transform="${f ? 'translate(64 0) scale(-1 1)' : ''}">` + pxP('M5 44Q3 18 25 12Q31 26 29 48Z', k) + `<path d="M7 36Q16 38 28 32M6 26Q17 28 30 22" fill="none" stroke="${pxD(k)}" stroke-width="1.2" opacity=".6"/>` + `<path d="M5 44Q18 50 29 48" fill="none" stroke="${pxM(trim)}" stroke-width="3.4" stroke-linecap="round"/>` + pxCi(17, 24, 2.4, trim) + `</g>`;
+            return one(false) + one(true);
+        }
+        function pxArmor(k, trim) {
+            return pxP('M14 9Q22 14 32 14 42 14 50 9L58 20 52 28 47 24V56H17V24L12 28 6 20Z', k) + pxP('M14 9Q22 14 32 14Q42 14 50 9L49 16Q32 22 15 16Z', trim)
+                + pxSt(32, 37, 8, trim) + `<path d="M17 52H47" stroke="${pxM(trim)}" stroke-width="3" stroke-linecap="round"/>` + `<path d="M12 28L17 24M52 28L47 24" stroke="${pxM(trim)}" stroke-width="3" stroke-linecap="round"/>` + `<path d="M21 28Q24 22 28 22" stroke="#fff" stroke-width="2" fill="none" opacity=".6" stroke-linecap="round"/>`;
+        }
+        function pxSash(k, trim, med) {
+            return pxP('M6 8H21L58 44V58Z', k) + `<path d="M12 8L58 52M18 8L58 46" stroke="${pxM(trim)}" stroke-width="1.8" opacity=".9"/><path d="M6 8H21" stroke="${pxM(trim)}" stroke-width="2.4"/>`
+                + `<path d="M36 40L31 55 37 52 42 56 43 47Z" fill="${pxF('red')}" stroke="${pxD('red')}" stroke-width="1.2"/>` + pxCi(36, 46, 9.4, trim) + `<circle cx="36" cy="46" r="7" fill="none" stroke="${pxD(trim)}" stroke-width=".9" stroke-dasharray="2 1.8"/>` + pxSt(36, 46, 5.2, 'yellow');
+        }
+        function pxMedal(k, c, ink) { return pxCi(32, 32, 14, k) + `<circle cx="32" cy="32" r="10.5" fill="none" stroke="${pxD(k)}" stroke-width="1.1" stroke-dasharray="2 2.2"/>` + (ink || pxSt(32, 32, 7.2, c || 'yellow')); }
+        function pxHat(k, band) {
+            return `<ellipse cx="32" cy="48" rx="28" ry="8" fill="${pxF(k)}" ${pxS(k)}/>` + pxP('M14 47Q16 28 28 14Q36 6 46 12Q38 12 38 22Q50 30 50 47Q32 54 14 47Z', k)
+                + `<path d="M14 45Q32 53 50 45" fill="none" stroke="${pxM(band)}" stroke-width="5" stroke-linecap="round"/>` + pxSt(32, 41, 6.4, 'yellow') + `<path d="M22 28Q26 20 31 15" stroke="#fff" stroke-width="2" fill="none" opacity=".5" stroke-linecap="round"/>`;
+        }
+        function pxCap(k, trim) {
+            return pxP('M8 42Q8 16 32 14Q56 16 56 42Q32 48 8 42Z', k) + pxP('M8 40Q-1 48 6 52Q24 56 52 48Q58 44 52 40Q32 46 8 40Z', trim || k) + `<path d="M32 14V43" stroke="${pxD(k)}" stroke-width="1" opacity=".5"/>` + pxCi(32, 13.5, 2.5, 'gold') + pxSt(32, 31, 8, 'yellow') + `<path d="M16 28Q20 20 28 18" stroke="#fff" stroke-width="2" fill="none" opacity=".5" stroke-linecap="round"/>`;
+        }
+        function pxWatchP(k, face) { return pxCi(32, 11, 3.4, k) + pxCi(32, 38, 19, k) + `<circle cx="32" cy="38" r="14.5" fill="${face}" stroke="${pxD(k)}" stroke-width="1.2"/><path d="M32 27V38L39 42M32 25.5v2M32 49v2M20.5 38h2M41.5 38h2" stroke="${pxD(k)}" stroke-width="2" stroke-linecap="round" fill="none"/>`; }
+        
+        /* ===== 75 thiết kế — theo thứ tự PSH_IT (#01 → #75). t = hạng sao của vật phẩm (0-4) dùng để thêm lấp lánh ===== */
+        const PX_NEW = [
+            /*01*/ () => pxP('M10 46H54L50 55H14Z', 'gold') + pxClover(32, 30, 1.55, 'green') + pxCi(32, 30, 2.4, 'gold') + `<path d="M12 50H52" stroke="#fff" stroke-width="1.2" opacity=".6"/>`,
+            /*02*/ () => pxNeck('silver', pxCi(32, 44, 11, 'silver') + `<circle cx="32" cy="44" r="8" fill="#e6f4ff" stroke="${pxD('silver')}" stroke-width="1"/>` + pxPawN(32, 44, .62, '#2f8cff'), null),
+            /*03*/ () => pxRing('silver', pxGem('oval', 32, 24, 7.5, 'blue')),
+            /*04*/ () => pxBow('yellow', pxPawN(32, 31, .6, '#b8761a'), 'gold'),
+            /*05*/ () => pxCrown('gold', 'red', 'star'),
+            /*06*/ () => pxBead('green', 11, 5.6),
+            /*07*/ () => pxNeck(null, pxP('M32 36L40 44 36 59 28 59 24 44Z', 'blue') + `<path d="M24 44H40M32 36L30 44 32 59M32 36L34 44" fill="none" stroke="#fff" stroke-width="1" opacity=".8"/>` + pxCi(32, 34, 2.6, 'silver'), 'navy'),
+            /*08*/ () => pxRing('gold', `<g>${[0, 45, 90, 135, 180, 225, 270, 315].map(a => `<path d="M-2.2 0L0-11 2.2 0Z" transform="translate(32 22) rotate(${a})" fill="${pxF('orange')}" ${pxS('orange')}/>`).join('')}${pxGem('round', 32, 22, 6.4, 'yellow')}</g>`),
+            /*09*/ () => pxScarf('red', pxPawN(44, 51, .7, '#ffd23a'), 'red') + `<path d="M7 32Q32 22 57 32" stroke="${pxM('gold')}" stroke-width="2.6" fill="none"/>`,
+            /*10*/ () => pxCape('sand', 'gold', 'blue', 'ancient'),
+            /*11*/ () => pxBow('pink', pxGift(32, 31, .72, 'red'), 'pink'),
+            /*12*/ () => pxBead('pink', 10, 4.2, 0, 14) + pxGem('heart', 32, 51, 7, 'red') + pxGem('heart', 46, 49, 5.2, 'pink'),
+            /*13*/ () => pxHat('brown', 'gold'),
+            /*14*/ () => pxSt(23, 35, 17, 'pink') + pxSt(44, 28, 13, 'pink') + pxP('M30 41L38 33 41 36 33 44Z', 'gold') + pxCi(36, 38, 2.2, 'yellow') + `<path d="M16 33L22 28" stroke="#fff" stroke-width="2" opacity=".6" stroke-linecap="round"/>`,
+            /*15*/ () => pxBelt('violet', pxP('M23 14H41Q43 14 43 16V33Q43 35 41 35H23Q21 35 21 33V16Q21 14 23 14Z', 'silver') + pxGal(32, 25, 8)),
+            /*16*/ () => pxBead('teal', 10, 4.8) + pxSt(32, 48.5, 8, 'yellow'),
+            /*17*/ () => pxRing('gold', pxGem('kite', 32, 23.5, 8, 'yellow')),
+            /*18*/ () => pxBadge('orange', pxSt(32, 24, 10, 'yellow') + pxCi(32, 24, 2.4, 'orange')),
+            /*19*/ () => pxNeck('gold', `<g transform="translate(0 14)">` + pxMedal('gold', 'orange', `<path d="M34.5 22L27 33H32.5L29.5 43 38 30H32.5Z" fill="#fff6a8" stroke="${pxD('gold')}" stroke-width="1"/>`) + `</g>`),
+            /*20*/ () => pxVest('red', 'gold', 'gold'),
+            /*21*/ () => pxJacket('blue', pxShieldS(24, 30, .85, 'silver', 'gold'), 'white'),
+            /*22*/ () => pxNeck(null, pxP('M32 36C25 36 24 43 24 48H40C40 43 39 36 32 36Z', 'gold') + pxCi(32, 52, 3.2, 'gold') + `<path d="M26 48H38" stroke="${pxD('gold')}" stroke-width="1.2"/>` + `<path d="M28 41Q29 38 32 38" stroke="#fff" stroke-width="1.6" fill="none"/>`, 'red'),
+            /*23*/ () => pxBelt('brown', pxP('M25 12H39V28H25Z', 'gold') + `<rect x="28" y="16" width="8" height="8" rx="1.5" fill="${pxD('brown')}"/>`) + pxP('M8 33H26V50Q26 54 22 54H12Q8 54 8 50Z', 'brown') + `<path d="M8 38H26" stroke="${pxM('gold')}" stroke-width="2"/>` + pxCi(17, 43, 2, 'gold') + pxP('M40 33H56V45Q56 49 52 49H44Q40 49 40 45Z', 'brown'),
+            /*24*/ () => pxScarf('sky', pxShieldS(44, 51, .8, 'silver', 'blue'), 'sky') + `<path d="M7 32Q32 22 57 32" stroke="${pxL('white')}" stroke-width="2" fill="none"/>`,
+            /*25*/ () => pxRing('silver', `<path d="M25 24C25 16 32 20 32 24 32 28 39 32 39 24 39 16 32 20 32 24 32 28 25 32 25 24Z" fill="none" stroke="${pxD('silver')}" stroke-width="4.2"/><path d="M25 24C25 16 32 20 32 24 32 28 39 32 39 24 39 16 32 20 32 24 32 28 25 32 25 24Z" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`),
+            /*26*/ () => pxNeck('gold', `<g transform="translate(0 8)">` + pxWatchP('gold', '#fffdf0') + `</g>`),
+            /*27*/ () => pxAnk(),
+            /*28*/ () => pxBangle('pink', pxCi(32, 48, 8, 'red') + pxArrows(32, 48, .62)),
+            /*29*/ () => pxBow('sky', pxCal(32, 31, .85), 'blue'),
+            /*30*/ () => pxShoe('sky', 'blue'),
+            /*31*/ () => `<ellipse cx="32" cy="33" rx="22" ry="15" fill="none" stroke="${pxD('yellow')}" stroke-width="3.4"/><ellipse cx="32" cy="33" rx="22" ry="15" fill="none" stroke="${pxF('yellow')}" stroke-width="1.8" stroke-dasharray="2.4 1.2"/>` + [[10, 28, 5.6], [54, 28, 5.6], [18, 44, 6.2], [46, 44, 6.2], [32, 48.5, 7.8], [32, 18.5, 5]].map(p => pxSt(p[0], p[1], p[2], 'yellow')).join(''),
+            /*32*/ () => pxNeck('gold', `<g transform="translate(0 14)">` + pxMedal('gold', 'yellow') + `</g>`),
+            /*33*/ () => pxWing(31, 38, 1.9, 'white', -1) + pxWing(33, 38, 1.9, 'white', 1) + pxGem('kite', 32, 33, 9, 'sky') + `<path d="M32 44L29 58H35Z" fill="${pxF('silver')}" stroke="${pxD('silver')}" stroke-width="1.2"/>`,
+            /*34*/ () => pxCap('navy', 'blue'),
+            /*35*/ () => pxCape('purple', 'gold', 'yellow', 'stars'),
+            /*36*/ () => pxBow('lime', pxClover(32, 30, .75, 'green'), 'green'),
+            /*37*/ () => pxGlasses('gold', 0, '#e4f6ff'),
+            /*38*/ () => pxNeck('gold', `<g transform="translate(14 34) scale(1.1)">` + pxGift(0, 6, 1, 'pink') + `</g><g transform="translate(36 38) scale(1.1)">` + pxGift(0, 6, 1, 'red') + `</g>`),
+            /*39*/ () => pxEar(x => pxP(`M${x} 21a5 5 0 1 0 0 .1Z`, 'gold') + pxCi(x, 26, 4.8, 'gold') + `<circle cx="${x}" cy="26" r="1.8" fill="#8a4b08"/>` + pxP(`M${x - 1.8} 30H${x + 1.8}V44H${x - 1.8}Z`, 'gold') + pxP(`M${x + 1.8} 38H${x + 6}V41H${x + 1.8}ZM${x + 1.8} 43H${x + 5}V45.5H${x + 1.8}Z`, 'gold'), 'gold'),
+            /*40*/ () => pxScarf('yellow', pxPawN(44, 51, .72, '#b8761a'), 'yellow'),
+            /*41*/ () => pxClover(32, 36, 1.9, 'green') + pxCrownS(32, 11, 1.1, 'gold') + pxCi(32, 36, 2.8, 'gold') + `<path d="M9 52H55" stroke="${pxM('gold')}" stroke-width="2.4" stroke-linecap="round"/>`,
+            /*42*/ () => pxRing('gold', pxGem('drop', 32, 24, 7.5, 'green')),
+            /*43*/ () => pxCrown('gold', 'blue', 'std'),
+            /*44*/ () => pxEar(x => pxGem('kite', x, 30, 8, 'blue'), 'silver'),
+            /*45*/ () => pxNeck('gold', pxCi(32, 47, 12, 'gold') + `<circle cx="32" cy="47" r="9" fill="${pxF('yellow')}" stroke="${pxD('gold')}" stroke-width="1"/>` + pxPawN(32, 47, .6, '#8a4b08')),
+            /*46*/ () => pxCord('M8 8C9 28 20 36 32 36C44 36 55 28 56 8', 'red') + pxCi(32, 36, 3, 'gold') + pxP('M32 40C46 40 52 50 44 56 38 60 32 56 32 56 32 56 26 60 20 56 12 50 18 40 32 40Z', 'green') + `<circle cx="32" cy="49" r="5" fill="#bff5a8" stroke="${pxD('green')}" stroke-width="1"/>` + `<path d="M32 58L29 63M32 58L35 63" stroke="${pxM('red')}" stroke-width="2.2" stroke-linecap="round"/>`,
+            /*47*/ () => pxBow('pink', pxCrownS(32, 32, 1.05, 'gold'), 'pink'),
+            /*48*/ () => `<g transform="rotate(35 32 32)">` + pxP('M30 22H34V58L32 62 30 58Z', 'silver') + pxGem('kite', 32, 13, 9, 'sky') + `</g>`,
+            /*49*/ () => pxJacket('purple', pxP('M15 40H29V51H15Z', 'violet') + pxSt(22, 45, 4.2, 'yellow'), 'violet'),
+            /*50*/ () => pxBead('pink', 10, 5.2) + pxGem('kite', 32, 50, 6.5, 'pink'),
+            /*51*/ () => pxRing('gold', pxGem('round', 32, 23.5, 8, 'orange') + `<circle cx="32" cy="23.5" r="3.4" fill="#fff" opacity=".35"/>`),
+            /*52*/ () => pxPauld('silver', 'gold'),
+            /*53*/ () => pxScarf('blue', pxDrop(44, 51, .85, 'sky'), 'blue'),
+            /*54*/ () => pxBelt('blue', pxP('M24 13H40V30H24Z', 'silver') + `<rect x="28" y="17" width="8" height="9" rx="2" fill="${pxM('blue')}"/>`) + pxP('M8 33H27V51Q27 55 23 55H12Q8 55 8 51Z', 'silver') + `<path d="M8 39H27" stroke="${pxM('blue')}" stroke-width="2"/>` + pxCi(17.5, 46, 2, 'blue'),
+            /*55*/ () => `<path d="M24 4H40L38 22H26Z" fill="${pxF('brown')}" ${pxS('brown')}/><path d="M26 60H38L40 42H24Z" fill="${pxF('brown')}" ${pxS('brown')}/>` + pxCi(32, 32, 17, 'gold') + `<circle cx="32" cy="32" r="12.5" fill="#fffbe6" stroke="${pxD('gold')}" stroke-width="1.2"/>` + pxSt(32, 32, 6, 'orange') + `<path d="M32 22V25M32 39V42M22 32H25M39 32H42" stroke="${pxD('gold')}" stroke-width="1.8" stroke-linecap="round"/>`,
+            /*56*/ () => pxBangle('gold', pxCi(32, 48, 8, 'yellow') + pxHour(32, 48, .55, 'gold')),
+            /*57*/ () => pxBadge('blue', pxSt(32, 24, 10.5, 'sky') + pxCi(32, 24, 2.4, 'blue'), 'navy'),
+            /*58*/ () => pxNeck('gold', pxGem('drop', 32, 47, 8.5, 'purple') + pxCi(32, 36, 2.8, 'gold')),
+            /*59*/ () => pxEar(x => pxSt(x, 31, 9.5, 'yellow') + pxSt(x + 7, 40, 4.4, 'orange'), 'gold'),
+            /*60*/ () => pxSash('red', 'gold'),
+            /*61*/ () => pxCrown('gold', 'blue', 'tall'),
+            /*62*/ () => pxGlasses('gold', 0, '#7ff0e0'),
+            /*63*/ () => pxNeck('silver', pxP(pxHeartD(32, 47, 1.75), 'cyan') + `<path d="M22 44Q24 40 28 40" stroke="#fff" stroke-width="2" fill="none" opacity=".85" stroke-linecap="round"/><path d="M32 39L26 45 32 58 38 45Z" fill="none" stroke="#fff" stroke-width="1" opacity=".7"/>` + pxCi(32, 35, 2.6, 'silver')),
+            /*64*/ () => pxRing('gold', pxGem('drop', 32, 23.5, 8, 'purple')),
+            /*65*/ () => pxCrown('gold', 'red', 'sun'),
+            /*66*/ () => pxCape('cream', 'gold', 'sky', 'dots'),
+            /*67*/ () => pxEar(x => pxGem('drop', x, 31, 7, 'purple') + pxGem('round', x, 22.5, 3, 'violet'), 'gold'),
+            /*68*/ () => pxBelt('violet', pxP('M20 11H44Q46 11 46 13V33Q46 35 44 35H20Q18 35 18 33V13Q18 11 20 11Z', 'gold') + pxGal(32, 24, 10) + pxSt(22, 14, 2.2, 'yellow') + pxSt(42, 34, 2.2, 'yellow')),
+            /*69*/ () => pxNeck('gold', pxWing(26, 44, 1.25, 'white', -1) + pxWing(38, 44, 1.25, 'white', 1) + pxP(pxHeartD(32, 46, 1.7), 'pink') + `<path d="M24 42Q26 38 29 38" stroke="#fff" stroke-width="2" fill="none" opacity=".85" stroke-linecap="round"/>` + pxCi(32, 34, 2.4, 'gold')),
+            /*70*/ () => pxRing('plat', pxGem('kite', 32, 23.5, 9, 'purple')),
+            /*71*/ () => pxArmor('silver', 'gold'),
+            /*72*/ () => pxScarf('white', pxWing(44, 52, 1.1, 'sky', 1) + pxWing(44, 52, 1.1, 'sky', -1), 'sky') + `<path d="M7 28Q32 18 57 28" stroke="${pxM('sky')}" stroke-width="2.4" fill="none"/>`,
+            /*73*/ () => pxVest('cream', 'gold', 'yellow'),
+            /*74*/ () => pxNeck('gold', pxCi(32, 47, 13, 'gold') + `<circle cx="32" cy="47" r="10" fill="#d8f0ff" stroke="${pxD('gold')}" stroke-width="1.2"/>` + `<path d="M32 39V47L38 51" stroke="#1b3a9e" stroke-width="2.2" stroke-linecap="round" fill="none"/>` + pxSt(32, 33.5, 3.4, 'yellow')),
+            /*75*/ () => pxCrown('silver', 'violet', 'tall') + pxSt(32, 37, 5, 'purple')
+        ];
+        
+        function pxFilt() { const n = PXG.n; return `<filter id="pxf${n}" x="-15%" y="-15%" width="130%" height="135%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="b"/><feDiffuseLighting in="b" surfaceScale="2.6" diffuseConstant="1.75" lighting-color="#fff" result="d"><fePointLight x="10" y="-8" z="46"/></feDiffuseLighting><feComposite in="d" in2="SourceAlpha" operator="in" result="d2"/><feBlend in="SourceGraphic" in2="d2" mode="multiply" result="m"/><feSpecularLighting in="b" surfaceScale="4" specularConstant=".85" specularExponent="20" lighting-color="#fff" result="s"><fePointLight x="10" y="-8" z="40"/></feSpecularLighting><feComposite in="s" in2="SourceAlpha" operator="in" result="s2"/><feComposite in="m" in2="s2" operator="arithmetic" k1="0" k2="1" k3=".8" k4="0" result="lit"/><feOffset in="SourceAlpha" dx="1.2" dy="2.6" result="o"/><feGaussianBlur in="o" stdDeviation="1.7" result="ob"/><feFlood flood-color="#3a2a5a" flood-opacity=".38"/><feComposite in2="ob" operator="in" result="sh"/><feMerge><feMergeNode in="sh"/><feMergeNode in="lit"/></feMerge></filter>`; }
+function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const c = PXC[k]; return `<linearGradient id="${PXG.used[k]}" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="${c[0]}"/><stop offset=".5" stop-color="${c[1]}"/><stop offset="1" stop-color="${c[2]}"/></linearGradient>`; }).join(''); }
+        
+        function pshArt(it) {
+            const n = PSH_IT.indexOf(it), d = PX_D[n] || ['coin', 'g'], P = PX_P[d[1]] || PX_P.g, G = PX_P.g, r = it.r, B = PX_BG[r] || PX_BG[0], fc = PX_FC[r] || PX_FC[0];
+            const s = `stroke="${P[2]}" stroke-width="1.3" stroke-linejoin="round"`, body = (PXG = { n, used: {} }, PX_NEW[n] ? PX_NEW[n]() : ''), gd = pxGradDefs();
+            const sp = (x, y, t) => `<g transform="translate(${x} ${y})"><path class="px-sp" style="animation-delay:${t}s" d="M0-5L1.4-1.4 5 0 1.4 1.4 0 5-1.4 1.4-5 0-1.4-1.4z" fill="#ffc531"/></g>`;
+            let fx = '';
+            if (r >= 3) fx += `<g clip-path="url(#pxc${n})"><g transform="skewX(-20)"><rect class="px-sw" x="-24" y="-4" width="14" height="72" fill="url(#pxw${n})"/></g></g>` + [[12, 14, 0], [52, 19, .8], [50, 50, 1.5], [14, 46, .4]].map(a => sp(a[0], a[1], a[2])).join('');
+            if (r >= 4) fx += [[32, 8, 1.1], [9, 32, 1.9]].map(a => sp(a[0], a[1], a[2])).join('') + [[20, 52, 0], [34, 54, .9], [46, 50, 1.7]].map(a => `<circle class="px-pt" style="animation-delay:${a[2]}s" cx="${a[0]}" cy="${a[1]}" r="1.5" fill="#fff0a0"/>`).join('') + `<rect class="px-dash" x="2" y="2" width="60" height="60" rx="11" fill="none" stroke="#ffb300" stroke-width="1.6" stroke-dasharray="7 25" stroke-linecap="round"/>`;
+            const pips = Array.from({ length: r + 1 }, (_, i) => pxStar(fc, 32 + (i - r / 2) * 9, 56.5, .62)).join('');
+            const rays = r >= 4 ? `<g class="px-ray" opacity=".3">${[0, 1, 2, 3, 4, 5, 6, 7].map(k => `<path d="M32 32L27-8h10z" fill="#ffd86b" transform="rotate(${k * 45} 32 32)"/>`).join('')}</g>` : '';
+            return `<svg viewBox="0 0 64 64" class="px${r >= 4 ? ' px4' : r >= 3 ? ' px3' : ''}" style="--c:${fc}" aria-hidden="true"><defs>${gd}<radialGradient id="pxb${n}" cx=".5" cy=".4" r=".75"><stop offset="0" stop-color="${B[0]}"/><stop offset="1" stop-color="${B[1]}"/></radialGradient><linearGradient id="pxa${n}" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="${P[0]}"/><stop offset=".5" stop-color="${P[1]}"/><stop offset="1" stop-color="${P[2]}"/></linearGradient><linearGradient id="pxg${n}" x1="0" y1="0" x2=".4" y2="1"><stop offset="0" stop-color="${G[0]}"/><stop offset=".5" stop-color="${G[1]}"/><stop offset="1" stop-color="${G[2]}"/></linearGradient><linearGradient id="pxw${n}"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><clipPath id="pxc${n}"><rect x="2" y="2" width="60" height="60" rx="11"/></clipPath></defs><rect x="2" y="2" width="60" height="60" rx="11" fill="url(#pxb${n})" stroke="${fc}" stroke-width="2.4"/><g clip-path="url(#pxc${n})"><circle cx="32" cy="30" r="24" fill="#fff" opacity=".7"/>${rays}</g><rect x="5" y="5" width="54" height="54" rx="8.5" fill="none" stroke="${fc}" stroke-width=".8" opacity=".5"/><g class="px-ic" filter="url(#pxf${n})"><g transform="translate(2.6 .7) scale(.92)">${body}</g></g>${fx}</svg>`;
+        }
+        const pshPrice = it => { const c = appData && appData.petShopPrice, v = c && c[it.id]; return Number.isInteger(v) && v >= 0 ? v : it.price; };
+        const pshEq = st => { const e = (st && st.petEquip && typeof st.petEquip === 'object') ? st.petEquip : {}; return [0, 1, 2].map(i => e['s' + i] || null); };
+        const pshOwned = (st, id) => ((st && st.petItems && st.petItems[id]) | 0);
+        const pshOn = (it, p, lv) => it.s === 'm' ? lv === +p : it.s === 'p' ? (lv === +p || lv === +p + 1) : it.s === '4' ? lv >= 3 : it.s === '3' ? lv >= 4 : it.s === '5' ? lv === 6 : true;
+        function pshCompat(sp, it) {
+            if (it.k === 'n' || it.k === 'm') return { ok: false, why: it.k === 'm' ? L2('Chưa có nội tại với hệ số nhân thực sự; không thể trang bị để tránh thưởng sai.', 'No innate has a real multiplier yet; equipping is disabled to prevent incorrect rewards.') : L2('Hệ thống nội tại hiện chưa có cơ chế tương ứng nên vật phẩm này chưa thể kích hoạt.', 'The innate engine has no matching mechanic yet, so this item cannot activate.') };
+            const ro = it.k === 'ch' ? 'c' : (PSH_KR[it.k] || it.k), R = PSH_ROLE[sp] || {};
+            if (!R[ro]) { const lb = PSH_LB[ro] || ['chỉ số phù hợp', 'a matching stat']; return { ok: false, why: L2('Nội tại này không có ' + lb[0] + '.', 'This innate has no ' + lb[1] + '.') }; }
+            if (it.s === 'c' && PSH_GR[sp] !== 's') return { ok: false, why: L2('Chỉ hoạt động với nội tại có điều kiện thưởng theo điểm số.', 'Only works with score-condition innates.') };
+            return { ok: true, why: '' };
+        }
+        // Điểm tính hiệu ứng DUY NHẤT: trả về bản sao chỉ số nội tại đã cộng vật phẩm (không sửa PET_B).
+        function petEff(st, sp, lv) {
+            const b = PET_B[sp], v = ((b && b.v[lv]) || []).slice(); if (lv < 0 || !st) return v;
+            const R = PSH_ROLE[sp] || {}, seen = {};
+            pshEq(st).forEach(e => {
+                const it = e && PSH_BY[e.id]; if (!it || seen[it.id] || !pshOwned(st, it.id) || ['g', 'gp', 'gw'].includes(it.k)) return; seen[it.id] = 1;
+                if (!pshCompat(sp, it).ok || !pshOn(it, e.p, lv)) return;
+                const ro = it.k === 'ch' ? 'c' : (PSH_KR[it.k] || it.k);
+                (R[ro] || []).forEach(i => {
+                    let x = v[i]; if (typeof x !== 'number') return;
+                    if (it.k === 'pp') x = Math.round(x * (1 + it.a / 100) * 100) / 100; else x += it.a;
+                    const pm = PET_PM[sp][i]; v[i] = Math.round(Math.min(pm ? pm.max : 100, x) * 100) / 100;
+                });
+            });
+            return v;
+        }
+        // Quà thưởng bổ sung (tối đa +1 mỗi lần kích hoạt, luôn dùng đúng loại quà của nội tại gốc)
+        function petGiftX(st) {
+            try {
+                if (!st || st.petSp === undefined) return 0; const lv = petLv(petPeakOf(st)); if (lv < 0) return 0; let x = 0; const seen = {};
+                pshEq(st).forEach(e => {
+                    const it = e && PSH_BY[e.id]; if (!it || seen[it.id] || !pshOwned(st, it.id) || !['g', 'gp', 'gw'].includes(it.k) || !pshCompat(st.petSp, it).ok || !pshOn(it, e.p, lv)) return; seen[it.id] = 1;
+                    if (it.k === 'g') x += it.a; else if (it.k === 'gp') { if (Math.random() * 100 < it.a) x += 1; }
+                    else if (x < 1) { const P = petP(), led = P.led[st.id] = P.led[st.id] || {}, k = 'x:bag:' + it.id + ':' + petMon(petPd(new Date())); if (!led[k]) { led[k] = 1; _petChanged = true; x += 1; } }
+                });
+                return Math.min(1, x);
+            } catch (e) { return 0; }
+        }
+        const pshDef = st => petFormName(st.petSp, petFormOf(petPeakOf(st)));
+        const pshDisp = st => (typeof st.petNick === 'string' && st.petNick.trim()) ? st.petNick : pshDef(st);
+        const pshSt = sid => (appData.students || []).find(x => x.id === sid);
+        const pshRO = () => typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId;
+        const pshT = (m, t) => { try { window.showAppToast && window.showAppToast(m, t || 'success'); } catch (e) {} };
+        const pshN = a => String(a).replace('.', L2(',', '.'));
+        function pshFx(it) {
+            const a = pshN(it.a), A = { ch: [`+${a}% tỷ lệ kích hoạt`, `+${a}% trigger chance`], p: [`+${a} pts thưởng`, `+${a} reward pts`], pp: [`+${a}% pts thưởng`, `+${a}% reward pts`], a: [`+${a} điểm tích lũy trong quà`, `+${a} accumulated pt in the gift`], g: [`+${a} quà bổ sung`, `+${a} bonus gift`], gp: [`${a}% nhận thêm 1 quà`, `${a}% chance of 1 extra gift`], gw: ['+1 quà bổ sung/tuần', '+1 bonus gift/week'], m: [`+${a} hệ số nhân (tối đa ×15)`, `+${a} multiplier (cap ×15)`], k: [`+${a} pts giới hạn bù/tuần`, `+${a} pts weekly cap`], r: [`+${a}% tỷ lệ hoàn trả`, `+${a}% refund rate`], x: [`+${a} pts thưởng tối đa/lần`, `+${a} pts max per trigger`], b: [`+${a} pts giữ lại/lần`, `+${a} pts kept per time`], w: [`+${a} lần kích hoạt/tuần`, `+${a} activation/week`], n: ['Cơ chế chưa có trong nội tại hiện tại', 'Mechanic not in current innates'] }[it.k];
+            const S = { m: [' tại cấp nội tại đã chọn', ' at the chosen innate level'], p: [' tại 2 cấp nội tại liền kề', ' at 2 adjacent innate levels'], '4': [' khi nội tại đạt cấp 4 trở lên', ' once the innate reaches level 4+'], '3': [' từ cấp nội tại 5 trở lên', ' from innate level 5 onward'], '5': [' tại cấp nội tại 7', ' at innate level 7'], g: [' (nội tại của Pet đang trang bị)', " (equipped Pet's innate)"], c: [' (nội tại có điều kiện thưởng)', ' (reward-condition innates)'] }[it.s] || ['', ''];
+            return L2(A[0] + S[0], A[1] + S[1]);
+        }
+        const pshStat = it => { const k = it.k === 'ch' ? 'c' : (PSH_KR[it.k] || it.k); return (it.k === 'n' || it.k === 'm') ? L2('Chưa hỗ trợ', 'Not supported') : L2(PSH_LB[k][0], PSH_LB[k][1]); };
+        // ---------- Cửa hàng (trong Kho trứng) ----------
+        let pshG = -1, pshC = false, pshR = -1;
+        function pshCard(st, it) {
+            const own = pshOwned(st, it.id), has = st.petSp !== undefined && PET_SP[st.petSp], c = has ? pshCompat(st.petSp, it) : null, rr = PSH_RAR[it.r];
+            const cm = !has ? `<div class="ps-cm na">${L2('Chọn trứng để xem tương thích', 'Pick an egg to check compatibility')}</div>` : c.ok ? `<div class="ps-cm ok">✓ ${L2('Tương thích', 'Compatible')}: ${escapeHtml(L2(PET_SP[st.petSp][0], PET_SP[st.petSp][1]))}</div>` : `<div class="ps-cm no">✕ ${escapeHtml(c.why)}</div>`;
+            return `<div class="ps-card r${it.r}" data-id="${it.id}"><div class="ps-art">${pshArt(it)}</div><div class="ps-nm">${escapeHtml(L2(it.vi, it.en))}</div><div class="ps-rar" style="color:${rr[2]}"><span style="font-size:19px;line-height:1;letter-spacing:1px;vertical-align:middle;text-shadow:0 1px 0 rgba(0,0,0,.12)">${'★'.repeat(it.r + 1)}<span style="opacity:.3">${'★'.repeat(5 - it.r - 1)}</span></span> ${L2(rr[0], rr[1])}</div><div class="ps-fx">${escapeHtml(pshFx(it))}</div><div class="ps-ds">${escapeHtml(L2(it.dvi, it.den))}</div>${cm}<div class="ps-ft"><span>${pshPrice(it)} pts <button class="ps-chip" style="padding:1px 6px" title="${L2('Sửa giá', 'Edit price')}" onclick="pshEditPrice('${it.id}')">✏️</button></span><span>${L2('Sở hữu', 'Owned')} ${own}/1</span><button class="pet-tabbtn on" ${own >= 1 ? 'disabled' : ''} onclick="pshBuy('${st.id}','${it.id}')">${own >= 1 ? L2('Đã sở hữu', 'Owned') : L2('Mua', 'Buy')}</button></div></div>`;
+        }
+        function pshInner(st) {
+            const has = st.petSp !== undefined && PET_SP[st.petSp];
+            let list = PSH_IT.filter(it => (pshG < 0 || it.g === pshG) && (pshR < 0 || it.r === pshR) && (!pshC || (has && pshCompat(st.petSp, it).ok)));
+            const chips = `<div class="ps-bar"><button class="ps-chip ${pshG < 0 ? 'on' : ''}" onclick="pshSet('g',-1)">${L2('Tất cả', 'All')} (${PSH_IT.length})</button>${PSH_GRP.map((g, i) => `<button class="ps-chip ${pshG === i ? 'on' : ''}" onclick="pshSet('g',${i})">${g[0]} ${L2(g[1], g[2])}</button>`).join('')}</div><div class="ps-bar"><select class="pq-in" style="flex:none;min-width:0" onchange="pshSet('r',+this.value)"><option value="-1">${L2('Mọi độ hiếm', 'All rarities')}</option>${PSH_RAR.map((r, i) => `<option value="${i}" ${pshR === i ? 'selected' : ''}>${L2(r[0], r[1])}</option>`).join('')}</select><button class="ps-chip ${pshC ? 'on' : ''}" onclick="pshSet('c',0)">✓ ${L2('Chỉ món tương thích', 'Compatible only')}</button></div>`;
+            let body = '';
+            PSH_GRP.forEach((g, gi) => { const L = list.filter(it => it.g === gi); if (L.length) body += `<h4 class="pq-h">${g[0]} ${L2(g[1], g[2])}</h4><div class="ps-grid">${L.map(it => pshCard(st, it)).join('')}</div>`; });
+            return `<div class="flex flex-wrap items-center justify-between gap-2"><h3 class="font-black text-slate-800">🛍️ ${L2('Cửa hàng vật phẩm Pet', 'Pet Item Shop')} — ${escapeHtml(getStudentDisplayName(st))}</h3><span class="pet-chip">💰 ${st.rewardPoints || 0} pts</span></div>${chips}${body || `<div class="text-sm text-slate-500 p-3">${L2('Không có vật phẩm phù hợp bộ lọc.', 'No items match the filters.')}</div>`}`;
+        }
+        window.petShopHtml = st => `<div id="pshBox" class="mt-4 rounded-xl bg-slate-50 border border-slate-200 p-3">${pshInner(st)}</div>`;
+        function pshRefresh(pop) { const b = document.getElementById('pshBox'), st = pshSt(petTarget); if (b && st) { b.innerHTML = pshInner(st); if (pop) { const c = b.querySelector('.ps-card[data-id="' + pop + '"]'); if (c) c.classList.add('ps-pop'); } } }
+        window.pshSet = (k, v) => { if (k === 'g') pshG = v; else if (k === 'r') pshR = v; else pshC = !pshC; pshRefresh(); };
+        window.pshBuy = async (sid, id) => {
+            let st = pshSt(sid); const it = PSH_BY[id]; if (!st || !it) return;
+            if (pshRO()) { pshT(L2('Khóa đã lưu trữ chỉ được xem.', 'Archived course is read-only.'), 'error'); return; }
+            if (pshOwned(st, id) >= 1) { pshT(L2('Đã đạt giới hạn sở hữu (1/1).', 'Ownership limit reached (1/1).'), 'error'); return; }
+            if ((st.rewardPoints || 0) < pshPrice(it)) { pshT(L2(`Không đủ pts: cần ${pshPrice(it)}, hiện có ${st.rewardPoints || 0}.`, `Not enough pts: need ${pshPrice(it)}, you have ${st.rewardPoints || 0}.`), 'error'); return; }
+            const ok = await window.showAppConfirm(L2(`Mua “${it.vi}” với ${pshPrice(it)} pts cho ${getStudentDisplayName(st)}?`, `Buy “${it.en}” for ${pshPrice(it)} pts for ${getStudentDisplayName(st)}?`), L2('Mua vật phẩm Pet', 'Buy Pet item'));
+            if (!ok) return;
+            st = pshSt(sid); if (!st || pshOwned(st, id) >= 1 || (st.rewardPoints || 0) < pshPrice(it)) { pshRefresh(); return; }
+            const p0 = st.rewardPoints || 0, i0 = st.petItems, b0 = st.petBuys;
+            st.rewardPoints = p0 - pshPrice(it); st.petItems = Object.assign({}, i0 || {}, { [id]: 1 }); st.petBuys = (b0 || []).concat([{ id, p: pshPrice(it), d: petPd(new Date()) }]).slice(-30);
+            const saved = await saveData();
+            if (saved !== true) { st.rewardPoints = p0; if (i0) st.petItems = i0; else delete st.petItems; if (b0) st.petBuys = b0; else delete st.petBuys; pshT(L2('Mua thất bại: không lưu được dữ liệu, pts đã được hoàn nguyên.', 'Purchase failed: data could not be saved; pts were restored.'), 'error'); pshRefresh(); return; }
+            pshT(L2(`Đã mua “${it.vi}”! Còn ${st.rewardPoints} pts.`, `Bought “${it.en}”! ${st.rewardPoints} pts left.`));
+            try { if (!xfRM()) tfBeep(784, .1, .15, 0); } catch (e) {}
+            pshRefresh(id);
+        };
+        window.pshEditPrice = id => {
+            const it = PSH_BY[id]; if (!it) return; if (pshRO()) { pshT(L2('Khóa đã lưu trữ chỉ được xem.', 'Archived course is read-only.'), 'error'); return; }
+            const old = document.getElementById('pqPrice'); if (old) old.remove();
+            const m = document.createElement('div'); m.id = 'pqPrice'; m.className = 'pq-back'; m.onclick = e => { if (e.target === m) m.remove(); };
+            m.innerHTML = `<div class="pq-card" style="max-width:340px"><span class="pq-x" onclick="document.getElementById('pqPrice').remove()">✕</span><div class="ps-art">${pshArt(it)}</div><div class="ps-nm">${escapeHtml(L2(it.vi, it.en))}</div><div class="pq-stat" style="text-align:center">${L2('Giá mặc định', 'Default price')}: ${it.price} pts</div><div class="flex gap-1 items-center mt-2"><input id="pqPriceIn" type="number" min="0" max="9999" step="1" class="pq-in" value="${pshPrice(it)}"><span class="pq-stat">pts</span></div><div class="flex gap-1 mt-3 justify-end"><button class="ps-chip" onclick="pshSavePrice('${id}',1)">${L2('Mặc định', 'Default')}</button><button class="ps-chip on" onclick="pshSavePrice('${id}')">${L2('Lưu giá', 'Save price')}</button></div></div>`;
+            document.body.appendChild(m); const i = document.getElementById('pqPriceIn'); if (i) { i.focus(); i.select(); }
+        };
+        window.pshSavePrice = async (id, reset) => {
+            const inp = document.getElementById('pqPriceIn'), v = reset ? null : Number(inp && inp.value);
+            if (!reset && !(Number.isInteger(v) && v >= 0 && v <= 9999)) { pshT(L2('Giá phải là số nguyên từ 0 đến 9999.', 'Price must be a whole number from 0 to 9999.'), 'error'); return; }
+            const prev = appData.petShopPrice, nx = Object.assign({}, prev || {}); if (reset) delete nx[id]; else nx[id] = v; appData.petShopPrice = nx;
+            const saved = await saveData();
+            if (saved !== true) { if (prev) appData.petShopPrice = prev; else delete appData.petShopPrice; pshT(L2('Không lưu được giá. Đã hoàn nguyên.', 'Could not save the price. Reverted.'), 'error'); return; }
+            const m = document.getElementById('pqPrice'); if (m) m.remove(); pshT(L2('Đã cập nhật giá.', 'Price updated.')); pshRefresh();
+        };
+        // ---------- Giao diện Trang bị ----------
+        let pqSid = '', pqSlot = -1;
+        const pqClose = () => { const m = document.getElementById('pqModal'); if (m) m.remove(); if (window.__pqDirty) { window.__pqDirty = 0; try { window.renderPetView && window.renderPetView(); } catch (e) {} } };
+        (() => { const rp = window.renderPetView; if (typeof rp === 'function' && !rp.__pq) { const g = function () { if (document.getElementById('pqModal')) { window.__pqDirty = 1; return; } return rp.apply(this, arguments); }; g.__pq = 1; window.renderPetView = g; } })(); // đang mở cửa sổ trang bị thì hoãn vẽ lại nền → hết nhấp nháy
+        window.pqClose = pqClose;
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') pqClose(); });
+        window.petEqOpen = sid => { pqSid = sid; pqSlot = -1; pqRender(); };
+        const pqMsLabel = (i) => L2('Cấp ', 'Lv ') + (i + 1) + ' · streak ' + PET_LV[i];
+        const pqMsPair = i => L2('Cấp ', 'Lv ') + (i + 1) + '–' + (i + 2);
+        function pqParam(it, st) {
+            if (it.s !== 'm' && it.s !== 'p') return '';
+            const cur = Math.max(0, petLv(petPeakOf(st))), n = it.s === 'p' ? 6 : 7;
+            return `<select class="pq-in" style="flex:none;min-width:0" id="pqp_${it.id}">${Array.from({ length: n }, (_, i) => `<option value="${i}" ${i === Math.min(cur, n - 1) ? 'selected' : ''}>${it.s === 'p' ? pqMsPair(i) : pqMsLabel(i)}</option>`).join('')}</select>`;
+        }
+        let pqPop = '';
+        // Cập nhật theo khóa: chỉ thay phần tử nào đổi nội dung → không dựng lại cả cửa sổ, không nhấp nháy
+        function pqPatch(box, items, pop) {
+            if (!box) return;
+            const old = {}; Array.from(box.children).forEach(c => { old[c.dataset.k] = c; });
+            let ref = box.firstElementChild;
+            items.forEach(it => {
+                let el = old[it.k]; delete old[it.k];
+                if (!el || el.__h !== it.h) {
+                    const t = document.createElement('div'); t.innerHTML = it.h.trim();
+                    const n = t.firstElementChild; n.dataset.k = it.k; n.__h = it.h;
+                    if (pop && pop === it.k) n.classList.add('ps-pop');
+                    if (el) { el.replaceWith(n); if (ref === el) ref = n; } else box.insertBefore(n, ref);
+                    el = n;
+                }
+                if (el === ref) ref = ref.nextElementSibling; else if (el.nextElementSibling !== ref || el.parentNode !== box) box.insertBefore(el, ref);
+            });
+            Object.keys(old).forEach(k => old[k].remove());
+        }
+        function pqSet(el, h) { if (el && el.__h !== h) { el.innerHTML = h; el.__h = h; } }
+        function pqRender() {
+            const st = pshSt(pqSid); if (!st) return;
+            const sp = st.petSp, has = sp !== undefined && PET_SP[sp]; if (!has) return;
+            const pk = petPeakOf(st), f = petFormOf(pk), lv = petLv(pk), eq = pshEq(st), w = (appData.language || 'vi') === 'en' ? 1 : 0, R = PSH_ROLE[sp];
+            let cur = 0; try { cur = tenStreakInfo(st.id).cur; } catch (e) {}
+            const b = PET_B[sp]; petApplyCfg();
+            const stats = (PET_PM[sp] || []).map((pm, j) => { const base = lv >= 0 ? b.v[lv][j] : null, ef = lv >= 0 ? petEff(st, sp, lv)[j] : null; return `<div class="pq-stat">• ${L2(pm.vi, pm.en)}: ${base === null ? '—' : (ef !== base ? `${pshN(base)} → <b style="color:#16a34a">${pshN(ef)}</b>` : pshN(base))} ${pm.u}</div>`; }).join('') + (R.g ? `<div class="pq-stat">• ${L2('Quà thưởng: hỗ trợ quà bổ sung', 'Gifts: supports bonus gifts')}</div>` : '');
+            const needLv = (it, e) => (it.s === 'm' || it.s === 'p') && e && e.p === undefined;
+            const slotH = i => {
+                const e = eq[i], it = e && PSH_BY[e.id], c = it && pshCompat(sp, it);
+                return it ? `<div class="pq-slot f r${it.r}" onclick="pqPick(${i})"><div class="ps-art">${pshArt(it)}</div><div class="pq-si"><div class="t">${escapeHtml(L2(it.vi, it.en))}</div><div class="ps-rar" style="color:${PSH_RAR[it.r][2]}">${'★'.repeat(it.r + 1)}</div><div class="s">${escapeHtml(pshFx(it))}${e.p !== undefined ? ' · ' + (it.s === 'p' ? pqMsPair(+e.p) : pqMsLabel(+e.p)) : ''}</div><div class="ps-cm ${c.ok ? 'ok' : 'no'}">${c.ok ? '✓ ' + L2('Tương thích', 'Compatible') : '✕ ' + escapeHtml(c.why)}</div>${needLv(it, e) ? `<div class="ps-cm no">⚠ ${L2('Chưa chọn cấp — tháo ra rồi trang bị lại', 'No level chosen — unequip and equip again')}</div>` : ''}<div class="pq-sb"><button class="ps-chip" onclick="event.stopPropagation();pqUnequip(${i})">${L2('Tháo', 'Unequip')}</button> <button class="ps-chip" onclick="event.stopPropagation();pqPick(${i})">${L2('Thay thế', 'Replace')}</button></div></div></div>`
+                    : `<div class="pq-slot" onclick="pqPick(${i})"><div style="font-size:30px;opacity:.4">＋</div><div class="s">${L2('Ô', 'Slot')} ${i + 1} · ${L2('trống', 'empty')}</div></div>`;
+            };
+            const owned = PSH_IT.filter(it => pshOwned(st, it.id) > 0).map(it => ({ it, c: pshCompat(sp, it) })).sort((a, z) => (z.c.ok - a.c.ok));
+            const isEq = id => eq.some(e => e && e.id === id);
+            const rowH = ({ it, c }) => `<div class="pq-row r${it.r} ${c.ok ? '' : 'no'}"><div class="ps-art">${pshArt(it)}</div><div class="pq-ri"><div class="ps-nm" style="text-align:left">${escapeHtml(L2(it.vi, it.en))}</div><div class="ps-rar" style="text-align:left;color:${PSH_RAR[it.r][2]}">${'★'.repeat(it.r + 1)} ${L2(PSH_RAR[it.r][0], PSH_RAR[it.r][1])}</div><div class="ps-fx" style="text-align:left">${escapeHtml(pshFx(it))} · ${escapeHtml(pshStat(it))}</div>${c.ok ? '' : `<div class="ps-cm no" style="text-align:left">✕ ${escapeHtml(c.why)}</div>`}</div>${c.ok && !isEq(it.id) ? pqParam(it, st) : ''}<button class="pet-tabbtn on" ${!c.ok || isEq(it.id) ? 'disabled style="opacity:.5;cursor:not-allowed"' : ''} onclick="pqEquip('${it.id}')">${isEq(it.id) ? L2('Đang trang bị', 'Equipped') : L2('Trang bị', 'Equip')}</button></div>`;
+            const none = !owned.length || !owned.some(o => o.c.ok);
+            let m = document.getElementById('pqModal');
+            if (m && m.dataset.sid !== pqSid) { m.remove(); m = null; }
+            if (!m) {
+                m = document.createElement('div'); m.id = 'pqModal'; m.className = 'pq-back'; m.dataset.sid = pqSid; m.onclick = e => { if (e.target === m) pqClose(); };
+                m.innerHTML = `<div class="pq-card pq-duo" role="dialog" aria-modal="true">
+                    <section class="pq-pane"><div class="pq-pane-h"><div class="pq-pt">🎒 ${L2('Trang bị của Pet', 'Pet equipment')}</div><span class="pq-x l" onclick="pqClose()" aria-label="${L2('Đóng', 'Close')}">✕</span></div>
+                        <div class="pq-pane-b"><div class="flex items-center gap-3"><div id="pqArt"></div><div style="flex:1;min-width:0"><div class="text-xs font-black text-slate-500" id="pqWho"></div><div class="text-sm font-black text-violet-700" id="pqDef"></div><div class="flex gap-1 items-center mt-1 flex-wrap"><input id="pqName" class="pq-in" maxlength="34" value="${escapeHtml(pshDisp(st))}" placeholder="${escapeHtml(pshDef(st))}" oninput="pqCnt()" ${pshRO() ? 'disabled' : ''}><span id="pqCnt" class="pq-stat"></span><button class="ps-chip on" onclick="pqSaveName()">${L2('Lưu tên', 'Save name')}</button><button class="ps-chip" onclick="pqResetName()">${L2('Mặc định', 'Default')}</button></div><div class="mt-1" id="pqChips"></div></div></div>
+                        <div class="pq-h" id="pqInn"></div><div id="pqStats"></div><div class="pq-h">${L2('Ba ô trang bị', 'Three equipment slots')}</div><div class="pq-slots" id="pqSlots"></div></div></section>
+                    <section class="pq-pane"><div class="pq-pane-h"><div class="pq-pt" id="pqRT"></div><span class="pq-x r" onclick="pqClose()" aria-label="${L2('Đóng', 'Close')}">✕</span></div>
+                        <div class="pq-pane-b"><div id="pqRows"></div><div id="pqNone"></div></div></section></div>`;
+                document.body.appendChild(m);
+            }
+            pqSet(m.querySelector('#pqArt'), petArt(sp, f, pk >= 1));
+            pqSet(m.querySelector('#pqWho'), `${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}`);
+            pqSet(m.querySelector('#pqDef'), `${L2('Tên mặc định', 'Default name')}: ${escapeHtml(pshDef(st))}`);
+            pqSet(m.querySelector('#pqChips'), `<span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${escapeHtml(petFormLevelName(f))}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span>`);
+            pqSet(m.querySelector('#pqInn'), `${b.ic} ${escapeHtml(b.n[w])} ${lv >= 0 ? '· ' + L2('Cấp', 'Lv') + ' ' + (lv + 1) + '/7' : '· ' + L2('Nở ở streak 5 để mở nội tại', 'Hatch at streak 5 to unlock')}`);
+            pqSet(m.querySelector('#pqStats'), stats);
+            pqPatch(m.querySelector('#pqSlots'), [0, 1, 2].map(i => ({ k: 's' + i, h: slotH(i) })), pqPop);
+            Array.from(m.querySelectorAll('#pqSlots .pq-slot')).forEach((el, i) => el.classList.toggle('on', pqSlot === i));
+            pqSet(m.querySelector('#pqRT'), `🧺 ${L2('Vật phẩm đã mua', 'Purchased items')} (${owned.length})${pqSlot >= 0 ? ' · ' + L2('đang chọn ô', 'slot') + ' ' + (pqSlot + 1) : ''}`);
+            pqPatch(m.querySelector('#pqRows'), owned.map(o => ({ k: o.it.id, h: rowH(o) })), pqPop);
+            pqSet(m.querySelector('#pqNone'), none ? `<div class="pq-stat mt-2">${owned.length ? L2('Chưa có vật phẩm tương thích với nội tại này. ', 'No owned item is compatible with this innate. ') : L2('Chưa có vật phẩm nào. ', 'No items yet. ')}<button class="ps-chip on" onclick="pqClose();petGoShop('${st.id}')">🛍️ ${L2('Đến cửa hàng', 'Go to shop')}</button></div>` : '');
+            pqPop = ''; pqCnt();
+        }
+        const pqLen = s => Array.from(s).length;
+        window.pqCnt = () => { const i = document.getElementById('pqName'), c = document.getElementById('pqCnt'); if (i && c) { const n = pqLen(i.value); c.textContent = n + '/34'; c.style.color = n > 34 ? '#dc2626' : ''; } };
+        window.pqPick = i => { pqSlot = pqSlot === i ? -1 : i; pqRender(); };
+        async function pqCommit(st, mutate, okVi, okEn) {
+            if (pshRO()) { pshT(L2('Khóa đã lưu trữ chỉ được xem.', 'Archived course is read-only.'), 'error'); return false; }
+            const e0 = st.petEquip, n0 = st.petNick; mutate();
+            const saved = await saveData();
+            if (saved !== true) { if (e0) st.petEquip = e0; else delete st.petEquip; if (n0 !== undefined) st.petNick = n0; else delete st.petNick; pshT(L2('Không lưu được dữ liệu. Thay đổi đã được hoàn nguyên.', 'Could not save data. The change was reverted.'), 'error'); pqRender(); return false; }
+            if (okVi) pshT(L2(okVi, okEn)); window.renderPetView && window.renderPetView(); pqRender(); return true;
+        }
+        window.pqEquip = async id => {
+            const st = pshSt(pqSid), it = PSH_BY[id]; if (!st || !it) return;
+            if (!pshOwned(st, id)) { pshT(L2('Bạn chưa sở hữu vật phẩm này.', 'You do not own this item.'), 'error'); return; }
+            const c = pshCompat(st.petSp, it); if (!c.ok) { pshT(c.why, 'error'); return; }
+            const eq = pshEq(st); if (eq.some(e => e && e.id === id)) { pshT(L2('Vật phẩm này đã được trang bị.', 'Already equipped.'), 'error'); return; }
+            const slot = pqSlot >= 0 ? pqSlot : eq.findIndex(e => !e);
+            if (slot < 0) { pshT(L2('Đã đủ 3 ô. Hãy chọn một ô để thay thế.', 'All 3 slots are full. Pick a slot to replace.'), 'error'); return; }
+            const rec = { id }; if (it.s === 'm' || it.s === 'p') { const sel = document.getElementById('pqp_' + id), p = sel ? +sel.value : NaN; if (!(p >= 0 && p <= (it.s === 'p' ? 5 : 6))) { pshT(L2('Hãy chọn cấp nội tại.', 'Choose an innate level.'), 'error'); return; } rec.p = p; }
+            pqSlot = -1; pqPop = 's' + slot; await pqCommit(st, () => { st.petEquip = Object.assign({}, st.petEquip || {}, { ['s' + slot]: rec }); }, `Đã trang bị “${it.vi}”.`, `Equipped “${it.en}”.`);
+        };
+        window.pqUnequip = async i => { const st = pshSt(pqSid); if (!st) return; { const e = pshEq(st)[i]; pqPop = e ? e.id : ''; } await pqCommit(st, () => { const o = Object.assign({}, st.petEquip || {}); delete o['s' + i]; st.petEquip = o; }, 'Đã tháo trang bị.', 'Item unequipped.'); };
+        window.pqSaveName = async () => {
+            const st = pshSt(pqSid), inp = document.getElementById('pqName'); if (!st || !inp) return; const v = inp.value.trim();
+            if (pqLen(v) > 34) { pshT(L2('Tên tối đa 34 ký tự.', 'Name is limited to 34 characters.'), 'error'); return; }
+            await pqCommit(st, () => { if (!v || v === pshDef(st)) delete st.petNick; else st.petNick = v; }, 'Đã lưu tên Pet.', 'Pet name saved.');
+        };
+        window.pqResetName = async () => { const st = pshSt(pqSid); if (!st) return; const ok = await pqCommit(st, () => { delete st.petNick; }, 'Đã khôi phục tên mặc định.', 'Default name restored.'); const i = document.getElementById('pqName'); if (ok && i) { i.value = pshDisp(st); pqCnt(); } };
+        window.__pshSelfTest = { PSH_IT, PSH_GRP, PSH_ROLE, PSH_GR, pshCompat, petEff, petGiftX, pshArt };
+
         /* ===== Leaderboard: cột Thú cưng + bấm xem nội tại ===== */
         try { Object.assign(translations.vi, { thPet: 'THÚ CƯNG' }); Object.assign(translations.en, { thPet: 'PET' }); } catch (e) {}
         window.petLbCell = sid => {
@@ -12846,7 +13531,7 @@ window.openStudentProfile=function(studentId){
                     : `<div class="pl-bless pl-lock"><div class="pl-bn">${b.ic} ${escapeHtml(b.n[w])}</div><div class="pl-bt">${L2('🥚 Nở ở streak 5 để mở nội tại này.', '🥚 Hatch at streak 5 to unlock this blessing.')}</div></div>`;
                 const P = appData.petBless, logs = ((P && P.log) || []).filter(e => e.sid === st.id).slice(-3).reverse();
                 const logHtml = logs.length ? `<div class="pl-log"><b>${L2('✨ Phúc lành gần đây', '✨ Recent blessings')}</b>${logs.map(e => `<div>${escapeHtml(e.d)} · ${escapeHtml(L2(e.vi, e.en))}</div>`).join('')}</div>` : '';
-                inner = `${petArt(st.petSp, f, pk >= 1)}<div class="pl-form">${escapeHtml(petFormName(st.petSp, f))}</div><div class="pl-chips"><span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span></div>${blessing}${logHtml}`;
+                inner = `${petArt(st.petSp, f, pk >= 1)}<div class="pl-form">${escapeHtml(pshDisp(st))}</div><div class="pl-chips"><span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span></div>${blessing}${logHtml}`;
             }
             const m = document.createElement('div'); m.id = 'petLbModal'; m.className = 'pl-back';
             m.onclick = e => { if (e.target === m) window.petLbClose(); };
@@ -12885,7 +13570,7 @@ window.openStudentProfile=function(studentId){
             { ic: '🐍', n: ['Thủy Triều Hóa Giải', 'Soothing Tide'], t: ['Mỗi lần ghi nhận một buổi vắng: {0}% nhận 1 quà "Đổi một điểm có sẵn thành 8"', 'Each time an absence is recorded: {0}% chance of a "Change existing score to 8" gift'], v: [5, 10, 15, 20, 25, 50, 70].map(x => [x]) },
             { ic: '🦁', n: ['Long Uy Điểm Mười', 'Lion Majesty'], t: ['Mỗi cột Kiểm Tra đạt từ 9 trở lên: {0}% nhận 1 quà "Một điểm 10"', 'Each Test column scored 9 or higher: {0}% chance of a "One score of 10" gift'], v: [0.6, 1, 1.6, 5, 10, 20, 30].map(x => [x]) },
             { ic: '🦎', n: ['Niết Bàn Phúc Lộc', 'Nirvana Blessing'], t: ['Mỗi lần nhận một cột điểm dưới 5: {0}% nhận 1 quà cộng {1} điểm tích lũy', 'Each score column below 5: {0}% chance of a +{1} accumulated-point gift'], v: [5, 10, 20, 30, 40, 50, 70].map(x => [x, 1]) },
-            { ic: '🕷️', n: ['Tinh Thể Khuếch Đại', 'Crystal Amplifier'], t: ['Khi điểm dư phát biểu đúng bằng 1: {0}% khuếch đại ×{1} (nhận thêm +{1} pts)', 'When the speaking surplus is exactly 1: {0}% chance to amplify it ×{1} (bonus +{1} pts)'], v: [[2, 1], [5, 2], [7, 3], [10, 4], [20, 5], [30, 10], [50, 15]] },
+            { ic: '🕷️', n: ['Tinh Thể Khuếch Đại', 'Crystal Amplifier'], t: ['Khi điểm dư phát biểu đúng bằng 1: {0}% nhận thêm +{1} pts', 'When the speaking surplus is exactly 1: {0}% chance of +{1} bonus pts'], v: [[2, 1], [5, 2], [7, 3], [10, 4], [20, 5], [30, 10], [50, 15]] },
             { ic: '🐒', n: ['Thời Khắc Thăng Hoa', 'Moment of Ascension'], t: ['Mỗi lần Cấp độ tăng thêm 1: {0}% nhận 1 quà "Một điểm 10"', 'Each time your Level goes up by 1: {0}% chance of a "One score of 10" gift'], v: [2, 5, 10, 15, 20, 50, 70].map(x => [x]) },
             { ic: '🦇', n: ['Lôi Quang Liên Kết', 'Linked Lightning'], t: ['Mỗi lần ghi nhận điểm 9 liên tiếp hai lần: {0}% nhận 1 quà cộng {1} điểm tích lũy', 'Each time two 9s are recorded in a row: {0}% chance of a +{1} accumulated-point gift'], v: [5, 10, 15, 20, 40, 50, 70].map(x => [x, 1]) },
             { ic: '🐋', n: ['Mạch Sống Nghịch Chuyển', 'Reversing Lifeline'], t: ['Mỗi lần điểm trung bình giảm (tối đa 1 lần/ngày): {0}% nhận +{1} pts', 'Each time your average drops (max once/day): {0}% chance of +{1} pts'], v: [[20, 2], [30, 3], [40, 4], [50, 5], [60, 6], [70, 7], [80, 8]] }
@@ -12920,7 +13605,7 @@ window.openStudentProfile=function(studentId){
             [PM_CH, PM('Pts nhận', 'Pts earned', 'pts', 0, 200, 1)],
             [PM_CH], [PM_CH], [PM_CH], [PM_CH1],
             [PM_CH, PM('Pts tích lũy', 'Bonus pts', 'pts', 0, 100, 1)],
-            [PM_CH, PM('Hệ số nhân', 'Multiplier', '×', 1, 100, 1)],
+            [PM_CH, PM('Pts nhận', 'Pts earned', 'pts', 0, 100, 1)],
             [PM_CH],
             [PM_CH, PM('Pts tích lũy', 'Bonus pts', 'pts', 0, 100, 1)],
             [PM_CH, PM('Pts nhận', 'Pts earned', 'pts', 0, 200, 1)]
@@ -13039,6 +13724,7 @@ window.openStudentProfile=function(studentId){
             return `<div class="mt-4 rounded-xl bg-slate-50 border border-slate-200 p-3"><h3 class="font-black text-slate-800 text-sm mb-2">${L2('✨ Phúc lành gần đây', '✨ Recent blessings')}</h3><div class="grid gap-1 text-[11px] text-slate-700">` + log.map(e => `<div>${escapeHtml(e.d)} · ${escapeHtml(L2(e.vi, e.en))}</div>`).join('') + `</div></div>`;
         };
         const petPd = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        // petMon returns Monday of the week (YYYY-MM-DD), not a calendar month.
         const petMon = ds => { const t = new Date(ds + 'T12:00:00Z'); t.setUTCDate(t.getUTCDate() - ((t.getUTCDay() + 6) % 7)); return t.toISOString().slice(0, 10); };
         const petAdd = (ds, n) => { const t = new Date(ds + 'T12:00:00Z'); t.setUTCDate(t.getUTCDate() + n); return t.toISOString().slice(0, 10); };
         const petDow = ds => new Date(ds + 'T12:00:00Z').getUTCDay();
@@ -13081,13 +13767,13 @@ window.openStudentProfile=function(studentId){
         };
         const petGiveInv = (st, key, kind, n, vi, en) => {
             const P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led[key]) return; led[key] = 1; _petChanged = true;
-            petQueue(st, { k: 'inv', kind, n, vi, en });
+            petQueue(st, { k: 'inv', kind, n: n + petGiftX(st), vi, en });
         };
         // Quạ Kho Báu: xếp hàng một bản sao của món quà vừa quay trúng (giữ nguyên các thuộc tính của quà gốc)
         const petGiveCopy = (st, it, n) => {
             const o = { itemId: it.id, name: it.name || '', isFixed: !!it.isFixed, type: it.type };
             ['targetScore', 'deltaScore', 'matchScore', 'matchOp'].forEach(k => { if (it[k] !== undefined) o[k] = it[k]; });
-            petQueue(st, { k: 'copy', n, item: o, vi: 'kho báu nhân đôi', en: 'double treasure' });
+            petQueue(st, { k: 'copy', n: n + petGiftX(st), item: o, vi: 'kho báu nhân đôi', en: 'double treasure' });
         };
         // Học sinh bấm vào thẻ thú cưng đang vàng → nhận toàn bộ chúc phúc đang chờ, thẻ về trạng thái mặc định
         window.petClaim = function petClaim(sid) {
@@ -13163,7 +13849,7 @@ window.openStudentProfile=function(studentId){
             const cut = petAdd(day, -100); Object.keys(st.petSpentD).forEach(k => { if (k < cut) delete st.petSpentD[k]; });
             if (st.petSp === 8) {
                 const lv = petLv(petPeakOf(st)); if (lv < 0 || !st.petHatch) return;
-                _petChanged = false; petGive(st, 'n:fx:' + petMon(day), Math.min(amt, PET_B[8].v[lv][0]), 'hoàn pts giao dịch đầu tuần', 'first weekly purchase refund');
+                _petChanged = false; petGive(st, 'n:fx:' + petMon(day), Math.min(amt, petEff(st, 8, lv)[0]), 'hoàn pts giao dịch đầu tuần', 'first weekly purchase refund');
             }
         };
         // Kỳ Lân: gọi từ qsTrack khi hạng của học sinh thay đổi (d > 0: lên hạng)
@@ -13173,7 +13859,7 @@ window.openStudentProfile=function(studentId){
                 const st = (appData.students || []).find(x => x.id === sid); if (!st || st.petSp !== 17 || !st.petHatch) return;
                 const lv = petLv(petPeakOf(st)); if (lv < 0) return;
                 try { if (!calculateStudentStats(sid).hasData) return; } catch (e) {}
-                const v = PET_B[17].v[lv], pts = d >= 2 ? v[0] : d <= -1 ? v[1] : 0; if (pts <= 0) return;
+                const v = petEff(st, 17, lv), pts = d >= 2 ? v[0] : d <= -1 ? v[1] : 0; if (pts <= 0) return;
                 _petChanged = false;
                 petGive(st, 'n:ky:' + Date.now() + ':' + Math.random().toString(36).slice(2, 6), pts, d > 0 ? `lên ${d} hạng` : `xuống ${-d} hạng`, d > 0 ? `climbed ${d} rank(s)` : `dropped ${-d} rank(s)`);
                 if (_petChanged) Promise.resolve(saveData()).catch(() => {});
@@ -13190,7 +13876,7 @@ window.openStudentProfile=function(studentId){
                     const gi = (appData.globalShopItems || []).find(i => i && i.id === prize.itemId);
                     // Quà thường (không có loại / cờ "Quà thường – không vào túi") và ô hụt không được nhân đôi
                     if (!gi || !gi.type || ['none', 'regular', 'normal'].includes(String(gi.type).toLowerCase())) return;
-                    if (Math.random() * 100 >= PET_B[21].v[lv21][0]) return;
+                    if (Math.random() * 100 >= petEff(st, 21, lv21)[0]) return;
                     _petChanged = false; petGiveCopy(st, gi, Math.max(1, Math.floor(Number(prize.qty) || 1)));
                     if (_petChanged) Promise.resolve(saveData()).catch(() => {});
                     return;
@@ -13203,7 +13889,7 @@ window.openStudentProfile=function(studentId){
                 // Ghi nhận lần thử ngay sau khi đã xác nhận lượt quay thành công và trúng ô hụt.
                 // Đánh dấu trước khi tung xác suất để cả thành công lẫn thất bại đều chỉ thử một lần/tuần.
                 led['n:sq:' + wk] = 1; _petChanged = true;
-                if (Math.random() * 100 >= PET_B[19].v[lv][0]) { Promise.resolve(saveData()).catch(() => {}); return; }
+                if (Math.random() * 100 >= petEff(st, 19, lv)[0]) { Promise.resolve(saveData()).catch(() => {}); return; }
                 _petChanged = false; petGiveInv(st, 'n:sq:' + wk, 'plus1', 1, 'đền bù "Chúc bạn may mắn lần sau"', 'compensation for "Better luck next time"');
                 if (_petChanged) Promise.resolve(saveData()).catch(() => {});
             } catch (e) { console.warn('petOnWheel', e); }
@@ -13215,7 +13901,7 @@ window.openStudentProfile=function(studentId){
                 petApplyCfg();
                 const st = (appData.students || []).find(x => String(x.id) === String(sid)); if (!st || st.petSp !== 5 || !st.petHatch) return;
                 const lv = petLv(petPeakOf(st)); if (lv < 0) return;
-                const v = PET_B[5].v[lv]; if (Math.random() * 100 >= v[0]) return;
+                const v = petEff(st, 5, lv); if (Math.random() * 100 >= v[0]) return;
                 _petChanged = false;
                 petGiveAccum(st, 'n:gf:' + Date.now() + ':' + Math.random().toString(36).slice(2, 6), v[1], 'kẹo thưởng bất ngờ khi áp dụng quà', 'surprise candy on gift use');
                 if (_petChanged) Promise.resolve(saveData()).catch(() => {});
@@ -13274,7 +13960,7 @@ window.openStudentProfile=function(studentId){
                     if (seen !== cur) { st.petStreakSeen = cur; _petChanged = true; }
                     if (lv < 0) return;
                     if (!st.petHatch) { st.petHatch = today; _petChanged = true; }
-                    const hatch = st.petHatch, sp = st.petSp, v = PET_B[sp].v[lv], cid = st.classId, mine = R[st.id] || {};
+                    const hatch = st.petHatch, sp = st.petSp, v = petEff(st, sp, lv), cid = st.classId, mine = R[st.id] || {};
                     const days = Object.keys(mine).filter(d => d >= hatch && isSched(cid, d)).sort(), att = days.filter(d => attended(cid, mine, d));
                     const points=(EVENTS[st.id]||[]).filter(e=>e.d>=hatch&&!e.abs&&Number.isFinite(e.v));
                     const weekPoints=w=>points.filter(e=>e.d>=w&&e.d<=petAdd(w,6));
@@ -13293,7 +13979,7 @@ window.openStudentProfile=function(studentId){
                         if(sp===24)points.filter(e=>e.raw.isExam&&e.v>=9-1e-9).forEach(e=>chance(st,'n:li:'+e.key,v[0],()=>petGiveInv(st,'n:li:'+e.key,'add10',1,'long uy điểm mười (kiểm tra ≥ 9)','lion majesty (test 9+)')));
                         if(sp===22)points.filter(e=>e.v>=10-1e-9&&!e.raw.isExam).forEach(e=>chance(st,'n:ow10d:'+e.key,v[0],()=>petGiveInv(st,'n:ow10d:'+e.key,'chg9',1,'thiên khải hoàn mỹ (ghi nhận điểm 10)','perfect revelation (a score of 10 recorded)')));
                         if(sp===25)points.filter(e=>e.v<5).forEach(e=>chance(st,'n:ge:'+e.key,v[0],()=>petGiveAccum(st,'n:ge:'+e.key,v[1],'niết bàn phúc lộc (điểm dưới 5)','nirvana blessing (score under 5)')));
-                        if(sp===26)points.filter(e=>spk(e)===MLIM+1).forEach(e=>chance(st,'n:sp:'+e.key,v[0],()=>petGive(st,'n:sp:'+e.key,v[1],`tinh thể khuếch đại ×${v[1]}`,`crystal amplified ×${v[1]}`)));
+                        if(sp===26)points.filter(e=>spk(e)===MLIM+1).forEach(e=>chance(st,'n:sp:'+e.key,v[0],()=>petGive(st,'n:sp:'+e.key,v[1],`tinh thể thưởng +${v[1]} pts`,`crystal bonus +${v[1]} pts`)));
                         // 🐒 Linh Hầu: Cấp độ (XP/50) tăng thêm 1 — mỗi cấp chỉ được tung xác suất một lần
                         if (sp === 27) {
                             const lvNow = Math.floor(xpOf(st.id) / XP_PER_LEVEL) + 1, seenL = Number(st.petLvSeen);
