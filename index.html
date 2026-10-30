@@ -6531,6 +6531,284 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             });
         }
 
+        /* ===== BK ENGINE v4: invisible finalized ranking and idempotent shop audit ===== */
+        // Cảnh báo (dùng hộp xác nhận có sẵn) khi lưu trữ mà còn học sinh chưa có điểm thi cuối kỳ.
+        function bkArchiveWarn(){
+          try{
+            let miss=0;const en=appData.language==='en';
+            for(const cls of appData.classes||[]){
+              const members=(appData.students||[]).filter(st=>String(st.classId)===String(cls.id));
+              if(!members.some(st=>calculateStudentStats(st.id).hasData))continue;
+              miss+=members.filter(st=>{const t=finalExamScores(st).total;return !(t!==null&&t!==undefined&&Number.isFinite(Number(t)))}).length;
+            }
+            if(!miss)return '';
+            return en?`\n\n⚠ ${miss} student(s) have no final-exam score yet, so the final-exam badges (#36–40, #96, #98) will not be awarded for this course.`:`\n\n⚠ Còn ${miss} học sinh chưa có điểm thi cuối kỳ, nên các huy hiệu cuối kỳ (#36–40, #96, #98) sẽ không được trao cho khóa này.`;
+          }catch(e){return ''}
+        }
+        // Chốt hạng tích lũy cuối mỗi tháng của khóa (tự động, không giao diện) cho huy hiệu #35.
+        // Hạng được tính theo điểm tới hết tháng đó, nên chốt muộn vẫn ra đúng kết quả.
+        function bkSnapshotMonths(){
+          try{
+            if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId)return;
+            const y=Number(appData.year),sm=Number(appData.startMonth),mc=Math.min(12,Number(appData.monthCount)||0);
+            if(!y||!sm||!mc)return;
+            const today=bkToday(),pad=n=>String(n).padStart(2,'0'),full=appData.scores||{};
+            const idxOf=key=>{const m=String(key).match(/_(\d{4})-(\d{1,2})-\d{1,2}$/);if(!m)return null;let i=(Number(m[1])*12+Number(m[2]))-(y*12+sm);if(i<0)i+=12;return i};
+            for(let k=0;k<mc;k++){
+              const mi=sm-1+k,yy=y+Math.floor(mi/12),mm=(mi%12)+1,mkey=yy+'-'+pad(mm);
+              if(mkey+'-'+pad(new Date(yy,mm,0).getDate())>=today)break;
+              for(const cls of appData.classes||[]){
+                const members=(appData.students||[]).filter(st=>String(st.classId)===String(cls.id));
+                if(!members.length||members.every(st=>st._badgeMonthRanks&&st._badgeMonthRanks[mkey]!==undefined))continue;
+                const sub={};for(const key of Object.keys(full)){const i=idxOf(key);if(i!==null&&i<=k)sub[key]=full[key]}
+                let ranked;appData.scores=sub;
+                try{
+                  const items=members.map(student=>({student,stats:calculateStudentStats(student.id)}));
+                  ranked=rankAccumulatedStudents(items.filter(x=>x.stats.hasData));
+                }finally{appData.scores=full}
+                const rk=new Map(ranked.map((x,i)=>[String(x.student.id),i+1]));
+                for(const st of members){
+                  st._badgeMonthRanks=st._badgeMonthRanks&&typeof st._badgeMonthRanks==='object'?st._badgeMonthRanks:{};
+                  if(st._badgeMonthRanks[mkey]===undefined)st._badgeMonthRanks[mkey]=rk.get(String(st.id))||null;
+                }
+              }
+            }
+          }catch(e){try{appData.scores=appData.scores}catch(_){}console.warn('Month snapshot skipped',e)}
+        }
+        function bkToday(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+        function bkFinalizeCourse(courseId) {
+          const course=(appData.courseManager?.courses||[]).find(c=>String(c.id)===String(courseId));
+          if(!course)return false; // Lưu trữ khóa = chốt khóa, không phụ thuộc ngày kết thúc
+          const stamp=new Date().toISOString();
+          for(const cls of appData.classes||[]){
+            const members=(appData.students||[]).filter(st=>String(st.classId)===String(cls.id));
+            if(!members.length)continue;
+            if(!members.some(st=>calculateStudentStats(st.id).hasData))continue;
+            const accumulated=rankAccumulatedStudents(members.map(student=>({student,stats:calculateStudentStats(student.id)})));
+            // The existing comparator is the authority for cumulative rankings.
+            const aRank=new Map(accumulated.map((x,i)=>[String(x.student.id),i+1]));
+            const finals=members.map(student=>({student,score:finalExamScores(student).total}));
+            // A final ranking cannot be certified if even one student lacks exam data.
+            const examComplete=finals.every(x=>x.score!==null&&Number.isFinite(Number(x.score)));
+            finals.sort((a,b)=>Number(b.score)-Number(a.score)||String(a.student.id).localeCompare(String(b.student.id)));
+            let prev=null,rank=0;const fRank=new Map();
+            if(examComplete)finals.forEach((x,i)=>{if(prev===null||Math.abs(x.score-prev)>1e-9)rank++;fRank.set(String(x.student.id),rank);prev=x.score});
+            for(const st of members){
+              const id=String(st.id), ar=calculateStudentStats(st.id).hasData?aRank.get(id):null,fr=fRank.get(id);
+              const log=st._badgeRankHistory=Array.isArray(st._badgeRankHistory)?st._badgeRankHistory:[];
+              const key=String(courseId)+':'+String(cls.id);
+              if(!log.some(x=>x&&x.key===key))log.push({key,courseId,classId:cls.id,cumulativeRank:ar,finalRank:examComplete?fr:null,confirmedAt:stamp});
+              if(examComplete){st._badgeCourseClosure=st._badgeCourseClosure||{};st._badgeCourseClosure[courseId]={confirmed:true,courseId,cumulativeRank:ar,finalRank:fr,confirmedAt:stamp};}
+            }
+          }
+          return true;
+        }
+        function bkAuditShopChanges(previous,current){
+          if(!previous||!current||!Array.isArray(current.students))return;
+          const oldMap=new Map((previous.students||[]).map(st=>[String(st.id),st]));
+          for(const st of current.students){
+            const old=oldMap.get(String(st.id));if(!old)continue;
+            const before=Array.isArray(old.inventory)?old.inventory:[],after=Array.isArray(st.inventory)?st.inventory:[];
+            const oldIds=new Set(before.map(x=>String(x.invId||x.id||'')));
+            const newIds=new Set(after.map(x=>String(x.invId||x.id||'')));
+            const ledger=st._badgeShopLedger=Array.isArray(st._badgeShopLedger)?st._badgeShopLedger:[];
+            const seen=new Set(ledger.map(x=>String(x.id)));
+            const add=x=>{if(x.id&&!seen.has(x.id)){ledger.push(x);seen.add(x.id)}};
+            const at=new Date().toISOString();
+            // Record only a provable purchase: new inventory, lower PTS balance,
+            // and a matching catalog price. Do not infer gifts or prize drops as purchases.
+            const fresh=after.filter(x=>x.invId&&!oldIds.has(String(x.invId))&&!x.fromWheel&&!x.fromGacha);
+            const spent=Number(old.rewardPoints)-Number(st.rewardPoints);
+            if(fresh.length>=1&&Number.isFinite(spent)&&spent>0&&fresh.every(x=>String(x.itemId)===String(fresh[0].itemId))){
+              const item=fresh[0],catalog=(current.globalShopItems||[]).find(x=>String(x.id)===String(item.itemId));
+              const price=Number(catalog?.cost??catalog?.price??catalog?.points);
+              if(Number.isFinite(price)&&Math.abs(price*fresh.length-spent)<1e-7)fresh.forEach(it=>add({id:'purchase:'+it.invId,type:'purchase',itemId:it.itemId,status:'completed',amount:price,at}));
+            }
+            // Removed inventory is not proof of use: deletion, transfer and
+            // wheel-ticket consumption must never inflate successful-use badges.
+          }
+        }
+        // Ghi nhận một lượt dùng quà thành công (sau khi lưu thành công) để tính huy hiệu #78/#79. Không có giao diện.
+        // Ghi nhận PTS nhận được từ phúc lành thú cưng (mỗi lần nhận = một bản ghi duy nhất) cho huy hiệu #72–74.
+        window.bkNotePts=function(st,amount,id){
+          try{
+            const n=Number(amount);if(!st||!(n>0))return;
+            const ledger=st._badgeShopLedger=Array.isArray(st._badgeShopLedger)?st._badgeShopLedger:[];
+            if(ledger.some(x=>x&&x.id===id))return;
+            ledger.push({id,type:'pts_earned',amount:n,source:'pet_blessing',status:'completed',at:new Date().toISOString()});
+          }catch(e){console.warn('Badge pts-ledger skipped',e)}
+        };
+        window.bkNoteGiftUse=function(studentId,invItem,pl){
+          try{
+            const st=(appData.students||[]).find(x=>String(x.id)===String(studentId));if(!st||!invItem||!invItem.invId)return;
+            const ledger=st._badgeShopLedger=Array.isArray(st._badgeShopLedger)?st._badgeShopLedger:[];
+            const id='use:'+invItem.invId;if(ledger.some(x=>x&&x.id===id))return;
+            const kind=pl&&pl.kind&&pl.kind!=='plain'?String(pl.kind):'';
+            ledger.push({id,type:'use',itemId:invItem.itemId,effectType:kind,status:'completed',at:new Date().toISOString()});
+            saveData();
+          }catch(e){console.warn('Badge use-ledger skipped',e)}
+        };
+        /* ===== BK ENGINE v3: private counters and evidence-gated awards; no UI ===== */
+        function bkEvaluateAll() {
+          if (!appData || !Array.isArray(appData.students)) return 0;
+          bkSnapshotMonths();
+          let newly=0; const scores=appData.scores||{};
+          const restCache={};
+          const activeId=appData.courseManager?.activeCourseId;
+          const lessonCache={};
+          // A scheduled lesson is confirmed only if its planned date is in the past AND
+          // there is an actual score/attendance record for that class on that date.
+          // Missing lessons are NOT silently counted as successful attendance.
+          function confirmedDates(st){
+            const cid=String(st.classId); if(lessonCache[cid])return lessonCache[cid];
+            const candidates=new Set();
+            try{
+              const course=(appData.courseManager?.courses||[]).find(c=>c.id===activeId);
+              for(const week of (appData.teachingPlans?.[activeId]||[])){
+                const monday=typeof mondayOfDate==='function'?mondayOfDate(week.startDate||course?.startDate||`${Number(week.year)||2026}-01-01`):null;
+                for(const l of (week.lessons||[])){
+                  if(String(l.classId)!==cid||(!l.date&&!monday)||typeof mxIsRestText==='function'&&mxIsRestText(l.content))continue;
+                  const wd=Number(l.weekday);
+                  const date=l.date?String(l.date).slice(0,10):Number.isFinite(wd)&&typeof datePlus==='function'?datePlus(monday,wd===0?6:wd-1):null;
+                  if(date&&/^\d{4}-\d{2}-\d{2}$/.test(date)&&date<=bkToday())candidates.add(date);
+                }
+              }
+            }catch(e){console.warn('Badge lesson schedule skipped',e)}
+            lessonCache[cid]=[...candidates].sort();return lessonCache[cid];
+          }
+          const consecutive=(xs,n,fn)=>{let run=0;for(const x of xs){run=fn(x)?run+1:0;if(run>=n)return true}return false};
+          // Lịch sử quay/hộp quà là dữ liệu toàn cục: chỉ tính các bản ghi thuộc khóa đang hoạt động.
+          const allCourses=appData.courseManager?.courses||[];
+          const activeCourseRec=allCourses.find(c=>String(c.id)===String(activeId));
+          const courseStartMs=allCourses.length>1&&activeCourseRec&&activeCourseRec.createdAt?Date.parse(activeCourseRec.createdAt):NaN;
+          const inCourse=(cid,ms)=>{if(cid!==undefined&&cid!==null&&cid!=='')return String(cid)===String(activeId);return !Number.isFinite(courseStartMs)||!(ms>0)||ms>=courseStartMs};
+          const wheelHistory=(Array.isArray(appData.luckyWheel?.history)?appData.luckyWheel.history:[]).filter(w=>w&&inCourse(w.courseId,Date.parse(w.at)));
+          const boxHistory=(Array.isArray(appData.gacha?.history)?appData.gacha.history:[]).filter(h=>h&&inCourse(h.courseId,Number(h.t)));
+          const isRest=(cid,date)=>{try{if(!restCache[cid])restCache[cid]=typeof window.mxRestDates==='function'?window.mxRestDates(cid):new Set();return restCache[cid].has(date)}catch(_){return false}};
+          const keyDate=k=>{const m=String(k).match(/^(.*)_(\d{4})-(\d{1,2})-(\d{1,2})$/);return m?{id:m[1],date:m[2]+'-'+m[3].padStart(2,'0')+'-'+m[4].padStart(2,'0')}:null};
+          const byStudent={}; Object.entries(scores).forEach(([k,v])=>{const x=keyDate(k);if(!x||!v||v.sg)return;(byStudent[x.id]=byStudent[x.id]||[]).push({key:k,date:x.date,raw:v,ts:Number(v.ts)||0})});
+          const chain=(arr,n,p)=>{let run=0;for(const x of arr){run=p(x)?run+1:0;if(run>=n)return true}return false};
+          const rankDate=st=>st.classId;
+          for(const st of appData.students){
+            const a=(byStudent[st.id]||[]).filter(x=>!isRest(st.classId,x.date)).sort((a,b)=>a.date.localeCompare(b.date)||a.ts-b.ts||a.key.localeCompare(b.key));
+            const grades=a.filter(x=>!x.raw.absent && x.raw.score!==null && x.raw.score!=='' && x.raw.score!==undefined && Number.isFinite(Number(x.raw.score)) && !x.raw.giftNeutral && !x.raw.manual).map(x=>({...x,v:Number(x.raw.score)}));
+            const speak=a.reduce((n,x)=>n+Math.max(0,Number(x.raw.speakingCount)||0),0);
+            const perDay=new Map(); a.forEach(x=>{const n=Math.max(0,Number(x.raw.speakingCount)||0);perDay.set(x.date,Math.max(perDay.get(x.date)||0,n))});
+            const maxSpeak=Math.max(0,...perDay.values());
+            const avg=grades.length?grades.reduce((n,x)=>n+x.v,0)/grades.length:0;
+            const valid=Array(101).fill(false);const set=(i,ok)=>{if(ok)valid[i]=true};
+            [1,5,10,20,30].forEach((v,i)=>set(i+1,grades.filter(x=>x.v>=9.999999).length>=v));
+            [[6,7,5],[7,8,5],[8,9,5],[9,10,5],[10,10,10]].forEach(([i,min,len])=>set(i,chain(grades,len,x=>x.v>=min-1e-6)));
+            set(11,speak>=1);[3,5,10].forEach((n,i)=>set(12+i,maxSpeak>=n));[25,50,100,200].forEach((n,i)=>set(15+i,speak>=n));
+            // Buổi học theo lịch (đã đến ngày). Buổi chưa có dữ liệu sẽ LÀM ĐỨT chuỗi (không biến mất, cũng không khóa mọi huy hiệu buổi học).
+            const scheduled=confirmedDates(st);
+            const todayStr=bkToday();
+            const lessons=scheduled.filter(d=>d<todayStr||a.some(x=>x.date===d)).map(date=>({date,rows:a.filter(x=>x.date===date)}));
+            const attended=l=>l.rows.some(x=>!x.raw.absent);
+            set(19,consecutive(lessons,10,l=>l.rows.some(x=>!x.raw.absent&&Number(x.raw.speakingCount)>=1)));
+            set(20,consecutive(lessons,15,l=>l.rows.some(x=>!x.raw.absent&&Number(x.raw.speakingCount)>=3)));
+            [6,7,8,9,9.5].forEach((v,i)=>set(21+i,grades.length>=5&&avg>=v));
+            if(grades.length>=10){for(let end=10;end<=grades.length;end++){const prev=grades.slice(end-10,end-5).reduce((n,x)=>n+x.v,0)/5;const last=grades.slice(end-5,end).reduce((n,x)=>n+x.v,0)/5;set(26,last-prev>=1-1e-8);set(27,last-prev>=2-1e-8)}}
+            set(28,grades.some((_,i)=>i>=2&&i+3<grades.length&&grades.slice(i-2,i+1).every(x=>x.v<5)&&grades.slice(i+1,i+4).every(x=>x.v>=8)));
+            // ĐTB tích lũy được tính một lần cho mỗi buổi có điểm (theo ngày chấm thực tế, không phụ thuộc lịch giảng dạy).
+            {let sum=0,num=0;const averages=[];
+              for(const d of [...new Set(grades.map(x=>x.date))].sort()){for(const g of grades.filter(x=>x.date===d)){sum+=g.v;num++}averages.push({n:num,avg:sum/num})}
+              set(29,consecutive(averages,10,x=>x.n>=5&&x.avg>=8));
+              set(30,consecutive(averages,15,x=>x.n>=5&&x.avg>=9));
+            }
+            const hasPet=st.petSp!==undefined&&st.petSp!==null;
+            const peak=Math.max(0,Number(st.petPeak)||0);
+            let petLevel=-1;try{if(hasPet)petLevel=petLv(petPeakOf(st))}catch(_){}
+            set(41,hasPet);set(42,hasPet&&!!st.petHatch);
+            for(let i=43;i<=50;i++)set(i,hasPet&&petLevel>=i-42);
+            let best=0;try{const info=tenStreakInfo(st.id);best=Math.max(Number(info.hist)||0,Number(info.peak)||0,Number(info.cur)||0)}catch(_){best=0}
+            [1,5,10,15,20,30,45,60,90,120].forEach((v,i)=>set(51+i,best>=v));
+            // Only read a verified first-positive PTS balance; never confuse current balance with lifetime earnings.
+            set(71,Number(st.rewardPoints)>0);
+            // Kỷ luật: vi phạm đã ghi vẫn tính kể cả khi học sinh nghỉ. Buổi "sạch" phải có mặt và không vi phạm; buổi chưa ghi dữ liệu làm đứt chuỗi.
+            const vdates=new Set((st.violations||[]).filter(v=>v&&v.date).map(v=>String(v.date).slice(0,10)));
+            const clean=lessons.map(l=>({...l,viol:vdates.has(l.date),clean:attended(l)&&!vdates.has(l.date),speaks:l.rows.some(x=>!x.raw.absent&&Number(x.raw.speakingCount)>0)}));
+            [3,5,10,15,20,30].forEach((n,i)=>set(61+i,consecutive(clean,n,l=>l.clean)));
+            set(67,consecutive(clean,5,l=>l.clean&&l.speaks));
+            set(68,consecutive(clean,10,l=>l.clean&&l.speaks));
+            set(69,clean.some((l,i)=>l.viol&&clean.slice(i+1,i+6).length===5&&clean.slice(i+1,i+6).every(x=>x.clean)));
+            // Shop metrics are sourced from durable transactions only; current inventory
+            // and balance cannot establish lifetime purchases or lifetime earned PTS.
+            const shopLedger=Array.isArray(st._badgeShopLedger)?st._badgeShopLedger:[];
+            const shopUnique=[...new Map(shopLedger.filter(x=>x&&x.id&&x.status==='completed').map(x=>[String(x.id),x])).values()];
+            // PTS kiếm được: phần phát biểu vượt mốc (N - M) của mỗi ô điểm trong khóa; chỉ tăng, không giảm khi sửa/xóa ô.
+            const maxSpeakM=parseInt(appData.maxSpeakingLimit)||15;
+            const earnedFromScores=a.reduce((n,x)=>n+(x.raw.manual?0:Math.max(0,(Number(x.raw.speakingCount)||0)-maxSpeakM)),0);
+            const earnedLedger=shopUnique.filter(x=>x.type==='pts_earned').reduce((n,x)=>n+Math.max(0,Number(x.amount)||0),0);
+            const earned=Math.max(earnedFromScores+earnedLedger,Number(st._badgeAudit&&st._badgeAudit.ptsEarned)||0);
+            [50,100,200].forEach((v,i)=>set(72+i,earned>=v));
+            const buys=shopUnique.filter(x=>x.type==='purchase');const uses=shopUnique.filter(x=>x.type==='use');
+            set(75,buys.length>=1);set(76,buys.length>=5);
+            const ownedTypes=new Set(buys.map(x=>String(x.itemId||'')).filter(Boolean));
+            set(77,ownedTypes.size>=5);set(78,uses.length>=10);
+            set(79,new Set(uses.map(x=>x.effectType).filter(Boolean)).size>=3);
+            set(80,ownedTypes.size>=10);
+            // Completed, student-bound lucky-wheel spins only. Free spins never count.
+            const spinIds=new Set();let spins=0;
+            for(const w of wheelHistory){
+              if(!w||String(w.studentId)!==String(st.id)||w.mode!=='student'||w.status!=='completed')continue;
+              const wid=String(w.spinId||'');if(!wid||spinIds.has(wid))continue;
+              spinIds.add(wid);spins++;
+            }
+            [1,5,10,20,30].forEach((v,i)=>set(81+i,spins>=v));
+            // Mystery-box history records one entry per purchase, n boxes in that entry.
+            // Only unique, plausibly valid student-bound entries count.
+            const boxIds=new Set();let boxes=0;
+            for(const h of boxHistory){
+              if(!h||String(h.sid)!==String(st.id))continue;
+              const bid=String(h.id||[h.sid,h.t].join(':'));
+              if(!h.t||boxIds.has(bid))continue;boxIds.add(bid);
+              const qty=Number(h.n);if(Number.isSafeInteger(qty)&&qty>0&&qty<=10)boxes+=qty;
+            }
+            [1,5,10,20].forEach((v,i)=>set(86+i,boxes>=v));
+            set(90,spins>=10&&boxes>=10);
+            // Private audit-only metrics; no UI or new panels.
+            const audit=st._badgeAudit&&typeof st._badgeAudit==='object'?st._badgeAudit:{};
+            if(audit.spins!==spins||audit.boxes!==boxes||audit.ptsEarned!==earned){st._badgeAudit={...audit,spins,boxes,ptsEarned:earned};}
+            // #35: hạng 1 ở 3 lần chốt cuối tháng liên tiếp trong khóa.
+            {const mr=st._badgeMonthRanks||{};set(35,consecutive(Object.keys(mr).sort(),3,k=>mr[k]===1));}
+            // Only finalized, signed-off course records can award final-course badges.
+            const closure=st._badgeCourseClosure?.[activeId];
+            const ranked=Array.isArray(st._badgeRankHistory)?st._badgeRankHistory:[];
+            const finalized=ranked.filter(x=>x&&x.courseId===activeId&&Number.isInteger(x.cumulativeRank)&&x.cumulativeRank>0);
+            if(finalized.length){
+              const bestRank=Math.min(...finalized.map(x=>x.cumulativeRank));
+              set(31,bestRank<=10);set(32,bestRank<=5);set(33,bestRank<=3);set(34,bestRank===1);
+              // A separate finalized course constitutes one snapshot, not each save.
+              set(36,finalized.some(x=>x.finalRank===1));
+              set(37,finalized.some(x=>x.finalRank===2));
+              set(38,finalized.some(x=>x.finalRank===3));
+              set(39,finalized.some(x=>x.cumulativeRank<=3&&Number.isInteger(x.finalRank)&&x.finalRank>0&&x.finalRank<=3));
+              set(40,finalized.some(x=>x.cumulativeRank===1&&x.finalRank===1));
+            }
+            if(closure?.confirmed===true&&closure?.courseId===activeId){
+              set(96,petLevel>=8&&avg>=9);
+              set(98,Number(closure.cumulativeRank)<=3&&Number(closure.finalRank)<=3&&petLevel>=5);
+              set(99,avg>=9&&best>=60&&speak>=100&&consecutive(clean,20,l=>l.clean));
+              set(70,lessons.filter(attended).length>=20&&!(st.violations||[]).some(v=>v&&v.date));
+            }
+            // Composite achievements: no self-reference.
+            const have=i=>!!(st.badges&&st.badges[i])||valid[i];
+            const catCount=new Set(Array.from({length:90},(_,i)=>i+1).filter(have).map(i=>Math.floor((i-1)/10))).size;
+            set(91,catCount>=5);const count90=Array.from({length:90},(_,i)=>i+1).filter(have).length;
+            [25,50,75].forEach((v,i)=>set(92+i,count90>=v));set(95,catCount>=9);
+            set(97,best>=90&&speak>=100);
+            // 96,98,99 need final course closing / ranked snapshots / audited discipline sessions.
+            for(let i=1;i<=99;i++)if(valid[i]&&!(st.badges&&st.badges[i])){
+              st.badges=st.badges||{};st.badges[i]=Date.now();newly++;
+              st._badgeProof=st._badgeProof||{};
+              st._badgeProof[i]={courseId:appData.courseManager?.activeCourseId||null,awardedAt:st.badges[i],engine:'v3'};
+            }
+            if(Array.from({length:99},(_,i)=>i+1).every(have)&&!(st.badges&&st.badges[100])){st.badges=st.badges||{};st.badges[100]=Date.now();newly++;st._badgeProof=st._badgeProof||{};st._badgeProof[100]={courseId:appData.courseManager?.activeCourseId||null,awardedAt:st.badges[100],engine:'v3'}}
+          }
+          return newly;
+        }
+        window.bkRecheck=()=>{if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId)return 0;bkEnsureActiveCourseBadges();const n=bkEvaluateAll();for(const st of (appData.students||[]))bkSaveStudentCourse(st,appData.courseManager?.activeCourseId);if(n)saveData();return n};
         function saveData() {
             if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) {
                 alert(appData.language === 'en' ? 'Archived course is read-only. Return to the active course to make changes.' : 'Khóa đã lưu trữ chỉ được xem. Hãy quay lại khóa hiện tại để chỉnh sửa.');
@@ -6552,6 +6830,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     return Promise.resolve(false);
                 }
             } catch (e) {}
+            try { bkAuditShopChanges(lastPersistedSnapshot,appData); } catch(e) { console.warn('Badge audit skipped:',e); }
+            try { bkEnsureActiveCourseBadges(); bkEvaluateAll(); for(const st of (appData.students||[]))bkSaveStudentCourse(st,appData.courseManager?.activeCourseId); } catch (e) { console.warn('Badge evaluation skipped:',e); }
             const saveSnapshot = deepCopy(appData);
             return set(ref(db, `appDataMultiTeacher/teacherData/${currentTeacherId || LEGACY_TEACHER_ID}`), appData).then(() => { // Lưu đúng nhánh dữ liệu giáo viên chính
                 lastPersistedSnapshot = deepCopy(saveSnapshot);
@@ -10859,6 +11139,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     refreshScoreModalData();
                     return;
                 }
+                try { window.bkNoteGiftUse && window.bkNoteGiftUse(studentId, invItem, pl); } catch (e) {}
                 mxGiftDoneToast(studentId, invItem, pl, dateStr);
                 try { window.petOnGift && window.petOnGift(studentId); } catch (e) {}
             } finally { mxGiftBusy = false; }
@@ -11778,16 +12059,73 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         function readCourseFields(prefix){const name=document.getElementById(prefix+'Name').value.trim();if(!name){alert(appData.language==='en'?'Please enter a course name.':'Vui lòng nhập tên khóa học.');return null;}const startDate=document.getElementById(prefix+'Start').value||'',endDate=document.getElementById(prefix+'End').value||'';if(startDate&&endDate&&endDate<startDate){alert(appData.language==='en'?'End date must be on or after the start date.':'Ngày kết thúc phải bằng hoặc sau ngày bắt đầu.');return null;}return {name,startDate,endDate};}
         window.saveActiveCourseDetails=function(){ensureNewModules();const details=readCourseFields('currentCourse');if(!details)return;const c=activeCourse();if(!c)return;const backup=deepCopy(appData);Object.assign(c,details);saveData().then(ok=>{if(!ok){appData=backup;return;}renderCourseList();lastTeachingCourseId=null;renderTeachingView();alert(appData.language==='en'?'Current course details saved.':'Đã lưu thông tin khóa học hiện tại.');});};
         function courseForm() { const d=readCourseFields('newCourse');if(!d)return null;return {id:'course_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),...d,status:'active',createdAt:new Date().toISOString()}; }
+        /* ===== Badge course isolation v5 (private; no interface) =====
+           Teacher isolation is inherited from the existing teacher-specific Firebase path.
+           Each student keeps independent achievement state keyed by course ID.
+           Legacy unscoped state belongs ONLY to the course active at migration time.
+        */
+        const BK_COURSE_FIELDS = ['badges','_badgeProof','_badgeAudit','_badgeShopLedger','_badgeRankHistory','_badgeCourseClosure','_badgeMonthRanks'];
+        function bkCourseKey(id){ return String(id == null ? 'course_initial' : id); }
+        function bkIsolateStudent(st,courseId,reset){
+          if(!st || typeof st!=='object')return;
+          const key=bkCourseKey(courseId);
+          if(!st._badgeCourses || typeof st._badgeCourses!=='object' || Array.isArray(st._badgeCourses))st._badgeCourses={};
+          const prior=st._badgeCurrentCourseId==null?null:bkCourseKey(st._badgeCurrentCourseId);
+          // Existing data is migrated to its CURRENT course, never copied into another course.
+          if(prior===null){
+            const initial={};
+            for(const f of BK_COURSE_FIELDS)if(st[f]!==undefined)initial[f]=deepCopy(st[f]);
+            st._badgeCourses[key]=initial;
+            st._badgeCurrentCourseId=key;
+          }else if(prior!==key){
+            const saved={};for(const f of BK_COURSE_FIELDS)if(st[f]!==undefined)saved[f]=deepCopy(st[f]);
+            st._badgeCourses[prior]=saved;
+            st._badgeCurrentCourseId=key;
+          }
+          if(!reset && prior===key)return; // Do not overwrite live edits with cached state.
+          if(reset)st._badgeCourses[key]={};
+          const state=st._badgeCourses[key]||{};
+          for(const f of BK_COURSE_FIELDS){
+            if(Object.prototype.hasOwnProperty.call(state,f))st[f]=deepCopy(state[f]);
+            else delete st[f];
+          }
+          st.badges=st.badges||{};
+          bkSaveStudentCourse(st,key);
+        }
+        function bkSaveStudentCourse(st,courseId){
+          if(!st || !st._badgeCourses)return;
+          const key=bkCourseKey(courseId);
+          const state={};for(const f of BK_COURSE_FIELDS)if(st[f]!==undefined)state[f]=deepCopy(st[f]);
+          st._badgeCourses[key]=state;st._badgeCurrentCourseId=key;
+        }
+        function bkEnsureActiveCourseBadges(){
+          const key=bkCourseKey(appData?.courseManager?.activeCourseId);
+          for(const st of (appData?.students||[]))bkIsolateStudent(st,key,false);
+        }
+        window.bkEnsureActiveCourseBadges=bkEnsureActiveCourseBadges;
+        function bkStartFreshCourseBadges(courseId){
+          for(const st of (appData?.students||[])){
+            // Persist prior course data before switching (including copied snapshot students).
+            if(st._badgeCurrentCourseId!=null)bkSaveStudentCourse(st,st._badgeCurrentCourseId);
+            bkIsolateStudent(st,courseId,true);
+          }
+        }
         function createCourseOnlyRecord(c) { c.status='active'; appData.courseManager.courses.forEach(x=>{if(x.id===appData.courseManager.activeCourseId)x.status='archived';}); appData.courseManager.courses.push(c); appData.courseManager.activeCourseId=c.id; if(!appData.teachingPlans[c.id])appData.teachingPlans[c.id]=[]; }
         window.createCourseOnly = function(){ archiveAndStartCourse(); };
-        window.archiveAndStartCourse = async function(){ ensureNewModules(); const c=courseForm(); if(!c)return; const old=activeCourse(); const name=old?.name|| (appData.language==='en'?'the current course':'khóa hiện tại'); const ok=await showAppConfirm(appData.language==='en'?`Archive “${name}” as a complete read-only snapshot and start “${c.name}” with clean scores? Classes and student identities will be retained.`:`Lưu trữ “${name}” thành bản chụp chỉ đọc và bắt đầu “${c.name}” với điểm số mới? Danh sách lớp và mã học sinh sẽ được giữ lại.`); if(!ok)return;
+        window.archiveAndStartCourse = async function(){ ensureNewModules(); const c=courseForm(); if(!c)return; const old=activeCourse(); const name=old?.name|| (appData.language==='en'?'the current course':'khóa hiện tại'); const ok=await showAppConfirm((appData.language==='en'?`Archive “${name}” as a complete read-only snapshot and start “${c.name}” with clean scores? Classes and student identities will be retained.`:`Lưu trữ “${name}” thành bản chụp chỉ đọc và bắt đầu “${c.name}” với điểm số mới? Danh sách lớp và mã học sinh sẽ được giữ lại.`)+bkArchiveWarn()); if(!ok)return;
           const backup=deepCopy(appData); const previousId=appData.courseManager.activeCourseId;
           try {
-            if(old){const snapshot=deepCopy(appData);delete snapshot.courseManager;delete snapshot.teachingPlans;delete snapshot.studentNotes;old.snapshot=snapshot;old.teachingPlanSnapshot=deepCopy((appData.teachingPlans||{})[old.id]||[]);old.studentNotesSnapshot=deepCopy(appData.studentNotes||{});old.status='archived';old.archivedAt=new Date().toISOString();}
+            if(old){bkEnsureActiveCourseBadges();try{bkFinalizeCourse(old.id);bkEvaluateAll()}catch(e){console.warn('Badge finalization skipped',e)}const snapshot=deepCopy(appData);delete snapshot.courseManager;delete snapshot.teachingPlans;delete snapshot.studentNotes;old.snapshot=snapshot;old.teachingPlanSnapshot=deepCopy((appData.teachingPlans||{})[old.id]||[]);old.studentNotesSnapshot=deepCopy(appData.studentNotes||{});old.status='archived';old.archivedAt=new Date().toISOString();}
             const shouldCopy=document.getElementById('copyPreviousCourseClasses')?.checked;let sourceCourse=null;if(shouldCopy&&c.startDate){sourceCourse=appData.courseManager.courses.filter(x=>x.id!==c.id&&x.startDate&&x.endDate&&x.endDate<c.startDate).sort((a,b)=>b.endDate.localeCompare(a.endDate))[0]||null;}const sourceSnapshot=sourceCourse?.snapshot;if(sourceSnapshot){appData.classes=deepCopy(sourceSnapshot.classes||appData.classes||[]);appData.students=deepCopy(sourceSnapshot.students||appData.students||[]);}
             appData.courseManager.courses.push(c);appData.courseManager.activeCourseId=c.id;
             appData.scores={};appData.finalExams={};appData.teachingPlans=appData.teachingPlans||{};appData.teachingPlans[c.id]=[];appData.studentNotes={};
-            appData.students=(appData.students||[]).map(st=>({...st,rewardPoints:0,inventory:[],violations:[],courseNotes:'',sgAwarded:[]}));appData.sgLedger={cells:{},gifts:{},chains:{}};
+            appData.students=(appData.students||[]).map(st=>{const n={...st,rewardPoints:0,inventory:[],violations:[],courseNotes:'',sgAwarded:[]};
+              /* Khóa mới: thú cưng, kỷ lục streak, mốc chốt streak và phiếu vật phẩm đều bắt đầu lại từ đầu (chỉ giữ danh sách lớp/học sinh). */
+              ['petSp','petNick','petName','petHatch','petPeak','petItems','petEquip','petSpent','petSpentD','petBuys','petStreakSeen','petStreakLossCount','petShown','petLvSeen','petAvgSeen','bestTenStreak','streakFloor','itemTickets','itemTicketHistory','itemTicketWeekly'].forEach(k=>{delete n[k]});
+              return n;});
+            appData.petBless={led:{},log:[],recv:{},pend:{}};
+            if(appData.gacha&&typeof appData.gacha==='object'){appData.gacha.st={};appData.gacha.history=[];}
+            bkStartFreshCourseBadges(c.id);appData.sgLedger={cells:{},gifts:{},chains:{}};
             if(/^\d{4}-\d{2}-\d{2}/.test(c.startDate||'')){appData.year=parseInt(c.startDate.slice(0,4));appData.startMonth=parseInt(c.startDate.slice(5,7));if(/^\d{4}-\d{2}-\d{2}/.test(c.endDate||'')){const span=(parseInt(c.endDate.slice(0,4))*12+parseInt(c.endDate.slice(5,7)))-(appData.year*12+appData.startMonth)+1;if(span>=1&&span<=12)appData.monthCount=span;}appData.yearKeysFixed=true;try{const ms=document.getElementById('startMonthSelect'),mc=document.getElementById('monthCountSelect'),ys=document.getElementById('startYearSelect');if(ms)ms.value=appData.startMonth;if(mc)mc.value=appData.monthCount||3;if(ys){const yv=String(appData.year);if(![...ys.options].some(o=>o.value===yv))ys.add(new Option(yv,yv));ys.value=yv;}}catch(e){}}
             appData.courseManager.courses.forEach(x=>{if(x.id!==c.id&&x.status==='active')x.status='archived';});
           } catch(err){appData=backup;console.error(err);alert(appData.language==='en'?'Could not prepare the new course. No changes were saved.':'Không thể chuẩn bị khóa mới. Chưa có thay đổi nào được lưu.');return;}
@@ -11807,7 +12145,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
           if(lbl)lbl.textContent=appData.language==='en'?'Students':'Tỉ Số';
           if(num&&num.textContent!==String(n)){num.textContent=String(n);num.classList.remove('scb-pop');void num.offsetWidth;num.classList.add('scb-pop');}
         }
-        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);scbUpdate(arr.length);box.className=rosterViewMode('students')==='list'?'roster-list grid grid-cols-1 gap-2 content-start':'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start';rosterViewApply('students');box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':ctCls(st)}">${xfBdayFx(st)}${xfBdayToday(st)?'':ctFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar"><span class="ra-ico" style="animation-delay:${raDelay(st.id)}">${escapeHtml(st.icon||'🎓')}</span></div><div class="min-w-0 flex-1 rs-body"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3 rs-acts"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="ctOpenPicker('${st.id}')" aria-label="${appData.language==='en'?'Card template':'Mẫu thẻ'}" title="${appData.language==='en'?'Choose card template':'Chọn template thẻ'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 text-xs"><i class="fa-solid fa-palette"></i></button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
+        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);scbUpdate(arr.length);box.className=rosterViewMode('students')==='list'?'roster-list grid grid-cols-1 gap-2 content-start':'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start';rosterViewApply('students');box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':ctCls(st)}">${xfBdayFx(st)}${xfBdayToday(st)?'':ctFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar"><span class="ra-ico" style="animation-delay:${raDelay(st.id)}">${escapeHtml(st.icon||'🎓')}</span></div><div class="min-w-0 flex-1 rs-body"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3 rs-acts"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="ctOpenPicker('${st.id}')" aria-label="${appData.language==='en'?'Card template':'Mẫu thẻ'}" title="${appData.language==='en'?'Choose card template':'Chọn template thẻ'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 text-xs"><i class="fa-solid fa-palette"></i></button><button onclick="bkOpen('${st.id}')" aria-label="${appData.language==='en'?'Badge book':'Sổ huy hiệu'}" title="${appData.language==='en'?'Badge collection book':'Sổ sưu tầm huy hiệu'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs"><i class="fa-solid fa-medal"></i></button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
         window.openStudentProgress=function(studentId){ensureNewModules();const st=appData.students.find(x=>String(x.id)===String(studentId));if(!st)return;window.studentProgressViewingId=String(studentId);document.getElementById('studentProgressTitle').innerText=(st.icon||'🎓')+' '+getStudentDisplayName(st)+' · '+(appData.language==='en'?'Progress profile':'Hồ sơ tiến độ');window.renderStudentProgress();showModuleModal('studentProgressModal');};
 window.closeStudentProgress=function(){hideModuleModal('studentProgressModal');};
 window.renderStudentProgress=function(){
@@ -14323,6 +14661,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                     if (it.k === 'pts') {
                         const tg = it.to ? (appData.students || []).find(x => x.id === it.to) : st; if (!tg) return;
                         tg.rewardPoints = (tg.rewardPoints || 0) + it.pts;
+                        try { window.bkNotePts && window.bkNotePts(tg, it.pts, 'bless:' + Date.now() + ':' + Math.random().toString(36).slice(2, 8)); } catch (e) {}
                         const toTxt = it.to ? ' → ' + getStudentDisplayName(tg) : '';
                         petLog(P, st, `${it.vi} (+${it.pts} pts${toTxt})`, `${it.en} (+${it.pts} pts${toTxt})`);
                         parts.push(`+${it.pts} pts${toTxt}`);
@@ -14811,7 +15150,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
         function ctProfileSection(st, isArchived) {
             const id = xfEsc(st.id), t = ctGet(st);
             const btn = isArchived ? '' : `<button type="button" onclick="ctOpenPicker('${id}')" class="mt-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-3 py-2 text-xs font-bold">${L2('Chọn template', 'Choose template')}</button>`;
-            return `<section class="mt-4 rounded-xl border border-fuchsia-200 bg-fuchsia-50 p-3"><h3 class="font-bold text-sm text-fuchsia-700">🎨 ${L2('Mẫu thẻ học sinh', 'Student card template')}</h3><p class="text-xs mt-1 text-slate-600">${t ? t.ic + ' ' : ''}${xfEsc(ctName(t))}</p>${btn}</section>`;
+            return `<section class="mt-4 rounded-xl border border-fuchsia-200 bg-fuchsia-50 p-3"><h3 class="font-bold text-sm text-fuchsia-700">🎨 ${L2('Mẫu thẻ học sinh', 'Student card template')}</h3><p class="text-xs mt-1 text-slate-600">${t ? t.ic + ' ' : ''}${xfEsc(ctName(t))}</p>${btn}<button type="button" onclick="bkOpen('${id}')" class="mt-2 ml-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 text-xs font-bold">🏅 ${L2('Sổ huy hiệu', 'Badge book')}</button></section>`;
         }
         window.ctClosePicker = function () { const w = document.getElementById('ctPicker'); if (w) w.remove(); };
         window.ctOpenPicker = function (id) {
@@ -15200,7 +15539,7 @@ html.mx-dark .gc-bar{background:#334155}
     const g=G();const s=g.st[st.id]=Object.assign({p5:0,p4:0,gu:false,total:0},g.st[st.id]);
     const before=deepCopy({pts:st.rewardPoints,inventory:st.inventory,gs:g.st[st.id],history:g.history,tickets:st.itemTickets,ticketHistory:st.itemTicketHistory});st.rewardPoints=(st.rewardPoints||0)-need;if(!Array.isArray(st.inventory))st.inventory=[];
     const res=[];let awardedTickets=0;for(let i=0;i<n;i++){const r=pullOne(s,c);if(r.key==='mx_item_ticket'){awardedTickets+=(r.star===5?r.n:1);}else itemsOf(r).forEach(it=>st.inventory.push(it));res.push(r);}if(awardedTickets){st.itemTickets=Math.max(0,Math.floor(Number(st.itemTickets)||0))+awardedTickets;st.itemTicketHistory=Array.isArray(st.itemTicketHistory)?st.itemTicketHistory:[];st.itemTicketHistory.push({id:'gacha_'+Date.now()+'_'+Math.random().toString(36).slice(2),type:'mystery_box_reward',amount:awardedTickets,after:st.itemTickets,source:'gacha',at:new Date().toISOString()});}
-    g.history.push({sid:st.id,t:Date.now(),n,stars:res.map(r=>r.star),g:res.map(r=>({star:r.star,key:r.key,n:r.star===5?r.n:1}))});if(g.history.length>1000)g.history.splice(0,g.history.length-1000);
+    g.history.push({sid:st.id,t:Date.now(),courseId:(appData.courseManager&&appData.courseManager.activeCourseId)||null,n,stars:res.map(r=>r.star),g:res.map(r=>({star:r.star,key:r.key,n:r.star===5?r.n:1}))});if(g.history.length>1000)g.history.splice(0,g.history.length-1000);
     busy=true;const sid=st.id;$('gcStatus').textContent=T('Đang mở hộp...','Opening...');
     $('gcBtn1').disabled=$('gcBtn10').disabled=true;
     let saved=false;try{saved=await saveData()===true;}catch(e){console.warn(e);}if(!saved){st.rewardPoints=before.pts;st.inventory=before.inventory;st.itemTickets=before.tickets;st.itemTicketHistory=before.ticketHistory;g.st[st.id]=before.gs;g.history=before.history;busy=false;$('gcBtn1').disabled=$('gcBtn10').disabled=false;toast(T('Không lưu được hộp quà, đã hoàn nguyên.','Mystery box save failed; reverted.'),'error');renderGachaView();return;}
@@ -16393,6 +16732,315 @@ html.mx-dark .ctl-chips .ctl-chip.live{color:#fff;background:var(--c)}
  if(document.readyState!=='loading')wrap();else document.addEventListener('DOMContentLoaded',wrap);
 })();
 </script>
+<!-- ===== BK: SỔ SƯU TẦM HUY HIỆU (100 huy hiệu, sổ lật trang) — chỉ hiển thị, chưa có logic nhận huy hiệu ===== -->
+<style id="bkCss">
+.bk-ov{position:fixed;inset:0;z-index:9600;display:flex;align-items:center;justify-content:center;padding:10px;background:rgba(8,6,16,.84);backdrop-filter:blur(4px)}
+.bk-card{position:relative;width:min(1120px,100%);height:min(96vh,880px);display:flex;flex-direction:column;gap:9px;padding:14px 16px 12px;border-radius:22px;background:linear-gradient(160deg,#1c1410,#0b0b10);border:1px solid #3f2d1c;box-shadow:0 30px 80px rgba(0,0,0,.6);color:#f5e9d3}
+.bk-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.bk-top h3{margin:0;font-weight:900;font-size:1.15rem}.bk-top small{display:block;opacity:.65;font-size:.72rem;font-weight:600}
+.bk-btn{border:1px solid #5b4630;background:#2a1f15;color:#f5e9d3;border-radius:999px;padding:.35rem .85rem;font-size:.72rem;font-weight:800;cursor:pointer;transition:.15s}
+.bk-btn:hover{background:#3b2b1c;transform:translateY(-1px)}.bk-btn.on{background:#d9a520;color:#2b1a05;border-color:#fcd34d}
+.bk-prog{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding:0 4px}.bk-prog b{font-size:1rem;font-weight:900}.bk-prog small{display:block;opacity:.65;font-size:.72rem}.bk-prog em{font-style:normal;font-weight:900;font-size:1.4rem;color:#f5c542}
+.bk-bar{height:7px;border-radius:9px;background:#26201a;overflow:hidden;margin-top:-3px}.bk-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#d9a520,#fde68a);transition:width .5s}
+.bk-flt{display:flex;gap:8px;flex-wrap:wrap}.bk-flt select{flex:1 1 220px;background:#15110d;color:#f5e9d3;border:1px solid #4a3827;border-radius:999px;padding:.4rem .9rem;font-size:.8rem;font-weight:700}
+.bk-tabs{display:flex;flex:2 1 300px;background:#15110d;border-radius:999px;padding:3px;border:1px solid #4a3827}.bk-tabs button{flex:1;border:0;background:none;color:#a89880;font-weight:800;font-size:.8rem;border-radius:999px;cursor:pointer;padding:.3rem}.bk-tabs button.on{background:#3a2c1d;color:#fff}
+.bk-book{position:relative;flex:1;min-height:0;display:flex;padding:10px;border-radius:18px;background:linear-gradient(135deg,#6b4423,#3a2412);box-shadow:inset 0 0 0 2px #9a6a30,0 10px 30px rgba(0,0,0,.5)}
+.bk-in{position:relative;flex:1;display:flex;min-width:0;perspective:2600px}
+.bk-in:after{content:"";position:absolute;left:50%;top:0;bottom:0;width:26px;margin-left:-13px;background:linear-gradient(90deg,transparent,rgba(70,40,15,.45),transparent);pointer-events:none;z-index:9}
+.bk-book.one .bk-in:after{display:none}
+.bk-pg{flex:1;min-width:0;position:relative;display:flex;flex-direction:column;padding:12px 14px 8px;overflow:hidden;background:linear-gradient(90deg,#f6ead0,#efdcb4);color:#3b2a14}
+.bk-L{border-radius:12px 0 0 12px;box-shadow:inset -24px 0 30px -20px rgba(90,58,30,.5)}.bk-R{border-radius:0 12px 12px 0;box-shadow:inset 24px 0 30px -20px rgba(90,58,30,.5)}
+.bk-book.one .bk-L{display:none}.bk-book.one .bk-R{border-radius:12px}
+.bk-leaf{position:absolute;top:0;bottom:0;width:50%;transform-style:preserve-3d;z-index:8}
+.bk-leaf.fwd{left:50%;transform-origin:left center}.bk-leaf.back{left:0;transform-origin:right center}.bk-leaf.one{left:0;width:100%;transform-origin:left center}
+.bk-leaf>.bk-pg{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}.bk-leaf>.bk-bk{transform:rotateY(180deg)}
+.bk-ph{display:flex;justify-content:space-between;align-items:center;gap:6px;font-weight:900;font-size:.8rem;color:#6b4423;border-bottom:2px dashed #c9a56a;padding-bottom:6px;margin-bottom:8px}.bk-ph span:last-child{font-size:.68rem;opacity:.7}
+.bk-gr{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,minmax(0,1fr));gap:10px}
+.bk-pn{text-align:center;font-size:.68rem;font-weight:800;color:#a07a45;padding-top:5px}
+.bk-c{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px 7px;min-height:0;overflow:hidden;border-radius:14px;background:rgba(255,255,255,.55);border:1px solid #d8bd8a;cursor:pointer;color:#3b2a14;text-align:center;transition:transform .18s,box-shadow .18s,background .18s}
+.bk-c:hover{transform:translateY(-3px) scale(1.02);background:#fff;box-shadow:0 8px 18px rgba(90,58,30,.28)}
+.bk-e{border-radius:14px;border:1px dashed #d8bd8a;opacity:.5}
+.bk-art{position:relative;flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}.bk-art svg{height:100%;max-height:120px;aspect-ratio:1}
+.bk-no{font-size:.66rem;font-weight:800;color:#8a6a3a}.bk-nm{font-size:.76rem;line-height:1.15;font-weight:900}
+.bk-cd{font-size:.62rem;line-height:1.2;color:#6d5836;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bk-s{font-size:.64rem;font-weight:900;color:#15803d}.bk-c.lk .bk-s{color:#9a8866}
+.bk-rt{position:absolute;top:5px;right:6px;font-style:normal;font-size:.54rem;font-weight:900;padding:1px 6px;border-radius:9px;color:#fff;background:#64748b}
+.bk-c.r1 .bk-rt{background:#2563eb}.bk-c.r2 .bk-rt{background:#9333ea}.bk-c.r3 .bk-rt{background:#d97706}.bk-c.r4 .bk-rt{background:linear-gradient(90deg,#db2777,#7c3aed)}
+.bk-c.lk .bk-art svg{filter:grayscale(1) brightness(.55) contrast(.9)}.bk-c.lk .bk-rt{opacity:.55}
+.bk-lock{position:absolute;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(40,30,20,.78);color:#f5e9d3;font-size:.8rem}
+.bk-c.on.r2 .bk-art svg{filter:drop-shadow(0 0 5px rgba(168,85,247,.6))}
+.bk-c.on.r3 .bk-art svg{animation:bkGl 2.4s ease-in-out infinite}.bk-c.on.r4 .bk-art svg{animation:bkGm 3.2s linear infinite}
+@keyframes bkGl{0%,100%{filter:drop-shadow(0 0 3px rgba(251,191,36,.5))}50%{filter:drop-shadow(0 0 10px rgba(251,191,36,.95))}}
+@keyframes bkGm{0%{filter:drop-shadow(0 0 7px rgba(236,72,153,.85)) hue-rotate(0)}100%{filter:drop-shadow(0 0 7px rgba(236,72,153,.85)) hue-rotate(360deg)}}
+.bk-sp polygon{transform-box:fill-box;transform-origin:center;animation:bkTw 1.8s ease-in-out infinite}@keyframes bkTw{0%,100%{opacity:.15;transform:scale(.4)}50%{opacity:1;transform:scale(1.1)}}
+.bk-nav{position:absolute;top:50%;z-index:12;width:38px;height:38px;margin-top:-19px;border-radius:50%;border:2px solid #fcd34d;background:#2b1a05;color:#fde68a;cursor:pointer;font-size:.9rem;transition:.15s}.bk-nav:hover{transform:scale(1.1);background:#3f2a0c}.bk-nav:disabled{opacity:.25;cursor:default;transform:none}
+.bk-nav.p{left:-8px}.bk-nav.n{right:-8px}
+.bk-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.7rem;font-weight:800;color:#c9b594}
+.bk-lg{display:flex;gap:10px;flex-wrap:wrap}.bk-lg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.bk-det{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:14px;border-radius:22px;background:rgba(8,6,16,.78)}
+.bk-dbox{position:relative;width:min(420px,100%);padding:20px;text-align:center;border-radius:20px;background:linear-gradient(160deg,#f6ead0,#e8d3a4);color:#3b2a14;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.bk-dbox svg{width:190px;height:190px}.bk-dbox h4{margin:6px 0 2px;font-size:1.2rem;font-weight:900}.bk-dbox p{margin:4px 0;font-size:.85rem}.bk-dbox .bk-rt{position:static;display:inline-block;font-size:.66rem;padding:2px 10px;background:#64748b}
+.bk-dbox .bk-rt.r1{background:#2563eb}.bk-dbox .bk-rt.r2{background:#9333ea}.bk-dbox .bk-rt.r3{background:#d97706}.bk-dbox .bk-rt.r4{background:linear-gradient(90deg,#db2777,#7c3aed)}
+.bk-dbox.lk svg{filter:grayscale(1) brightness(.55)}
+@media (max-height:780px){.bk-cd{display:none}.bk-card{padding:10px 12px}}
+@media (max-width:859px){.bk-gr{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,minmax(0,1fr))}.bk-nav.p{left:-4px}.bk-nav.n{right:-4px}.bk-cd{display:none}}
+@media (prefers-reduced-motion:reduce){.bk-sp polygon,.bk-c.on .bk-art svg{animation:none!important}}
+</style>
+<script id="bkJs">
+(function(){
+const SP=(n,r1,r2,cx=50,cy=50,rot=-90)=>{const p=[];for(let i=0;i<n*2;i++){const a=(rot+i*180/n)*Math.PI/180,r=i%2?r2:r1;p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1))}return p.join(' ')};
+const Y='#fbbf24',O='#f97316',R='#ef4444',B='#3b82f6',G='#22c55e',P='#a855f7',K='#64748b',C='#22d3ee',N='#92400e',D='#27272a';
+const tx=(s,x,y,z,f=D,st=0)=>`<text x="${x}" y="${y}" font-size="${z}" font-weight="900" text-anchor="middle" fill="${f}" ${st?`stroke="${D}" stroke-width="${st}" paint-order="stroke"`:'stroke="none"'} font-family="Nunito,Arial,sans-serif">${s}</text>`;
+/* ===== Thư viện biểu tượng vẽ tay (SVG, hệ toạ độ 100x100) ===== */
+const E={
+star:c=>`<polygon fill="${c||Y}" points="${SP(5,29,12,50,53)}"/><polygon fill="#fff" opacity=".55" stroke="none" points="${SP(5,12,6,50,53)}"/>`,
+gem:c=>`<path fill="${c||C}" d="M28 40L38 28H62L72 40L50 74Z"/><path fill="none" stroke-width="1.8" d="M28 40H72M38 28L44 40L50 28L56 40L62 28M44 40L50 74L56 40"/><path fill="#fff" opacity=".6" stroke="none" d="M35 38L40 31L44 38Z"/>`,
+crown:c=>`<path fill="${c||Y}" d="M26 68L24 34L39 50L50 28L61 50L76 34L74 68Z"/><rect x="26" y="68" width="48" height="8" rx="2" fill="${O}"/><circle cx="24" cy="33" r="3.5" fill="${R}"/><circle cx="50" cy="27" r="3.5" fill="${B}"/><circle cx="76" cy="33" r="3.5" fill="${G}"/><circle cx="50" cy="58" r="4" fill="${R}"/>`,
+gear:t=>`<polygon fill="${K}" points="${SP(10,29,22)}"/><circle cx="50" cy="50" r="16" fill="#e2e8f0"/>${tx(t||'10',50,56,17)}`,
+trophy:c=>`<path fill="none" stroke-width="4" d="M33 34H25C25 46 31 52 38 52M67 34H75C75 46 69 52 62 52"/><path fill="${c||Y}" d="M32 26H68V44C68 56 60 62 50 62C40 62 32 56 32 44Z"/><rect x="45" y="62" width="10" height="8" fill="${c||Y}"/><rect x="34" y="70" width="32" height="8" rx="2" fill="${N}"/><polygon fill="#fff" opacity=".7" stroke="none" points="${SP(5,8,3.5,50,43)}"/>`,
+medal:c=>`<path fill="${R}" d="M34 22H50V46L40 40L34 46Z"/><path fill="${B}" d="M50 22H66V46L60 40L50 46Z"/><circle cx="50" cy="60" r="17" fill="${c||Y}"/><circle cx="50" cy="60" r="11" fill="none" stroke-width="1.6"/><polygon fill="#fff" stroke-width="1.4" points="${SP(5,8,3.4,50,61)}"/>`,
+ten:()=>tx('10',50,62,42,Y,5)+`<path fill="none" stroke="${Y}" stroke-width="3.5" d="M28 72Q50 82 72 72"/>`,
+galaxy:()=>`<ellipse cx="50" cy="50" rx="30" ry="10" fill="${P}" transform="rotate(35 50 50)"/><ellipse cx="50" cy="50" rx="30" ry="10" fill="${B}" opacity=".85" transform="rotate(-35 50 50)"/><circle cx="50" cy="50" r="10" fill="${Y}"/><circle cx="30" cy="30" r="2.5" fill="#fff" stroke="none"/><circle cx="72" cy="72" r="2.5" fill="#fff" stroke="none"/><circle cx="74" cy="28" r="2" fill="#fff" stroke="none"/>`,
+mic:c=>`<rect x="40" y="22" width="20" height="32" rx="10" fill="${c||K}"/><path fill="none" stroke-width="1.6" d="M40 34H60M40 42H60"/><path fill="none" stroke-width="3.4" d="M32 46C32 66 68 66 68 46M50 64V76M40 76H60"/>`,
+bubble:()=>`<path fill="#fff" d="M24 30H76V62H56L42 76V62H24Z"/><circle cx="38" cy="46" r="3.5" fill="${D}"/><circle cx="50" cy="46" r="3.5" fill="${D}"/><circle cx="62" cy="46" r="3.5" fill="${D}"/>`,
+mega:()=>`<path fill="${R}" d="M30 42L64 26V74L30 58Z"/><rect x="20" y="42" width="14" height="16" rx="3" fill="${K}"/><path fill="none" stroke-width="3.4" d="M70 40Q78 50 70 60M74 32Q88 50 74 68"/>`,
+speaker:()=>`<path fill="${K}" d="M24 42H38L56 28V72L38 58H24Z"/><path fill="none" stroke-width="3.4" d="M64 40Q72 50 64 60M70 32Q84 50 70 68"/>`,
+target:()=>`<circle cx="50" cy="52" r="26" fill="#fff"/><circle cx="50" cy="52" r="18" fill="${R}"/><circle cx="50" cy="52" r="10" fill="#fff"/><circle cx="50" cy="52" r="4" fill="${R}"/><path fill="none" stroke-width="3.5" d="M50 52L78 24"/><path fill="${Y}" d="M70 30L78 22L84 24L82 18L76 16L78 22"/>`,
+bolt:()=>`<polygon fill="${Y}" points="56,20 32,54 47,54 41,80 68,44 52,44"/>`,
+flame:c=>`<path fill="${c||O}" d="M50 20C54 34 70 40 68 58C66 72 58 78 50 78C40 78 32 70 33 58C34 48 42 46 44 36C46 40 48 34 50 20Z"/><path fill="${Y}" stroke="none" d="M50 50C54 58 60 60 58 68C57 73 53 75 50 75C46 75 42 72 43 66C44 60 49 58 50 50Z"/>`,
+comet:()=>`<path fill="${C}" d="M22 78L52 46L58 52Z"/><path fill="#a5f3fc" stroke="none" d="M30 78L56 52L60 56Z"/><polygon fill="${Y}" points="${SP(5,18,8,62,40)}"/>`,
+sprout:()=>`<path fill="${G}" d="M50 56C36 58 28 48 28 36C42 36 50 44 50 56Z"/><path fill="#16a34a" d="M50 48C50 36 58 28 72 28C72 42 62 50 50 48Z"/><path fill="none" stroke-width="3.4" d="M50 76V50"/><ellipse cx="50" cy="76" rx="18" ry="5" fill="${N}"/>`,
+clover:()=>`<circle cx="41" cy="41" r="11" fill="${G}"/><circle cx="59" cy="41" r="11" fill="${G}"/><circle cx="41" cy="59" r="11" fill="${G}"/><circle cx="59" cy="59" r="11" fill="${G}"/><circle cx="50" cy="50" r="5" fill="#16a34a"/><path fill="none" stroke-width="3.4" d="M50 66Q52 76 60 80"/>`,
+rocket:()=>`<path fill="#fff" d="M50 18C62 28 64 50 60 62H40C36 50 38 28 50 18Z"/><circle cx="50" cy="40" r="6" fill="${C}"/><path fill="${R}" d="M40 52L28 66L40 62ZM60 52L72 66L60 62Z"/><path fill="${O}" d="M44 64H56L50 80Z"/>`,
+chart:()=>`<rect x="26" y="54" width="12" height="20" fill="${B}"/><rect x="44" y="44" width="12" height="30" fill="${G}"/><rect x="62" y="34" width="12" height="40" fill="${Y}"/><path fill="none" stroke-width="3.4" d="M26 46L46 32L56 38L72 22"/><path fill="${R}" d="M64 20H78V34Z"/>`,
+bird:c=>`<path fill="${c||O}" d="M50 28C54 40 54 54 50 70C46 54 46 40 50 28Z"/><path fill="${R}" d="M50 54C36 54 24 46 20 30C34 32 44 38 50 48Z"/><path fill="${Y}" d="M50 54C64 54 76 46 80 30C66 32 56 38 50 48Z"/><circle cx="50" cy="28" r="6" fill="${c||O}"/><path fill="${Y}" d="M44 70L50 86L56 70Z"/>`,
+shield:c=>`<path fill="${c||B}" d="M50 20L74 28V50C74 64 62 72 50 78C38 72 26 64 26 50V28Z"/><path fill="none" stroke="#fff" stroke-width="5" d="M39 50L47 58L62 40"/>`,
+egg:()=>`<path fill="#fff" d="M50 20C64 20 72 46 72 58C72 70 62 80 50 80C38 80 28 70 28 58C28 46 36 20 50 20Z"/><circle cx="42" cy="48" r="4.5" fill="${P}"/><circle cx="58" cy="60" r="5.5" fill="${C}"/><circle cx="44" cy="68" r="3.5" fill="${Y}"/>`,
+chick:()=>`<circle cx="50" cy="40" r="15" fill="${Y}"/><path fill="${O}" d="M46 44H54L50 50Z"/><circle cx="44" cy="37" r="2.2" fill="${D}"/><circle cx="56" cy="37" r="2.2" fill="${D}"/><path fill="#fff" d="M28 60L36 53L43 62L50 52L57 62L64 53L72 60C72 72 62 80 50 80C38 80 28 72 28 60Z"/>`,
+paw:c=>`<ellipse cx="50" cy="60" rx="16" ry="13" fill="${c||N}"/><circle cx="31" cy="46" r="6.5" fill="${c||N}"/><circle cx="43" cy="35" r="6.5" fill="${c||N}"/><circle cx="57" cy="35" r="6.5" fill="${c||N}"/><circle cx="69" cy="46" r="6.5" fill="${c||N}"/>`,
+wolf:()=>`<path fill="${K}" d="M26 24L42 36H58L74 24L76 54L50 78L24 54Z"/><path fill="#e2e8f0" d="M36 56L50 48L64 56L50 76Z"/><circle cx="40" cy="47" r="3.4" fill="${Y}"/><circle cx="60" cy="47" r="3.4" fill="${Y}"/><path fill="${D}" d="M46 66H54L50 72Z"/>`,
+lion:()=>`<polygon fill="${O}" points="${SP(14,31,24)}"/><circle cx="50" cy="52" r="17" fill="${Y}"/><circle cx="43" cy="48" r="2.4" fill="${D}"/><circle cx="57" cy="48" r="2.4" fill="${D}"/><path fill="${R}" d="M46 56H54L50 61Z"/><path fill="none" stroke-width="1.8" d="M50 61V65M44 66Q50 70 56 66"/>`,
+dragon:c=>`<path fill="${c||G}" d="M22 62C22 42 38 30 56 32L78 22L70 42C76 54 66 68 48 68Z"/><path fill="${Y}" d="M34 28L42 40L28 38ZM50 24L54 36L44 34Z"/><circle cx="56" cy="44" r="4" fill="${Y}"/><circle cx="56" cy="44" r="1.6" fill="${D}" stroke="none"/><path fill="none" stroke-width="2" d="M30 60Q40 68 52 62"/>`,
+orb:c=>`<circle cx="50" cy="46" r="22" fill="${c||P}"/><path fill="#fff" opacity=".5" stroke="none" d="M36 38Q40 28 50 26Q40 32 38 42Z"/><polygon fill="${Y}" points="${SP(4,9,3,50,48)}"/><path fill="${K}" d="M32 78L36 66H64L68 78Z"/>`,
+sun:()=>`<polygon fill="${O}" points="${SP(12,31,21)}"/><circle cx="50" cy="50" r="16" fill="${Y}"/>`,
+volcano:()=>`<path fill="${N}" d="M22 78L42 42H58L78 78Z"/><path fill="${R}" d="M42 42H58L54 50L50 45L46 52Z"/><circle cx="46" cy="32" r="6" fill="${O}"/><circle cx="57" cy="26" r="5" fill="${Y}"/>`,
+candle:()=>`<rect x="40" y="46" width="20" height="30" rx="3" fill="#fff"/><path fill="${O}" d="M50 20C56 28 58 34 50 42C42 34 44 28 50 20Z"/><path fill="${Y}" stroke="none" d="M50 30C53 33 53 37 50 40C47 37 47 33 50 30Z"/><path fill="none" stroke-width="1.8" d="M46 58V64M55 52V60"/>`,
+scales:()=>`<path fill="none" stroke-width="3.4" d="M50 24V72M24 34H76M34 72H66"/><path fill="none" stroke-width="1.6" d="M26 36L18 52M26 36L38 52M74 36L62 52M74 36L82 52"/><path fill="${Y}" d="M16 52H40Q28 66 16 52ZM60 52H84Q72 66 60 52Z"/>`,
+helmet:()=>`<path fill="${K}" d="M28 62C28 38 38 26 50 26S72 38 72 62V74H28Z"/><rect x="36" y="46" width="28" height="9" rx="2" fill="${D}"/><path fill="${R}" d="M50 26C46 14 60 12 64 20C58 18 54 20 50 26Z"/>`,
+dove:()=>`<path fill="#fff" d="M24 56C34 48 44 56 54 50C56 38 66 30 76 32C72 38 74 44 68 50C70 62 56 74 38 68C30 66 26 62 24 56Z"/><path fill="#e2e8f0" d="M44 58C46 46 56 40 64 42C60 52 54 60 44 58Z"/><circle cx="68" cy="38" r="1.8" fill="${D}" stroke="none"/><path fill="${G}" d="M22 74Q30 62 40 68Q32 76 22 74Z"/>`,
+coin:()=>`<circle cx="50" cy="50" r="24" fill="${Y}"/><circle cx="50" cy="50" r="17" fill="none" stroke-width="1.8"/>`+tx('$',50,60,26),
+bag:()=>`<path fill="${N}" d="M38 24L42 38H58L62 24Q50 31 38 24Z"/><path fill="#d97706" d="M42 38C26 50 26 76 50 76C74 76 74 50 58 38Z"/>`+tx('$',50,67,24,'#fff'),
+shop:()=>`<path fill="#ec4899" d="M28 40H72L76 76H24Z"/><path fill="none" stroke-width="3.4" d="M38 46V36C38 22 62 22 62 36V46"/><polygon fill="#fff" points="${SP(5,9,3.6,50,58)}"/>`,
+gift:c=>`<rect x="28" y="46" width="44" height="30" rx="3" fill="${c||R}"/><rect x="24" y="36" width="52" height="12" rx="3" fill="${c||R}"/><path fill="${Y}" d="M45 36H55V76H45Z"/><path fill="none" d="M50 36C40 20 30 30 40 36M50 36C60 20 70 30 60 36"/>`,
+heart:()=>`<path fill="${R}" d="M50 76C18 54 26 28 42 30C48 31 50 36 50 40C50 36 52 31 58 30C74 28 82 54 50 76Z"/><path fill="#fff" opacity=".55" stroke="none" d="M34 38Q36 33 42 34Q36 36 36 42Z"/>`,
+chest:c=>`<path fill="${c||N}" d="M24 50C24 32 76 32 76 50Z"/><rect x="24" y="50" width="52" height="26" rx="2" fill="${c||N}"/><rect x="24" y="48" width="52" height="6" fill="${Y}"/><rect x="43" y="52" width="14" height="14" rx="2" fill="${Y}"/><circle cx="50" cy="58" r="2.4" fill="${D}"/>`,
+hat:()=>`<path fill="${P}" d="M50 18L67 62H33Z"/><ellipse cx="50" cy="64" rx="27" ry="7" fill="${P}"/><path fill="${Y}" d="M36 56Q50 62 64 56L65 61Q50 67 35 61Z"/><polygon fill="${Y}" stroke-width="1.4" points="${SP(5,6,2.6,48,40)}"/>`,
+wheel:()=>{let s='';for(let i=0;i<8;i++){const a=i*Math.PI/4,b=a+Math.PI/4,f=(t)=>(50+26*Math.cos(t)).toFixed(1)+' '+(50+26*Math.sin(t)).toFixed(1);s+=`<path fill="${[R,Y,B,G][i%4]}" d="M50 50L${f(a)}A26 26 0 0 1 ${f(b)}Z"/>`}return s+`<circle cx="50" cy="50" r="7" fill="#fff"/><path fill="${D}" d="M45 18H55L50 30Z"/>`},
+slot:()=>`<rect x="22" y="32" width="56" height="38" rx="7" fill="${R}"/><rect x="29" y="40" width="42" height="22" rx="3" fill="#fff"/>`+tx('777',50,58,16,R)+`<path fill="none" stroke-width="3.4" d="M82 40V56"/><circle cx="82" cy="38" r="4" fill="${Y}"/>`,
+rainbow:()=>`<path fill="none" stroke="${R}" stroke-width="7" d="M20 68A30 30 0 0 1 80 68"/><path fill="none" stroke="${Y}" stroke-width="7" d="M27 68A23 23 0 0 1 73 68"/><path fill="none" stroke="${G}" stroke-width="7" d="M34 68A16 16 0 0 1 66 68"/><circle cx="20" cy="70" r="7" fill="#fff"/><circle cx="30" cy="72" r="6" fill="#fff"/><circle cx="80" cy="70" r="7" fill="#fff"/><circle cx="70" cy="72" r="6" fill="#fff"/>`,
+swords:()=>`<path fill="none" stroke="${D}" stroke-width="9" d="M28 26L72 70M72 26L28 70"/><path fill="none" stroke="#e2e8f0" stroke-width="5" d="M28 26L72 70M72 26L28 70"/><circle cx="72" cy="72" r="5" fill="${Y}"/><circle cx="28" cy="72" r="5" fill="${Y}"/>`,
+sparkle:c=>`<polygon fill="${c||Y}" points="${SP(4,29,6)}"/><polygon fill="#fff" points="${SP(4,12,3,72,30)}"/><polygon fill="#fff" points="${SP(4,10,2.4,28,72)}"/>`,
+infinity:()=>`<path fill="none" stroke="${D}" stroke-width="14" stroke-linecap="round" d="M50 50C42 34 22 36 22 50S42 66 50 50S78 64 78 50S58 34 50 50Z"/><path fill="none" stroke="${P}" stroke-width="9" stroke-linecap="round" d="M50 50C42 34 22 36 22 50S42 66 50 50S78 64 78 50S58 34 50 50Z"/><polygon fill="${Y}" stroke-width="1.6" points="${SP(5,8,3.4,50,50)}"/>`,
+laurel:()=>{let s='';[100,130,160,190,220,250].forEach(t=>{const r=t*Math.PI/180,x=50+26*Math.cos(r),y=50+26*Math.sin(r);s+=`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="4.5" ry="9" fill="${G}" transform="rotate(${t} ${x.toFixed(1)} ${y.toFixed(1)})"/><ellipse cx="${(100-x).toFixed(1)}" cy="${y.toFixed(1)}" rx="4.5" ry="9" fill="${G}" transform="rotate(${180-t} ${(100-x).toFixed(1)} ${y.toFixed(1)})"/>`});return s+`<polygon fill="${Y}" points="${SP(5,13,5.5,50,50)}"/>`}
+};
+/* ===== 10 danh mục (mỗi danh mục một khung riêng) ===== */
+const CAT=[['🎯','Bậc thầy điểm số','Score Mastery'],['🎤','Nghệ thuật phát biểu','Speaking Excellence'],['📈','Điểm trung bình & sự tiến bộ','Academic Growth'],['🏆','Xếp hạng & vinh danh','Ranking Glory'],['🥚','Thú cưng & ấp trứng','Pet Evolution'],['🔥','Chuỗi streak & sự kiên trì','Streak Legends'],['🛡️','Kỷ luật & trách nhiệm','Discipline & Honor'],['🎁','Cửa hàng quà & kho vật phẩm','Treasure Collector'],['🎰','Vòng quay & hộp quà bí ẩn','Fortune Hunter'],['🌌','Thành tựu tổng hợp & huyền thoại','Ultimate Achievements']];
+const FR=[a=>`<polygon points="${SP(12,47,40)}" ${a}/>`,a=>`<circle cx="50" cy="50" r="45" ${a}/>`,a=>`<polygon points="50,4 91,27 91,73 50,96 9,73 9,27" ${a}/>`,a=>`<path d="M50 5L88 17V50C88 74 70 88 50 96C30 88 12 74 12 50V17Z" ${a}/>`,a=>`<ellipse cx="50" cy="52" rx="38" ry="45" ${a}/>`,a=>`<polygon points="50,3 95,50 50,97 5,50" ${a}/>`,a=>`<polygon points="31,5 69,5 95,31 95,69 69,95 31,95 5,69 5,31" ${a}/>`,a=>`<polygon points="50,4 95,37 78,93 22,93 5,37" ${a}/>`,a=>`<polygon points="${SP(16,47,41)}" ${a}/>`,a=>`<polygon points="${SP(8,48,34)}" ${a}/>`];
+const ES=[.9,.95,.95,.9,.9,.72,.9,.82,.95,.8];
+const RN=['Common','Rare','Epic','Legendary','Mythic'],RC=['#64748b','#2563eb','#9333ea','#d97706','#db2777'];
+/* [biểu tượng:màu, nhãn, độ hiếm 0-4, tên vi, điều kiện vi, tên en, điều kiện en] */
+const ROWS=[
+['star','',0,'Ngôi Sao Đầu Tiên','Lần đầu đạt điểm 10','First Star','Score a 10 for the first time'],
+['gem','×5',0,'Viên Ngọc Sáng','Đạt 5 điểm 10 trong một khóa','Shining Gem','Score five 10s in one course'],
+['crown','×10',1,'Thập Toàn Thập Mỹ','Đạt 10 điểm 10 trong một khóa','Perfect Ten','Score ten 10s in one course'],
+['gear:10','×20',2,'Cỗ Máy Điểm 10','Đạt 20 điểm 10 trong một khóa','Perfect Score Machine','Score twenty 10s in one course'],
+['trophy','×30',3,'Huyền Thoại Hoàn Hảo','Đạt 30 điểm 10 trong một khóa','Legend of Perfection','Score thirty 10s in one course'],
+['medal:#b45309','≥7',0,'Bước Chân Vững Chắc','Đạt từ 7 điểm trở lên trong 5 lần chấm liên tiếp','Steady Steps','Score 7 or higher in 5 consecutive gradings'],
+['medal:#cbd5e1','≥8',1,'Chiến Binh Xuất Sắc','Đạt từ 8 điểm trở lên trong 5 lần chấm liên tiếp','Outstanding Warrior','Score 8 or higher in 5 consecutive gradings'],
+['medal:#f59e0b','≥9',2,'Tinh Anh Học Thuật','Đạt từ 9 điểm trở lên trong 5 lần chấm liên tiếp','Academic Elite','Score 9 or higher in 5 consecutive gradings'],
+['ten','×5',3,'Chuỗi Điểm Tuyệt Đối','Đạt điểm 10 trong 5 lần chấm liên tiếp','Absolute Streak','Score 10 in 5 consecutive gradings'],
+['galaxy','×10',4,'Kẻ Chinh Phục Hoàn Mỹ','Đạt điểm 10 trong 10 lần chấm liên tiếp','Perfection Conqueror','Score 10 in 10 consecutive gradings'],
+['mic','',0,'Tiếng Nói Đầu Tiên','Có lần phát biểu đầu tiên','First Voice','Speak up for the first time'],
+['bubble','×3',0,'Người Mạnh Dạn','Phát biểu ít nhất 3 lần trong một buổi','Bold Speaker','Speak at least 3 times in one lesson'],
+['mega','×5',1,'Giọng Nói Nổi Bật','Phát biểu ít nhất 5 lần trong một buổi','Standout Voice','Speak at least 5 times in one lesson'],
+['speaker','×10',2,'Chiếc Loa Siêu Cấp','Phát biểu ít nhất 10 lần trong một buổi','Super Loudspeaker','Speak at least 10 times in one lesson'],
+['target','25',1,'Xạ Thủ Ngôn Từ','Tích lũy 25 lần phát biểu','Word Sharpshooter','Reach 25 speaking turns in total'],
+['bolt','50',2,'Cỗ Máy Phát Biểu','Tích lũy 50 lần phát biểu','Speaking Machine','Reach 50 speaking turns in total'],
+['flame','100',3,'Ngọn Lửa Tự Tin','Tích lũy 100 lần phát biểu','Flame of Confidence','Reach 100 speaking turns in total'],
+['comet','200',4,'Bậc Thầy Diễn Đạt','Tích lũy 200 lần phát biểu','Master of Expression','Reach 200 speaking turns in total'],
+['mic:#f97316','10 buổi',2,'Không Một Buổi Im Lặng','Có ít nhất 1 lần phát biểu trong 10 buổi học liên tiếp','Never a Silent Lesson','Speak at least once in 10 consecutive lessons'],
+['crown:#a855f7','15 buổi',3,'Huyền Thoại Diễn Thuyết','Có ít nhất 3 lần phát biểu trong 15 buổi học liên tiếp','Legend of Public Speaking','Speak at least 3 times in each of 15 consecutive lessons'],
+['sprout','6.0',0,'Mầm Non Tri Thức','Đạt ĐTB tích lũy từ 6,0','Seed of Knowledge','Reach a cumulative average of 6.0'],
+['clover','7.0',0,'Học Giả Tập Sự','Đạt ĐTB tích lũy từ 7,0','Apprentice Scholar','Reach a cumulative average of 7.0'],
+['gem:#60a5fa','8.0',1,'Tài Năng Triển Vọng','Đạt ĐTB tích lũy từ 8,0','Rising Talent','Reach a cumulative average of 8.0'],
+['star','9.0',2,'Ngôi Sao Học Thuật','Đạt ĐTB tích lũy từ 9,0','Academic Star','Reach a cumulative average of 9.0'],
+['crown','9.5',3,'Thiên Tài Toàn Diện','Đạt ĐTB tích lũy từ 9,5','All-Round Genius','Reach a cumulative average of 9.5'],
+['rocket','+1.0',1,'Bước Nhảy Vọt','ĐTB của 5 ô điểm gần nhất cao hơn 5 ô trước đó ít nhất 1,0','Great Leap','Average of the last 5 scores is at least 1.0 above the 5 before'],
+['chart','+2.0',2,'Kẻ Vươn Lên','ĐTB của 5 ô gần nhất cao hơn 5 ô trước đó ít nhất 2,0','Rising Climber','Average of the last 5 scores is at least 2.0 above the 5 before'],
+['bird','',3,'Phượng Hoàng Tái Sinh','Sau 3 điểm dưới 5 liên tiếp, đạt 3 điểm từ 8 trở lên liên tiếp','Reborn Phoenix','After 3 scores below 5 in a row, score 8 or higher 3 times in a row'],
+['shield:#22c55e','10 buổi',2,'Phong Độ Vững Vàng','ĐTB tích lũy duy trì từ 8,0 qua 10 buổi có điểm liên tiếp','Steady Form','Keep a cumulative average of 8.0+ over 10 consecutive scored lessons'],
+['sparkle','15 buổi',4,'Đỉnh Cao Bền Vững','ĐTB tích lũy duy trì từ 9,0 qua 15 buổi có điểm liên tiếp','Lasting Summit','Keep a cumulative average of 9.0+ over 15 consecutive scored lessons'],
+['medal:#b45309','Top 10',1,'Ngôi Sao Top 10','Vào Top 10 bảng xếp hạng tích lũy khi chốt kỳ','Top 10 Star','Enter the Top 10 of the cumulative ranking at term close'],
+['medal:#cbd5e1','Top 5',2,'Tinh Hoa Top 5','Vào Top 5 bảng xếp hạng tích lũy khi chốt kỳ','Top 5 Elite','Enter the Top 5 of the cumulative ranking at term close'],
+['medal:#f59e0b','Top 3',2,'Bộ Ba Danh Giá','Vào Top 3 bảng xếp hạng tích lũy khi chốt kỳ','Prestigious Trio','Enter the Top 3 of the cumulative ranking at term close'],
+['crown','Hạng 1',3,'Vương Miện Quán Quân','Đạt hạng 1 bảng xếp hạng tích lũy khi chốt kỳ','Champion\'s Crown','Rank 1 in the cumulative ranking at term close'],
+['laurel','×3',4,'Kẻ Bất Bại','Đạt hạng 1 bảng xếp hạng tích lũy ở 3 lần chốt cuối tháng liên tiếp trong một khóa','The Undefeated','Rank 1 in the cumulative ranking at 3 consecutive month-end closes in one course'],
+['trophy','Hạng 1',3,'Nhà Vô Địch Cuối Kỳ','Đạt hạng 1 bảng kiểm tra cuối kỳ','Final Exam Champion','Rank 1 in the final exam ranking'],
+['trophy:#cbd5e1','Hạng 2',2,'Á Quân Kiệt Xuất','Đạt hạng 2 bảng kiểm tra cuối kỳ','Outstanding Runner-up','Rank 2 in the final exam ranking'],
+['trophy:#d97706','Hạng 3',1,'Chiến Binh Đồng','Đạt hạng 3 bảng kiểm tra cuối kỳ','Bronze Warrior','Rank 3 in the final exam ranking'],
+['sparkle:#f472b6','Top 3×2',3,'Ngôi Sao Song Bảng','Cùng nằm Top 3 xếp hạng tích lũy và cuối kỳ trong một khóa','Dual-Board Star','Be in the Top 3 of both cumulative and final rankings in one course'],
+['crown:#f0abfc','Hạng 1×2',4,'Đại Quán Quân','Đạt hạng 1 ở cả hai bảng xếp hạng trong một khóa','Grand Champion','Rank 1 on both ranking boards in one course'],
+['egg','',0,'Nhà Huấn Luyện Tập Sự','Sở hữu quả trứng thú cưng đầu tiên','Apprentice Trainer','Own your first pet egg'],
+['chick','',0,'Sự Sống Đầu Tiên','Ấp nở thú cưng lần đầu','First Life','Hatch a pet for the first time'],
+['paw','Cấp 1',0,'Người Bạn Đồng Hành','Đưa pet đạt cấp 1','Faithful Companion','Raise a pet to level 1'],
+['sprout','Cấp 2',1,'Nhà Chăm Sóc Tận Tâm','Đưa pet đạt cấp 2','Devoted Caretaker','Raise a pet to level 2'],
+['wolf','Cấp 3',1,'Người Thuần Hóa','Đưa pet đạt cấp 3','Tamer','Raise a pet to level 3'],
+['lion','Cấp 4',2,'Bậc Thầy Huấn Luyện','Đưa pet đạt cấp 4','Master Trainer','Raise a pet to level 4'],
+['dragon','Cấp 5',2,'Linh Thú Thức Tỉnh','Đưa pet đạt cấp 5','Awakened Spirit Beast','Raise a pet to level 5'],
+['orb','Cấp 6',3,'Khế Ước Huyền Bí','Đưa pet đạt cấp 6','Mystic Pact','Raise a pet to level 6'],
+['crown','Cấp 7',3,'Chúa Tể Linh Thú','Đưa pet đạt cấp 7','Lord of Spirit Beasts','Raise a pet to level 7'],
+['dragon:#a855f7','Cấp 8',4,'Thần Thú Tối Thượng','Đưa pet đạt cấp 8','Supreme Divine Beast','Raise a pet to level 8'],
+['flame:#fdba74','1',0,'Tia Lửa Khởi Đầu','Đạt streak 1','Spark of Beginning','Reach a streak of 1'],
+['candle','5',0,'Ngọn Lửa Kiên Trì','Đạt streak 5','Flame of Perseverance','Reach a streak of 5'],
+['flame','10',1,'Hỏa Diệm Bền Bỉ','Đạt streak 10','Enduring Blaze','Reach a streak of 10'],
+['bolt','15',1,'Ý Chí Rực Cháy','Đạt streak 15','Burning Will','Reach a streak of 15'],
+['volcano','20',2,'Trái Tim Dung Nham','Đạt streak 20','Lava Heart','Reach a streak of 20'],
+['comet','30',2,'Ngọn Lửa Bất Diệt','Đạt streak 30','Undying Flame','Reach a streak of 30'],
+['sun','45',3,'Mặt Trời Bất Khuất','Đạt streak 45','Unyielding Sun','Reach a streak of 45'],
+['sparkle:#fb923c','60',3,'Hỏa Tinh Huyền Thoại','Đạt streak 60','Legendary Fire Star','Reach a streak of 60'],
+['dragon:#ef4444','90',4,'Long Hỏa Vĩnh Cửu','Đạt streak 90','Eternal Fire Dragon','Reach a streak of 90'],
+['crown:#fb923c','120',4,'Bất Diệt Truyền Kỳ','Đạt streak 120','Immortal Legend','Reach a streak of 120'],
+['shield','3',0,'Khởi Đầu Gương Mẫu','Hoàn thành 3 buổi học liên tiếp không vi phạm','Model Beginning','Finish 3 consecutive lessons with no violations'],
+['sprout','5',0,'Học Sinh Kỷ Luật','Hoàn thành 5 buổi học liên tiếp không vi phạm','Disciplined Student','Finish 5 consecutive lessons with no violations'],
+['scales','10',1,'Người Giữ Quy Tắc','Hoàn thành 10 buổi học liên tiếp không vi phạm','Keeper of the Rules','Finish 10 consecutive lessons with no violations'],
+['medal','15',1,'Tấm Gương Sáng','Hoàn thành 15 buổi học liên tiếp không vi phạm','Shining Example','Finish 15 consecutive lessons with no violations'],
+['gem','20',2,'Kỷ Luật Kim Cương','Hoàn thành 20 buổi học liên tiếp không vi phạm','Diamond Discipline','Finish 20 consecutive lessons with no violations'],
+['helmet','30',3,'Hiệp Sĩ Danh Dự','Hoàn thành 30 buổi học liên tiếp không vi phạm','Knight of Honor','Finish 30 consecutive lessons with no violations'],
+['star:#34d399','5',1,'Học Sinh Toàn Diện','Có ít nhất 5 buổi liên tiếp vừa không vi phạm vừa có phát biểu','Well-Rounded Student','At least 5 consecutive lessons with no violations and with speaking'],
+['bird:#3b82f6','10',2,'Người Kiên Định','Có ít nhất 10 buổi liên tiếp vừa không vi phạm vừa có phát biểu','Steadfast One','At least 10 consecutive lessons with no violations and with speaking'],
+['dove','5',1,'Hành Trình Hoàn Thiện','Sau một lần vi phạm, hoàn thành 5 buổi tiếp theo không vi phạm','Journey of Improvement','After a violation, finish the next 5 lessons with no violations'],
+['trophy','20',3,'Biểu Tượng Gương Mẫu','Hoàn thành một khóa học có ít nhất 20 buổi và không có vi phạm','Icon of Exemplary Conduct','Finish a course of 20+ lessons with no violations'],
+['coin','',0,'Đồng Xu Đầu Tiên','Lần đầu có số dư PTS lớn hơn 0','First Coin','Have a PTS balance above 0 for the first time'],
+['bag','50',0,'Túi Tiền Nhỏ','Tích lũy được 50 PTS kiếm được trong một khóa','Small Purse','Earn 50 PTS in one course'],
+['gem','100',1,'Kho Báu Trăm Điểm','Tích lũy được 100 PTS kiếm được trong một khóa','Hundred-Point Treasure','Earn 100 PTS in one course'],
+['crown','200',2,'Đại Gia Điểm Thưởng','Tích lũy được 200 PTS kiếm được trong một khóa','Reward Tycoon','Earn 200 PTS in one course'],
+['shop','',0,'Khách Hàng Đầu Tiên','Mua món quà đầu tiên tại cửa hàng','First Customer','Buy your first gift in the shop'],
+['gift','×5',1,'Người Sưu Tầm Quà','Mua thành công 5 món quà','Gift Collector','Successfully buy 5 gifts'],
+['chest','5',1,'Kho Đồ Phong Phú','Từng sở hữu 5 loại quà khác nhau','Rich Inventory','Have owned 5 different gift types'],
+['orb:#f97316','×10',2,'Bậc Thầy Vật Phẩm','Sử dụng thành công 10 món quà','Item Master','Successfully use 10 gifts'],
+['hat','3',2,'Nhà Chiến Lược','Sử dụng thành công 3 loại quà có hiệu ứng điểm khác nhau','Strategist','Successfully use 3 different score-effect gift types'],
+['chest:#a855f7','10',3,'Nhà Sưu Tầm Đại Tài','Từng sở hữu 10 loại quà khác nhau','Grand Collector','Have owned 10 different gift types'],
+['wheel','',0,'Vòng Quay Định Mệnh','Thực hiện lượt quay bằng phiếu đầu tiên','Wheel of Fate','Make your first ticket spin'],
+['clover','×5',0,'Bàn Tay May Mắn','Hoàn thành 5 lượt quay bằng phiếu','Lucky Hand','Complete 5 ticket spins'],
+['slot','×10',1,'Người Chinh Phục Vận May','Hoàn thành 10 lượt quay bằng phiếu','Fortune Conqueror','Complete 10 ticket spins'],
+['comet','×20',2,'Vận May Phi Thường','Hoàn thành 20 lượt quay bằng phiếu','Extraordinary Luck','Complete 20 ticket spins'],
+['crown','×30',3,'Chúa Tể Vòng Quay','Hoàn thành 30 lượt quay bằng phiếu','Lord of the Wheel','Complete 30 ticket spins'],
+['gift:#8b5cf6','',0,'Món Quà Bí Ẩn','Mở hộp quà bí ẩn đầu tiên','Mystery Gift','Open your first mystery box'],
+['gift:#3b82f6','×5',1,'Thợ Săn Hộp Quà','Mở 5 hộp quà bí ẩn','Box Hunter','Open 5 mystery boxes'],
+['heart','×10',1,'Người Khám Phá Bí Mật','Mở 10 hộp quà bí ẩn','Secret Explorer','Open 10 mystery boxes'],
+['orb','×20',2,'Bậc Thầy Bí Ẩn','Mở 20 hộp quà bí ẩn','Master of Mysteries','Open 20 mystery boxes'],
+['rainbow','10+10',3,'Kẻ Được Vận May Chọn','Hoàn thành 10 lượt quay và mở 10 hộp quà','Chosen by Luck','Complete 10 spins and open 10 boxes'],
+['star:#f472b6','5',1,'Ngôi Sao Đa Tài','Sở hữu ít nhất 1 huy hiệu trong 5 danh mục khác nhau','Multi-Talented Star','Own at least 1 badge in 5 different categories'],
+['gem:#a78bfa','25',2,'Nhà Sưu Tầm Tài Ba','Mở khóa 25 huy hiệu khác nhau','Skilled Collector','Unlock 25 different badges'],
+['trophy','50',3,'Bậc Thầy Thành Tựu','Mở khóa 50 huy hiệu khác nhau','Achievement Master','Unlock 50 different badges'],
+['crown','75',3,'Huyền Thoại Sưu Tầm','Mở khóa 75 huy hiệu khác nhau','Collecting Legend','Unlock 75 different badges'],
+['rainbow','9',3,'Người Chinh Phục Toàn Diện','Sở hữu ít nhất 1 huy hiệu trong cả 9 danh mục đầu','All-Round Conqueror','Own at least 1 badge in each of the first 9 categories'],
+['dragon:#22d3ee','Cấp 8',4,'Long Vương Học Thuật','Pet đạt cấp 8 và ĐTB tích lũy từ 9,0 khi kết thúc khóa','Academic Dragon King','Pet at level 8 and cumulative average 9.0+ at course end'],
+['flame:#ef4444','90',4,'Ý Chí Bất Diệt','Đạt streak 90 và có ít nhất 100 lần phát biểu trong khóa','Indomitable Will','Streak of 90 and at least 100 speaking turns in the course'],
+['swords','',4,'Chiến Thần Toàn Năng','Đạt Top 3 tích lũy, Top 3 cuối kỳ và pet từ cấp 5 trong cùng khóa','Almighty War God','Top 3 cumulative, Top 3 final and a level 5+ pet in one course'],
+['sparkle','60',4,'Truyền Thuyết Sống','Đạt ĐTB từ 9,0, streak 60, ít nhất 100 lần phát biểu và không vi phạm trong 20 buổi liên tiếp','Living Legend','Average 9.0+, streak 60, 100+ speaking turns and 20 lessons with no violations'],
+['infinity','99',4,'Thần Thoại Bất Tử','Mở khóa toàn bộ 99 huy hiệu còn lại','Immortal Myth','Unlock all 99 other badges']
+];
+const BK=ROWS.map((r,i)=>{const [e,a]=r[0].split(':');return{n:i+1,c:(i/10)|0,e,a,t:r[1],r:r[2],vi:r[3],vc:r[4],en:r[5],ec:r[6]}});
+const GRAD=[['#cbd5e1','#64748b','#f8fafc','#cbd5e1'],['#93c5fd','#1d4ed8','#eff6ff','#93c5fd'],['#d8b4fe','#7e22ce','#faf5ff','#d8b4fe'],['#fde68a','#b45309','#fffbeb','#fcd34d']];
+const DEFS=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>${GRAD.map((g,i)=>`<linearGradient id="bkr${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${g[0]}"/><stop offset="1" stop-color="${g[1]}"/></linearGradient><radialGradient id="bkf${i}" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="${g[2]}"/><stop offset="1" stop-color="${g[3]}"/></radialGradient>`).join('')}<linearGradient id="bkr4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0abfc"/><stop offset=".5" stop-color="#67e8f9"/><stop offset="1" stop-color="#fde047"/></linearGradient><radialGradient id="bkf4" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#fdf4ff"/><stop offset="1" stop-color="#a5f3fc"/></radialGradient></defs></svg>`;
+function art(b){
+  const st='stroke="#27272a" stroke-linejoin="round"',f=FR[b.c],t=b.t,w=Math.max(28,t.length*6.2+12);
+  return `<svg viewBox="0 0 100 100" class="bdg" role="img">${f(`fill="url(#bkr${b.r})" ${st} stroke-width="2.5"`)}<g transform="translate(50 50) scale(.84) translate(-50 -50)">${f(`fill="url(#bkf${b.r})" ${st} stroke-opacity=".35" stroke-width="1.2"`)}</g><g transform="translate(50 ${t?44:50}) scale(${ES[b.c]}) translate(-50 -50)" stroke="#27272a" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">${E[b.e](b.a)}</g>${t?`<rect x="${50-w/2}" y="76" width="${w}" height="14" rx="7" fill="#27272a"/><text x="50" y="86.2" font-size="8.6" font-weight="900" text-anchor="middle" fill="${b.r>2?'#fde68a':'#fff'}" font-family="Nunito,Arial,sans-serif">${t}</text>`:''}${b.r>2?`<g class="bk-sp" fill="#fff" stroke="none"><polygon points="${SP(4,7,1.6,16,22)}"/><polygon style="animation-delay:.6s" points="${SP(4,6,1.4,86,30)}"/><polygon style="animation-delay:1.2s" points="${SP(4,5,1.2,80,84)}"/></g>`:''}</svg>`;
+}
+/* ===== Giao diện sổ ===== */
+let S=null,busy=false;
+const $=id=>document.getElementById(id);
+const lang=()=>{try{return appData.language==='en'?'en':'vi'}catch(e){return'vi'}};
+const T=(v,e)=>lang()==='en'?e:v;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const N3=n=>'#'+String(n).padStart(3,'0');
+const on=b=>S.pv||!!(S.st.badges&&S.st.badges[b.n]);
+const items=()=>BK.filter(b=>(S.cat<0||b.c===S.cat)&&(S.tab==='all'||(S.tab==='on')===on(b)));
+const two=()=>innerWidth>=860;
+const np=()=>Math.max(1,Math.ceil(items().length/6));
+const nm=b=>lang()==='en'?b.en:b.vi,cd=b=>lang()==='en'?b.ec:b.vc,cn=c=>CAT[c][0]+' '+(lang()==='en'?CAT[c][2]:CAT[c][1]);
+function card(b){const o=on(b);return `<button type="button" class="bk-c r${b.r} ${o?'on':'lk'}" data-n="${b.n}"><i class="bk-rt">${RN[b.r]}</i><span class="bk-art">${art(b)}${o?'':'<i class="fa-solid fa-lock bk-lock"></i>'}</span><span class="bk-no">${N3(b.n)}</span><b class="bk-nm">${esc(nm(b))}</b><span class="bk-cd">${esc(cd(b))}</span><span class="bk-s">${o?T('Đã mở khóa','Unlocked'):T('Chưa mở','Locked')}</span></button>`}
+function page(i){
+  const all=items(),pn=np();
+  if(i<0||i>=pn)return `<div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:2.4rem;color:#d8bd8a">✦</div>`;
+  const it=all.slice(i*6,i*6+6),cs=[...new Set(it.map(b=>b.c))];
+  let h=`<div class="bk-ph"><span>${cs.length===1?cn(cs[0]):T('Bộ sưu tập huy hiệu','Badge collection')}</span><span>${it.length?N3(it[0].n)+' – '+N3(it[it.length-1].n):''}</span></div><div class="bk-gr">`;
+  if(!it.length)h+=`<div style="grid-column:1/-1;align-self:center;text-align:center;opacity:.6;font-weight:800">${T('Không có huy hiệu phù hợp','No matching badges')}</div>`;
+  for(let k=0;k<6;k++)h+=it[k]?card(it[k]):(it.length?'<span class="bk-e"></span>':'');
+  return h+`</div><div class="bk-pn">— ${i+1} —</div>`;
+}
+function bar(){
+  const n=BK.filter(on).length;$('bkCnt').textContent=n+' / 100 '+T('huy hiệu','badges');$('bkPct').textContent=n+'%';$('bkFill').style.width=n+'%';
+  const t=two(),pn=np();$('bkPi').textContent=T('Trang ','Page ')+(t?(S.pg+1)+(S.pg+2<=pn?'–'+(S.pg+2):''):(S.pg+1))+' / '+pn;
+  $('bkPv').disabled=S.pg<=0;$('bkNx').disabled=S.pg+(t?2:1)>=pn;
+}
+function render(){
+  if(!$('bkOv'))return;const t=two();$('bkBook').classList.toggle('one',!t);if(t&&S.pg%2)S.pg--;
+  $('bkL').innerHTML=t?page(S.pg):'';$('bkR').innerHTML=page(t?S.pg+1:S.pg);bar();
+}
+function go(d){
+  if(busy||!$('bkOv'))return;const t=two(),nx=S.pg+d*(t?2:1);if(nx<0||nx>=np())return;busy=true;
+  const lf=document.createElement('div');let a,end=()=>{};
+  if(t&&d>0){lf.className='bk-leaf fwd';lf.innerHTML=`<div class="bk-pg bk-R">${page(S.pg+1)}</div><div class="bk-pg bk-L bk-bk">${page(S.pg+2)}</div>`;$('bkR').innerHTML=page(S.pg+3);end=()=>{$('bkL').innerHTML=page(nx)};a=[0,-180]}
+  else if(t){lf.className='bk-leaf back';lf.innerHTML=`<div class="bk-pg bk-L">${page(S.pg)}</div><div class="bk-pg bk-R bk-bk">${page(S.pg-1)}</div>`;$('bkL').innerHTML=page(S.pg-2);end=()=>{$('bkR').innerHTML=page(nx+1)};a=[0,180]}
+  else if(d>0){lf.className='bk-leaf one';lf.innerHTML=`<div class="bk-pg bk-R">${page(S.pg)}</div>`;$('bkR').innerHTML=page(nx);a=[0,-100]}
+  else{lf.className='bk-leaf one';lf.innerHTML=`<div class="bk-pg bk-R">${page(nx)}</div>`;a=[-100,0];end=()=>{$('bkR').innerHTML=page(nx)}}
+  $('bkIn').appendChild(lf);
+  const fin=()=>{end();lf.remove();S.pg=nx;busy=false;bar()};
+  lf.animate([{transform:`rotateY(${a[0]}deg)`},{transform:`rotateY(${a[1]}deg)`}],{duration:750,easing:'ease-in-out',fill:'forwards'}).onfinish=fin;
+}
+function detail(n){
+  const b=BK[n-1],o=on(b),d=document.createElement('div');d.className='bk-det';d.id='bkDet';
+  d.innerHTML=`<div class="bk-dbox ${o?'':'lk'}"><button class="bk-btn" style="position:absolute;top:10px;right:10px;color:#f5e9d3" data-x="1">✕</button>${art(b)}<div style="font-size:.75rem;font-weight:800;color:#8a6a3a">${N3(b.n)} · ${cn(b.c)}</div><h4>${esc(nm(b))}</h4><span class="bk-rt r${b.r}">${RN[b.r]}</span><p><b>${T('Điều kiện','Condition')}:</b> ${esc(cd(b))}</p><p style="font-weight:900;color:${o?'#15803d':'#8a7550'}">${o?T('Đã mở khóa','Unlocked'):T('Chưa mở khóa','Locked')}</p></div>`;
+  d.addEventListener('click',e=>{if(e.target===d||e.target.dataset.x)d.remove()});$('bkCard').appendChild(d);
+}
+function key(e){
+  if(!$('bkOv'))return;
+  if(e.key==='Escape'){const d=$('bkDet');if(d)d.remove();else bkClose()}
+  else if(e.key==='ArrowRight')go(1);else if(e.key==='ArrowLeft')go(-1);
+}
+let rz;function onRz(){clearTimeout(rz);rz=setTimeout(()=>{if($('bkOv')&&!busy)render()},120)}
+window.bkClose=function(){const o=$('bkOv');if(o)o.remove();document.removeEventListener('keydown',key);removeEventListener('resize',onRz);busy=false};
+window.bkOpen=function(id){
+  let st;try{st=appData.students.find(x=>String(x.id)===String(id))}catch(e){}if(!st)return;
+  try{if(window.bkEnsureActiveCourseBadges)window.bkEnsureActiveCourseBadges()}catch(e){}
+  try{if(window.bkRecheck)window.bkRecheck()}catch(e){console.warn('Badge sync:',e)}
+  bkClose();S={st,cat:-1,tab:'all',pg:0,pv:false};
+  let sn='';try{sn=getStudentDisplayName(st)}catch(e){sn=st.name||''}
+  const o=document.createElement('div');o.id='bkOv';o.className='bk-ov';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');
+  o.innerHTML=`${DEFS}<div class="bk-card" id="bkCard"><div class="bk-top"><div><h3>🏅 ${T('Sổ sưu tầm huy hiệu','Badge Collection')}</h3><small>${esc(sn)}</small></div><div style="display:flex;gap:6px"><button class="bk-btn" id="bkPvB" title="${T('Chỉ xem thử giao diện, không lưu','Preview only, nothing is saved')}">👁 ${T('Xem thử mở khóa','Preview unlocked')}</button><button class="bk-btn" data-x="1" aria-label="Close">✕</button></div></div>
+<div class="bk-prog"><div><b>${T('Sổ thành tựu học sinh','Student achievement book')}</b><small id="bkCnt"></small></div><em id="bkPct"></em></div><div class="bk-bar"><i id="bkFill"></i></div>
+<div class="bk-flt"><select id="bkCat"><option value="-1">${T('Tất cả danh mục','All categories')}</option>${CAT.map((c,i)=>`<option value="${i}">${cn(i)}</option>`).join('')}</select><div class="bk-tabs" id="bkTabs"><button class="on" data-t="all">${T('Tất cả','All')}</button><button data-t="on">${T('Đã mở','Unlocked')}</button><button data-t="off">${T('Chưa mở','Locked')}</button></div></div>
+<div class="bk-book" id="bkBook"><button class="bk-nav p" id="bkPv" aria-label="Prev"><i class="fa-solid fa-chevron-left"></i></button><div class="bk-in" id="bkIn"><div class="bk-pg bk-L" id="bkL"></div><div class="bk-pg bk-R" id="bkR"></div></div><button class="bk-nav n" id="bkNx" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button></div>
+<div class="bk-foot"><span id="bkPi"></span><div class="bk-lg">${RN.map((n,i)=>`<span><i style="background:${RC[i]}"></i>${n}</span>`).join('')}</div></div></div>`;
+  document.body.appendChild(o);
+  o.addEventListener('click',e=>{
+    if(e.target===o||(e.target.dataset&&e.target.dataset.x&&!e.target.closest('.bk-det'))){bkClose();return}
+    const c=e.target.closest('.bk-c');if(c&&!busy)detail(+c.dataset.n);
+  });
+  $('bkPv').onclick=()=>go(-1);$('bkNx').onclick=()=>go(1);
+  $('bkCat').onchange=e=>{S.cat=+e.target.value;S.pg=0;render()};
+  $('bkTabs').onclick=e=>{const t=e.target.dataset.t;if(!t)return;S.tab=t;S.pg=0;[...$('bkTabs').children].forEach(x=>x.classList.toggle('on',x===e.target));render()};
+  $('bkPvB').onclick=e=>{S.pv=!S.pv;e.currentTarget.classList.toggle('on',S.pv);render()};
+  document.addEventListener('keydown',key);addEventListener('resize',onRz);render();
+};
+/* API dành cho logic nhận huy hiệu sau này: bkUnlock(studentId, số huy hiệu 1–100). Dữ liệu lưu ở student.badges = {số: thời điểm} */
+window.bkUnlock=function(id,n){const st=appData.students.find(x=>String(x.id)===String(id));if(!st||!BK[n-1])return false;try{if(window.bkEnsureActiveCourseBadges)window.bkEnsureActiveCourseBadges()}catch(e){}if(!st.badges)st.badges={};if(!st.badges[n]){st.badges[n]=Date.now();try{saveData()}catch(e){}}return true};
+window.BK_BADGES=BK;
+})();
+</script>
+
 </body>
 </html>
 </html>
