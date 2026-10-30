@@ -2999,6 +2999,53 @@ main:has(#viewPetContainer:not(.hidden)){max-width:min(1500px,100%) !important;p
 @media(max-width:1179px){#viewPetContainer .pet-shop-preview-card{position:relative;top:auto;max-height:none;overflow:visible}}
 @media(max-width:640px){#viewPetContainer>section{padding:16px}#viewPetContainer .pet-card .pet-art{transform:none}}
 </style>
+<style id="mx-season-cal">
+#mxCalFab{bottom:1.25rem !important;background:linear-gradient(135deg,#ef4444,#b91c1c)}
+#mxNoteFab{bottom:4.85rem !important}#qsBagFab{bottom:8.45rem !important}#qsFab{bottom:12.05rem !important}#qgFab{bottom:15.65rem !important}#mxSearchFab{bottom:19.25rem !important}
+#mxCalFab .mx-cal-badge{background:#fff;color:#b91c1c;border-color:#b91c1c}#mxCalFab.has-ev .mx-cal-badge{display:inline-flex}
+#mxSeasonFx{position:fixed;inset:0;z-index:30;pointer-events:none;overflow:hidden}
+#mxSeasonFx span{position:absolute;top:-8vh;opacity:.55;will-change:transform;animation:mxSxFall linear infinite}
+@keyframes mxSxFall{0%{transform:translate(0,-8vh) rotate(0)}50%{transform:translate(28px,55vh) rotate(180deg)}100%{transform:translate(-12px,112vh) rotate(360deg)}}
+@keyframes mxSxRise{0%{transform:translate(0,112vh) scale(.8);opacity:0}15%{opacity:.7}100%{transform:translate(20px,-10vh) scale(1.1);opacity:0}}
+#mxSeasonBanner{position:fixed;top:.75rem;left:50%;z-index:60;padding:.4rem 1.1rem;border-radius:9999px;color:#fff;font-weight:900;font-size:13px;background:linear-gradient(90deg,var(--sx-a),var(--sx-b));box-shadow:0 8px 22px rgba(15,23,42,.3);pointer-events:none;animation:mxSxBan 6s ease forwards}
+#mxSeasonFx span.sxflagp{width:30px;height:20px;background-size:cover;border-radius:2px;opacity:.7}
+.sxflag{display:inline-block;width:1.25em;height:.83em;vertical-align:-.08em;border-radius:1px}
+@keyframes mxSxBan{0%{opacity:0;transform:translate(-50%,-14px)}8%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-14px)}}
+html[data-season]:not(.mx-dark) body{background:var(--sx-bg) fixed !important}
+html[data-season] .tab-pills > button.bg-white{background:linear-gradient(90deg,var(--sx-a),var(--sx-b)) !important}
+html[data-season] .bg-indigo-600{background-color:var(--sx-a) !important}
+html[data-season] .hover\:bg-indigo-700:hover{background-color:var(--sx-b) !important}
+html[data-season] .text-indigo-600,html[data-season] .text-indigo-700{color:var(--sx-a) !important}
+html[data-season] .bg-indigo-50{background-color:color-mix(in srgb,var(--sx-a) 10%,#fff) !important}
+html[data-season] .border-indigo-200,html[data-season] .border-indigo-300{border-color:color-mix(in srgb,var(--sx-a) 40%,#fff) !important}
+html[data-season] #qsToolbar{border-bottom-color:var(--sx-a)}
+html[data-season] header.bg-indigo-700{background:var(--sx-head) center/cover no-repeat,linear-gradient(100deg,var(--sx-ha),var(--sx-hb)) !important;border-bottom-color:var(--sx-a) !important}
+html[data-season] header .bg-indigo-900{background-color:color-mix(in srgb,var(--sx-ha) 55%,#0f172a) !important}
+#mxCalDrawer{position:fixed;inset:0;z-index:97;display:none;justify-content:flex-end;background:rgba(15,23,42,.5);backdrop-filter:blur(2px)}
+#mxCalDrawer.open{display:flex}
+#mxCalDrawer .mxc-panel{background:#fff;width:100%;max-width:26rem;height:100%;overflow-y:auto;box-shadow:-20px 0 50px rgba(15,23,42,.3);color:#0f172a}
+.mxc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;padding:.9rem 1.1rem;color:#fff;background:linear-gradient(135deg,#ef4444,#b91c1c)}
+.mxc-head h3{font-weight:900;font-size:1.1rem}.mxc-sub{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;opacity:.9}.mxc-x{font-size:1.5rem;line-height:1;padding:0 .5rem;color:#fff}
+.mxc-nav{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem}
+.mxc-nav button{width:2rem;height:2rem;border-radius:9999px;color:#b91c1c;transition:transform .15s,background .15s}.mxc-nav button:hover{background:#fee2e2;transform:scale(1.1)}
+.mxc-nav .mxc-tdy{width:auto;padding:0 .9rem;font-size:12px;font-weight:800;background:#fee2e2}
+.mxc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:0 .75rem}
+.mxc-wd{text-align:center;font-size:10px;font-weight:900;color:#94a3b8;padding:.25rem 0}
+.mxc-day{display:flex;flex-direction:column;align-items:center;justify-content:center;height:3.4rem;border-radius:.75rem;background:transparent;cursor:pointer;transition:transform .15s,background .15s}
+.mxc-day:hover{transform:translateY(-2px);background:#f1f5f9}.mxc-day b{font-size:13px;font-weight:800}.mxc-day i{font-size:9px;font-style:normal;color:#94a3b8}
+.mxc-day span{display:flex;gap:2px;align-items:center;height:12px;font-size:10px}.mxc-day u{width:5px;height:5px;border-radius:50%;background:#ef4444}
+.mxc-day.out{opacity:.35}.mxc-day.sun b,.mxc-day.hol b{color:#dc2626}.mxc-day.today{box-shadow:inset 0 0 0 2px #ef4444}.mxc-day.sel{background:#fee2e2}
+.mxc-box{margin:.75rem;padding:.8rem;border-radius:.9rem;background:#f8fafc;border:1px solid #e2e8f0}
+.mxc-date{font-weight:900;font-size:13px}.mxc-lun{font-size:12px;color:#64748b;margin:.15rem 0 .4rem}.mxc-hol{font-size:12px;font-weight:800;color:#dc2626;margin-bottom:.2rem}
+.mxc-ev{display:flex;justify-content:space-between;align-items:center;gap:.5rem;font-size:12px;font-weight:700;padding:.3rem .5rem;margin:.2rem 0;border-radius:.6rem;background:#fff;border:1px solid #e2e8f0}
+.mxc-ev button{color:#e11d48;font-size:11px}.mxc-none{font-size:11px;font-style:italic;color:#94a3b8}
+.mxc-add{display:flex;gap:.4rem;margin-top:.5rem}.mxc-add input{flex:1;min-width:0;border:1px solid #cbd5e1;border-radius:.6rem;padding:.35rem .6rem;font-size:12px;color:#0f172a;background:#fff}
+.mxc-add button{padding:.35rem .8rem;border-radius:.6rem;font-size:12px;font-weight:900;color:#fff;background:linear-gradient(135deg,#ef4444,#b91c1c)}
+.mxc-rep{display:block;font-size:11px;color:#64748b;margin-top:.35rem}.mxc-sea{display:flex;justify-content:space-between;align-items:center;gap:.5rem;font-size:12px;font-weight:800}
+.mxc-sea select{border:1px solid #cbd5e1;border-radius:.6rem;padding:.25rem .4rem;font-size:12px;color:#0f172a;background:#fff}
+html.mx-dark #mxCalDrawer .mxc-panel{background:#0f172a;color:#e2e8f0}html.mx-dark .mxc-box,html.mx-dark .mxc-ev{background:#1e293b;border-color:#334155}html.mx-dark .mxc-day:hover,html.mx-dark .mxc-day.sel{background:#1e293b}
+@media (prefers-reduced-motion:reduce){#mxSeasonFx{display:none}.mxc-day,.mxc-nav button{transition:none}#mxSeasonBanner{animation:none}}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -5347,6 +5394,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const sf = qsEl('mxSearchFab'), nf = qsEl('mxNoteFab'); if (!sf || !nf) return;
             sf.style.display = show ? 'flex' : 'none';
             nf.style.display = show ? 'flex' : 'none';
+            window.mxCalFabShow && window.mxCalFabShow(show);
             const sl = qsEl('mxSearchFabLbl'); if (sl) sl.textContent = qsT('searchFab');
             const inp = qsEl('mxSearch'); if (inp) { inp.placeholder = qsT('searchPh'); if (document.activeElement !== inp && inp.value !== mxSearchQ) inp.value = mxSearchQ; }
             if (inp && !mxNorm(mxSearchQ) && document.activeElement !== inp) sf.classList.remove('open');
@@ -5357,6 +5405,159 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             nf.classList.toggle('has-notes', n > 0);
             if (!show) { const d = qsEl('mxNotesDrawer'); if (d && d.classList.contains('open')) mxNotesClose(); }
         }
+        /* ===== MX: giao diện theo mùa/ngày lễ + lịch (có âm lịch) ===== */
+        const sxEn = () => { try { return appData.language === 'en'; } catch (e) { return false; } };
+        const sxL = (v, e) => sxEn() ? e : v;
+        const INT = Math.floor, PI = Math.PI;
+        const sxJd = (dd, mm, yy) => { const a = INT((14 - mm) / 12), y = yy + 4800 - a, m = mm + 12 * a - 3; let j = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045; if (j < 2299161) j = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - 32083; return j; };
+        const sxNewMoon = k => { const T = k / 1236.85, T2 = T * T, T3 = T2 * T, dr = PI / 180; let J = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3; J += 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr); const M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3, Mp = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3, F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3; let C = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M); C = C - 0.4068 * Math.sin(Mp * dr) + 0.0161 * Math.sin(dr * 2 * Mp) - 0.0004 * Math.sin(dr * 3 * Mp) + 0.0104 * Math.sin(dr * 2 * F) - 0.0051 * Math.sin(dr * (M + Mp)) - 0.0074 * Math.sin(dr * (M - Mp)) + 0.0004 * Math.sin(dr * (2 * F + M)) - 0.0004 * Math.sin(dr * (2 * F - M)) - 0.0006 * Math.sin(dr * (2 * F + Mp)) + 0.0010 * Math.sin(dr * (2 * F - Mp)) + 0.0005 * Math.sin(dr * (2 * Mp + M)); const dt = T < -11 ? 0.001 + 0.000839 * T + 0.0002261 * T2 - 0.00000845 * T3 - 0.000000081 * T * T3 : -0.000278 + 0.000265 * T + 0.000262 * T2; return J + C - dt; };
+        const sxSunLong = (jdn, tz) => { const T = (jdn - 0.5 - tz / 24 - 2451545.0) / 36525, T2 = T * T, dr = PI / 180, M = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T * T2, L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2; const DL = (1.914600 - 0.004817 * T - 0.000014 * T2) * Math.sin(dr * M) + (0.019993 - 0.000101 * T) * Math.sin(dr * 2 * M) + 0.000290 * Math.sin(dr * 3 * M); let L = (L0 + DL) * dr; L -= PI * 2 * INT(L / (PI * 2)); return INT(L / PI * 6); };
+        const sxNmDay = (k, tz) => INT(sxNewMoon(k) + 0.5 + tz / 24);
+        const sxM11 = (yy, tz) => { const k = INT((sxJd(31, 12, yy) - 2415021) / 29.530588853); let nm = sxNmDay(k, tz); if (sxSunLong(nm, tz) >= 9) nm = sxNmDay(k - 1, tz); return nm; };
+        const sxLeapOff = (a11, tz) => { const k = INT((a11 - 2415021.076998695) / 29.530588853 + 0.5); let last = 0, i = 1, arc = sxSunLong(sxNmDay(k + i, tz), tz); do { last = arc; i++; arc = sxSunLong(sxNmDay(k + i, tz), tz); } while (arc != last && i < 14); return i - 1; };
+        function sxS2L(dd, mm, yy) { const tz = 7, dn = sxJd(dd, mm, yy), k = INT((dn - 2415021.076998695) / 29.530588853); let ms = sxNmDay(k + 1, tz); if (ms > dn) ms = sxNmDay(k, tz); let a11 = sxM11(yy, tz), b11 = a11, ly; if (a11 >= ms) { ly = yy; a11 = sxM11(yy - 1, tz); } else { ly = yy + 1; b11 = sxM11(yy + 1, tz); } const ld = dn - ms + 1, diff = INT((ms - a11) / 29); let leap = 0, lm = diff + 11; if (b11 - a11 > 365) { const lo = sxLeapOff(a11, tz); if (diff >= lo) { lm = diff + 10; if (diff == lo) leap = 1; } } if (lm > 12) lm -= 12; if (lm >= 11 && diff < 4) ly -= 1; return [ld, lm, ly, leap]; }
+        const sxDn = d => INT(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5);
+        const sxLC = {}, sxTC = {};
+        const sxLunar = d => { const k = sxDn(d); return sxLC[k] || (sxLC[k] = sxS2L(d.getDate(), d.getMonth() + 1, d.getFullYear())); };
+        const sxTet = y => { if (sxTC[y]) return sxTC[y]; for (let i = 0; i < 40; i++) { const d = new Date(y, 0, 18 + i), l = sxLunar(d); if (l[0] === 1 && l[1] === 1) return sxTC[y] = d; } return null; };
+        const sxMidC = {};
+        const sxMid = y => { if (sxMidC[y]) return sxMidC[y]; for (let i = 0; i < 50; i++) { const d = new Date(y, 8, 1 + i), l = sxLunar(d); if (l[0] === 15 && l[1] === 8 && !l[3]) return sxMidC[y] = d; } return null; };
+        const sxCC = y => 'Giáp Ất Bính Đinh Mậu Kỷ Canh Tân Nhâm Quý'.split(' ')[(y + 6) % 10] + ' ' + sxL('Tý Sửu Dần Mão Thìn Tỵ Ngọ Mùi Thân Dậu Tuất Hợi', 'Rat Ox Tiger Cat Dragon Snake Horse Goat Monkey Rooster Dog Pig').split(' ')[(y + 8) % 12];
+        const sxFmt = (d, o) => d.toLocaleDateString(sxEn() ? 'en-US' : 'vi-VN', o);
+
+        const SXFLAGIN = '<rect width="30" height="20" fill="#da251d"/><polygon fill="#ff0" points="15,4 16.65,8.74 21.66,8.84 17.66,11.87 19.11,16.66 15,13.8 10.89,16.66 12.34,11.87 8.34,8.84 13.35,8.74"/>';
+        const SXFLAG = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 20">' + SXFLAGIN + '</svg>');
+        const sxIco = e => e === '🇻🇳' ? `<img class="sxflag" alt="" src="${SXFLAG}">` : e;
+        /* Ngày lễ: [ngày, tháng, tên VI, tên EN, icon] */
+        const SXH = [[1, 1, 'Tết Dương lịch', 'New Year’s Day', '🎆'], [14, 2, 'Valentine', 'Valentine’s Day', '💝'], [8, 3, 'Quốc tế Phụ nữ', 'Women’s Day', '🌷'], [30, 4, 'Giải phóng miền Nam', 'Reunification Day', '🇻🇳'], [1, 5, 'Quốc tế Lao động', 'Labour Day', '🛠️'], [1, 6, 'Quốc tế Thiếu nhi', 'Children’s Day', '🧒'], [2, 9, 'Quốc khánh', 'National Day', '🇻🇳'], [20, 10, 'Ngày Phụ nữ Việt Nam', 'Vietnamese Women’s Day', '🌹'], [31, 10, 'Halloween', 'Halloween', '🎃'], [20, 11, 'Ngày Nhà giáo Việt Nam', 'Teachers’ Day', '🌺'], [24, 12, 'Đêm Giáng Sinh', 'Christmas Eve', '🔔'], [25, 12, 'Giáng Sinh', 'Christmas', '🎄']];
+        const SXL = [[1, 1, 'Tết Nguyên Đán', 'Lunar New Year', '🧧'], [15, 1, 'Rằm tháng Giêng', 'Lantern Festival', '🏮'], [10, 3, 'Giỗ Tổ Hùng Vương', 'Hung Kings’ Festival', '🏯'], [5, 5, 'Tết Đoan Ngọ', 'Duanwu Festival', '🌿'], [15, 7, 'Vu Lan', 'Vu Lan Festival', '🪷'], [15, 8, 'Tết Trung Thu', 'Mid-Autumn Festival', '🥮'], [23, 12, 'Ông Táo chầu trời', 'Kitchen Gods Day', '🔥']];
+        const SXE = [0, 0, 'Giao thừa', 'Lunar New Year’s Eve', '🎇'];
+        function sxHol(d) {
+            const out = [], dd = d.getDate(), m = d.getMonth() + 1, l = sxLunar(d);
+            SXH.forEach(h => { if (h[0] === dd && h[1] === m) out.push(h); });
+            if (!l[3]) SXL.forEach(h => { if (h[0] === l[0] && h[1] === l[1]) out.push(h); });
+            if (l[1] === 12) { const n = sxLunar(new Date(d.getFullYear(), d.getMonth(), dd + 1)); if (n[0] === 1 && n[1] === 1) out.push(SXE); }
+            return out;
+        }
+        const sxKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        const sxEvList = () => Array.isArray(appData.calEvents) ? appData.calEvents : (appData.calEvents = []);
+        const sxEvOf = d => { const k = sxKey(d); return sxEvList().filter(e => e.d === k || (e.r && String(e.d).slice(5) === k.slice(5))); };
+
+        /* Giao diện theo mùa: ngày lễ 1 ngày -> cả tuần (T2-CN) chứa ngày đó; mùa hè & Giáng Sinh -> cả tháng */
+        const SX = {
+            ny: { n: ['Tết Dương lịch', 'New Year'], e: '🎆', a: '#f59e0b', b: '#7c3aed', bg: 'linear-gradient(180deg,#fffbeb,#f5f3ff)', p: ['🎆', '🎉', '✨', '🥂', '🎊'], up: 1, m: ['Chúc mừng năm mới!', 'Happy New Year!'] },
+            tet: { n: ['Tết Nguyên Đán', 'Lunar New Year'], e: '🧧', a: '#dc2626', b: '#f59e0b', bg: 'linear-gradient(180deg,#fff1f2,#fffbeb)', p: ['🌸', '🏮', '🧧', '🌼', '🎋'], m: ['Chúc mừng năm mới – Vạn sự như ý!', 'Happy Lunar New Year!'] },
+            lib: { n: ['30/4 Giải phóng miền Nam', 'Reunification Day'], e: '⭐', a: '#dc2626', b: '#eab308', bg: 'linear-gradient(180deg,#fef2f2,#fefce8)', p: ['⭐', '🇻🇳', '🕊️', '🌺'], m: ['Kỷ niệm ngày Giải phóng miền Nam 30/4', 'Reunification Day – April 30'] },
+            sum: { n: ['Mùa hè', 'Summer'], e: '☀️', a: '#0ea5e9', b: '#f59e0b', bg: 'linear-gradient(180deg,#ecfeff,#fffbeb)', p: ['☀️', '🍉', '🐚', '🫧', '🌴'], up: 1, m: ['Mùa hè sôi động!', 'Happy summer!'] },
+            nat: { n: ['Quốc khánh 2/9', 'National Day'], e: '⭐', a: '#dc2626', b: '#f59e0b', bg: 'linear-gradient(180deg,#fef2f2,#fffbeb)', p: ['🇻🇳', '⭐', '🎆', '🎇'], up: 1, m: ['Chào mừng Quốc khánh 2/9', 'Vietnam National Day – Sep 2'] },
+            hw: { n: ['Halloween', 'Halloween'], e: '🎃', a: '#f97316', b: '#6d28d9', bg: 'linear-gradient(180deg,#fff7ed,#f5f3ff)', p: ['🎃', '🦇', '👻', '🕸️', '🍬'], m: ['Halloween vui vẻ!', 'Happy Halloween!'] },
+            tch: { n: ['Ngày Nhà giáo VN', 'Teachers’ Day'], e: '🌺', a: '#059669', b: '#f59e0b', bg: 'linear-gradient(180deg,#ecfdf5,#fffbeb)', p: ['🌺', '📚', '🌷', '🎓', '✏️'], m: ['Chúc mừng Ngày Nhà giáo Việt Nam 20/11', 'Happy Vietnamese Teachers’ Day'] },
+            xmas: { n: ['Giáng Sinh', 'Christmas'], e: '🎄', a: '#dc2626', b: '#15803d', bg: 'linear-gradient(180deg,#f0fdf4,#fef2f2)', p: ['❄️', '🎄', '⛄', '🎁', '⭐'], m: ['Giáng Sinh an lành!', 'Merry Christmas!'] }
+        };
+        SX.mid = { n: ['Tết Trung Thu', 'Mid-Autumn'], e: '🥮', a: '#d97706', b: '#1e3a8a', bg: 'linear-gradient(180deg,#fffbeb,#eff6ff)', p: ['🥮', '🏮', '🌕', '🐇', '⭐'], up: 1, m: ['Vui Tết Trung Thu!', 'Happy Mid-Autumn Festival!'] };
+        /* Màu dải header [từ, đến, màu trăng/mặt trời] cho từng giao diện */
+        const SXORD = ['ny', 'tet', 'lib', 'sum', 'mid', 'nat', 'hw', 'tch', 'xmas'];
+        const SXHD = { ny: ['#92400e', '#5b21b6', '#fde68a'], tet: ['#991b1b', '#b45309', '#fcd34d'], lib: ['#991b1b', '#a16207', '#fde047'], sum: ['#0369a1', '#d97706', '#fde68a'], nat: ['#991b1b', '#b45309', '#fde047'], hw: ['#7c2d12', '#4c1d95', '#fdba74'], tch: ['#047857', '#b45309', '#fde68a'], xmas: ['#991b1b', '#166534', '#ffffff'], mid: ['#1e3a8a', '#b45309', '#fef3c7'] };
+        function sxHeadBg(id, th) {
+            const hd = SXHD[id], P = [[60, 112, 58], [230, 62, 34], [430, 120, 46], [650, 52, 30], [870, 116, 56], [1070, 56, 36], [1260, 120, 48], [1450, 64, 34], [1550, 116, 44]];
+            let g = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 160" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="g"><stop offset="0" stop-color="${hd[2]}" stop-opacity=".55"/><stop offset="1" stop-color="${hd[2]}" stop-opacity="0"/></radialGradient></defs><circle cx="1380" cy="40" r="120" fill="url(#g)"/><circle cx="1380" cy="40" r="34" fill="${hd[2]}" fill-opacity=".3"/>`;
+            for (let i = 0; i < 16; i++) g += `<circle cx="${(i * 97 + 40) % 1600}" cy="${(i * 53 + 20) % 150}" r="${1.5 + (i % 3)}" fill="#fff" fill-opacity=".3"/>`;
+            P.forEach((q, i) => { const em = th.p[i % th.p.length]; g += em === '🇻🇳' ? `<svg x="${q[0] - q[2] * .75}" y="${q[1] - q[2] * .9}" width="${q[2] * 1.5}" height="${q[2]}" viewBox="0 0 30 20" opacity=".36">${SXFLAGIN}</svg>` : `<text x="${q[0]}" y="${q[1]}" font-size="${q[2]}" opacity=".24" text-anchor="middle">${em}</text>`; });
+            if (id === 'lib') g += `<g transform="translate(930 28) scale(1.05)" fill="#fff" opacity=".34"><rect y="82" width="124" height="22" rx="11"/><path d="M12 82 26 62H100L116 82Z"/><path d="M40 62 48 46H84L92 62Z"/><rect x="90" y="50" width="62" height="6" rx="3"/><path d="M63 14h2v32h-2z"/><g fill="#000" fill-opacity=".28"><circle cx="22" cy="93" r="7"/><circle cx="48" cy="93" r="7"/><circle cx="76" cy="93" r="7"/><circle cx="102" cy="93" r="7"/></g></g><svg x="${930 + 65 * 1.05}" y="${28 + 10 * 1.05}" width="36" height="24" viewBox="0 0 30 20" opacity=".5">${SXFLAGIN}</svg>`;
+            return `url("data:image/svg+xml,${encodeURIComponent(g + '</svg>')}")`;
+        }
+        function sxAuto(now) {
+            const t = sxDn(now), y = now.getFullYear();
+            const days = [['ny', new Date(y, 0, 1)], ['ny', new Date(y + 1, 0, 1)], ['tet', sxTet(y)], ['lib', new Date(y, 3, 30)], ['nat', new Date(y, 8, 2)], ['mid', sxMid(y)], ['hw', new Date(y, 9, 31)], ['tch', new Date(y, 10, 20)]];
+            for (const [id, d] of days) { if (!d) continue; const s = sxDn(d) - (d.getDay() + 6) % 7; if (t >= s && t <= s + 6) return id; }
+            const m = now.getMonth(); return m === 11 ? 'xmas' : (m >= 5 && m <= 7) ? 'sum' : null;
+        }
+        const sxMode = () => { try { return localStorage.getItem('mxSeason') || 'auto'; } catch (e) { return 'auto'; } };
+        function sxApply() {
+            const mode = sxMode(), id = mode === 'off' ? null : (SX[mode] ? mode : sxAuto(new Date()));
+            if (window.__sxId === id) return;
+            window.__sxId = id;
+            const root = document.documentElement, th = id && SX[id];
+            let fx = document.getElementById('mxSeasonFx');
+            if (!fx) { fx = document.createElement('div'); fx.id = 'mxSeasonFx'; fx.setAttribute('aria-hidden', 'true'); document.body.appendChild(fx); }
+            fx.innerHTML = '';
+            if (!th) { root.removeAttribute('data-season'); return; }
+            root.setAttribute('data-season', id);
+            root.style.setProperty('--sx-a', th.a); root.style.setProperty('--sx-b', th.b); root.style.setProperty('--sx-bg', th.bg); root.style.setProperty('--sx-ha', SXHD[id][0]); root.style.setProperty('--sx-hb', SXHD[id][1]); root.style.setProperty('--sx-head', sxHeadBg(id, th));
+            for (let i = 0; i < 18; i++) {
+                const s = document.createElement('span'), em = th.p[i % th.p.length];
+                if (em === '🇻🇳') { s.className = 'sxflagp'; s.style.backgroundImage = `url("${SXFLAG}")`; } else s.textContent = em;
+                s.style.cssText = `left:${Math.random() * 100}%;font-size:${14 + Math.random() * 16}px;animation-name:${th.up ? 'mxSxRise' : 'mxSxFall'};animation-duration:${9 + Math.random() * 9}s;animation-delay:${-Math.random() * 16}s`;
+                fx.appendChild(s);
+            }
+            let seen = ''; try { seen = sessionStorage.getItem('mxSxBan') || ''; } catch (e) {}
+            if (seen !== id) {
+                try { sessionStorage.setItem('mxSxBan', id); } catch (e) {}
+                const b = document.createElement('div'); b.id = 'mxSeasonBanner'; b.textContent = `${th.e} ${th.m[sxEn() ? 1 : 0]}`;
+                document.body.appendChild(b); setTimeout(() => b.remove(), 6200);
+            }
+        }
+        setTimeout(() => { try { sxApply(); } catch (e) {} }, 1200);
+
+        /* Nút nổi Lịch (dưới nút Ghi chú) + bảng lịch */
+        window.mxCalFabShow = function (show) {
+            try { sxApply(); } catch (e) {}
+            let f = qsEl('mxCalFab');
+            if (!f) {
+                f = document.createElement('button'); f.id = 'mxCalFab'; f.type = 'button'; f.className = 'mx-bub'; f.setAttribute('onclick', 'mxCalOpen()');
+                f.innerHTML = '<span class="mx-bub-ico"><i class="fa-solid fa-calendar-days"></i></span><span class="mx-bub-lbl" id="mxCalFabLbl"></span><span class="mx-bub-badge mx-cal-badge" id="mxCalFabBadge">0</span>';
+                document.body.appendChild(f);
+            }
+            if (!qsEl('mxCalDrawer')) { const d = document.createElement('div'); d.id = 'mxCalDrawer'; document.body.appendChild(d); }
+            f.style.display = show ? 'flex' : 'none';
+            qsEl('mxCalFabLbl').textContent = sxL('Lịch', 'Calendar'); f.setAttribute('aria-label', sxL('Lịch', 'Calendar'));
+            const n = sxEvOf(new Date()).length; qsEl('mxCalFabBadge').textContent = n; f.classList.toggle('has-ev', n > 0);
+            const d = qsEl('mxCalDrawer'); if (!show && d.classList.contains('open')) mxCalClose();
+        };
+        let sxCal = null;
+        const sxSel = () => { const [y, m, d] = sxCal.s.split('-').map(Number); return new Date(y, m - 1, d); };
+        window.mxCalOpen = function () { const d = qsEl('mxCalDrawer'); if (!d) return; const n = new Date(); sxCal = { y: n.getFullYear(), m: n.getMonth(), s: sxKey(n) }; sxCalRender(); window.mxDrOpen(d); d.onclick = e => { if (e.target === d) mxCalClose(); }; };
+        window.mxCalClose = function () { window.mxDrClose(qsEl('mxCalDrawer')); };
+        window.mxCalNav = function (dl) { sxCal.m += dl; if (sxCal.m < 0) { sxCal.m = 11; sxCal.y--; } if (sxCal.m > 11) { sxCal.m = 0; sxCal.y++; } sxCalRender(); };
+        window.mxCalToday = function () { const n = new Date(); sxCal = { y: n.getFullYear(), m: n.getMonth(), s: sxKey(n) }; sxCalRender(); };
+        window.mxCalPick = function (k) { sxCal.s = k; const [y, m] = k.split('-').map(Number); sxCal.y = y; sxCal.m = m - 1; sxCalRender(); };
+        window.mxCalAdd = function () {
+            const i = qsEl('mxCalIn'), t = i ? i.value.trim() : ''; if (!t) { if (i) i.focus(); return; }
+            const r = qsEl('mxCalRep');
+            sxEvList().push({ id: 'ev' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), d: sxCal.s, t, r: r && r.checked ? 1 : 0 });
+            saveData(); sxCalRender(); mxBubbleUpdate(); setTimeout(() => { const n = qsEl('mxCalIn'); if (n) n.focus(); }, 0);
+        };
+        window.mxCalDel = function (id) { appData.calEvents = sxEvList().filter(e => e.id !== id); saveData(); sxCalRender(); mxBubbleUpdate(); };
+        window.mxCalSeason = function (v) { try { localStorage.setItem('mxSeason', v); } catch (e) {} window.__sxId = undefined; sxApply(); };
+        function sxCalRender() {
+            const dr = qsEl('mxCalDrawer'); if (!dr || !sxCal) return;
+            const { y, m, s } = sxCal, en = sxEn(), todayK = sxKey(new Date()), first = new Date(y, m, 1), off = (first.getDay() + 6) % 7;
+            const wd = en ? ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] : ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+            let cells = '';
+            for (let i = 0; i < 42; i++) {
+                const d = new Date(y, m, 1 - off + i), k = sxKey(d), l = sxLunar(d), hol = sxHol(d), ev = sxEvOf(d);
+                cells += `<button type="button" class="mxc-day${d.getMonth() !== m ? ' out' : ''}${k === todayK ? ' today' : ''}${k === s ? ' sel' : ''}${d.getDay() === 0 ? ' sun' : ''}${hol.length ? ' hol' : ''}" onclick="mxCalPick('${k}')"><b>${d.getDate()}</b><i>${l[0] === 1 ? l[0] + '/' + l[1] : l[0]}</i><span>${hol.length ? sxIco(hol[0][4]) : ''}${ev.length ? '<u></u>' : ''}</span></button>`;
+            }
+            const sd = sxSel(), sl = sxLunar(sd), sh = sxHol(sd), se = sxEvOf(sd);
+            const holHtml = sh.map(h => `<div class="mxc-hol">${sxIco(h[4])} ${h[en ? 3 : 2]}</div>`).join('');
+            const evHtml = se.length ? se.map(e => `<div class="mxc-ev"><span>${escapeHtml(e.t)}${e.r ? ' <small>🔁</small>' : ''}</span><button type="button" onclick="mxCalDel('${e.id}')" aria-label="${sxL('Xóa', 'Delete')}"><i class="fa-solid fa-trash-can"></i></button></div>`).join('') : `<p class="mxc-none">${sxL('Chưa có sự kiện', 'No events')}</p>`;
+            const mode = sxMode(), cur = window.__sxId;
+            const opts = `<option value="auto"${mode === 'auto' ? ' selected' : ''}>${sxL('Tự động theo ngày', 'Auto by date')}</option><option value="off"${mode === 'off' ? ' selected' : ''}>${sxL('Tắt', 'Off')}</option>` + SXORD.map(k => `<option value="${k}"${mode === k ? ' selected' : ''}>${SX[k].e} ${SX[k].n[en ? 1 : 0]}</option>`).join('');
+            dr.innerHTML = `<div class="mxc-panel" role="dialog" aria-modal="true">
+                <div class="mxc-head"><div><div class="mxc-sub">${sxL('Lịch & sự kiện', 'Calendar & events')}</div><h3>📅 ${en ? first.toLocaleString('en-US', { month: 'long' }) : 'Tháng ' + (m + 1)} ${y}</h3></div><button type="button" onclick="mxCalClose()" class="mxc-x" aria-label="${sxL('Đóng', 'Close')}">×</button></div>
+                <div class="mxc-nav"><button type="button" onclick="mxCalNav(-1)" aria-label="prev"><i class="fa-solid fa-chevron-left"></i></button><button type="button" class="mxc-tdy" onclick="mxCalToday()">${sxL('Hôm nay', 'Today')}</button><button type="button" onclick="mxCalNav(1)" aria-label="next"><i class="fa-solid fa-chevron-right"></i></button></div>
+                <div class="mxc-grid">${wd.map(w => `<div class="mxc-wd">${w}</div>`).join('')}${cells}</div>
+                <div class="mxc-box"><div class="mxc-date">${sxFmt(sd, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                    <div class="mxc-lun">🌙 ${sxL('Âm lịch', 'Lunar')}: ${sl[0]}/${sl[1]}${sl[3] ? sxL(' (nhuận)', ' (leap)') : ''} · ${sxCC(sl[2])}</div>${holHtml}
+                    <div class="mxc-evs">${evHtml}</div>
+                    <div class="mxc-add"><input id="mxCalIn" type="text" maxlength="80" placeholder="${sxL('Thêm sự kiện…', 'Add event…')}" onkeydown="if(event.key==='Enter'){event.preventDefault();mxCalAdd()}"><button type="button" onclick="mxCalAdd()">${sxL('Thêm', 'Add')}</button></div>
+                    <label class="mxc-rep"><input id="mxCalRep" type="checkbox"> ${sxL('Lặp lại hằng năm', 'Repeat yearly')}</label></div>
+                <div class="mxc-box"><label class="mxc-sea" data-no-hover>${sxL('Giao diện theo mùa', 'Seasonal theme')}<select onchange="mxCalSeason(this.value);sxCalRender()">${opts}</select></label>
+                    <div class="mxc-none">${cur && SX[cur] ? sxL('Đang áp dụng: ', 'Active: ') + SX[cur].e + ' ' + SX[cur].n[en ? 1 : 0] : sxL('Hiện không có giao diện mùa/lễ', 'No seasonal theme right now')}</div></div>
+            </div>`;
+        }
+        window.sxCalRender = sxCalRender;
+
         /* Ngăn kéo trượt ngang từ mép phải: mở = trượt vào, đóng = trượt ra rồi mới gỡ nội dung */
         window.mxDrOpen = function (d) {
             if (!d) return;
@@ -7246,7 +7447,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 if (busy || reduce || !ORDER.includes(mode) || cur === mode || !oldEl || oldEl.classList.contains('hidden') || !oldEl.animate) return raw(mode);
                 const dir = ORDER.indexOf(mode) > ORDER.indexOf(cur) ? 1 : -1, dist = Math.min(90, window.innerWidth * 0.12);
                 busy = true;
-                const root = document.documentElement, prevOX = root.style.overflowX; root.style.overflowX = 'hidden';
+                const root = document.documentElement, prevOX = root.style.overflowX;
                 const finish = () => { busy = false; root.style.overflowX = prevOX; };
                 let swapped = false;
                 const swap = () => {
@@ -15904,6 +16105,9 @@ html.mx-dark #scoreMatrix .score-row:hover > td.grid-cell.cell-rest,html.mx-dark
 <style id="class-timeline-css">
 .ctl-panel{flex:0 0 auto;max-height:44vh;overflow:auto;background:#fff;border:1px solid #e2e8f0;border-radius:.9rem;box-shadow:0 4px 14px rgba(15,23,42,.08);padding:.65rem .85rem .8rem}
 .ctl-panel.hidden{display:none}
+.ctl-panel{transition:max-height .34s cubic-bezier(.2,.9,.3,1),opacity .26s ease,padding .34s ease,margin .34s ease,border-width .34s ease,transform .34s cubic-bezier(.2,.9,.3,1)}
+.ctl-panel.ctl-gone{max-height:0 !important;opacity:0;padding-top:0;padding-bottom:0;margin-top:-.75rem;border-width:0;transform:translateY(10px);overflow:hidden;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.ctl-panel{transition:none}}
 .ctl-head{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
 .ctl-title{font-weight:900;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:#334155;display:flex;align-items:center;gap:.45rem}
 .ctl-title i{color:#4f46e5}
@@ -16124,7 +16328,14 @@ html.mx-dark .ctl-chips .ctl-chip.live{color:#fff;background:var(--c)}
  function syncVisibility(){
   if(!panel||!matrixBox)return false;
   var show=!matrixBox.classList.contains('hidden');
-  panel.classList.toggle('hidden',!show);
+  if(show){
+   clearTimeout(panel._hT);
+   if(panel.classList.contains('hidden')){panel.classList.add('ctl-gone');panel.classList.remove('hidden');void panel.offsetWidth;}
+   if(panel.classList.contains('ctl-gone'))requestAnimationFrame(function(){panel.classList.remove('ctl-gone');});
+  }else if(!panel.classList.contains('hidden')&&!panel.classList.contains('ctl-gone')){
+   panel.classList.add('ctl-gone');
+   panel._hT=setTimeout(function(){panel.classList.add('hidden');},380);
+  }
   return show;
  }
  function tick(){
@@ -16149,6 +16360,37 @@ html.mx-dark .ctl-chips .ctl-chip.live{color:#fff;background:var(--c)}
   document.addEventListener('visibilitychange',function(){if(!document.hidden)tick();});
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+<script id="mx-smooth-class">
+(function(){
+ var raw=null,busy=false,pending=null;
+ function wrap(){
+  if(raw||typeof window.switchClassTab!=='function')return;
+  raw=window.switchClassTab;
+  window.switchClassTab=function(id){
+   try{if(id===appData.activeClassId)return;}catch(e){}
+   var main=document.querySelector('main');
+   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+   if(!main||!main.animate||reduce)return raw(id);
+   if(busy){pending=id;return;}
+   busy=true;
+   var out=main.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(6px)'}],{duration:110,easing:'ease-in',fill:'forwards'});
+   var done=false;
+   function go(){
+    if(done)return;done=true;
+    raw(id);
+    requestAnimationFrame(function(){requestAnimationFrame(function(){setTimeout(function(){
+     try{out.cancel();}catch(e){}
+     var inn=main.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:220,easing:'cubic-bezier(.2,.9,.3,1)'});
+     inn.onfinish=inn.oncancel=function(){busy=false;if(pending!==null){var q=pending;pending=null;window.switchClassTab(q);}};
+    },30);});});
+   }
+   out.onfinish=go;setTimeout(go,260);
+  };
+ }
+ [0,300,1500].forEach(function(t){setTimeout(wrap,t);});
+ if(document.readyState!=='loading')wrap();else document.addEventListener('DOMContentLoaded',wrap);
 })();
 </script>
 </body>
