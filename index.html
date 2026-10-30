@@ -654,15 +654,12 @@ td.grid-cell.qs-bad{animation:qsShake .35s}
 #mxNoteFab{bottom:1.25rem;background:linear-gradient(135deg,#10b981,#047857)}
 #mxNoteFab .mx-note-badge{background:#fef08a;color:#713f12;border-color:#047857}
 #mxNoteFab.has-notes .mx-note-badge{display:inline-flex}
-#mxSearchFab{bottom:15.65rem;background:linear-gradient(135deg,#0ea5e9,#0369a1)}
-#mxSearchFab .mx-bub-inp{display:none;border:0;outline:0;background:transparent;color:#fff;font-size:13px;font-weight:700;width:0;padding:0;transition:width .28s ease,padding .28s ease}
-#mxSearchFab .mx-bub-inp::placeholder{color:rgba(255,255,255,.75);font-weight:600}
-#mxSearchFab.open .mx-bub-inp{display:inline-block;width:11rem;padding:0 .4rem 0 1.1rem}
-#mxSearchFab.open .mx-bub-lbl{display:none}
-#mxSearchFab .mx-bub-inp.mx-nores{color:#fecaca}
+#mxNotifFab{bottom:15.65rem;background:linear-gradient(135deg,#0ea5e9,#0369a1)}
+#mxNotifFab .mx-notif-badge{background:#fff;color:#0369a1;border-color:#0369a1}
+#mxNotifFab.has-new .mx-notif-badge{display:inline-flex}
 body.qs-presenting .mx-bub{display:none !important}
 @media print{.mx-bub{display:none !important}}
-@media (prefers-reduced-motion:reduce){.mx-bub,.mx-bub .mx-bub-lbl,#mxSearchFab .mx-bub-inp{transition:none}}
+@media (prefers-reduced-motion:reduce){.mx-bub,.mx-bub .mx-bub-lbl{transition:none}}
 /* ===== Ghi chú Score Matrix ===== */
 #mxNotesDrawer{position:fixed;inset:0;z-index:97;display:none;justify-content:flex-end;background:rgba(15,23,42,.5);backdrop-filter:blur(2px)}
 #mxNotesDrawer.open{display:flex}
@@ -680,6 +677,26 @@ html.mx-dark #mxNotesDrawer .mxn-panel{background:#0f172a;color:#e2e8f0}
 html.mx-dark #mxNotesDrawer .mxn-new{background:#052e22;border-bottom-color:#134e3a}
 html.mx-dark #mxNotesDrawer textarea{background:#1e293b;border-color:#334155;color:#e2e8f0}
 html.mx-dark #mxNotesDrawer .mxn-item{background:#0b2a22;border-color:#134e3a}
+/* ===== Thông báo (cửa sổ bên phải, giống Ghi chú / Lịch) ===== */
+#mxNotifDrawer{position:fixed;inset:0;z-index:97;display:none;justify-content:flex-end;background:rgba(15,23,42,.5);backdrop-filter:blur(2px)}
+#mxNotifDrawer.open{display:flex}
+#mxNotifDrawer .mxnt-panel{background:#fff;width:100%;max-width:28rem;height:100%;display:flex;flex-direction:column;box-shadow:-20px 0 50px rgba(15,23,42,.3);color:#0f172a}
+#mxNotifDrawer .mxnt-bar{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.65rem 1rem;border-bottom:1px solid #e2e8f0;background:#f0f9ff;font-size:12px;font-weight:800;color:#0369a1}
+#mxNotifDrawer .mxnt-clear{display:inline-flex;align-items:center;gap:.4rem;background:#e11d48;color:#fff;font-weight:800;font-size:12px;border:0;border-radius:.6rem;padding:.4rem .8rem;cursor:pointer;transition:background .15s,transform .15s}
+#mxNotifDrawer .mxnt-clear:hover{background:#be123c;transform:translateY(-1px)}
+#mxNotifDrawer .mxnt-item{display:flex;align-items:flex-start;gap:.65rem;border:1px solid #bae6fd;background:#f7fcff;border-radius:.75rem;padding:.55rem .65rem;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background .15s ease}
+#mxNotifDrawer .mxnt-item:hover{transform:translateY(-2px);border-color:#38bdf8;background:#f0f9ff;box-shadow:0 8px 18px rgba(2,132,199,.16),0 0 0 2px rgba(56,189,248,.25)}
+#mxNotifDrawer .mxnt-ico{flex:none;width:1.9rem;height:1.9rem;border-radius:.6rem;display:inline-flex;align-items:center;justify-content:center;font-size:.9rem;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
+#mxNotifDrawer .mxnt-main{flex:1;min-width:0}
+#mxNotifDrawer .mxnt-text{font-size:13px;line-height:1.4;font-weight:600;word-break:break-word}
+#mxNotifDrawer .mxnt-meta{margin-top:.2rem;font-size:10.5px;font-weight:700;color:#64748b}
+#mxNotifDrawer .mxnt-del{flex:none;border:0;background:transparent;color:#e11d48;cursor:pointer;font-size:12px;padding:.2rem .4rem;border-radius:.4rem}
+#mxNotifDrawer .mxnt-del:hover{background:#ffe4e6}
+html.mx-dark #mxNotifDrawer .mxnt-panel{background:#0f172a;color:#e2e8f0}
+html.mx-dark #mxNotifDrawer .mxnt-bar{background:#082f49;border-bottom-color:#0c4a6e;color:#7dd3fc}
+html.mx-dark #mxNotifDrawer .mxnt-item{background:#0b2535;border-color:#0c4a6e}
+html.mx-dark #mxNotifDrawer .mxnt-item:hover{background:#0c3048;border-color:#38bdf8}
+@media (prefers-reduced-motion:reduce){#mxNotifDrawer .mxnt-item,#mxNotifDrawer .mxnt-clear{transition:none}#mxNotifDrawer .mxnt-item:hover,#mxNotifDrawer .mxnt-clear:hover{transform:none}}
 #qgDrawer{position:fixed;inset:0;z-index:97;display:none;justify-content:flex-end;background:rgba(15,23,42,.5);backdrop-filter:blur(2px)}
 #qgDrawer.open{display:flex}
 #qgDrawer .qg-panel{background:#fff;width:100%;max-width:30rem;height:100%;display:flex;flex-direction:column;box-shadow:-20px 0 50px rgba(15,23,42,.3)}
@@ -3001,7 +3018,7 @@ main:has(#viewPetContainer:not(.hidden)){max-width:min(1500px,100%) !important;p
 </style>
 <style id="mx-season-cal">
 #mxCalFab{bottom:1.25rem !important;background:linear-gradient(135deg,#ef4444,#b91c1c)}
-#mxNoteFab{bottom:4.85rem !important}#qsBagFab{bottom:8.45rem !important}#qsFab{bottom:12.05rem !important}#qgFab{bottom:15.65rem !important}#mxSearchFab{bottom:19.25rem !important}
+#mxNoteFab{bottom:4.85rem !important}#qsBagFab{bottom:8.45rem !important}#qsFab{bottom:12.05rem !important}#qgFab{bottom:15.65rem !important}#mxNotifFab{bottom:19.25rem !important}
 #mxCalFab .mx-cal-badge{background:#fff;color:#b91c1c;border-color:#b91c1c}#mxCalFab.has-ev .mx-cal-badge{display:inline-flex}
 #mxSeasonFx{position:fixed;inset:0;z-index:30;pointer-events:none;overflow:hidden}
 #mxSeasonFx span{position:absolute;top:-8vh;opacity:.55;will-change:transform;animation:mxSxFall linear infinite}
@@ -3065,6 +3082,134 @@ html[data-season] header .bg-indigo-900{background-color:color-mix(in srgb,var(-
 html.mx-dark .mxc-mo{background:#1e293b;border-color:#334155;color:#e2e8f0}html.mx-dark .mxc-mo:hover,html.mx-dark .mxc-mo.sel{background:#7f1d1d;color:#fecaca}html.mx-dark #mxCalDrawer .mxc-panel{background:#0f172a;color:#e2e8f0}html.mx-dark .mxc-box,html.mx-dark .mxc-ev{background:#1e293b;border-color:#334155}html.mx-dark .mxc-day:hover,html.mx-dark .mxc-day.sel{background:#1e293b}
 @media (prefers-reduced-motion:reduce){#mxSeasonFx{display:none}.mxc-day,.mxc-nav button,.mxc-mo{transition:none}#mxSeasonBanner{animation:none}}
 </style>
+<style id="mx-student-css">
+#mxStuBar{display:none}
+body.mx-student #mxStuBar{display:block}
+body.mx-student header,body.mx-student #appNavBar,body.mx-student #qsToolbar,body.mx-student #classTimelinePanel,
+body.mx-student #qsFab,body.mx-student #qgFab,body.mx-student #qsBagFab,body.mx-student #mxNoteFab,body.mx-student .mx-bub,
+body.mx-student #bkPvB,body.mx-student #mxPortalBtn{display:none !important}
+body.mx-student #scoreMatrix,body.mx-student #scoreMatrix *{cursor:default !important}
+body.mx-stu-only #teacherCards,body.mx-stu-only #teacherGate .mt-6,body.mx-stu-only #teacherGate #mxStuGateBtn{display:none !important}
+/* Thẻ giáo viên trống: nét đứt + dấu cộng để thêm giáo viên mới */
+.teacher-card-add{display:flex;align-items:center;justify-content:center;min-height:11rem;border:2px dashed #94a3b8;border-radius:1rem;background:rgba(255,255,255,.55);color:#94a3b8;font-size:2.6rem;cursor:pointer;transition:transform .2s ease,border-color .2s ease,color .2s ease,background .2s ease,box-shadow .2s ease}
+.teacher-card-add:hover,.teacher-card-add:focus-visible{transform:translateY(-3px);border-color:#6366f1;color:#4f46e5;background:#eef2ff;box-shadow:0 10px 24px rgba(99,102,241,.2);outline:0}
+.teacher-card-add i{transition:transform .25s ease}
+.teacher-card-add:hover i{transform:scale(1.2) rotate(90deg)}
+@media (prefers-reduced-motion:reduce){.teacher-card-add,.teacher-card-add i{transition:none}.teacher-card-add:hover,.teacher-card-add:hover i{transform:none}}
+/* ===== Cổng học sinh: dùng đúng ngôn ngữ thiết kế của portal giáo viên ===== */
+body.mx-student #mxCtlBar{display:none !important}
+#mxStuNavBar{display:none}
+body.mx-student #mxStuNavBar{display:block}
+#mxStuTabs{flex-wrap:nowrap}
+#mxStuHome{will-change:transform,opacity}
+#mxStuHome .mxh-wrap{width:100%;display:flex;flex-direction:column;gap:1rem;padding-bottom:1.5rem}
+#mxStuHome .mxh-card{background:#fff;border:1px solid #e2e8f0;border-radius:1rem;box-shadow:0 4px 6px -1px rgba(15,23,42,.08),0 2px 4px -2px rgba(15,23,42,.06);padding:1rem}
+@media (min-width:768px){#mxStuHome .mxh-card{padding:1.15rem}}
+#mxStuHome .mxh-h{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.7rem;font-weight:900;font-size:.9rem;color:#1e293b}
+#mxStuHome .mxh-h i{color:#4f46e5;margin-right:.4rem}
+#mxStuHome .mxh-chip{display:inline-flex;align-items:center;gap:.25rem;font-size:.68rem;font-weight:800;padding:.18rem .6rem;border-radius:999px;border:1px solid #c7d2fe;background:#eef2ff;color:#4338ca;white-space:nowrap}
+#mxStuHome .mxh-chip.ok{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
+#mxStuHome .mxh-chip.off{background:#f1f5f9;border-color:#e2e8f0;color:#64748b}
+#mxStuHome .mxh-chip.bad{background:#fff1f2;border-color:#fecdd3;color:#be123c}
+#mxStuHome .mxh-chip.gift{background:#fffbeb;border-color:#fde68a;color:#b45309}
+#mxStuHome .mxh-hero{border-radius:1rem;padding:1rem 1.1rem;color:#fff;box-shadow:0 8px 20px rgba(79,70,229,.28)}
+#mxStuHome .mxh-hero:not(.ct){background:linear-gradient(120deg,#4338ca,#6d28d9 70%,#7c3aed)}
+@media (min-width:768px){#mxStuHome .mxh-hero{padding:1.3rem 1.5rem}}
+#mxStuHome .mxh-ava{flex:none;width:4rem;height:4rem;border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:2.2rem;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+#mxStuHome .mxh-xp{height:.5rem;border-radius:999px;background:rgba(255,255,255,.25);overflow:hidden}
+#mxStuHome .mxh-xp i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#fde047,#f59e0b);transition:width .6s ease}
+#mxStuHome .mxh-hs{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin-top:.9rem}
+@media (min-width:640px){#mxStuHome .mxh-hs{grid-template-columns:repeat(4,1fr)}}
+#mxStuHome .mxh-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:250px;border-radius:.9rem;overflow:hidden;cursor:pointer;background:radial-gradient(ellipse at 50% 30%,#fff 0%,#ede9fe 45%,#e0e7ff 100%);border:1px solid #ddd6fe}
+#mxStuHome .mxh-stage::after{content:"";position:absolute;left:50%;bottom:16px;width:50%;height:20px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(76,29,149,.22),transparent 70%);pointer-events:none}
+#mxStuHome .mxh-stage .pet-art,#mxStuHome .mxh-stage .pet-art.mon,#mxStuHome .mxh-stage .pet-art.egg{position:relative;z-index:1;width:210px;height:210px;max-width:62vw;max-height:62vw;margin:0 auto}
+#mxStuHome .mxh-bar{height:.45rem;border-radius:999px;background:#e2e8f0;overflow:hidden}
+#mxStuHome .mxh-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#6366f1,#8b5cf6)}
+#mxStuHome .mxh-ex{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+@media (min-width:640px){#mxStuHome .mxh-ex{grid-template-columns:repeat(6,1fr)}}
+#mxStuHome .mxh-exc{border-radius:.75rem;background:#f8fafc;border:1px solid #e2e8f0;padding:.5rem .3rem;text-align:center}
+#mxStuHome .mxh-exc small{display:block;font-size:.62rem;font-weight:800;color:#64748b}
+#mxStuHome .mxh-exc b{font-size:1rem;font-weight:900;color:#1e293b}
+#mxStuHome .mxh-exc.tot{background:#eef2ff;border-color:#c7d2fe}
+#mxStuHome .mxh-exc.tot b{color:#4338ca}
+#mxStuHome .mxh-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.4rem .15rem;border-bottom:1px dashed #e2e8f0;font-size:.8rem;color:#475569}
+#mxStuHome .mxh-row:last-child{border-bottom:0}
+#mxStuHome .mxh-sc{min-width:2.4rem;text-align:center;font-weight:900;font-size:.82rem;padding:.12rem .5rem;border-radius:.6rem;border:1px solid #c7d2fe;background:#eef2ff;color:#4338ca}
+#mxStuHome .mxh-sc.s10{background:#fffbeb;border-color:#fcd34d;color:#b45309}
+#mxStuHome .mxh-sc.s8{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
+#mxStuHome .mxh-sc.s0{background:#fff1f2;border-color:#fecdd3;color:#be123c}
+#mxStuHome .mxh-sc.ab{background:#f1f5f9;border-color:#e2e8f0;color:#64748b}
+#mxStuHome .mxh-btn{width:100%;margin-top:.7rem;border:0;border-radius:.7rem;padding:.55rem;font-size:.78rem;font-weight:800;color:#fff;cursor:pointer;background:linear-gradient(90deg,#4338ca,#7c3aed);box-shadow:0 4px 10px rgba(79,70,229,.3);transition:transform .2s,box-shadow .2s}
+#mxStuHome .mxh-btn:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(79,70,229,.4)}
+#mxStuHome .mxh-empty{font-size:.78rem;color:#94a3b8;text-align:center;padding:.8rem 0}
+@media (prefers-reduced-motion:reduce){#mxStuHome .mxh-hcell,#mxStuHome .mxh-btn{transition:none}}
+/* ===== Thẻ chào mừng dùng template thẻ của chính học sinh ===== */
+#mxStuHome .mxh-hero.ct{position:relative;overflow:hidden}
+#mxStuHome .mxh-hero.ct>*:not(.ct-fx){position:relative;z-index:1}
+#mxStuHome .mxh-hero.ct.ct-dark{text-shadow:0 1px 3px rgba(0,0,0,.45)}
+#mxStuHome .mxh-hero.ct:not(.ct-dark){color:#1e293b;box-shadow:0 8px 20px rgba(15,23,42,.16)}
+#mxStuHome .mxh-hero.ct:not(.ct-dark) .text-indigo-100{color:#475569 !important}
+#mxStuHome .mxh-hero.ct:not(.ct-dark) .mxh-ava,#mxStuHome .mxh-hero.ct:not(.ct-dark) .bg-white\/15{background:rgba(255,255,255,.66) !important;border-color:rgba(15,23,42,.12) !important}
+#mxStuHome .mxh-hero.ct:not(.ct-dark) .mxh-xp{background:rgba(15,23,42,.14)}
+#mxStuHome .mxh-hero.ct:not(.ct-dark) .text-indigo-100.font-black,#mxStuHome .mxh-hero.ct:not(.ct-dark) .text-sm.font-black{color:#1e293b !important}
+
+/* ===== Thẻ chào mừng: ô số liệu đặc, không dùng kính mờ ===== */
+#mxStuHome .mxh-hcell{display:flex;align-items:center;gap:.6rem;text-align:left;padding:.6rem .7rem;border-radius:.85rem;background:#fff;border:1px solid #e2e8f0;border-left:4px solid var(--hc);color:#1e293b;text-shadow:none;cursor:pointer;font-family:inherit;box-shadow:0 2px 6px rgba(15,23,42,.14);transition:transform .2s,box-shadow .2s}
+#mxStuHome .mxh-hcell:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(15,23,42,.24)}
+#mxStuHome .mxh-hcell.c1{--hc:#10b981}#mxStuHome .mxh-hcell.c2{--hc:#f59e0b}#mxStuHome .mxh-hcell.c3{--hc:#6366f1}#mxStuHome .mxh-hcell.c4{--hc:#ec4899}
+#mxStuHome .mxh-hi{flex:none;width:2.1rem;height:2.1rem;border-radius:.65rem;display:flex;align-items:center;justify-content:center;font-size:.95rem;color:#fff;background:var(--hc)}
+#mxStuHome .mxh-ht{display:flex;flex-direction:column;min-width:0}
+#mxStuHome .mxh-hcell b{font-size:1.2rem;font-weight:900;line-height:1.15;color:#1e293b}
+#mxStuHome .mxh-hcell .mxh-ht>span{font-size:.7rem;font-weight:700;color:#64748b;opacity:1}
+@keyframes mxhFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+#mxStuHome .mxh-ava{animation:mxhFloat 3.4s ease-in-out infinite;cursor:pointer;will-change:transform}
+#mxStuHome .mxh-ava:hover{animation-duration:1.1s}
+@media (prefers-reduced-motion:reduce){#mxStuHome .mxh-ava{animation:none}}
+#mxStuHome .mxh-avgp{font-style:normal;display:inline-block;padding:.02rem .6rem;border-radius:.6rem;background:#e2e8f0;color:#475569}
+#mxStuHome .mxh-gbox{display:flex;align-items:center;gap:.6rem;padding:0;background:transparent;border:0;box-shadow:none;color:inherit;text-shadow:none}
+#mxStuHome .mxh-gbox .gl{font-size:10px;font-weight:700;color:rgba(255,255,255,.88)}
+#mxStuHome .mxh-hero.ct:not(.ct-dark) .mxh-gbox .gl{color:#475569}
+#mxStuHome .mxh-gname{display:inline-block;font-size:.8rem;font-weight:900;padding:.05rem .55rem;border-radius:.55rem}
+/* ===== Hiệu ứng rê chuột ở trang chủ ===== */
+#mxStuHome .mxh-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+#mxStuHome .mxh-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(99,102,241,.22);border-color:#a5b4fc}
+#mxStuHome .mxh-hero{transition:transform .2s ease,box-shadow .2s ease}
+#mxStuHome .mxh-hero:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(79,70,229,.36)}
+#mxStuHome .mxh-row{transition:background .15s}#mxStuHome .mxh-row:hover{background:#f5f3ff}
+#mxStuHome .mxh-exc{transition:transform .18s,box-shadow .18s}#mxStuHome .mxh-exc:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(99,102,241,.2)}
+#mxStuHome .mxh-chip{transition:transform .15s}#mxStuHome button.mxh-chip:hover{transform:translateY(-1px)}
+#mxStuHome .mxh-stage{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+#mxStuHome .mxh-stage:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(99,102,241,.22);border-color:#a5b4fc}
+#mxStuHome .mxh-stage:hover .pet-art{animation-duration:.9s}
+#mxStuHome .mxh-stage:hover .p3-idle{animation:p3Hop .7s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){#mxStuHome .mxh-card,#mxStuHome .mxh-hero,#mxStuHome .mxh-stage,#mxStuHome .mxh-hcell,#mxStuHome .mxh-exc{transition:none}#mxStuHome .mxh-card:hover,#mxStuHome .mxh-hero:hover,#mxStuHome .mxh-stage:hover,#mxStuHome .mxh-hcell:hover,#mxStuHome .mxh-exc:hover{transform:none}}
+
+/* ===== Chọn khoá học trên dải Student Portal ===== */
+.mxs-course{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.96);color:#4338ca;border-radius:.6rem;padding:.2rem .35rem .2rem .6rem;box-shadow:0 2px 6px rgba(15,23,42,.25);transition:transform .15s,box-shadow .15s}
+.mxs-course:hover{transform:translateY(-1px);box-shadow:0 5px 12px rgba(15,23,42,.3)}
+.mxs-course select{max-width:220px;border:0;background:transparent;color:#1e293b;font-weight:800;font-size:12px;padding:.25rem .3rem;outline:none;cursor:pointer}
+html[data-season] .mxs-course{color:var(--sx-a)}
+/* ===== Bảng điểm (học sinh): chú thích các loại ô, không có thanh công cụ ===== */
+#mxStuLegend{display:none}
+body.mx-student #mxStuLegend{display:flex;flex:none;padding:.6rem 1rem;border-top:0;border-bottom:1px dashed #e2e8f0;background:#f8fafc}
+html.mx-dark body.mx-student #mxStuLegend{background:rgba(30,41,59,.6);border-bottom-color:#334155}
+/* ===== Tab Xếp hạng cuối kỳ (học sinh): chỉ xem bảng xếp hạng ===== */
+body.mx-student #viewFinalExamContainer>.qs-pres-hide{display:none !important}
+body.mx-student #viewFinalExamContainer>.qs-pres-hide~*{margin-top:0 !important}
+/* ===== Dải Student Portal đồng bộ nền với giao diện mùa của giáo viên ===== */
+html[data-season] #mxStuBar.bg-indigo-700{background:var(--sx-head) center/cover no-repeat,linear-gradient(100deg,var(--sx-ha),var(--sx-hb)) !important;border-bottom-color:var(--sx-a) !important}
+html[data-season] #mxStuBar .bg-indigo-900{background-color:color-mix(in srgb,var(--sx-ha) 55%,#0f172a) !important}
+html[data-season] #mxStuBar .text-indigo-200{color:rgba(255,255,255,.88) !important}
+html[data-season] #mxStuHome .mxh-hero:not(.ct){background:linear-gradient(120deg,var(--sx-ha),var(--sx-hb))}
+/* ===== Tab Thú Cưng (học sinh): khung trang bị nằm sẵn + cửa sổ thú của lớp ===== */
+.pq-card.pq-duo.pq-inl{max-width:none;animation:none;overflow:visible}
+.pq-inl .pq-pane,.pq-pane.pq-class{box-shadow:0 2px 10px rgba(15,23,42,.1);border:1px solid #e2e8f0;max-height:none}
+.pq-inl .pq-pane-b{max-height:620px}
+.pq-inl .pq-x,.pq-inl .pq-x.l,.pq-inl .pq-x.r{display:none !important}
+.pq-pane.pq-class .pq-pane-b{overflow:visible;padding-top:.8rem}
+html.mx-dark .pq-pane.pq-class,html.mx-dark .pq-inl .pq-pane{border-color:#4c1d95}
+@media(max-width:820px){.pq-inl .pq-pane-b{max-height:none}}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -3080,7 +3225,7 @@ html.mx-dark .mxc-mo{background:#1e293b;border-color:#334155;color:#e2e8f0}html.
         <i class="fa-solid fa-medal tg-float" style="right:34%;bottom:6%;font-size:46px;--d:-8s"></i>
         <i class="fa-solid fa-shapes tg-float" style="left:30%;bottom:22%;font-size:40px;--d:-4s"></i>
       </div>
-      <div class="relative z-10 max-w-5xl mx-auto">
+      <div class="relative z-10 max-w-5xl mx-auto pb-24">
         <div class="flex flex-wrap justify-between items-center gap-3 mb-7">
           <div class="tg-brand flex items-center gap-4">
             <img id="teacherGateLogo" alt="" class="tg-logo h-14 w-14 md:h-16 md:w-16 object-contain" draggable="false">
@@ -3092,7 +3237,7 @@ html.mx-dark .mxc-mo{background:#1e293b;border-color:#334155;color:#e2e8f0}html.
           <button onclick="teacherToggleLanguage()" class="rounded-xl bg-indigo-700 text-white px-4 py-2 font-bold"><i class="fa-solid fa-globe mr-2"></i><span id="teacherLangLabel">EN</span></button>
         </div>
         <div id="teacherCards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        <div class="mt-6 flex flex-wrap gap-3"><button onclick="addTeacher()" class="rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 font-bold shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5"><i class="fa-solid fa-plus mr-2"></i><span id="teacherAddLabel">Thêm giáo viên</span></button></div>
+        <button id="mxStuGateBtn" type="button" onclick="mxStuGateOpen()" class="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-20 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 font-bold shadow-lg shadow-emerald-200 transition hover:-translate-y-0.5"><i class="fa-solid fa-user-graduate mr-2"></i>Tôi là học sinh</button>
       </div>
     </div>
 
@@ -3234,6 +3379,7 @@ html.mx-dark .mxc-mo{background:#1e293b;border-color:#334155;color:#e2e8f0}html.
                         <div class="p-1.5">
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openCourseManager()"><span class="menu-ico bg-violet-100 text-violet-600"><i class="fa-solid fa-folder-open"></i></span><span data-i18n="courseManagerBtn">Quản lý khóa học</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openClassModal()"><span class="menu-ico bg-emerald-100 text-emerald-600"><i class="fa-solid fa-folder-plus"></i></span><span data-i18n="btnAddClass">Thêm Lớp Mới</span></button>
+                            <button role="menuitem" type="button" id="mxPortalBtn" class="menu-item" onclick="closeAllMenus();mxPortalOpen()"><span class="menu-ico bg-emerald-100 text-emerald-600"><i class="fa-solid fa-user-graduate"></i></span><span data-i18n="menuStudentPortal">Cổng học sinh</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openEditHistory()"><span class="menu-ico bg-amber-100 text-amber-600"><i class="fa-solid fa-clock-rotate-left"></i></span><span data-i18n="menuEditHistory">Lịch sử chỉnh sửa</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openScoreArchive()"><span class="menu-ico bg-teal-100 text-teal-600"><i class="fa-solid fa-box-archive"></i></span><span data-i18n="menuScoreArchive">Lưu Trữ điểm</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openDeletedStudents()"><span class="menu-ico bg-fuchsia-100 text-fuchsia-600"><i class="fa-solid fa-trash-arrow-up"></i></span><span data-i18n="menuRestoreStudents">Khôi phục học sinh đã xóa</span></button>
@@ -3249,7 +3395,7 @@ html.mx-dark .mxc-mo{background:#1e293b;border-color:#334155;color:#e2e8f0}html.
     </header>
 
     <!-- Controls Bar & Class Tabs -->
-    <div class="bg-white border-b border-slate-200 shadow-sm">
+    <div id="mxCtlBar" class="bg-white border-b border-slate-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-2">
             <!-- Top Controls (scrolls away together with the header) -->
             <div class="flex flex-wrap justify-between items-center gap-3">
@@ -3370,11 +3516,33 @@ html.mx-dark .mxc-mo{background:#1e293b;border-color:#334155;color:#e2e8f0}html.
         </div>
     </div>
 
+    <!-- Thanh học sinh: chỉ hiện khóa, tháng học và các tab được phép -->
+    <div id="mxStuBar" class="bg-indigo-700 text-white shadow-lg border-b border-indigo-800 relative z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-indigo-600 rounded-lg shadow-inner"><i class="fa-solid fa-graduation-cap text-2xl text-yellow-300"></i></div>
+                <div>
+                    <h1 class="text-xl font-black tracking-wide">STUDENT PORTAL</h1>
+                    <div id="mxStuSub" class="text-xs text-indigo-200 font-semibold">Không gian học tập &amp; thú cưng</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+                <label class="mxs-course" title="Khoá học"><i class="fa-solid fa-book-open"></i><select id="mxStuCourse" aria-label="Course" onchange="mxStuPickCourse(this.value)"></select></label>
+                <span id="mxStuPend" class="hidden px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300"></span>
+                <button onclick="mxStuLogout()" class="bg-indigo-900 hover:bg-indigo-950 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5 border border-indigo-500"><i class="fa-solid fa-right-from-bracket text-amber-300"></i> Thoát</button>
+            </div>
+        </div>
+    </div>
+    <div id="mxStuNavBar" class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-2 overflow-x-auto"><div class="tab-pills w-max" id="mxStuTabs" aria-label="Student tabs"></div></div>
+    </div>
+
     <!-- Main Section -->
     <main class="flex-1 min-h-0 overflow-hidden p-3 md:p-4 flex flex-col gap-3 max-w-7xl w-full mx-auto">
         <!-- MODE 1: MATRIX SCORE TABLE -->
         <div id="viewMatrixContainer" class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200 flex-1 flex flex-col">
             <div id="qsToolbar"></div>
+            <div id="mxStuLegend" class="qs-legend" role="group"></div>
             <div class="overflow-auto flex-1 relative" id="tableScrollContainer">
                 <table class="w-full text-xs text-center border-collapse" id="scoreMatrix">
                     <!-- Dynamic Matrix Table Rendered by JS -->
@@ -3542,6 +3710,7 @@ html.mx-dark .mxc-mo{background:#1e293b;border-color:#334155;color:#e2e8f0}html.
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4"><div class="flex flex-wrap justify-between gap-2 items-center mb-3"><h3 id="wheelHistoryTitle" class="font-black text-lg">Lịch sử quay</h3><button onclick="clearWheelHistoryView()" class="rounded-lg border px-3 py-2 text-xs font-bold">Xóa lịch sử hiển thị</button></div><div id="wheelHistory" class="space-y-2"></div></section>
     </div>
 
+    <div id="mxStuHome" class="hidden flex-1 min-h-0 overflow-y-auto"></div>
     <div id="viewPetContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3"></div>
     <div id="viewGachaContainer" class="hidden flex-1 min-h-0 overflow-y-auto space-y-3">
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
@@ -4171,7 +4340,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, get, remove, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         // Firebase configuration
         const firebaseConfig = {
@@ -4359,7 +4528,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 lblNoSystemViolations: "Chưa có vi phạm nào trong danh mục đồng bộ.",
                 lblGroupTitlePrefix: "NHÓM",
                 lblStudentsSuffix: "học sinh",
-                btnUtilities: "Tiện ích", utilitiesTitle: "Tiện ích & Dữ liệu", menuRestoreStudents: "Khôi phục", menuDangerZone: "Vùng nguy hiểm",
+                btnUtilities: "Tiện ích", utilitiesTitle: "Tiện ích & Dữ liệu", menuRestoreStudents: "Khôi phục", menuStudentPortal: "Cổng học sinh", menuDangerZone: "Vùng nguy hiểm",
                 grpScores: "Sư phạm & Điểm số", grpClass: "Quản lý lớp", grpReward: "Tương tác & Thưởng",
                 classMenuTitle: "Tùy chọn lớp", classMenuEdit: "Sửa tên / Đổi màu lớp", classMenuAdd: "Thêm lớp mới", classMenuDelete: "Xóa lớp này", classOptionsTitle: "Tùy chọn lớp",
                 courseBadgeCurrent: "Khóa hiện tại:", courseBadgeArchived: "Đang xem khóa đã lưu trữ:", courseBadgeReadOnly: "Chỉ xem",
@@ -4525,7 +4694,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 lblNoSystemViolations: "No system violations available.",
                 lblGroupTitlePrefix: "GROUP",
                 lblStudentsSuffix: "students",
-                btnUtilities: "Utilities", utilitiesTitle: "Utilities & Data", menuRestoreStudents: "Restore", menuDangerZone: "Danger zone",
+                btnUtilities: "Utilities", utilitiesTitle: "Utilities & Data", menuRestoreStudents: "Restore", menuStudentPortal: "Student portal", menuDangerZone: "Danger zone",
                 grpScores: "Teaching & Scores", grpClass: "Class Management", grpReward: "Engagement & Rewards",
                 classMenuTitle: "Class options", classMenuEdit: "Rename / Recolor class", classMenuAdd: "Add new class", classMenuDelete: "Delete this class", classOptionsTitle: "Class options",
                 courseBadgeCurrent: "Current course:", courseBadgeArchived: "Viewing archived course:", courseBadgeReadOnly: "Read-only",
@@ -4734,8 +4903,15 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 saved: 'Đã lưu',
                 editLbl: 'Sửa điểm',
                 editTitle: 'Bật để sửa tay điểm: ô được sửa sẽ gỡ liên kết với số lần phát biểu; điểm dư trong túi quà không đổi',
-                searchPh: 'Tìm học sinh…',
-                searchFab: 'Tìm học sinh',
+                notifFab: 'Thông báo',
+                notifTitle: 'Thông báo',
+                notifSub: 'Lưu 7 ngày, sau đó tự động xoá.',
+                notifEmpty: 'Chưa có thông báo nào.',
+                notifDel: 'Xoá thông báo',
+                notifClear: 'Xoá tất cả',
+                notifClearAsk: 'Xoá toàn bộ thông báo?',
+                notifClose: 'Đóng',
+                notifCount: n => `${n} thông báo`,
                 notesFab: 'Ghi chú',
                 notesTitle: c => `Ghi chú · Lớp ${c}`,
                 notesSub: 'Ghi chú riêng cho lớp đang chọn, tự động lưu.',
@@ -4809,8 +4985,15 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 saved: 'Saved',
                 editLbl: 'Edit score',
                 editTitle: 'Turn on to hand-edit scores: edited cells are detached from the speaking count; gift-bag points stay unchanged',
-                searchPh: 'Find student…',
-                searchFab: 'Find student',
+                notifFab: 'Notifications',
+                notifTitle: 'Notifications',
+                notifSub: 'Kept for 7 days, then deleted automatically.',
+                notifEmpty: 'No notifications yet.',
+                notifDel: 'Delete notification',
+                notifClear: 'Clear all',
+                notifClearAsk: 'Delete all notifications?',
+                notifClose: 'Close',
+                notifCount: n => `${n} notification${n === 1 ? '' : 's'}`,
                 notesFab: 'Notes',
                 notesTitle: c => `Notes · Class ${c}`,
                 notesSub: 'Private notes for the selected class, saved automatically.',
@@ -4920,7 +5103,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         const qsCU = {};
         let qsArchSeen = null, qsTeacherSeen = null;
         const qsArchived = () => (typeof viewingArchivedCourseId !== 'undefined') && !!viewingArchivedCourseId;
-        const qsIsMatrix = () => !['ranking', 'shop', 'violation', 'finalExam', 'students', 'teaching', 'wheel', 'gacha'].includes(appData.activeViewMode);
+        const qsIsMatrix = () => !['home', 'ranking', 'shop', 'violation', 'finalExam', 'students', 'teaching', 'wheel', 'gacha'].includes(appData.activeViewMode);
         // Thanh nút nổi (tìm, quà, cộng điểm, túi quà, ghi chú) hiện ở bảng điểm + Cửa hàng quà + Vòng quay + Hộp quà bí ẩn
         const mxBubView = () => qsIsMatrix() || ['shop', 'wheel', 'gacha'].includes(appData.activeViewMode);
         function qsToast(msg, type) { if (window.showAppToast) window.showAppToast(msg, type || 'success'); }
@@ -5338,68 +5521,9 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             if (qsQuick) qsSelect(miss[0].id, window.mxTodayCol); else qsScrollTo(td);
         };
 
-        /* ===== MX: ô tìm học sinh ===== */
-        let mxSearchQ = '', mxSearchIdx = -1, mxFoundTimer = null;
-        const mxAttr = v => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        /* ===== MX: tiện ích dùng chung ===== */
+                const mxAttr = v => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         const mxNorm = v => String(v == null ? '' : v).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').toLowerCase().trim();
-        function mxMatches() {
-            const q = mxNorm(mxSearchQ); if (!q) return [];
-            return appData.students.filter(s => s.classId === appData.activeClassId && mxNorm(getStudentDisplayName(s)).includes(q));
-        }
-        // Tìm học sinh ở tab Cửa hàng quà / Vòng quay / Hộp quà bí ẩn
-        function mxJumpOther(s) {
-            const mode = appData.activeViewMode, inp = qsEl('mxSearch');
-            const pick = id => {
-                const sel = document.getElementById(id);
-                if (!sel || ![...sel.options].some(o => o.value === String(s.id))) return false;
-                sel.value = String(s.id);
-                sel.dispatchEvent(new Event('change', { bubbles: true }));
-                sel.classList.remove('mx-pick'); void sel.offsetWidth; sel.classList.add('mx-pick');
-                clearTimeout(mxFoundTimer); mxFoundTimer = setTimeout(() => sel.classList.remove('mx-pick'), 2200);
-                return true;
-            };
-            if (mode === 'shop') {
-                const tr = document.querySelector(`#studentInventoryList tr[data-sid="${s.id}"]`);
-                if (!tr) return;
-                document.querySelectorAll('#studentInventoryList tr.mx-found').forEach(r => r.classList.remove('mx-found'));
-                tr.scrollIntoView({ block: 'center', behavior: 'smooth' });
-                void tr.offsetWidth; tr.classList.add('mx-found');
-                clearTimeout(mxFoundTimer); mxFoundTimer = setTimeout(() => tr.classList.remove('mx-found'), 2200);
-            } else {
-                const ok = pick(mode === 'wheel' ? 'wheelStudentPicker' : 'gcSel');
-                if (!ok) { if (inp) inp.classList.add('mx-nores'); qsToast(appData.language === 'en' ? `${getStudentDisplayName(s)} has no gifts/turns here` : `${getStudentDisplayName(s)} chưa có lượt/quà ở tab này`, 'info'); }
-            }
-        }
-        function mxJump(i) {
-            const list = mxMatches(), inp = qsEl('mxSearch');
-            if (inp) inp.classList.toggle('mx-nores', !!mxNorm(mxSearchQ) && !list.length);
-            if (!list.length) return;
-            mxSearchIdx = ((i % list.length) + list.length) % list.length;
-            const s = list[mxSearchIdx];
-            if (!qsIsMatrix()) { mxJumpOther(s); return; }
-            const cell = document.querySelector(`#scoreMatrix td.grid-cell[data-sid="${s.id}"]`);
-            const tr = cell && cell.parentElement, box = qsEl('tableScrollContainer');
-            if (!tr || !box) return;
-            const head = box.querySelector('thead');
-            const topEdge = head ? head.getBoundingClientRect().bottom : box.getBoundingClientRect().top;
-            box.scrollTop += tr.getBoundingClientRect().top - topEdge - 24;
-            document.querySelectorAll('#scoreMatrix .score-row.mx-found').forEach(r => r.classList.remove('mx-found'));
-            void tr.offsetWidth; tr.classList.add('mx-found');
-            clearTimeout(mxFoundTimer);
-            mxFoundTimer = setTimeout(() => tr.classList.remove('mx-found'), 2200);
-        }
-        window.mxSearchInput = function (v) { mxSearchQ = v; mxSearchIdx = -1; if (mxNorm(v)) mxJump(0); else { const inp = qsEl('mxSearch'); if (inp) inp.classList.remove('mx-nores'); } };
-        window.mxSearchKey = function (ev) {
-            if (ev.key === 'Enter') { ev.preventDefault(); mxJump(mxSearchIdx + (ev.shiftKey ? -1 : 1)); }
-            else if (ev.key === 'Escape') { ev.preventDefault(); mxSearchQ = ''; mxSearchIdx = -1; ev.target.value = ''; ev.target.classList.remove('mx-nores'); ev.target.blur(); mxSearchOpen(false); }
-        };
-
-        window.mxSearchOpen = function (on) {
-            const sf = qsEl('mxSearchFab'), inp = qsEl('mxSearch'); if (!sf || !inp) return;
-            sf.classList.toggle('open', !!on);
-            if (on) { inp.value = mxSearchQ; setTimeout(() => inp.focus(), 0); }
-        };
-
         /* ===== Ghi chú Score Matrix (mỗi lớp một danh sách, tự lưu) ===== */
         const mxNotesList = () => {
             const cid = appData.activeClassId; if (!cid) return [];
@@ -5410,19 +5534,18 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         const mxNotesCount = () => { const n = appData.matrixNotes && appData.matrixNotes[appData.activeClassId]; return Array.isArray(n) ? n.length : 0; };
         function mxBubbleUpdate() {
             const show = (mxBubView() && !qsArchived() && !qsPresKind);
-            const sf = qsEl('mxSearchFab'), nf = qsEl('mxNoteFab'); if (!sf || !nf) return;
+            const sf = qsEl('mxNotifFab'), nf = qsEl('mxNoteFab'); if (!sf || !nf) return;
             sf.style.display = show ? 'flex' : 'none';
             nf.style.display = show ? 'flex' : 'none';
             window.mxCalFabShow && window.mxCalFabShow(show);
-            const sl = qsEl('mxSearchFabLbl'); if (sl) sl.textContent = qsT('searchFab');
-            const inp = qsEl('mxSearch'); if (inp) { inp.placeholder = qsT('searchPh'); if (document.activeElement !== inp && inp.value !== mxSearchQ) inp.value = mxSearchQ; }
-            if (inp && !mxNorm(mxSearchQ) && document.activeElement !== inp) sf.classList.remove('open');
-            sf.setAttribute('aria-label', qsT('searchFab'));
+            const sl = qsEl('mxNotifFabLbl'); if (sl) sl.textContent = qsT('notifFab');
+            sf.setAttribute('aria-label', qsT('notifFab'));
+            mxNotifBadge();
             const nl = qsEl('mxNoteFabLbl'); if (nl) nl.textContent = qsT('notesFab');
             nf.setAttribute('aria-label', qsT('notesFab'));
             const n = mxNotesCount(), b = qsEl('mxNoteFabBadge'); if (b) b.textContent = n;
             nf.classList.toggle('has-notes', n > 0);
-            if (!show) { const d = qsEl('mxNotesDrawer'); if (d && d.classList.contains('open')) mxNotesClose(); }
+            if (!show) { const d = qsEl('mxNotesDrawer'); if (d && d.classList.contains('open')) mxNotesClose(); const nd = qsEl('mxNotifDrawer'); if (nd && nd.classList.contains('open')) mxNotifClose(); }
         }
         /* ===== MX: giao diện theo mùa/ngày lễ + lịch (có âm lịch) ===== */
         const sxEn = () => { try { return appData.language === 'en'; } catch (e) { return false; } };
@@ -5491,7 +5614,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             for (const [id, d] of days) { if (!d) continue; const s = sxDn(d) - (d.getDay() + 6) % 7; if (t >= s && t <= s + 6) return id; }
             const m = now.getMonth(); return m === 11 ? 'xmas' : (m >= 5 && m <= 7) ? 'sum' : null;
         }
-        const sxMode = () => { try { return localStorage.getItem('mxSeason') || 'auto'; } catch (e) { return 'auto'; } };
+        const sxMode = () => { if (window.MX_STUDENT && window.__mxSeasonMode) return window.__mxSeasonMode; try { return localStorage.getItem('mxSeason') || 'auto'; } catch (e) { return 'auto'; } };
         function sxApply() {
             const mode = sxMode(), id = mode === 'off' ? null : (SX[mode] ? mode : sxAuto(new Date()));
             if (window.__sxId === id) return;
@@ -5566,7 +5689,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             saveData(); sxCalRender(); mxBubbleUpdate(); setTimeout(() => { const n = qsEl('mxCalIn'); if (n) n.focus(); }, 0);
         };
         window.mxCalDel = function (id) { appData.calEvents = sxEvList().filter(e => e.id !== id); saveData(); sxCalRender(); mxBubbleUpdate(); };
-        window.mxCalSeason = function (v) { try { localStorage.setItem('mxSeason', v); } catch (e) {} window.__sxId = undefined; sxApply(); };
+        window.mxCalSeason = function (v) { try { localStorage.setItem('mxSeason', v); } catch (e) {} window.__sxId = undefined; sxApply(); try { mxSchedulePublish(); } catch (e) {} };
         function sxCalRender() {
             const dr = qsEl('mxCalDrawer'); if (!dr || !sxCal) return;
             const { y, m, s } = sxCal, en = sxEn(), todayK = sxKey(new Date()), first = new Date(y, m, 1), off = (first.getDay() + 6) % 7;
@@ -5662,6 +5785,79 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { const d = qsEl('mxNotesDrawer'); if (d && d.classList.contains('open')) mxNotesClose(); } });
         }
 
+        /* ===== MX: Thông báo — nhật ký thông báo của giáo viên, giữ 7 ngày rồi tự xoá ===== */
+        const MX_NOTIF_TTL = 7 * 24 * 3600 * 1000, MX_NOTIF_MAX = 300;
+        const MX_NOTIF_ICO = { success: ['fa-circle-check', '#059669'], warning: ['fa-triangle-exclamation', '#d97706'], error: ['fa-circle-xmark', '#e11d48'], info: ['fa-circle-info', '#0284c7'], badge: ['fa-medal', '#7c3aed'], streak: ['fa-fire-flame-curved', '#ea580c'], level: ['fa-arrow-up-right-dots', '#4f46e5'] };
+        let mxNotifKey = null, mxNotifData = { items: [], seen: 0 };
+        function mxNotifLsKey() { let id = 'default'; try { if (window.mxBackupBridge) id = window.mxBackupBridge.teacherKey(); } catch (e) {} return 'mxNotifLog:' + id; }
+        function mxNotifSave() { try { localStorage.setItem(mxNotifKey, JSON.stringify(mxNotifData)); } catch (e) {} }
+        function mxNotifLoad() {
+            const k = mxNotifLsKey();
+            if (k !== mxNotifKey) {
+                mxNotifKey = k; mxNotifData = { items: [], seen: 0 };
+                try { const o = JSON.parse(localStorage.getItem(k) || 'null'); if (o && Array.isArray(o.items)) mxNotifData = { items: o.items.filter(x => x && x.text && x.ts), seen: Number(o.seen) || 0 }; } catch (e) {}
+            }
+            const cut = Date.now() - MX_NOTIF_TTL, n = mxNotifData.items.length;
+            mxNotifData.items = mxNotifData.items.filter(x => x.ts >= cut);
+            if (mxNotifData.items.length !== n) mxNotifSave();
+            return mxNotifData;
+        }
+        function mxNotifBadge() {
+            const f = qsEl('mxNotifFab'); if (!f) return;
+            const d = mxNotifLoad(), n = d.items.filter(x => x.ts > d.seen).length, b = qsEl('mxNotifFabBadge');
+            if (b) b.textContent = n > 99 ? '99+' : n;
+            f.classList.toggle('has-new', n > 0);
+        }
+        window.mxNotifPush = function (text, type) {
+            if (window.MX_STUDENT) return;
+            text = String(text == null ? '' : text).trim(); if (!text) return;
+            const d = mxNotifLoad(), now = Date.now(), last = d.items[0];
+            if (last && last.text === text && now - last.ts < 1500) return;
+            d.items.unshift({ id: 'nt' + now.toString(36) + Math.random().toString(36).slice(2, 5), ts: now, type: MX_NOTIF_ICO[type] ? type : 'info', text });
+            if (d.items.length > MX_NOTIF_MAX) d.items.length = MX_NOTIF_MAX;
+            const dr = qsEl('mxNotifDrawer'); if (dr && dr.classList.contains('open') && !dr.classList.contains('mx-dr-leave')) d.seen = now;
+            mxNotifSave(); mxNotifBadge(); mxNotifRender();
+        };
+        window.mxNotifOpen = function () {
+            const d = qsEl('mxNotifDrawer'); if (!d) return;
+            window.mxDrOpen(d);
+            const s = mxNotifLoad(); s.seen = Date.now(); mxNotifSave(); mxNotifBadge(); mxNotifRender();
+        };
+        window.mxNotifClose = function () { window.mxDrClose(qsEl('mxNotifDrawer')); };
+        window.mxNotifDel = function (id) {
+            const d = mxNotifLoad(), i = d.items.findIndex(n => n.id === id); if (i < 0) return;
+            d.items.splice(i, 1); mxNotifSave(); mxNotifBadge(); mxNotifRender();
+        };
+        window.mxNotifClear = async function () {
+            if (!mxNotifLoad().items.length) return;
+            let ok = true; try { ok = await showAppConfirm(qsT('notifClearAsk')); } catch (e) {}
+            if (!ok) return;
+            const d = mxNotifLoad(); d.items = []; mxNotifSave(); mxNotifBadge(); mxNotifRender();
+        };
+        function mxNotifRender() {
+            const dr = qsEl('mxNotifDrawer'); if (!dr || !dr.classList.contains('open') || dr.classList.contains('mx-dr-leave')) return;
+            if (!mxBubView() || qsArchived()) { mxNotifClose(); return; }
+            const d = mxNotifLoad(), loc = appData.language === 'en' ? 'en-US' : 'vi-VN';
+            const fmt = ts => { try { return new Date(ts).toLocaleString(loc, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } };
+            const oldBody = qsEl('mxNotifBody'), top = oldBody ? oldBody.scrollTop : 0;
+            const items = d.items.length ? d.items.map(n => { const ic = MX_NOTIF_ICO[n.type] || MX_NOTIF_ICO.info;
+                return `<div class="mxnt-item"><span class="mxnt-ico" style="--c:${ic[1]}"><i class="fa-solid ${ic[0]}"></i></span><div class="mxnt-main"><div class="mxnt-text">${escapeHtml(n.text)}</div><div class="mxnt-meta"><i class="fa-regular fa-clock"></i> ${fmt(n.ts)}</div></div><button type="button" class="mxnt-del" onclick="mxNotifDel('${n.id}')" title="${mxAttr(qsT('notifDel'))}" aria-label="${mxAttr(qsT('notifDel'))}"><i class="fa-solid fa-trash-can"></i></button></div>`; }).join('')
+                : `<p class="text-center text-xs italic text-slate-400 py-8">${qsT('notifEmpty')}</p>`;
+            dr.innerHTML = `<div class="mxnt-panel" role="dialog" aria-modal="true">
+                <div class="px-5 py-4 text-white flex items-start justify-between gap-3" style="background:linear-gradient(135deg,#0ea5e9,#0369a1)">
+                    <div><h3 class="font-black text-lg">🔔 ${escapeHtml(qsT('notifTitle'))}</h3><p class="text-xs opacity-90">${qsT('notifSub')}</p></div>
+                    <button type="button" onclick="mxNotifClose()" class="text-2xl leading-none px-2" aria-label="${mxAttr(qsT('notifClose'))}">×</button>
+                </div>
+                <div class="mxnt-bar"><span>${qsT('notifCount', d.items.length)}</span>${d.items.length ? `<button type="button" class="mxnt-clear" onclick="mxNotifClear()"><i class="fa-solid fa-trash-can"></i> ${qsT('notifClear')}</button>` : ''}</div>
+                <div id="mxNotifBody" class="flex-1 overflow-y-auto p-4 space-y-2">${items}</div>
+            </div>`;
+            const nb = qsEl('mxNotifBody'); if (nb) nb.scrollTop = top;
+        }
+        document.addEventListener('mousedown', e => { const d = qsEl('mxNotifDrawer'); if (d && d.classList.contains('open') && e.target === d) mxNotifClose(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { const d = qsEl('mxNotifDrawer'); if (d && d.classList.contains('open')) mxNotifClose(); } });
+        setInterval(() => { try { mxNotifLoad(); mxNotifBadge(); } catch (e) {} }, 600000);
+
+
         /* ===== MX: cột hôm nay (tự cuộn tới 1 lần mỗi lớp) + rê chuột kiểu chữ thập ===== */
         const mxTodayDone = {};
         function mxScrollToday() {
@@ -5696,7 +5892,6 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             qsSelCell = null; qsBuf = ''; qsFlashCell = null; qsToolbarSig = '';
             mxSel = []; mxEnd = null; mxBatch = null;
             mxUndoStack.length = 0; mxRedoStack.length = 0;
-            mxSearchQ = ''; mxSearchIdx = -1;
             [qsSel, qsCU, mxTodayDone].forEach(o => Object.keys(o).forEach(k => { if (o === qsCU && qsCU[k] && qsCU[k].raf) cancelAnimationFrame(qsCU[k].raf); delete o[k]; }));
             qsBulk.target = 'day'; qsBulk.amount = '1';
             qgOnly = false;
@@ -6417,16 +6612,13 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 document.body.appendChild(gf);
             }
             if (!qsEl('qgDrawer')) { const d = document.createElement('div'); d.id = 'qgDrawer'; document.body.appendChild(d); }
-            if (!qsEl('mxSearchFab')) {
-                const sf = document.createElement('div');
-                sf.id = 'mxSearchFab'; sf.className = 'mx-bub'; sf.setAttribute('role', 'search'); sf.tabIndex = 0;
-                sf.innerHTML = '<span class="mx-bub-ico"><i class="fa-solid fa-magnifying-glass"></i></span><span class="mx-bub-lbl" id="mxSearchFabLbl"></span><input id="mxSearch" class="mx-bub-inp" type="search" autocomplete="off" oninput="mxSearchInput(this.value)" onkeydown="mxSearchKey(event)">';
-                sf.addEventListener('click', ev => { if (ev.target.id !== 'mxSearch') mxSearchOpen(true); });
-                sf.addEventListener('keydown', ev => { if (ev.key === 'Enter' && ev.target === sf) { ev.preventDefault(); mxSearchOpen(true); } });
+            if (!qsEl('mxNotifFab')) {
+                const sf = document.createElement('button');
+                sf.id = 'mxNotifFab'; sf.type = 'button'; sf.className = 'mx-bub'; sf.setAttribute('onclick', 'mxNotifOpen()');
+                sf.innerHTML = '<span class="mx-bub-ico"><i class="fa-solid fa-bell"></i></span><span class="mx-bub-lbl" id="mxNotifFabLbl"></span><span class="mx-bub-badge mx-notif-badge" id="mxNotifFabBadge">0</span>';
                 document.body.appendChild(sf);
-                const inp = sf.querySelector('input');
-                inp.addEventListener('blur', () => { if (!mxNorm(inp.value)) mxSearchOpen(false); });
             }
+            if (!qsEl('mxNotifDrawer')) { const d = document.createElement('div'); d.id = 'mxNotifDrawer'; document.body.appendChild(d); }
             if (!qsEl('mxNoteFab')) {
                 const nf = document.createElement('button');
                 nf.id = 'mxNoteFab'; nf.type = 'button'; nf.className = 'mx-bub'; nf.setAttribute('onclick', 'mxNotesOpen()');
@@ -6444,7 +6636,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             });
         }
         function qsAfterRender() {
-            qsInitDom(); qsRefreshToolbar(); qgFabUpdate(); qgRender(); mxNotesRender();
+            qsInitDom(); qsRefreshToolbar(); qgFabUpdate(); qgRender(); mxNotesRender(); mxNotifRender();
             document.querySelectorAll('[data-qs]').forEach(el => { el.textContent = qsT(el.dataset.qs); });
             qsRefreshPresBar(); qsFabUpdate();
             if (qsIsMatrix() && qsSelCell) {
@@ -6881,6 +7073,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         }
         window.bkRecheck=()=>{if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId)return 0;bkEnsureActiveCourseBadges();const n=bkEvaluateAll();for(const st of (appData.students||[]))bkSaveStudentCourse(st,appData.courseManager?.activeCourseId);if(n)saveData();return n};
         function saveData() {
+            if (window.MX_STUDENT) return Promise.resolve(false); // chế độ học sinh: tuyệt đối không ghi dữ liệu giáo viên
             if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) {
                 alert(appData.language === 'en' ? 'Archived course is read-only. Return to the active course to make changes.' : 'Khóa đã lưu trữ chỉ được xem. Hãy quay lại khóa hiện tại để chỉnh sửa.');
                 return Promise.resolve(false);
@@ -6903,8 +7096,10 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             } catch (e) {}
             try { bkAuditShopChanges(lastPersistedSnapshot,appData); } catch(e) { console.warn('Badge audit skipped:',e); }
             try { bkEnsureActiveCourseBadges(); bkEvaluateAll(); for(const st of (appData.students||[]))bkSaveStudentCourse(st,appData.courseManager?.activeCourseId); } catch (e) { console.warn('Badge evaluation skipped:',e); }
+            try { if (appData.studentPortal && appData.studentPortal.enabled) mxEnsureLoginCodes(); } catch (e) { console.warn('Login codes skipped:', e); }
             const saveSnapshot = deepCopy(appData);
             return set(ref(db, `appDataMultiTeacher/teacherData/${currentTeacherId || LEGACY_TEACHER_ID}`), appData).then(() => { // Lưu đúng nhánh dữ liệu giáo viên chính
+                try { mxSchedulePublish(); } catch (e) {}
                 lastPersistedSnapshot = deepCopy(saveSnapshot);
                 suppressUndoCapture = false;
                 if (window.__teachingEdit) { window.__teachingEdit = false; notifyTeachingSynced(); }
@@ -7845,6 +8040,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             btnFinalExam.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900";
             btnStudents.className = btnTeaching.className = btnWheel.className = btnGacha.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"; { const bp = document.getElementById('btnViewPet'), pc = document.getElementById('viewPetContainer'); if (bp) bp.className = "px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"; if (pc) pc.classList.add('hidden'); }
 
+            { const mh = document.getElementById('mxStuHome'); if (mh) mh.classList.add('hidden'); }
             matrixContainer.classList.add('hidden');
             rankingContainer.classList.add('hidden');
             shopContainer.classList.add('hidden');
@@ -7853,7 +8049,10 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             studentsContainer.classList.add('hidden'); teachingContainer.classList.add('hidden'); wheelContainer.classList.add('hidden'); gachaContainer.classList.add('hidden');
             if (appData.activeViewMode !== 'ranking') grLegendSet(false);
 
-            if (appData.activeViewMode === 'shop') {
+            if (appData.activeViewMode === 'home' && window.MX_STUDENT) {
+                const mh = document.getElementById('mxStuHome'); if (mh) mh.classList.remove('hidden');
+                if (window.mxStuRenderHome) window.mxStuRenderHome();
+            } else if (appData.activeViewMode === 'shop') {
                 btnShop.className = "px-3 py-1 rounded-md transition bg-white text-indigo-700 shadow";
                 shopContainer.classList.remove('hidden');
                 renderShopView();
@@ -10337,6 +10536,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             if (tfParts.length && !tfRaf) { tfLast = performance.now(); tfRaf = requestAnimationFrame(tfStep); }
         }
         function tfToast(text, cls, dur, flameCls) {
+            if (window.MX_STUDENT) return;
+            try { window.mxNotifPush && window.mxNotifPush(text, 'streak'); } catch (e) {}
             const el = document.createElement('div'); el.className = 'tf-banner ' + (cls || '') + ((flameCls && /tf-hi/.test(flameCls)) ? ' ' + (String(flameCls).match(/tf-t\d+/) || [''])[0] : '');
             if (flameCls) {
                 // Lửa cùng màu mốc streak thay cho icon emoji
@@ -10414,6 +10615,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         // Hiệu ứng khi đứt streak (lửa tắt, khói) hoặc lên cấp
         // Thông báo lên cấp: hiện ở góc dưới màn hình, tách riêng với banner chúc mừng streak (ở trên)
         function tfLevelToast(text) {
+            if (window.MX_STUDENT) return;
+            try { window.mxNotifPush && window.mxNotifPush(text, 'level'); } catch (e) {}
             const layer = tfEnsureLayer(), el = document.createElement('div');
             el.className = 'tf-banner lv'; el.textContent = text;
             const slot = layer.querySelectorAll('.tf-banner.lv').length;
@@ -12730,11 +12933,12 @@ window.openStudentProfile=function(studentId){
           const createBtnEl=document.getElementById('teacherCreateBtn');if(createBtnEl)createBtnEl.innerHTML='<i class="fa-solid fa-plus mr-2"></i>'+tt('createBtn');
           if(document.getElementById('teacherIconPicker'))renderTeacherIconPicker('teacherIcon');
           document.getElementById('teacherPasswordConfirmInput').placeholder=tt('confirmPlaceholder');
-          document.getElementById('teacherAddLabel').textContent=tt('add');
+          { const al=document.getElementById('teacherAddLabel'); if(al) al.textContent=tt('add'); }
           document.getElementById('teacherLangLabel').textContent=teacherGateLanguage==='vi'?'EN':'VI';
           const cards=document.getElementById('teacherCards');
-          if(!teacherRecords.length){cards.innerHTML=`<div class="col-span-full rounded-2xl border-2 border-dashed border-slate-300 bg-white p-8 text-center text-slate-500">${tt('no')}</div>`;return;}
-          cards.innerHTML=teacherRecords.map(t=>`<article class="teacher-card bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col gap-3"><div class="flex items-start gap-3"><div class="teacher-avatar w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-3xl">${escapeTeacherHtml(t.icon||'👩‍🏫')}</div><div class="min-w-0 flex-1"><h2 class="font-black text-lg break-words">${escapeTeacherHtml(t.name||'Teacher')}</h2><p class="text-sm text-slate-500 break-words">${escapeTeacherHtml(t.description||'')}</p><p class="text-xs mt-2 ${t.passwordHash?'text-amber-700':'text-emerald-700'}"><i class="fa-solid ${t.passwordHash?'fa-lock':'fa-lock-open'} mr-1"></i>${t.passwordHash?tt('hasPass'):tt('noPass')}</p></div></div><button onclick="enterTeacher('${t.teacherId}')" class="teacher-enter w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white py-2 font-bold">${tt('enter')}</button><div class="flex gap-2"><button onclick="editTeacher('${t.teacherId}')" class="flex-1 rounded-lg border border-slate-200 py-2 text-sm font-bold transition hover:bg-slate-50 hover:border-slate-300"><i class="fa-solid fa-pen mr-1"></i>${tt('editBtn')}</button><button onclick="deleteTeacher('${t.teacherId}')" class="flex-1 rounded-lg border border-rose-200 text-rose-600 py-2 text-sm font-bold transition hover:bg-rose-50 hover:border-rose-300"><i class="fa-solid fa-trash mr-1"></i>${tt('remove')}</button></div></article>`).join('');
+          const addCard=`<button type="button" onclick="addTeacher()" class="teacher-card-add" title="${tt('add')}" aria-label="${tt('add')}"><i class="fa-solid fa-plus"></i></button>`;
+          if(!teacherRecords.length){cards.innerHTML=addCard;return;}
+          cards.innerHTML=teacherRecords.map(t=>`<article class="teacher-card bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col gap-3"><div class="flex items-start gap-3"><div class="teacher-avatar w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-3xl">${escapeTeacherHtml(t.icon||'👩‍🏫')}</div><div class="min-w-0 flex-1"><h2 class="font-black text-lg break-words">${escapeTeacherHtml(t.name||'Teacher')}</h2><p class="text-sm text-slate-500 break-words">${escapeTeacherHtml(t.description||'')}</p><p class="text-xs mt-2 ${t.passwordHash?'text-amber-700':'text-emerald-700'}"><i class="fa-solid ${t.passwordHash?'fa-lock':'fa-lock-open'} mr-1"></i>${t.passwordHash?tt('hasPass'):tt('noPass')}</p></div></div><button onclick="enterTeacher('${t.teacherId}')" class="teacher-enter w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white py-2 font-bold">${tt('enter')}</button><div class="flex gap-2"><button onclick="editTeacher('${t.teacherId}')" class="flex-1 rounded-lg border border-slate-200 py-2 text-sm font-bold transition hover:bg-slate-50 hover:border-slate-300"><i class="fa-solid fa-pen mr-1"></i>${tt('editBtn')}</button><button onclick="deleteTeacher('${t.teacherId}')" class="flex-1 rounded-lg border border-rose-200 text-rose-600 py-2 text-sm font-bold transition hover:bg-rose-50 hover:border-rose-300"><i class="fa-solid fa-trash mr-1"></i>${tt('remove')}</button></div></article>`).join('')+addCard;
           if(error)alert(error);
         }
         function escapeTeacherHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -12826,6 +13030,7 @@ window.openStudentProfile=function(studentId){
             sessionViewMode='matrix'; // Luôn mở tab Bảng Điểm (Score Matrix) khi vào không gian giáo viên
             document.getElementById('teacherGate').classList.add('hidden');
             initApp();
+            try { mxStartInbox(id); } catch (e) { console.warn('Student inbox skipped:', e); }
             // Let the Firebase listener render the clean workspace, then open the existing course manager.
             if(!snap.exists() && id!==LEGACY_TEACHER_ID){
               setTimeout(()=>{if(currentTeacherId===id){applyLanguageUI();window.openCourseManager();}},450);
@@ -13704,7 +13909,7 @@ window.openStudentProfile=function(studentId){
             const root = document.getElementById('viewPetContainer'); if (!root || !appData) return;
             const list = (appData.students || []).filter(s => s.classId === appData.activeClassId);
             if (!petTarget || !list.some(s => s.id === petTarget)) petTarget = list.length ? list[0].id : '';
-            const head = `<section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="text-xl font-black text-slate-800"><i class="fa-solid fa-egg mr-2 text-violet-600"></i>${L2('Thú Cưng', 'Pets')}</h2><p class="text-sm text-slate-500 mt-1">${L2('Mốc streak 1 · 5 · 10 · 15 · 20 · 30 · 40 · 50 giúp thú cưng tiến hoá. Mất chuỗi không ảnh hưởng đến thú. Thú nở ở streak 5 sẽ có nội tại ban phúc, mạnh dần theo từng mốc.', 'Streak milestones 1 · 5 · 10 · 15 · 20 · 30 · 40 · 50 evolve your pet. Losing a streak never affects it. A pet that hatches at streak 5 unlocks an innate blessing that grows with each milestone.')}</p></div><div class="flex gap-2"><button class="pet-tabbtn ${petMode === 'class' ? 'on' : ''}" onclick="petSetMode('class')"><i class="fa-solid fa-paw mr-1"></i>${L2('Thú của lớp', 'Class pets')}</button><button class="pet-tabbtn ${petMode === 'bank' ? 'on' : ''}" onclick="petSetMode('bank')"><i class="fa-solid fa-egg mr-1"></i>${L2('Kho trứng', 'Egg bank')}</button><button class="pet-tabbtn ${petMode === 'shop' ? 'on' : ''}" onclick="petSetMode('shop')"><i class="fa-solid fa-store mr-1"></i>${L2('Cửa hàng vật phẩm', 'Item shop')}</button></div></div>`;
+            const head = `<section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="text-xl font-black text-slate-800"><i class="fa-solid fa-egg mr-2 text-violet-600"></i>${L2('Thú Cưng', 'Pets')}</h2><p class="text-sm text-slate-500 mt-1">${L2('Mốc streak 1 · 5 · 10 · 15 · 20 · 30 · 40 · 50 giúp thú cưng tiến hoá. Mất chuỗi không ảnh hưởng đến thú. Thú nở ở streak 5 sẽ có nội tại ban phúc, mạnh dần theo từng mốc.', 'Streak milestones 1 · 5 · 10 · 15 · 20 · 30 · 40 · 50 evolve your pet. Losing a streak never affects it. A pet that hatches at streak 5 unlocks an innate blessing that grows with each milestone.')}</p></div>${window.MX_STUDENT ? '' : `<div class="flex gap-2"><button class="pet-tabbtn ${petMode === 'class' ? 'on' : ''}" onclick="petSetMode('class')"><i class="fa-solid fa-paw mr-1"></i>${L2('Thú của lớp', 'Class pets')}</button><button class="pet-tabbtn ${petMode === 'bank' ? 'on' : ''}" onclick="petSetMode('bank')"><i class="fa-solid fa-egg mr-1"></i>${L2('Kho trứng', 'Egg bank')}</button><button class="pet-tabbtn ${petMode === 'shop' ? 'on' : ''}" onclick="petSetMode('shop')"><i class="fa-solid fa-store mr-1"></i>${L2('Cửa hàng vật phẩm', 'Item shop')}</button></div>`}</div>`;
             let body = '', evo = [];
             if (petMode === 'class') {
                 body = `<div class="grid gap-3 mt-4" style="grid-template-columns:repeat(auto-fill,minmax(214px,1fr))">` + list.map(st => {
@@ -13713,8 +13918,17 @@ window.openStudentProfile=function(studentId){
                     const pbl = (has && appData.petBless && appData.petBless.pend && appData.petBless.pend[st.id]) || [], pbn = pbl.length && PET_B[st.petSp] ? PET_B[st.petSp].n[(appData.language || 'vi') === 'en' ? 1 : 0] : '';
                     const art = has ? petArt(st.petSp, f, pk >= 1) : `<div class="pet-art" style="display:flex;align-items:center;justify-content:center;font-size:64px;opacity:.45">🥚</div>`;
                     const pct = nxt ? Math.round(((pk - PET_MS[PET_MS.indexOf(nxt) - 1]) / (nxt - PET_MS[PET_MS.indexOf(nxt) - 1])) * 100) : 100;
-                    return `<div class="pet-card ${f === 8 && has ? 'pet-f8' : ''} ${isEvo ? 'pet-evo' : ''} ${pbl.length ? 'pet-bless' : ''}" data-sid="${st.id}"${pbl.length ? ` role="button" tabindex="0" onclick="petClaim('${st.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();petClaim('${st.id}')}"` : ''}>${pbl.length ? '<i class="pet-st a">✦</i><i class="pet-st b">✨</i><i class="pet-st c">✦</i><i class="pet-st e">✨</i>' : ''}<div class="text-xs font-black text-slate-800 truncate">${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}</div>${art}<div class="text-[11px] font-extrabold text-violet-700 mt-1 min-h-[1.2em]">${has ? escapeHtml(pshDisp(st)) : L2('Chưa chọn trứng', 'No egg chosen')}</div>${pbl.length ? `<div class="pet-claim"><div class="pet-claim-t">🎁 ${L2('Đã nhận', 'Received')} ${escapeHtml(pbn)}${pbl.length > 1 ? ' ×' + pbl.length : ''}</div><div class="pet-claim-s">${L2('(bấm để nhận)', '(tap to claim)')}</div></div>` : ''}<div class="mt-1"><span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span></div>${petBlessLine(st)}<div class="pet-bar mt-2"><i style="width:${pct}%"></i></div><div class="text-[10px] text-slate-500 mt-1">${nxt ? L2('Mốc tiếp theo: ', 'Next milestone: ') + nxt : L2('Đã đạt dạng cuối!', 'Final form reached!')}</div>${has ? `<button class="pet-tabbtn mt-2 mr-1" onclick="event.stopPropagation();petEqOpen('${st.id}')">🎒 ${L2('Trang bị', 'Equip')}</button>` : ''}${!has || f === 1 ? `<button class="pet-tabbtn mt-2" onclick="event.stopPropagation();petGoPick('${st.id}')">${has ? L2('Đổi trứng', 'Change egg') : L2('Chọn trứng', 'Pick egg')}</button>` : ''}</div>`;
+                    return `<div class="pet-card ${f === 8 && has ? 'pet-f8' : ''} ${isEvo ? 'pet-evo' : ''} ${pbl.length ? 'pet-bless' : ''}" data-sid="${st.id}"${pbl.length ? ` role="button" tabindex="0" onclick="petClaim('${st.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();petClaim('${st.id}')}"` : ''}>${pbl.length ? '<i class="pet-st a">✦</i><i class="pet-st b">✨</i><i class="pet-st c">✦</i><i class="pet-st e">✨</i>' : ''}<div class="text-xs font-black text-slate-800 truncate">${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}</div>${art}<div class="text-[11px] font-extrabold text-violet-700 mt-1 min-h-[1.2em]">${has ? escapeHtml(pshDisp(st)) : L2('Chưa chọn trứng', 'No egg chosen')}</div>${pbl.length ? `<div class="pet-claim"><div class="pet-claim-t">🎁 ${L2('Đã nhận', 'Received')} ${escapeHtml(pbn)}${pbl.length > 1 ? ' ×' + pbl.length : ''}</div><div class="pet-claim-s">${L2('(bấm để nhận)', '(tap to claim)')}</div></div>` : ''}<div class="mt-1"><span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span></div>${petBlessLine(st)}<div class="pet-bar mt-2"><i style="width:${pct}%"></i></div><div class="text-[10px] text-slate-500 mt-1">${nxt ? L2('Mốc tiếp theo: ', 'Next milestone: ') + nxt : L2('Đã đạt dạng cuối!', 'Final form reached!')}</div>${has && !window.MX_STUDENT ? `<button class="pet-tabbtn mt-2 mr-1" onclick="event.stopPropagation();petEqOpen('${st.id}')">🎒 ${L2('Trang bị', 'Equip')}</button>` : ''}${!window.MX_STUDENT && (!has || f === 1) ? `<button class="pet-tabbtn mt-2" onclick="event.stopPropagation();petGoPick('${st.id}')">${has ? L2('Đổi trứng', 'Change egg') : L2('Chọn trứng', 'Pick egg')}</button>` : ''}</div>`;
                 }).join('') + `</div>`;
+                if (window.MX_STUDENT) {
+                    // Cổng học sinh: cửa sổ 1 = giao diện trang bị của chính mình (nằm sẵn trong tab), cửa sổ 2 = thú của cả lớp
+                    const meSt = list.find(x => String(x.id) === String(window.MX_STUDENT.sid)) || list[0];
+                    pqSid = meSt ? meSt.id : '';
+                    const meHas = meSt && meSt.petSp !== undefined && PET_SP[meSt.petSp];
+                    const eqEmpty = `<section class="pq-pane"><div class="pq-pane-h"><div class="pq-pt">🎒 ${L2('Trang bị của Pet', 'Pet equipment')}</div></div><div class="pq-pane-b"><div class="text-sm text-slate-500 py-6 text-center">🥚 ${L2('Bạn chưa chọn trứng nên chưa có trang bị để hiển thị.', 'You have not chosen an egg yet, so there is no equipment to show.')}</div></div></section>`;
+                    body = `<div id="pqInline" class="pq-card pq-duo pq-inl mt-4" data-sid="${meSt ? meSt.id : ''}">${meHas ? '' : eqEmpty}</div>` +
+                        `<section class="pq-pane pq-class mt-4"><div class="pq-pane-h"><div class="pq-pt">🐾 ${L2('Thú cưng của cả lớp', 'Class pets')}</div></div><div class="pq-pane-b">${body}</div></section>`;
+                }
             } else if (petMode === 'shop') {
                 const tg = list.find(s => s.id === petTarget);
                 body = tg ? `<div class="mt-4 flex flex-wrap items-center gap-2"><label class="text-xs font-black text-slate-600"><i class="fa-solid fa-user mr-1"></i>${L2('Mua cho học sinh', 'Buying for')}</label><select class="pq-in" style="flex:none;max-width:260px" onchange="petPickStu(this.value)">${list.map(s => `<option value="${s.id}" style="${mxTicketBalance(s)>0 ? 'color:#16a34a;font-weight:700' : ''}" ${s.id === petTarget ? 'selected' : ''}>${escapeHtml((s.icon || '🎓') + ' ' + getStudentDisplayName(s))}${mxTicketBalance(s)>0 ? ' 🎟️ '+mxTicketBalance(s) : ''}</option>`).join('')}</select></div>` + `<div class="pet-shop-layout mt-4">${petShopPreview(tg)}<div class="pet-shop-main">${petShopHtml(tg)}</div></div>` : `<div class="text-sm text-slate-500 mt-4">${L2('Lớp chưa có học sinh.', 'This class has no students.')}</div>`;
@@ -13732,6 +13946,7 @@ window.openStudentProfile=function(studentId){
             }
             const slide = window.__petSlide || 0; window.__petSlide = 0;
             root.innerHTML = head + `<div class="pet-pane${slide ? ' pet-in' : ''}" style="--dir:${slide || 1}">` + body + (petMode === 'class' ? petLogHtml() : '') + `</div></section>`;
+            if (window.MX_STUDENT && petMode === 'class') { try { pqRender(); } catch (e) { console.warn('Inline equip skipped:', e); } }
             if (evo.length) {
                 // Hiệu ứng tiến hoá lần đầu thấy dạng mới
                 evo.forEach(st => { st.petShown = petFormOf(petPeakOf(st)); });
@@ -14282,7 +14497,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
         const pshStripStage = v => { const all = PET_FORM_VI.concat(PET_FORM_EN).join('|'); const r = v.replace(new RegExp('\\s*[(\\[·\\-–—|]*\\s*(?:' + all + ')\\s*[)\\]]*\\s*$', 'i'), '').trim(); return r || v; };
         const pshSt = sid => (appData.students || []).find(x => x.id === sid);
         const pshRO = () => typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId;
-        const pshT = (m, t) => { try { window.showAppToast && window.showAppToast(m, t || 'success'); } catch (e) {} };
+        const pshT = (m, t) => { try { window.showAppToast && window.showAppToast(m, t || 'success', undefined, true); } catch (e) {} };
         const pshN = a => String(a).replace('.', L2(',', '.'));
         function pshFx(it) {
             const a = pshN(it.a), A = { ch: [`+${a}% tỷ lệ kích hoạt`, `+${a}% trigger chance`], p: [`+${a} pts thưởng`, `+${a} reward pts`], pp: [`+${a}% pts thưởng`, `+${a}% reward pts`], a: [`+${a} điểm tích lũy trong quà`, `+${a} accumulated pt in the gift`], g: [`+${a} quà bổ sung`, `+${a} bonus gift`], gp: [`${a}% nhận thêm 1 quà`, `${a}% chance of 1 extra gift`], gw: ['+1 quà bổ sung/tuần', '+1 bonus gift/week'], m: [`+${a} hệ số nhân (tối đa ×15)`, `+${a} multiplier (cap ×15)`], k: [`+${a} pts giới hạn bù/tuần`, `+${a} pts weekly cap`], r: [`+${a}% tỷ lệ hoàn trả`, `+${a}% refund rate`], x: [`+${a} pts thưởng tối đa/lần`, `+${a} pts max per trigger`], b: [`+${a} pts giữ lại/lần`, `+${a} pts kept per time`], w: [`+${a} lần kích hoạt/tuần`, `+${a} activation/week`], n: ['Cơ chế chưa có trong nội tại hiện tại', 'Mechanic not in current innates'] }[it.k];
@@ -14389,16 +14604,18 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             const isEq = id => eq.some(e => e && e.id === id);
             const rowH = ({ it, c }) => `<div class="pq-row r${it.r} ${c.ok ? '' : 'no'}"><div class="ps-art">${pshArt(it)}</div><div class="pq-ri"><div class="ps-nm" style="text-align:left">${escapeHtml(L2(it.vi, it.en))}</div><div class="ps-rar" style="text-align:left;color:${PSH_RAR[it.r][2]}">${'★'.repeat(it.r + 1)} ${L2(PSH_RAR[it.r][0], PSH_RAR[it.r][1])}</div><div class="ps-fx" style="text-align:left">${escapeHtml(pshFx(it))} · ${escapeHtml(pshStat(it))}</div>${c.ok ? '' : `<div class="ps-cm no" style="text-align:left">✕ ${escapeHtml(c.why)}</div>`}</div>${c.ok && !isEq(it.id) ? pqParam(it, st) : ''}<button class="pet-tabbtn on" ${!c.ok || isEq(it.id) ? 'disabled style="opacity:.5;cursor:not-allowed"' : ''} onclick="pqEquip('${it.id}')">${isEq(it.id) ? L2('Đang trang bị', 'Equipped') : L2('Trang bị', 'Equip')}</button></div>`;
             const none = !owned.length || !owned.some(o => o.c.ok);
-            let m = document.getElementById('pqModal');
-            if (m && m.dataset.sid !== pqSid) { m.remove(); m = null; }
-            if (!m) {
-                m = document.createElement('div'); m.id = 'pqModal'; m.className = 'pq-back'; m.dataset.sid = pqSid; m.onclick = e => { if (e.target === m) pqClose(); };
-                m.innerHTML = `<div class="pq-card pq-duo" role="dialog" aria-modal="true">
-                    <section class="pq-pane"><div class="pq-pane-h"><div class="pq-pt">🎒 ${L2('Trang bị của Pet', 'Pet equipment')}</div><span class="pq-x l" onclick="pqClose()" aria-label="${L2('Đóng', 'Close')}">✕</span></div>
+            const pqShell = `<section class="pq-pane"><div class="pq-pane-h"><div class="pq-pt">🎒 ${L2('Trang bị của Pet', 'Pet equipment')}</div><span class="pq-x l" onclick="pqClose()" aria-label="${L2('Đóng', 'Close')}">✕</span></div>
                         <div class="pq-pane-b"><div class="flex items-center gap-3"><div id="pqArt"></div><div style="flex:1;min-width:0"><div class="text-xs font-black text-slate-500" id="pqWho"></div><div class="text-sm font-black text-violet-700" id="pqDef"></div><div class="flex gap-1 items-center mt-1 flex-wrap"><input id="pqName" class="pq-in" maxlength="34" value="${escapeHtml(pshNickRaw(st))}" placeholder="${escapeHtml(pshDef(st))}" oninput="pqCnt()" ${pshRO() ? 'disabled' : ''}><span id="pqCnt" class="pq-stat"></span><button class="ps-chip on" onclick="pqSaveName()">${L2('Lưu tên', 'Save name')}</button><button class="ps-chip" onclick="pqResetName()">${L2('Mặc định', 'Default')}</button></div><div class="mt-1" id="pqChips"></div></div></div>
                         <div class="pq-h" id="pqInn"></div><div id="pqStats"></div><div class="pq-h">${L2('Ba ô trang bị', 'Three equipment slots')}</div><div class="pq-slots" id="pqSlots"></div></div></section>
                     <section class="pq-pane"><div class="pq-pane-h"><div class="pq-pt" id="pqRT"></div><span class="pq-x r" onclick="pqClose()" aria-label="${L2('Đóng', 'Close')}">✕</span></div>
-                        <div class="pq-pane-b"><div id="pqRows"></div><div id="pqNone"></div></div></section></div>`;
+                        <div class="pq-pane-b"><div id="pqRows"></div><div id="pqNone"></div></div></section>`;
+            const pqInl = document.getElementById('pqInline');
+            let m = (pqInl && pqInl.dataset.sid === pqSid) ? pqInl : document.getElementById('pqModal');
+            if (m && m.dataset.sid !== pqSid) { if (m.id === 'pqModal') m.remove(); m = null; }
+            if (m && m.id === 'pqInline' && !m.querySelector('#pqSlots')) m.innerHTML = pqShell;
+            if (!m) {
+                m = document.createElement('div'); m.id = 'pqModal'; m.className = 'pq-back'; m.dataset.sid = pqSid; m.onclick = e => { if (e.target === m) pqClose(); };
+                m.innerHTML = `<div class="pq-card pq-duo" role="dialog" aria-modal="true">${pqShell}</div>`;
                 document.body.appendChild(m);
             }
             pqSet(m.querySelector('#pqArt'), petArt(sp, f, pk >= 1));
@@ -14411,7 +14628,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             Array.from(m.querySelectorAll('#pqSlots .pq-slot')).forEach((el, i) => el.classList.toggle('on', pqSlot === i));
             pqSet(m.querySelector('#pqRT'), `🧺 ${L2('Vật phẩm đã mua', 'Purchased items')} (${owned.length})${pqSlot >= 0 ? ' · ' + L2('đang chọn ô', 'slot') + ' ' + (pqSlot + 1) : ''}`);
             pqPatch(m.querySelector('#pqRows'), owned.map(o => ({ k: o.it.id, h: rowH(o) })), pqPop);
-            pqSet(m.querySelector('#pqNone'), none ? `<div class="pq-stat mt-2">${owned.length ? L2('Chưa có vật phẩm tương thích với nội tại này. ', 'No owned item is compatible with this innate. ') : L2('Chưa có vật phẩm nào. ', 'No items yet. ')}<button class="ps-chip on" onclick="pqClose();petGoShop('${st.id}')">🛍️ ${L2('Đến cửa hàng', 'Go to shop')}</button></div>` : '');
+            pqSet(m.querySelector('#pqNone'), none ? `<div class="pq-stat mt-2">${owned.length ? L2('Chưa có vật phẩm tương thích với nội tại này. ', 'No owned item is compatible with this innate. ') : L2('Chưa có vật phẩm nào. ', 'No items yet. ')}<button class="ps-chip on" onclick="${m.id === 'pqInline' ? "mxStuTab('mypet')" : "pqClose();petGoShop('" + st.id + "')"}">🛍️ ${L2('Đến cửa hàng', 'Go to shop')}</button></div>` : '');
             pqPop = ''; pqCnt();
         }
         const pqLen = s => Array.from(s).length;
@@ -15631,6 +15848,582 @@ html.mx-dark .gc-bar{background:#334155}
   wire();
 })();
 
+    
+        /* =====================================================================
+           CỔNG HỌC SINH — phương án B
+           - Giáo viên công bố một BẢN CHỈ-ĐỌC đã lọc (studentPublic/{tid}); học sinh không đọc teacherData.
+           - Học sinh không ghi dữ liệu thật: chỉ gửi YÊU CẦU vào hàng đợi (studentActions/{tid}).
+           - App giáo viên kiểm tra mã xác thực + luật (đủ phiếu, đúng ô, tên hợp lệ...) rồi mới áp dụng.
+           ===================================================================== */
+        const MX_CRS = 'appDataMultiTeacher/studentCourses', MX_PUB = 'appDataMultiTeacher/studentPublic', MX_ACT = 'appDataMultiTeacher/studentActions', MX_RES = 'appDataMultiTeacher/studentResults';
+        const mxHashCache = new Map();
+        async function mxHash(s) { if (mxHashCache.has(s)) return mxHashCache.get(s); const h = await teacherHash(s); mxHashCache.set(s, h); return h; }
+        const mxArr = v => Array.isArray(v) ? v : (v && typeof v === 'object' ? Object.keys(v).sort((a, b) => a - b).map(k => v[k]) : []);
+        const mxNormCode = v => String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+        const mxFmtCode = c => { c = String(c || ''); return c.length === 8 ? c.slice(0, 4) + '-' + c.slice(4) : c; };
+        function mxNewCode() { const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', a = new Uint32Array(8); crypto.getRandomValues(a); let s = ''; for (const x of a) s += A[x % A.length]; return s; }
+        function mxToast(msg, type) { try { if (window.showAppToast) window.showAppToast(msg, type || 'info', undefined, true); } catch (e) {} }
+
+        /* ---------- Phía giáo viên: mã đăng nhập ---------- */
+        function mxEnsureLoginCodes() {
+            let n = 0; const used = new Set((appData.students || []).map(s => s.loginCode).filter(Boolean));
+            (appData.students || []).forEach(s => { if (!s.loginCode) { let c; do { c = mxNewCode(); } while (used.has(c)); used.add(c); s.loginCode = c; n++; } });
+            return n;
+        }
+
+        /* ---------- Phía giáo viên: công bố bản chỉ-đọc ---------- */
+        let mxPubTimer = null;
+        function mxSchedulePublish() {
+            clearTimeout(mxPubTimer);
+            mxPubTimer = setTimeout(() => { mxPublishPublic().catch(e => console.warn('Student portal publish skipped:', e)); }, 1200);
+        }
+        async function mxBuildPublic(tid) {
+            const d = deepCopy(appData);
+            const DROP = /^(studentNotes|teachingPlans|classSchedules|undoHistory|redoHistory|archives|deletedStudents|deletedClasses|deletedItems|studentTrash|editHistory|eh[A-Z].*|luckyWheel|gacha|studentPortal|activeViewMode|seating.*|timer.*)$/;
+            Object.keys(d).forEach(k => { if (DROP.test(k)) delete d[k]; });
+            const cm = d.courseManager || {};
+            d.courseManager = { activeCourseId: cm.activeCourseId || '', courses: mxArr(cm.courses).map(c => ({ id: c.id, name: c.name || '', startDate: c.startDate || '', endDate: c.endDate || '', status: c.status || 'active', hasSnap: !!c.snapshot })) };
+            const PRIVATE = ['loginCode', 'birthday', 'note', 'notes', 'mnote', 'phone', 'parentPhone', 'parent', 'email', 'address'];
+            d.students = mxArr(d.students).map(s => { const o = Object.assign({}, s); PRIVATE.forEach(k => delete o[k]); o.violations = mxArr(s.violations).map(v => ({ date: (v && v.date) || '', ts: (v && v.ts) || 0 })); return o; });
+            const idx = {};
+            for (const s of (appData.students || [])) { if (s.loginCode) idx[await mxHash('login|' + tid + '|' + s.loginCode)] = s.id; }
+            d.loginIdx = idx;
+            const rec = (teacherRecords || []).find(t => String(t.teacherId) === String(tid));
+            d.teacherName = rec ? rec.name : '';
+            try { d.seasonMode = sxMode(); } catch (e) { d.seasonMode = 'auto'; }
+            d.publishedAt = Date.now();
+            return JSON.parse(JSON.stringify(d));
+        }
+        const MX_DROP = /^(studentNotes|teachingPlans|classSchedules|undoHistory|redoHistory|archives|deletedStudents|deletedClasses|deletedItems|studentTrash|editHistory|eh[A-Z].*|luckyWheel|gacha|studentPortal|activeViewMode|seating.*|timer.*|courseManager)$/;
+        function mxBuildCourse(snap) {
+            const d = deepCopy(snap);
+            Object.keys(d).forEach(k => { if (MX_DROP.test(k)) delete d[k]; });
+            const PRIVATE = ['loginCode', 'birthday', 'note', 'notes', 'mnote', 'phone', 'parentPhone', 'parent', 'email', 'address', 'courseNotes'];
+            d.students = mxArr(d.students).map(s => { const o = Object.assign({}, s); PRIVATE.forEach(k => delete o[k]); o.violations = mxArr(s.violations).map(v => ({ date: (v && v.date) || '', ts: (v && v.ts) || 0 })); return o; });
+            return JSON.parse(JSON.stringify(d));
+        }
+        async function mxPublishCourses(tid) {
+            const crs = mxArr((appData.courseManager || {}).courses).filter(c => c && c.snapshot);
+            const lsk = 'mxCrsPub:' + tid; let done = {}; try { done = JSON.parse(localStorage.getItem(lsk) || '{}') || {}; } catch (e) {}
+            const next = {};
+            for (const c of crs) {
+                const key = String(c.archivedAt || '1');
+                if (done[c.id] === key) { next[c.id] = key; continue; }
+                await set(ref(db, MX_CRS + '/' + tid + '/' + c.id), mxBuildCourse(c.snapshot)); next[c.id] = key;
+            }
+            for (const id of Object.keys(done)) { if (!next[id]) { try { await remove(ref(db, MX_CRS + '/' + tid + '/' + id)); } catch (e) {} } }
+            try { localStorage.setItem(lsk, JSON.stringify(next)); } catch (e) {}
+        }
+        async function mxPublishPublic() {
+            if (window.MX_STUDENT) return;
+            const tid = currentTeacherId;
+            if (!tid || !appData.studentPortal || !appData.studentPortal.enabled) return;
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return;
+            const pub = await mxBuildPublic(tid);
+            if (currentTeacherId !== tid) return;
+            await set(ref(db, MX_PUB + '/' + tid), pub);
+            try { await mxPublishCourses(tid); } catch (e) { console.warn('Course publish skipped:', e); }
+        }
+
+        /* ---------- Phía giáo viên: xử lý hàng đợi yêu cầu ---------- */
+        let mxInboxUnsub = null, mxInboxBusy = false;
+        function mxStartInbox(tid) {
+            if (mxInboxUnsub) { mxInboxUnsub(); mxInboxUnsub = null; }
+            mxInboxUnsub = onValue(ref(db, MX_ACT + '/' + tid), snap => { if (snap.exists()) mxInboxRun(tid).catch(e => console.warn('Inbox error:', e)); });
+        }
+        async function mxInboxRun(tid) {
+            if (mxInboxBusy || window.MX_STUDENT) return;
+            mxInboxBusy = true;
+            try {
+                for (let round = 0; round < 20; round++) {
+                    if (currentTeacherId !== tid) break;
+                    const snap = await get(ref(db, MX_ACT + '/' + tid)); const val = snap.val(); if (!val) break;
+                    const ids = Object.keys(val).sort((a, b) => ((val[a] && val[a].at) || 0) - ((val[b] && val[b].at) || 0));
+                    for (const id of ids) {
+                        if (currentTeacherId !== tid) break;
+                        const a = val[id] || {}; let res;
+                        try { res = await mxApplyAction(tid, a); } catch (e) { console.error('Action failed:', e); res = { ok: false, msg: L2('Lỗi xử lý yêu cầu.', 'Could not process the request.') }; }
+                        try { if (a.sid) await set(ref(db, MX_RES + '/' + tid + '/' + a.sid + '/' + id), { ok: !!res.ok, msg: res.msg || '', at: Date.now() }); } catch (e) {}
+                        try { await remove(ref(db, MX_ACT + '/' + tid + '/' + id)); } catch (e) {}
+                    }
+                }
+            } finally { mxInboxBusy = false; }
+        }
+        async function mxApplyAction(tid, a) {
+            const no = m => ({ ok: false, msg: m });
+            if (!appData.studentPortal || !appData.studentPortal.enabled) return no(L2('Cổng học sinh đang tắt.', 'The student portal is off.'));
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return no(L2('Khóa đã lưu trữ chỉ được xem.', 'Archived course is read-only.'));
+            const st = (appData.students || []).find(x => String(x.id) === String(a.sid));
+            if (!st || !st.loginCode) return no(L2('Không tìm thấy học sinh.', 'Student not found.'));
+            if (await mxHash('act|' + tid + '|' + st.loginCode) !== a.proof) return no(L2('Xác thực không hợp lệ.', 'Invalid authentication.'));
+            const p = (a.p && typeof a.p === 'object') ? a.p : {};
+            const old = { t: st.itemTickets, h: st.itemTicketHistory, items: st.petItems, buys: st.petBuys, eq: st.petEquip, nick: st.petNick };
+            let okMsg = '';
+            if (a.type === 'petBuy') {
+                const id = String(p.itemId || ''), it = PSH_BY[id]; if (!it) return no(L2('Vật phẩm không tồn tại.', 'Item not found.'));
+                if (!pshCanBuy(st)) return no(pshLockWhy());
+                const price = pshPrice(it);
+                if (pshOwned(st, id) >= 1) return no(L2('Đã sở hữu.', 'Already owned.'));
+                if (mxTicketBalance(st) < price) return no(L2('Không đủ Phiếu Vật Phẩm.', 'Not enough Item Tickets.'));
+                mxTicketLog(st, 'equipment_purchase', -price, 'pet_shop', id);
+                st.petItems = Object.assign({}, st.petItems || {}, { [id]: 1 });
+                st.petBuys = (st.petBuys || []).concat([{ id, p: price, currency: 'itemTickets', d: petPd(new Date()) }]).slice(-30);
+                okMsg = L2('Đã mua ' + it.vi + '!', 'Bought ' + it.en + '!');
+            } else if (a.type === 'petEquip') {
+                const id = String(p.itemId || ''), it = PSH_BY[id]; if (!it) return no(L2('Vật phẩm không tồn tại.', 'Item not found.'));
+                if (!pshOwned(st, id)) return no(L2('Bạn chưa sở hữu vật phẩm này.', 'You do not own this item.'));
+                const c = pshCompat(st.petSp, it); if (!c.ok) return no(c.why);
+                const eq = pshEq(st); if (eq.some(e => e && e.id === id)) return no(L2('Vật phẩm này đã được trang bị.', 'Already equipped.'));
+                const slot = Number.isInteger(p.slot) ? p.slot : eq.findIndex(e => !e);
+                if (!(slot >= 0 && slot <= 2)) return no(L2('Đã đủ 3 ô. Hãy chọn một ô để thay thế.', 'All 3 slots are full. Pick a slot to replace.'));
+                const rec = { id };
+                if (it.s === 'm' || it.s === 'p') { const lv = Number(p.p); if (!(Number.isInteger(lv) && lv >= 0 && lv <= (it.s === 'p' ? 5 : 6))) return no(L2('Cấp nội tại không hợp lệ.', 'Invalid innate level.')); rec.p = lv; }
+                st.petEquip = Object.assign({}, st.petEquip || {}, { ['s' + slot]: rec });
+                okMsg = L2('Đã trang bị “' + it.vi + '”.', 'Equipped “' + it.en + '”.');
+            } else if (a.type === 'petUnequip') {
+                const i = Number(p.slot); if (!(Number.isInteger(i) && i >= 0 && i <= 2)) return no(L2('Ô không hợp lệ.', 'Invalid slot.'));
+                const o = Object.assign({}, st.petEquip || {}); delete o['s' + i]; st.petEquip = o;
+                okMsg = L2('Đã tháo trang bị.', 'Item unequipped.');
+            } else if (a.type === 'petName') {
+                let v = String(p.name == null ? '' : p.name).replace(/[\u0000-\u001f\u007f]/g, '').trim();
+                if (v) v = pshStripStage(v);
+                if (pqLen(v) > 34) return no(L2('Tên tối đa 34 ký tự.', 'Name is limited to 34 characters.'));
+                if (!v || v === pshDef(st)) delete st.petNick; else st.petNick = v;
+                okMsg = L2('Đã lưu tên Pet.', 'Pet name saved.');
+            } else {
+                return no(L2('Yêu cầu không được hỗ trợ.', 'Unsupported request.'));
+            }
+            const saved = await saveData();
+            if (saved !== true) {
+                st.itemTickets = old.t; st.itemTicketHistory = old.h;
+                if (old.items === undefined) delete st.petItems; else st.petItems = old.items;
+                if (old.buys === undefined) delete st.petBuys; else st.petBuys = old.buys;
+                if (old.eq === undefined) delete st.petEquip; else st.petEquip = old.eq;
+                if (old.nick === undefined) delete st.petNick; else st.petNick = old.nick;
+                return no(L2('Không lưu được; đã hoàn nguyên.', 'Could not save; reverted.'));
+            }
+            return { ok: true, msg: okMsg };
+        }
+
+        /* ---------- Phía giáo viên: bảng quản lý cổng + mã học sinh ---------- */
+        window.mxPortalOpen = function () {
+            if (!currentTeacherId || window.MX_STUDENT) return;
+            const old = document.getElementById('mxPortalModal'); if (old) old.remove();
+            const on = !!(appData.studentPortal && appData.studentPortal.enabled);
+            if (on && mxEnsureLoginCodes() > 0) saveData();
+            const link = location.href.split('#')[0].split('?')[0] + '#hocsinh';
+            const rows = (appData.classes || []).map(c => {
+                const ss = (appData.students || []).filter(s => String(s.classId) === String(c.id)); if (!ss.length) return '';
+                return '<div class="mt-3"><div class="font-black text-sm text-slate-700">' + escapeHtml(c.name || '') + '</div>' + ss.map(s =>
+                    '<div class="flex items-center justify-between gap-2 py-1 border-b border-slate-100 text-sm"><span class="truncate">' + escapeHtml((s.icon || '🎓') + ' ' + getStudentDisplayName(s)) + '</span><span class="flex items-center gap-2 shrink-0"><code class="font-black tracking-widest text-indigo-700">' + (on && s.loginCode ? escapeHtml(mxFmtCode(s.loginCode)) : '—') + '</code>' +
+                    (on ? '<button onclick="mxPortalRegen(\'' + escapeHtml(String(s.id)) + '\')" title="' + L2('Tạo lại mã', 'New code') + '" class="rounded-lg border border-slate-200 px-2 py-0.5 text-xs font-bold hover:bg-slate-50">↻</button>' : '') + '</span></div>').join('') + '</div>';
+            }).join('');
+            const m = document.createElement('div'); m.id = 'mxPortalModal';
+            m.className = 'fixed inset-0 z-[12000] flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4';
+            m.onclick = e => { if (e.target === m) m.remove(); };
+            m.innerHTML = '<div class="w-full max-w-lg max-h-[90vh] overflow-hidden rounded-3xl bg-white shadow-2xl flex flex-col"><div class="bg-gradient-to-r from-indigo-700 to-violet-600 px-6 py-4 text-white"><div class="text-lg font-black">🎓 ' + L2('Cổng học sinh', 'Student portal') + '</div><div class="text-xs text-indigo-100 mt-1">' + L2('Học sinh xem bản chỉ-đọc của lớp và chỉ được mua/gắn đồ, đổi tên thú của chính mình.', 'Students get a read-only view and can only buy/equip items and rename their own pet.') + '</div></div>' +
+                '<div class="p-5 overflow-y-auto"><div class="flex items-center justify-between gap-3 rounded-2xl border ' + (on ? 'border-emerald-200 bg-emerald-50' : 'border-slate-200 bg-slate-50') + ' p-3"><div class="text-sm font-bold ' + (on ? 'text-emerald-700' : 'text-slate-600') + '">' + (on ? '● ' + L2('Đang bật', 'Enabled') : '○ ' + L2('Đang tắt', 'Disabled')) + '</div><button onclick="mxPortalToggle()" class="rounded-xl ' + (on ? 'bg-rose-600 hover:bg-rose-700' : 'bg-indigo-600 hover:bg-indigo-700') + ' px-4 py-2 text-sm font-bold text-white">' + (on ? L2('Tắt cổng', 'Turn off') : L2('Bật cổng học sinh', 'Enable portal')) + '</button></div>' +
+                (on ? '<div class="mt-3 rounded-xl bg-indigo-50 border border-indigo-100 p-3 text-xs text-slate-600"><div class="font-bold text-indigo-700 mb-1">' + L2('Đường link cho học sinh', 'Link for students') + '</div><code class="break-all select-all">' + escapeHtml(link) + '</code><div class="mt-2">' + L2('Yêu cầu của học sinh chỉ được xử lý khi app giáo viên đang mở.', 'Student requests are only processed while the teacher app is open.') + '</div></div>' +
+                    '<div class="mt-3 flex gap-2"><button onclick="mxPortalCopy()" class="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold hover:bg-slate-50">📋 ' + L2('Sao chép danh sách mã', 'Copy code list') + '</button></div>' + rows : '') +
+                '</div><div class="border-t border-slate-100 p-3 text-right"><button onclick="document.getElementById(\'mxPortalModal\').remove()" class="rounded-xl border border-slate-200 px-5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50">' + L2('Đóng', 'Close') + '</button></div></div>';
+            document.body.appendChild(m);
+        };
+        window.mxPortalToggle = async function () {
+            const on = !!(appData.studentPortal && appData.studentPortal.enabled);
+            if (!on) {
+                if (!await showAppConfirm(L2('Bật cổng học sinh? Tên, điểm, thú cưng và huy hiệu của cả lớp sẽ được đồng bộ sang một bản chỉ-đọc để học sinh xem. Ghi chú, ngày sinh và mã đăng nhập sẽ không được công bố.', 'Enable the student portal? Names, scores, pets and badges will be mirrored to a read-only copy. Notes, birthdays and login codes are not published.'))) return;
+                appData.studentPortal = { enabled: true, at: new Date().toISOString() }; mxEnsureLoginCodes(); await saveData();
+            } else {
+                if (!await showAppConfirm(L2('Tắt cổng học sinh và xóa bản chỉ-đọc công khai?', 'Turn off the portal and delete the public read-only copy?'))) return;
+                appData.studentPortal = { enabled: false, at: new Date().toISOString() }; await saveData();
+                try { await set(ref(db, MX_PUB + '/' + currentTeacherId), null); await set(ref(db, MX_ACT + '/' + currentTeacherId), null); await set(ref(db, MX_CRS + '/' + currentTeacherId), null); try { localStorage.removeItem('mxCrsPub:' + currentTeacherId); } catch (e) {} } catch (e) {}
+            }
+            window.mxPortalOpen();
+        };
+        window.mxPortalRegen = async function (sid) {
+            const st = (appData.students || []).find(x => String(x.id) === String(sid)); if (!st) return;
+            if (!await showAppConfirm(L2('Tạo lại mã cho học sinh này? Mã cũ sẽ không dùng được nữa.', 'Create a new code for this student? The old code stops working.'))) return;
+            let c; const used = new Set((appData.students || []).map(s => s.loginCode)); do { c = mxNewCode(); } while (used.has(c));
+            st.loginCode = c; await saveData(); window.mxPortalOpen();
+        };
+        window.mxPortalCopy = async function () {
+            const lines = []; (appData.classes || []).forEach(c => { (appData.students || []).filter(s => String(s.classId) === String(c.id)).forEach(s => lines.push((c.name || '') + '\t' + getStudentDisplayName(s) + '\t' + mxFmtCode(s.loginCode))); });
+            try { await navigator.clipboard.writeText(lines.join('\n')); mxToast(L2('Đã sao chép danh sách mã.', 'Code list copied.'), 'success'); } catch (e) { mxToast(L2('Không sao chép được.', 'Copy failed.'), 'error'); }
+        };
+
+        /* ---------- Phía học sinh: đăng nhập ---------- */
+        let mxStuUnsub = null, mxStuResUnsub = null;
+        window.mxStuGateOpen = function () {
+            if (document.getElementById('mxStuLogin')) return;
+            const only = /^#hocsinh/i.test(location.hash);
+            const opts = (teacherRecords || []).map(t => '<option value="' + escapeHtml(String(t.teacherId)) + '">' + escapeHtml((t.icon || '👩‍🏫') + ' ' + (t.name || '')) + '</option>').join('');
+            const m = document.createElement('div'); m.id = 'mxStuLogin';
+            m.className = 'fixed inset-0 z-[10500] flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4';
+            m.innerHTML = '<div class="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl"><div class="bg-gradient-to-r from-indigo-700 to-violet-600 px-6 py-5 text-white"><div class="text-2xl font-black">🎓 ' + L2('Học sinh đăng nhập', 'Student sign-in') + '</div><div class="text-sm text-indigo-100 mt-1">' + L2('Chọn giáo viên và nhập mã học sinh của bạn.', 'Pick your teacher and enter your student code.') + '</div></div>' +
+                '<div class="p-6 space-y-3"><select id="mxStuTeacher" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold">' + (opts || '<option value="">' + L2('Đang tải danh sách giáo viên…', 'Loading teachers…') + '</option>') + '</select>' +
+                '<input id="mxStuCode" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="XXXX-XXXX" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-center text-xl font-black tracking-widest uppercase outline-none focus:border-indigo-500 focus:bg-white" onkeydown="if(event.key===\'Enter\')mxStuSubmit()">' +
+                '<div id="mxStuErr" class="hidden rounded-xl bg-rose-50 border border-rose-200 px-3 py-2 text-sm font-bold text-rose-700"></div>' +
+                '<div class="flex justify-end gap-2 pt-1">' + (only ? '' : '<button onclick="document.getElementById(\'mxStuLogin\').remove()" class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50">' + L2('Hủy', 'Cancel') + '</button>') + '<button id="mxStuGo" onclick="mxStuSubmit()" class="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-indigo-700">' + L2('Vào xem', 'Enter') + '</button></div></div></div>';
+            document.body.appendChild(m); setTimeout(() => { const c = document.getElementById('mxStuCode'); if (c) c.focus(); }, 50);
+        };
+        function mxStuErr(msg) { const e = document.getElementById('mxStuErr'); if (e) { e.textContent = msg; e.classList.remove('hidden'); } }
+        window.mxStuSubmit = async function () {
+            const t = document.getElementById('mxStuTeacher'), c = document.getElementById('mxStuCode'), b = document.getElementById('mxStuGo'); if (!t || !c) return;
+            if (b) { b.disabled = true; b.classList.add('opacity-60'); }
+            const ok = await mxStudentLogin(t.value, c.value, false);
+            if (!ok && b) { b.disabled = false; b.classList.remove('opacity-60'); }
+        };
+        async function mxStudentLogin(tid, rawCode, silent) {
+            const code = mxNormCode(rawCode), say = m => { if (!silent) mxStuErr(m); };
+            if (!tid || code.length < 8) { say(L2('Hãy chọn giáo viên và nhập đủ mã học sinh (8 ký tự).', 'Pick your teacher and enter the full 8-character code.')); return false; }
+            try {
+                const h1 = await mxHash('login|' + tid + '|' + code);
+                const snap = await get(ref(db, MX_PUB + '/' + tid)), pub = snap.val();
+                if (!pub) { say(L2('Giáo viên này chưa mở cổng học sinh.', 'This teacher has not opened the student portal.')); return false; }
+                const sid = pub.loginIdx && pub.loginIdx[h1];
+                if (!sid || !mxArr(pub.students).some(s => s && String(s.id) === String(sid))) { say(L2('Mã học sinh không đúng.', 'Incorrect student code.')); return false; }
+                mxEnterStudent(tid, String(sid), code, await mxHash('act|' + tid + '|' + code), pub);
+                return true;
+            } catch (e) { console.error('Student login failed:', e); say(L2('Không kết nối được. Hãy kiểm tra mạng rồi thử lại.', 'Could not connect. Check your network and try again.')); return false; }
+        }
+        function mxEnterStudent(tid, sid, code, proof, pub) {
+            if (unsubscribeTeacherData) { unsubscribeTeacherData(); unsubscribeTeacherData = null; }
+            if (mxInboxUnsub) { mxInboxUnsub(); mxInboxUnsub = null; }
+            window.MX_STUDENT = { tid, sid, proof, pend: new Set() };
+            currentTeacherId = '__student__'; // mọi đường ghi trực tiếp (nếu có) chỉ rơi vào nhánh rác này, không chạm dữ liệu giáo viên
+            try { sessionStorage.setItem('mxStu', JSON.stringify({ tid, code })); } catch (e) {}
+            document.body.classList.add('mx-student');
+            const gate = document.getElementById('teacherGate'); if (gate) gate.classList.add('hidden');
+            const lg = document.getElementById('mxStuLogin'); if (lg) lg.remove();
+            mxInstallStudentOverrides();
+            sessionViewMode = 'home'; petMode = 'class'; petTarget = sid;
+            mxApplyPublic(pub);
+            mxStuUnsub = onValue(ref(db, MX_PUB + '/' + tid), s => { const v = s.val(); if (!v) { alert(L2('Giáo viên đã tắt cổng học sinh.', 'The teacher turned the portal off.')); window.mxStuLogout(); return; } mxApplyPublic(v); });
+            mxStuResUnsub = onValue(ref(db, MX_RES + '/' + tid + '/' + sid), s => {
+                const v = s.val(); if (!v || !window.MX_STUDENT) return;
+                Object.keys(v).forEach(id => { const r = v[id] || {}; window.MX_STUDENT.pend.delete(id); mxToast(r.msg || (r.ok ? L2('Xong!', 'Done!') : L2('Yêu cầu bị từ chối.', 'Request rejected.')), r.ok ? 'success' : 'error'); remove(ref(db, MX_RES + '/' + tid + '/' + sid + '/' + id)).catch(() => {}); });
+                window.mxStuRefreshBar();
+            });
+        }
+        const mxArch = {};
+        function mxStuSelCourse() {
+            const live = window.__mxLive; if (!live) return null; const cm = live.courseManager || {}, sel = window.__mxSel;
+            return (sel && sel !== cm.activeCourseId && mxArr(cm.courses).some(c => c && c.id === sel && c.hasSnap)) ? sel : null;
+        }
+        window.mxStuPickCourse = function (id) {
+            window.__mxSel = id || null; try { sessionStorage.setItem('mxStuCourse', id || ''); } catch (e) {}
+            window.__mxHomeHtml = ''; const sb = document.getElementById('mxStuCourse'); if (sb) delete sb.dataset.sig;
+            if (window.__mxLive) mxApplyPublic(window.__mxLive);
+        };
+        function mxApplyPublic(v) {
+            const S = window.MX_STUDENT; if (!S) return;
+            window.__mxLive = v;
+            if (window.__mxSel === undefined) { try { window.__mxSel = sessionStorage.getItem('mxStuCourse') || null; } catch (e) { window.__mxSel = null; } }
+            const selId = mxStuSelCourse();
+            if (selId) {
+                const c0 = mxArch[selId];
+                if (!c0 || c0 === 'loading') {
+                    if (!c0) { mxArch[selId] = 'loading'; get(ref(db, MX_CRS + '/' + S.tid + '/' + selId)).then(sn => { mxArch[selId] = sn.val() || 'none'; if (window.MX_STUDENT) mxApplyPublic(window.__mxLive); }).catch(() => { delete mxArch[selId]; mxToast(L2('Không tải được khoá học.', 'Could not load the course.'), 'error'); window.__mxSel = null; if (window.MX_STUDENT) mxApplyPublic(window.__mxLive); }); }
+                    window.mxStuRefreshBar(); return;
+                }
+                if (c0 === 'none') { delete mxArch[selId]; window.__mxSel = null; mxToast(L2('Khoá học này chưa có dữ liệu để xem.', 'This course has no data to view yet.'), 'error'); return mxApplyPublic(v); }
+                v = Object.assign({}, c0, { courseManager: Object.assign({}, v.courseManager, { activeCourseId: selId }), seasonMode: v.seasonMode, teacherName: v.teacherName, language: v.language || c0.language, publishedAt: v.publishedAt });
+            }
+            const d = Object.assign({}, v); delete d.loginIdx;
+            d.students = mxArr(d.students).filter(Boolean).map(s => { s.inventory = mxArr(s.inventory); s.violations = mxArr(s.violations); return s; });
+            d.classes = mxArr(d.classes).filter(Boolean); d.globalShopItems = mxArr(d.globalShopItems).filter(Boolean);
+            const me = d.students.find(s => String(s.id) === String(S.sid));
+            if (!me && selId) { window.__mxSel = null; mxToast(L2('Bạn không có tên trong khoá học này.', 'You are not listed in this course.'), 'error'); return mxApplyPublic(window.__mxLive); }
+            if (!me) { alert(L2('Không tìm thấy học sinh trong dữ liệu.', 'Student not found in the data.')); window.mxStuLogout(); return; }
+            d.students = [me].concat(d.students.filter(s => s !== me)); // thú của mình luôn đứng đầu
+            d.activeClassId = me.classId;
+            d.scores = d.scores || {}; d.finalExams = d.finalExams || {}; d.studentNotes = {}; d.deletedStudents = []; d.deletedItems = []; d.teachingPlans = d.teachingPlans || {}; d.classSchedules = {};
+            d.luckyWheel = { prizes: [], history: [], transactions: {} };
+            d.language = d.language || 'vi'; d.monthCount = d.monthCount || 3; d.startMonth = d.startMonth || 9; d.maxSpeakingLimit = d.maxSpeakingLimit || 15;
+            const keep = sessionViewMode || 'home';
+            appData = d; appData.activeViewMode = keep; sessionViewMode = keep; lastPersistedSnapshot = null;
+            try { ensureNewModules(); } catch (e) { console.warn('ensureNewModules skipped:', e); }
+            try { const sm = d.seasonMode || 'auto'; if (window.__mxSeasonMode !== sm) { window.__mxSeasonMode = sm; window.__sxId = undefined; } sxApply(); } catch (e) {}
+            try { applyLanguageUI(); } catch (e) {}
+            try { renderCurrentView(); } catch (e) { console.warn('Student render skipped:', e); }
+            window.mxStuRefreshBar();
+        }
+        window.mxStuLogout = function () { try { sessionStorage.removeItem('mxStu'); } catch (e) {} location.reload(); };
+
+        /* ---------- Phía học sinh: thanh thông tin + tab ---------- */
+        const MX_STU_ORDER = ['home', 'ranking', 'finalExam', 'matrix', 'pet', 'mypet'];
+        const MX_STU_EL = { home: 'mxStuHome', ranking: 'viewRankingContainer', finalExam: 'viewFinalExamContainer', matrix: 'viewMatrixContainer', pet: 'viewPetContainer', mypet: 'viewPetContainer' };
+        let mxStuBusy = false, mxStuWant = null;
+        function mxStuCurTab() { const m = appData.activeViewMode; return m === 'pet' ? (petMode === 'shop' ? 'mypet' : 'pet') : (m || 'home'); }
+        function mxStuShow(k) {
+            const S = window.MX_STUDENT; if (!S) return;
+            if (k === 'pet' || k === 'mypet') {
+                petMode = k === 'mypet' ? 'shop' : 'class'; if (k === 'mypet') petTarget = S.sid;
+                window.__petSlide = 0; appData.activeViewMode = 'pet'; sessionViewMode = 'pet';
+            } else { appData.activeViewMode = k; sessionViewMode = k; }
+            renderCurrentView();
+        }
+        function mxStuPaintTabs(cur) {
+            const nav = document.getElementById('mxStuTabs'); if (!nav) return;
+            nav.querySelectorAll('button[data-k]').forEach(b => {
+                const on = b.dataset.k === cur;
+                b.classList.toggle('bg-white', on); b.classList.toggle('text-indigo-700', on); b.classList.toggle('shadow', on);
+                b.classList.toggle('text-slate-600', !on); b.classList.toggle('hover:text-slate-900', !on);
+                b.setAttribute('aria-current', on ? 'page' : 'false');
+            });
+        }
+        window.mxStuTab = function (k) {
+            const S = window.MX_STUDENT; if (!S) return;
+            if (k === 'badge') { try { window.bkOpen(S.sid); } catch (e) { console.warn(e); } return; }
+            if (!MX_STU_ORDER.includes(k)) return;
+            if (mxStuBusy) { mxStuWant = k; mxStuPaintTabs(k); return; }
+            const cur = mxStuCurTab(); if (k === cur) return;
+            mxStuPaintTabs(k);
+            const oldEl = document.getElementById(MX_STU_EL[cur]);
+            const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reduce || !oldEl || oldEl.classList.contains('hidden') || !oldEl.animate) { mxStuShow(k); window.mxStuRefreshBar(); return; }
+            mxStuBusy = true;
+            const dir = MX_STU_ORDER.indexOf(k) > MX_STU_ORDER.indexOf(cur) ? 1 : -1, dist = Math.min(36, window.innerWidth * 0.06);
+            const done = () => { mxStuBusy = false; const w = mxStuWant; mxStuWant = null; if (w && w !== mxStuCurTab()) window.mxStuTab(w); };
+            const out = oldEl.animate([{ opacity: 1, transform: 'translateX(0)' }, { opacity: 0, transform: 'translateX(' + (-dir * dist) + 'px)' }], { duration: 130, easing: 'ease-in', fill: 'forwards' });
+            let swapped = false;
+            const swap = () => {
+                if (swapped) return; swapped = true;
+                mxStuShow(k);
+                try { out.cancel(); } catch (e) {}
+                window.mxStuRefreshBar();
+                const nextEl = document.getElementById(MX_STU_EL[k]);
+                if (!nextEl || !nextEl.animate) return done();
+                const a = nextEl.animate([{ opacity: 0, transform: 'translateX(' + (dir * dist) + 'px)' }, { opacity: 1, transform: 'translateX(0)' }], { duration: 260, easing: 'cubic-bezier(.2,.9,.3,1)' });
+                a.onfinish = a.oncancel = done;
+            };
+            out.onfinish = swap; setTimeout(swap, 320);
+        };
+        window.mxStuRefreshBar = function () {
+            const S = window.MX_STUDENT; if (!S) return;
+            const st = (appData.students || []).find(x => String(x.id) === String(S.sid)); if (!st) return;
+            const sub = document.getElementById('mxStuSub'); if (sub) sub.textContent = L2('Không gian học tập & thú cưng', 'Learning & pet space');
+            try {
+                const live = window.__mxLive || {}, cm = live.courseManager || {}, cs = mxArr(cm.courses).filter(Boolean), cb = document.getElementById('mxStuCourse'), act = cm.activeCourseId, cur = mxStuSelCourse() || act;
+                if (cb) {
+                    const opts = cs.slice().sort((a, b) => (a.id === act ? -1 : 0) - (b.id === act ? -1 : 0)).map(c => '<option value="' + escapeHtml(c.id) + '"' + ((c.id !== act && !c.hasSnap) ? ' disabled' : '') + '>' + escapeHtml((c.name || L2('Khoá học', 'Course')) + ' · ' + (c.id === act ? L2('đang học', 'current') : L2('đã lưu trữ', 'archived'))) + '</option>').join('');
+                    const sig = opts + '|' + cur;
+                    if (cb.dataset.sig !== sig) { cb.innerHTML = opts; cb.value = cur; cb.dataset.sig = sig; }
+                    cb.parentNode.style.display = cs.length ? '' : 'none';
+                    cb.parentNode.title = L2('Chọn khoá học', 'Choose course');
+                }
+                if (sub && mxStuSelCourse()) sub.textContent = '📦 ' + L2('Khoá đã lưu trữ — chỉ xem', 'Archived course — view only');
+            } catch (e) { console.warn('Course picker skipped:', e); }
+            const pend = S.pend ? S.pend.size : 0, pe = document.getElementById('mxStuPend');
+            if (pe) { pe.textContent = pend ? '⏳ ' + L2('Đang chờ giáo viên xử lý: ', 'Waiting for teacher: ') + pend : ''; pe.classList.toggle('hidden', !pend); }
+            const tabs = [['home', 'fa-house', L2('Trang chủ', 'Home')], ['ranking', 'fa-award', L2('Xếp hạng', 'Ranking')], ['finalExam', 'fa-trophy', L2('Xếp hạng cuối kỳ', 'Final ranking')], ['matrix', 'fa-table-cells', L2('Bảng điểm', 'Scores')], ['pet', 'fa-egg', L2('Thú Cưng', 'Pets')], ['mypet', 'fa-store', L2('Cửa hàng thú cưng', 'Pet shop')], ['badge', 'fa-medal', L2('Sổ huy hiệu', 'Badge book')]];
+            const nav = document.getElementById('mxStuTabs'), lang = appData.language || 'vi';
+            if (nav && nav.dataset.lang !== lang) {
+                nav.dataset.lang = lang;
+                nav.innerHTML = tabs.map(t => '<button type="button" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900" data-k="' + t[0] + '" onclick="mxStuTab(\'' + t[0] + '\')"><i class="fa-solid ' + t[1] + ' mr-1"></i> ' + t[2] + '</button>').join('');
+            }
+            try {
+                const lg = document.getElementById('mxStuLegend');
+                if (lg && lg.dataset.lang !== lang) {
+                    lg.dataset.lang = lang;
+                    lg.innerHTML = '<span class="qs-lg"><span style="color:#059669;font-weight:900">✓</span>' + L2('Có mặt', 'Present') + '</span>' +
+                        '<span class="qs-lg"><span style="color:#dc2626;font-weight:900;font-size:14px">✕</span>' + L2('Lớp nghỉ', 'Class day off') + '</span>' +
+                        '<span class="qs-lg"><span class="qs-sw" style="background:#ef4444"></span>' + L2('Vắng (0.0đ)', 'Absent (0.0)') + '</span>' +
+                        '<span class="qs-lg"><span class="qs-sw" style="background:#fffbeb;border:1px solid #fcd34d"></span>' + L2('Có điểm', 'Scored') + '</span>' +
+                        '<span class="qs-lg"><span class="qs-sw" style="background:#fcd34d;border:1px solid #d97706"></span>' + L2('Điểm kiểm tra', 'Test score') + '</span>' +
+                        '<span class="qs-lg"><span class="qs-sw qs-sw-pen">✎</span>' + L2('Điểm đã sửa', 'Hand-edited score') + '</span>' +
+                        '<span class="qs-lg"><i class="fa-solid fa-fire-flame-curved" style="color:#f97316"></i>' + L2('Điểm chuỗi', 'Streak score') + '</span>';
+                }
+            } catch (e) { console.warn('Legend skipped:', e); }
+            mxStuPaintTabs(mxStuCurTab());
+            // Màn hình chính hiển thị phiếu/điểm: cập nhật khi có thay đổi
+            if (appData.activeViewMode === 'home' && window.mxStuRenderHome) window.mxStuRenderHome();
+        };
+        window.mxStuRenderHome = function () {
+            const S = window.MX_STUDENT, root = document.getElementById('mxStuHome'); if (!S || !root || !appData) return;
+            const st = (appData.students || []).find(x => String(x.id) === String(S.sid)); if (!st) return;
+            const en = (appData.language || 'vi') === 'en', E = escapeHtml;
+            const cls = (appData.classes || []).find(c => String(c.id) === String(st.classId));
+            const cm = appData.courseManager || {}, co = mxArr(cm.courses).find(c => c && c.id === cm.activeCourseId);
+            const mates = (appData.students || []).filter(x => x.classId === st.classId);
+            let stats = { hasData: false, avg: 0, total: 0 }, rank = '—';
+            try {
+                stats = calculateStudentStats(st.id);
+                const me = rankAccumulatedStudents(mates.map(x => ({ student: x, stats: calculateStudentStats(x.id) }))).find(x => String(x.student.id) === String(st.id));
+                if (me && me.stats && me.stats.hasData) rank = String(me.rank);
+            } catch (e) { console.warn('Home stats skipped:', e); }
+            const avg = stats.hasData ? (Math.round((Number(stats.avg) || 0) * 10) / 10).toFixed(1) : '—';
+            let tier = null, sticker = '';
+            try { if (stats.hasData) { tier = gradeTierOf(stats.avg); const lv = gradeStickerLevel(stats.avg); if (lv >= 1 && GRADE_STICKERS[lv]) sticker = gradeStickerSvg(lv, true, 52); } } catch (e) {}
+            let xp = 0, lvl = 1, xpCur = 0, inf = { cur: 0, best: 0 };
+            try { xp = xpOf(st.id); lvl = Math.floor(xp / XP_PER_LEVEL) + 1; xpCur = xp % XP_PER_LEVEL; inf = tenStreakInfo(st.id); } catch (e) {}
+            const tickets = mxTicketBalance(st);
+            // Điểm gần đây
+            const rows = [];
+            Object.keys(appData.scores || {}).forEach(k => {
+                if (k.indexOf(st.id + '_') !== 0) return; const it = appData.scores[k]; if (!it) return;
+                let d = 0; try { d = scoreKeyDateMs(k) || 0; } catch (e) {}
+                if (it.absent) rows.push({ d, ab: true });
+                else { const v = parseFloat(it.score); if (!isNaN(v) && it.score !== '' && it.score !== null) rows.push({ d, v, ex: !!it.isExam }); }
+            });
+            rows.sort((a, b) => b.d - a.d);
+            const recent = rows.slice(0, 8);
+            const fmtD = d => d ? new Date(d).toLocaleDateString(en ? 'en-GB' : 'vi-VN') : '—';
+            const scCls = v => v >= 10 ? 's10' : v >= 8 ? 's8' : v >= 5 ? '' : 's0';
+            const recentHtml = recent.length ? recent.map(r => '<div class="mxh-row"><span><i class="fa-regular fa-calendar mr-1.5 text-slate-400"></i>' + fmtD(r.d) + (r.ex ? ' <span class="mxh-chip ml-1">' + L2('Kiểm tra', 'Test') + '</span>' : '') + '</span>' +
+                (r.ab ? '<span class="mxh-sc ab">' + L2('Vắng', 'Absent') + '</span>' : '<span class="mxh-sc ' + scCls(r.v) + '">' + r.v + '</span>') + '</div>').join('') : '<div class="mxh-empty">' + L2('Chưa có điểm nào.', 'No scores yet.') + '</div>';
+            // Kiểm tra cuối kỳ
+            let fe = null, exRank = '—';
+            try {
+                fe = finalExamScores(st);
+                if (fe.total !== null) { const others = mates.map(x => { try { return finalExamScores(x).total; } catch (e) { return null; } }).filter(v => v !== null); exRank = '' + (1 + others.filter(v => v > fe.total + 1e-9).length); }
+            } catch (e) { console.warn('Final exam skipped:', e); }
+            const fv = v => (v === null || v === undefined || isNaN(v)) ? '—' : (Math.round(v * 10) / 10);
+            const exCells = fe ? [['Listening', fe.categories.listening], ['Speaking', fe.categories.speaking], ['Reading', fe.categories.reading], ['Writing', fe.categories.writing], ['Grammar & Vocab', fe.categories.grammarVocabulary]].map(c => '<div class="mxh-exc"><small>' + c[0] + '</small><b>' + fv(c[1]) + '</b></div>').join('') + '<div class="mxh-exc tot"><small>' + L2('Tổng kết', 'Total') + '</small><b>' + (fe.total === null ? '—' : fe.total.toFixed(2)) + '</b></div>' : '';
+            // Thú cưng
+            const pk = petPeakOf(st), f = petFormOf(pk), has = st.petSp !== undefined && !!PET_SP[st.petSp];
+            const art = has ? petArt(st.petSp, f, pk >= 1) : '<div class="pet-art" style="font-size:96px;display:flex;align-items:center;justify-content:center;opacity:.55">🥚</div>';
+            const pname = has ? pshDisp(st) : L2('Chưa chọn trứng', 'No egg chosen');
+            const nxt = PET_MS.find(m => m > pk), prevM = nxt ? PET_MS[PET_MS.indexOf(nxt) - 1] : 0;
+            const pct = nxt ? Math.max(0, Math.min(100, Math.round(((pk - prevM) / (nxt - prevM)) * 100))) : 100;
+            let passive = '';
+            try { if (has) { const bi = petBInfo(st.petSp, petLv(pk), st); if (bi) passive = '<div class="text-xs text-slate-600 mt-2">✨ ' + L2('Nội tại: ', 'Passive: ') + '<b>' + E(bi.ic + ' ' + bi.name) + '</b></div>'; } } catch (e) {}
+            const equip = pshEq(st).map((e, i) => { const it = e && e.id && PSH_BY[e.id]; return '<span class="mxh-chip ' + (it ? '' : 'off') + '">🎒 ' + (it ? E(L2(it.vi, it.en)) : L2('Ô ', 'Slot ') + (i + 1) + ': ' + L2('Trống', 'Empty')) + '</span>'; }).join(' ');
+            // Quà, vi phạm, huy hiệu
+            const giftMap = {}; (st.inventory || []).forEach(inv => { let n = ''; try { n = getRewardName(inv); } catch (e) {} if (!n) n = L2('Quà', 'Gift'); giftMap[n] = (giftMap[n] || 0) + 1; });
+            const giftHtml = Object.keys(giftMap).length ? Object.keys(giftMap).map(n => '<span class="mxh-chip gift">🎁 ' + E(n) + (giftMap[n] > 1 ? ' ×' + giftMap[n] : '') + '</span>').join(' ') : '<div class="mxh-empty">' + L2('Chưa có quà nào trong túi.', 'No gifts yet.') + '</div>';
+            const viol = (st.violations || []).map(v => (v && (v.name || v.type)) || (typeof v === 'string' ? v : '')).filter(Boolean);
+            const violHtml = viol.length ? viol.map(v => '<span class="mxh-chip bad">⚠️ ' + E(v) + '</span>').join(' ') : '<div class="mxh-empty">' + L2('Chưa có vi phạm nào 🎉', 'No violations 🎉') + '</div>';
+            const bTotal = (window.BK_BADGES && window.BK_BADGES.length) || 100, bGot = Object.keys(st.badges || {}).length, bPct = Math.round(bGot / bTotal * 100);
+            let achievement = ''; try { achievement = xfStatInner(st.id); } catch (e) {}
+            const sub = [cls ? L2('Lớp ', 'Class ') + cls.name : '', co && co.name ? co.name : ''].filter(Boolean).map(E).join(' • ');
+            let heroTpl = '', heroFx = '';
+            try { if (typeof ctCls === 'function') { heroTpl = ctCls(st); if (heroTpl) heroFx = ctFx(st, 8); } } catch (e) { heroTpl = ''; heroFx = ''; }
+            const heroOpen = '<section class="mxh-hero' + (heroTpl ? ' ' + heroTpl : '') + '">' + heroFx;
+            const hc = (val, label, k, ic, cl) => '<button type="button" class="mxh-hcell ' + cl + '" onclick="mxStuTab(\'' + k + '\')"><i class="fa-solid ' + ic + ' mxh-hi"></i><span class="mxh-ht"><b>' + val + '</b><span>' + label + '</span></span></button>';
+            const html = '<div class="mxh-wrap">' +
+                heroOpen + '<div class="flex items-center gap-4 flex-wrap"><div class="mxh-ava">' + E(st.icon || '🎓') + '</div>' +
+                '<div class="min-w-0 flex-1"><div class="text-xs font-bold text-indigo-100">' + L2('Chào mừng trở lại!', 'Welcome back!') + '</div><div class="text-2xl font-black leading-tight break-words">' + E(getStudentDisplayName(st)) + '</div>' + (sub ? '<div class="text-xs text-indigo-100 mt-1 font-semibold">' + sub + '</div>' : '') + '</div>' +
+                (function () { let fl = ''; try { fl = tenStreakHtml(st.id) || ''; } catch (e) {} if (!tier && !fl) return ''; return '<div class="mxh-gbox">' + sticker + fl + (tier ? '<div><div class="gl">' + L2('Xếp loại', 'Grade') + '</div><div class="mxh-gname ' + tier.cls + '">' + E(gradeTierLabel(tier)) + '</div></div>' : '') + '</div>'; })() + '</div>' +
+                '<div class="mt-3"><div class="flex justify-between text-[11px] font-black text-indigo-100"><span>Lv ' + lvl + '</span><span>XP ' + xpCur.toFixed(0) + '/' + XP_PER_LEVEL + '</span></div><div class="mxh-xp mt-1"><i style="width:' + (xpCur / XP_PER_LEVEL * 100).toFixed(0) + '%"></i></div></div>' +
+                '<div class="mxh-hs">' + hc('<em class="mxh-avgp ' + (tier ? tier.cls : '') + '">' + E(avg) + '</em>', L2('Điểm TB', 'Avg score'), 'matrix', 'fa-chart-line', 'c1') + hc(E(rank) + (mates.length ? '/' + mates.length : ''), L2('Xếp hạng', 'Rank'), 'ranking', 'fa-trophy', 'c2') + hc(E(stats.hasData ? (Number(stats.total) || 0).toFixed(1) : '—'), L2('Tổng điểm', 'Total points'), 'matrix', 'fa-star', 'c3') + hc(E(String(tickets)), L2('Phiếu hiện có', 'Tickets'), 'mypet', 'fa-ticket', 'c4') + '</div></section>' +
+                '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">' +
+                  '<div class="flex flex-col gap-4">' +
+                    '<section class="mxh-card"><div class="mxh-h"><span><i class="fa-solid fa-paw"></i>' + L2('Thú cưng của tôi', 'My pet') + '</span><span class="mxh-chip">' + L2('Cấp ', 'Level ') + (f - 1) + '</span></div>' +
+                    '<div class="mxh-stage" onclick="mxStuTab(\'mypet\')" title="' + L2('Mở cửa hàng thú cưng', 'Open the pet shop') + '">' + art + '</div>' +
+                    '<div class="mt-3 flex items-center justify-between gap-2"><div class="min-w-0"><div class="font-black text-slate-800 break-words">' + E(pname) + '</div><div class="text-xs text-slate-500 mt-0.5">' + L2('Chuỗi hiện tại: ', 'Current streak: ') + inf.cur + ' 🔥 · ' + L2('Kỷ lục: ', 'Record: ') + inf.best + '</div></div><span class="mxh-chip ' + (inf.cur > 0 ? 'ok' : 'off') + '">' + (inf.cur > 0 ? L2('Đang hoạt động', 'Active') : L2('Chưa hoạt động', 'Inactive')) + '</span></div>' +
+                    '<div class="mxh-bar mt-3"><i style="width:' + pct + '%"></i></div><div class="text-[11px] text-slate-500 mt-1">' + (nxt ? L2('Mốc tiến hóa tiếp theo: ', 'Next milestone: ') + nxt : L2('Đã đạt dạng cuối!', 'Final form reached!')) + '</div>' + passive +
+                    '<div class="flex flex-wrap gap-1.5 mt-2">' + equip + '</div><button type="button" class="mxh-btn" onclick="mxStuTab(\'mypet\')"><i class="fa-solid fa-store mr-1"></i>' + L2('Cửa hàng thú cưng', 'Pet shop') + '</button></section>' +
+                    '<section class="mxh-card"><div class="mxh-h"><span><i class="fa-solid fa-file-pen"></i>' + L2('Kiểm tra cuối kỳ', 'Final exam') + '</span><button type="button" class="mxh-chip" onclick="mxStuTab(\'finalExam\')">' + L2('Hạng ', 'Rank ') + exRank + '</button></div><div class="mxh-ex">' + exCells + '</div></section>' +
+                  '</div>' +
+                  '<div class="flex flex-col gap-4">' +
+                    '<section class="mxh-card"><div class="mxh-h"><span><i class="fa-solid fa-medal"></i>' + L2('Thẻ thành tích', 'Achievement card') + '</span></div>' + achievement + '</section>' +
+                    '<section class="mxh-card"><div class="mxh-h"><span><i class="fa-solid fa-list-check"></i>' + L2('Điểm gần đây', 'Recent scores') + '</span><button type="button" class="mxh-chip" onclick="mxStuTab(\'matrix\')">' + L2('Xem bảng điểm', 'Open scores') + '</button></div>' + recentHtml + '</section>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="grid grid-cols-1 md:grid-cols-3 gap-4">' +
+                  '<section class="mxh-card"><div class="mxh-h"><span><i class="fa-solid fa-gift"></i>' + L2('Kho quà của tôi', 'My gifts') + '</span></div><div class="flex flex-wrap gap-1.5">' + giftHtml + '</div></section>' +
+                  '<section class="mxh-card"><div class="mxh-h"><span><i class="fa-solid fa-triangle-exclamation"></i>' + L2('Vi phạm', 'Violations') + '</span></div><div class="flex flex-wrap gap-1.5">' + violHtml + '</div></section>' +
+                  '<section class="mxh-card"><div class="mxh-h"><span><i class="fa-solid fa-medal"></i>' + L2('Sổ huy hiệu', 'Badge book') + '</span><span class="mxh-chip">' + bGot + '/' + bTotal + '</span></div><div class="mxh-bar"><i style="width:' + bPct + '%"></i></div><button type="button" class="mxh-btn" onclick="mxStuTab(\'badge\')">' + L2('Mở sổ huy hiệu', 'Open badge book') + '</button></section>' +
+                '</div></div>';
+            if (window.__mxHomeHtml === html && root.firstChild) return;   // không đổi thì không vẽ lại (tránh giật)
+            window.__mxHomeHtml = html; root.innerHTML = html;
+        };
+
+        /* ---------- Phía học sinh: gửi yêu cầu (không bao giờ ghi dữ liệu thật) ---------- */
+        async function mxSend(type, p) {
+            const S = window.MX_STUDENT; if (!S) return false;
+            if (mxStuSelCourse()) { mxToast(L2('Khoá đã lưu trữ chỉ để xem.', 'Archived courses are view-only.'), 'error'); return false; }
+            const id = 'a_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+            try {
+                await set(ref(db, MX_ACT + '/' + S.tid + '/' + id), { id, sid: S.sid, proof: S.proof, type, p: p || {}, at: Date.now() });
+                S.pend.add(id); window.mxStuRefreshBar();
+                mxToast(L2('Đã gửi yêu cầu. Chờ giáo viên xác nhận…', 'Request sent. Waiting for your teacher…'), 'info');
+                return true;
+            } catch (e) { console.error(e); mxToast(L2('Không gửi được yêu cầu. Kiểm tra mạng.', 'Could not send the request.'), 'error'); return false; }
+        }
+        function mxInstallStudentOverrides() {
+            if (window.__mxStuInstalled) return; window.__mxStuInstalled = true;
+            const me = () => pshSt(window.MX_STUDENT.sid);
+            const rawSwitch = window.switchViewMode, rawMode = window.petSetMode, rawGoShop = window.petGoShop, rawPickStu = window.petPickStu;
+            window.saveData = () => Promise.resolve(false);
+            window.switchViewMode = function (m) { if (window.MX_STUDENT && !['home', 'ranking', 'matrix', 'pet'].includes(m)) return; return rawSwitch.apply(this, arguments); };
+            window.petSetMode = m => { if (m === 'class' || m === 'shop') { if (m === 'shop') petTarget = window.MX_STUDENT.sid; rawMode(m); } };
+            window.petGoShop = () => rawGoShop(window.MX_STUDENT.sid);
+            window.petPickStu = () => rawPickStu(window.MX_STUDENT.sid);
+            window.petEqOpen = () => { const h = document.getElementById('pqInline'); if (h) { try { h.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {} return; } pqSid = window.MX_STUDENT.sid; pqSlot = -1; pqRender(); };
+            window.petPick = () => {}; window.petGoPick = () => {}; window.petClaim = () => {};
+            window.pshBuy = async (sid, id) => {
+                const st = me(), it = PSH_BY[id]; if (!st || !it) return;
+                if (!pshCanBuy(st)) { pshT(pshLockWhy(), 'error'); return; }
+                const price = pshPrice(it);
+                if (pshOwned(st, id) >= 1) { pshT(L2('Đã sở hữu.', 'Already owned.'), 'error'); return; }
+                if (mxTicketBalance(st) < price) { pshT(L2('Không đủ Phiếu Vật Phẩm.', 'Not enough Item Tickets.'), 'error'); return; }
+                if (!await showAppConfirm(L2('Mua “' + it.vi + '” với ' + price + ' phiếu?', 'Buy “' + it.en + '” for ' + price + ' tickets?'))) return;
+                await mxSend('petBuy', { itemId: id });
+            };
+            window.pqEquip = async id => {
+                const st = me(), it = PSH_BY[id]; if (!st || !it) return;
+                if (!pshOwned(st, id)) { pshT(L2('Bạn chưa sở hữu vật phẩm này.', 'You do not own this item.'), 'error'); return; }
+                const c = pshCompat(st.petSp, it); if (!c.ok) { pshT(c.why, 'error'); return; }
+                const eq = pshEq(st); if (eq.some(e => e && e.id === id)) { pshT(L2('Vật phẩm này đã được trang bị.', 'Already equipped.'), 'error'); return; }
+                const slot = pqSlot >= 0 ? pqSlot : eq.findIndex(e => !e);
+                if (slot < 0) { pshT(L2('Đã đủ 3 ô. Hãy chọn một ô để thay thế.', 'All 3 slots are full. Pick a slot to replace.'), 'error'); return; }
+                const pl = { itemId: id, slot };
+                if (it.s === 'm' || it.s === 'p') { const sel = document.getElementById('pqp_' + id), v = sel ? +sel.value : NaN; if (!(v >= 0 && v <= (it.s === 'p' ? 5 : 6))) { pshT(L2('Hãy chọn cấp nội tại.', 'Choose an innate level.'), 'error'); return; } pl.p = v; }
+                pqSlot = -1; pqPop = 's' + slot; await mxSend('petEquip', pl);
+            };
+            window.pqUnequip = async i => { const st = me(); if (!st) return; const e = pshEq(st)[i]; pqPop = e ? e.id : ''; await mxSend('petUnequip', { slot: i }); };
+            window.pqSaveName = async () => {
+                const st = me(), inp = document.getElementById('pqName'); if (!st || !inp) return;
+                const v = pshStripStage(inp.value.trim()); if (pqLen(v) > 34) { pshT(L2('Tên tối đa 34 ký tự.', 'Name is limited to 34 characters.'), 'error'); return; }
+                await mxSend('petName', { name: v });
+            };
+            window.pqResetName = async () => { if (!me()) return; await mxSend('petName', { name: '' }); const i = document.getElementById('pqName'); if (i) { i.value = ''; try { window.pqCnt(); } catch (e) {} } };
+        }
+
+        /* ---------- Phía học sinh: chặn thao tác ngoài phạm vi (mặc định: chặn) ---------- */
+        const MX_OWN = a => String(a[0]) === String(window.MX_STUDENT && window.MX_STUDENT.sid);
+        const MX_OK = {
+            petSetMode: a => a[0] === 'class' || a[0] === 'shop', petGoShop: MX_OWN, petPickStu: MX_OWN, petEqOpen: MX_OWN, petSetSel: () => true,
+            petLbOpen: () => true, petLbClose: () => true, mxStuTab: () => true, pqClose: () => true, pqCnt: () => true, pqPick: () => true, pqEquip: () => true,
+            pqUnequip: () => true, pqSaveName: () => true, pqResetName: () => true, pshSet: () => true, pshBuy: () => true
+        };
+        function mxCallOf(attr) {
+            const s = String(attr || '').replace(/event\.(stopPropagation|preventDefault)\(\)\s*;?/g, '').trim();
+            const calls = s.match(/[A-Za-z_$][\w$.]*\s*\(/g) || []; if (calls.length !== 1) return null;
+            const m = /^\s*(?:return\s+)?([A-Za-z_$][\w$]*)\s*\(([^)]*)\)\s*;?\s*$/.exec(s); if (!m) return null;
+            return { fn: m[1], args: [...m[2].matchAll(/'([^']*)'|"([^"]*)"|([^,\s]+)/g)].map(x => x[1] !== undefined ? x[1] : (x[2] !== undefined ? x[2] : x[3])) };
+        }
+        function mxBlock(e) { e.stopPropagation(); e.stopImmediatePropagation(); if (['click', 'dblclick', 'submit', 'drop', 'paste', 'cut', 'contextmenu', 'dragstart'].includes(e.type)) e.preventDefault(); }
+        function mxStuGuard(e) {
+            if (!window.MX_STUDENT) return; const t = e.target; if (!t || !t.closest) return;
+            const ro = t.closest('#viewMatrixContainer,#viewRankingContainer,#viewFinalExamContainer,#classTimelinePanel');
+            if (ro) {
+                if (['mousedown', 'mouseup', 'pointerdown', 'pointerup', 'input', 'change', 'mousemove'].includes(e.type)) return;
+                if (t.closest('select,option')) return;
+                const h = t.closest('[onclick]'), c = h && mxCallOf(h.getAttribute('onclick'));
+                if (c && (c.fn === 'petLbOpen' || c.fn === 'petLbClose' || c.fn === 'toggleGradeLegend')) return;
+                mxBlock(e); return;
+            }
+            if (e.type !== 'click' || !t.closest('#viewPetContainer')) return;
+            if (t.closest('.pet-art')) return;
+            const h = t.closest('[onclick]');
+            if (h) { const c = mxCallOf(h.getAttribute('onclick')); if (!(c && MX_OK[c.fn] && MX_OK[c.fn](c.args))) mxBlock(e); return; }
+            if (t.closest('button,a,[role="button"],[data-act]')) mxBlock(e);
+        }
+        ['click', 'dblclick', 'mousedown', 'keydown', 'keypress', 'contextmenu', 'paste', 'cut', 'dragstart', 'drop', 'submit', 'input', 'change'].forEach(ev => document.addEventListener(ev, mxStuGuard, true));
+
+        /* ---------- Khởi động: link #hocsinh và tự vào lại khi tải lại trang ---------- */
+        (function () {
+            const only = /^#hocsinh/i.test(location.hash);
+            if (only) document.body.classList.add('mx-stu-only');
+            let saved = null; try { saved = JSON.parse(sessionStorage.getItem('mxStu') || 'null'); } catch (e) {}
+            if (saved && saved.tid && saved.code) { mxStudentLogin(saved.tid, saved.code, true).then(ok => { if (!ok && only) window.mxStuGateOpen(); }); }
+            else if (only) { const wait = setInterval(() => { if ((teacherRecords || []).length || document.readyState === 'complete') { clearInterval(wait); window.mxStuGateOpen(); } }, 300); setTimeout(() => clearInterval(wait), 8000); }
+            // danh sách giáo viên tải xong sau khi hộp đăng nhập đã mở: điền lại ô chọn
+            setInterval(() => { const s = document.getElementById('mxStuTeacher'); if (s && !s.value && (teacherRecords || []).length) s.innerHTML = teacherRecords.map(t => '<option value="' + escapeHtml(String(t.teacherId)) + '">' + escapeHtml((t.icon || '👩‍🏫') + ' ' + (t.name || '')) + '</option>').join(''); }, 1000);
+        })();
     </script>
 
 
@@ -15806,9 +16599,12 @@ html.mx-dark .gc-bar{background:#334155}
     if(!st){ st=document.createElement('div'); st.id='toastStack'; st.setAttribute('aria-live','polite'); document.body.appendChild(st); }
     return st;
   }
-  function showAppToast(message, type, duration){
+  function showAppToast(message, type, duration, force){
     type=type||'success';
     const text=localizeDialogMessage(String(message ?? ''));
+    // Cổng học sinh: không hiện thông báo của phía giáo viên (chỉ giữ phản hồi thao tác của chính học sinh)
+    if(window.MX_STUDENT && !force) return;
+    try{ if(window.mxNotifPush) window.mxNotifPush(text, type); }catch(e){}
     const stack=ensureToastStack();
     const ms=duration||((type==='success' && text.length<=70)?2000:3500);
     const el=document.createElement('div');
@@ -17104,8 +17900,8 @@ function markSeen(ns){
 window.bkClose=function(){try{if(S&&S.fresh&&S.fresh.size){markSeen([...S.fresh]);S.fresh=new Set()}}catch(e){}const o=$('bkOv');if(o)o.remove();document.removeEventListener('keydown',key);removeEventListener('resize',onRz);busy=false};
 window.bkOpen=function(id){
   let st;try{st=appData.students.find(x=>String(x.id)===String(id))}catch(e){}if(!st)return;
-  try{if(window.bkEnsureActiveCourseBadges)window.bkEnsureActiveCourseBadges()}catch(e){}
-  try{if(window.bkRecheck)window.bkRecheck()}catch(e){console.warn('Badge sync:',e)}
+  if(!window.MX_STUDENT){try{if(window.bkEnsureActiveCourseBadges)window.bkEnsureActiveCourseBadges()}catch(e){}
+  try{if(window.bkRecheck)window.bkRecheck()}catch(e){console.warn('Badge sync:',e)}}
   bkClose();S={st,cat:-1,tab:'all',pg:0,pv:false,fresh:new Set(Array.isArray(st._badgeUnseen)?st._badgeUnseen:[])};
   let sn='';try{sn=getStudentDisplayName(st)}catch(e){sn=st.name||''}
   const o=document.createElement('div');o.id='bkOv';o.className='bk-ov';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');
@@ -17131,7 +17927,11 @@ function ensureDefs(){if(document.getElementById('bkDefsHold'))return;const h=do
 function toastWrap(){let w=$('bkTW');if(!w){w=document.createElement('div');w.id='bkTW';w.className='bk-tw';w.setAttribute('role','status');w.setAttribute('aria-live','polite');document.body.appendChild(w)}return w}
 function dropToast(el){if(!el||!el.parentNode)return;el.classList.add('out');setTimeout(()=>{if(el.parentNode)el.remove()},380)}
 window.bkNotifyNew=function(list){
-  if(!list||!list.length)return;ensureDefs();const w=toastWrap();
+  if(!list||!list.length)return;
+  if(window.MX_STUDENT)return;
+  try{list.forEach(it=>{const b=BK[it.n-1];if(!b)return;let sn='';try{sn=getStudentDisplayName(appData.students.find(x=>String(x.id)===String(it.sid)))}catch(e){}
+    if(window.mxNotifPush)window.mxNotifPush('🏅 '+T('Huy hiệu mới!','New badge!')+' '+nm(b)+(sn?' — '+sn:'')+(it.pts>0?' (+'+it.pts+' pts)':''),'badge')})}catch(e){}
+  ensureDefs();const w=toastWrap();
   list.slice(0,3).forEach((it,i)=>setTimeout(()=>{
     const b=BK[it.n-1];if(!b)return;let sn='';
     try{sn=getStudentDisplayName(appData.students.find(x=>String(x.id)===String(it.sid)))}catch(e){}
