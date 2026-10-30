@@ -3024,11 +3024,30 @@ html[data-season] header .bg-indigo-900{background-color:color-mix(in srgb,var(-
 #mxCalDrawer{position:fixed;inset:0;z-index:97;display:none;justify-content:flex-end;background:rgba(15,23,42,.5);backdrop-filter:blur(2px)}
 #mxCalDrawer.open{display:flex}
 #mxCalDrawer .mxc-panel{background:#fff;width:100%;max-width:26rem;height:100%;overflow-y:auto;box-shadow:-20px 0 50px rgba(15,23,42,.3);color:#0f172a}
-.mxc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;padding:.9rem 1.1rem;color:#fff;background:linear-gradient(135deg,#ef4444,#b91c1c)}
-.mxc-head h3{font-weight:900;font-size:1.1rem}.mxc-sub{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;opacity:.9}.mxc-x{font-size:1.5rem;line-height:1;padding:0 .5rem;color:#fff}
+.mxc-head{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.9rem 1.1rem;color:#fff;background:linear-gradient(135deg,#ef4444,#b91c1c)}
+.mxc-head h3{font-weight:900;font-size:1.125rem;line-height:1.75rem}.mxc-sub{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;opacity:.9}.mxc-x{font-size:1.5rem;line-height:1;padding:0 .5rem;color:#fff}
 .mxc-nav{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem}
 .mxc-nav button{width:2rem;height:2rem;border-radius:9999px;color:#b91c1c;transition:transform .15s,background .15s}.mxc-nav button:hover{background:#fee2e2;transform:scale(1.1)}
-.mxc-nav .mxc-tdy{width:auto;padding:0 .9rem;font-size:12px;font-weight:800;background:#fee2e2}
+.mxc-nav .mxc-tdy{width:auto;padding:0 .9rem;font-size:12px;font-weight:800;background:#fee2e2;white-space:nowrap}
+.mxc-mid{display:flex;align-items:center;gap:.4rem;min-width:0}
+.mxc-stage{position:relative;overflow:hidden}.mxc-view.old{position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none}
+.mxc-mgrid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr);gap:.5rem;padding:.4rem .75rem .5rem;height:100%;box-sizing:border-box;position:absolute;inset:0}
+.mxc-view:not(.old){height:100%}
+.mxc-mo{border-radius:.9rem;font-size:13px;font-weight:800;color:#0f172a;background:#f8fafc;border:1px solid #e2e8f0;cursor:pointer;transition:transform .15s,background .15s}
+.mxc-mo:hover{transform:translateY(-2px);background:#fee2e2}.mxc-mo.today{box-shadow:inset 0 0 0 2px #ef4444}.mxc-mo.sel{background:#fee2e2;color:#b91c1c}
+.mxc-view{will-change:transform,opacity}
+@keyframes mxcInR{from{transform:translateX(100%);opacity:.3}to{transform:none;opacity:1}}
+@keyframes mxcInL{from{transform:translateX(-100%);opacity:.3}to{transform:none;opacity:1}}
+@keyframes mxcOutL{from{transform:none;opacity:1}to{transform:translateX(-100%);opacity:0}}
+@keyframes mxcOutR{from{transform:none;opacity:1}to{transform:translateX(100%);opacity:0}}
+@keyframes mxcFromSm{from{transform:scale(.78);opacity:0}to{transform:none;opacity:1}}
+@keyframes mxcFromBg{from{transform:scale(1.3);opacity:0}to{transform:none;opacity:1}}
+@keyframes mxcToBg{from{transform:none;opacity:1}to{transform:scale(1.3);opacity:0}}
+@keyframes mxcToSm{from{transform:none;opacity:1}to{transform:scale(.78);opacity:0}}
+.mxa-next-i{animation:mxcInR .32s cubic-bezier(.4,0,.2,1) both}.mxa-next-o{animation:mxcOutL .32s cubic-bezier(.4,0,.2,1) both}
+.mxa-prev-i{animation:mxcInL .32s cubic-bezier(.4,0,.2,1) both}.mxa-prev-o{animation:mxcOutR .32s cubic-bezier(.4,0,.2,1) both}
+.mxa-zin-i{animation:mxcFromSm .34s cubic-bezier(.4,0,.2,1) both}.mxa-zin-o{animation:mxcToBg .34s cubic-bezier(.4,0,.2,1) both}
+.mxa-zout-i{animation:mxcFromBg .34s cubic-bezier(.4,0,.2,1) both}.mxa-zout-o{animation:mxcToSm .34s cubic-bezier(.4,0,.2,1) both}
 .mxc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:0 .75rem}
 .mxc-wd{text-align:center;font-size:10px;font-weight:900;color:#94a3b8;padding:.25rem 0}
 .mxc-day{display:flex;flex-direction:column;align-items:center;justify-content:center;height:3.4rem;border-radius:.75rem;background:transparent;cursor:pointer;transition:transform .15s,background .15s}
@@ -3043,8 +3062,8 @@ html[data-season] header .bg-indigo-900{background-color:color-mix(in srgb,var(-
 .mxc-add button{padding:.35rem .8rem;border-radius:.6rem;font-size:12px;font-weight:900;color:#fff;background:linear-gradient(135deg,#ef4444,#b91c1c)}
 .mxc-rep{display:block;font-size:11px;color:#64748b;margin-top:.35rem}.mxc-sea{display:flex;justify-content:space-between;align-items:center;gap:.5rem;font-size:12px;font-weight:800}
 .mxc-sea select{border:1px solid #cbd5e1;border-radius:.6rem;padding:.25rem .4rem;font-size:12px;color:#0f172a;background:#fff}
-html.mx-dark #mxCalDrawer .mxc-panel{background:#0f172a;color:#e2e8f0}html.mx-dark .mxc-box,html.mx-dark .mxc-ev{background:#1e293b;border-color:#334155}html.mx-dark .mxc-day:hover,html.mx-dark .mxc-day.sel{background:#1e293b}
-@media (prefers-reduced-motion:reduce){#mxSeasonFx{display:none}.mxc-day,.mxc-nav button{transition:none}#mxSeasonBanner{animation:none}}
+html.mx-dark .mxc-mo{background:#1e293b;border-color:#334155;color:#e2e8f0}html.mx-dark .mxc-mo:hover,html.mx-dark .mxc-mo.sel{background:#7f1d1d;color:#fecaca}html.mx-dark #mxCalDrawer .mxc-panel{background:#0f172a;color:#e2e8f0}html.mx-dark .mxc-box,html.mx-dark .mxc-ev{background:#1e293b;border-color:#334155}html.mx-dark .mxc-day:hover,html.mx-dark .mxc-day.sel{background:#1e293b}
+@media (prefers-reduced-motion:reduce){#mxSeasonFx{display:none}.mxc-day,.mxc-nav button,.mxc-mo{transition:none}#mxSeasonBanner{animation:none}}
 </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
@@ -5516,11 +5535,30 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         };
         let sxCal = null;
         const sxSel = () => { const [y, m, d] = sxCal.s.split('-').map(Number); return new Date(y, m - 1, d); };
-        window.mxCalOpen = function () { const d = qsEl('mxCalDrawer'); if (!d) return; const n = new Date(); sxCal = { y: n.getFullYear(), m: n.getMonth(), s: sxKey(n) }; sxCalRender(); window.mxDrOpen(d); d.onclick = e => { if (e.target === d) mxCalClose(); }; };
+        window.mxCalOpen = function () { const d = qsEl('mxCalDrawer'); if (!d) return; const n = new Date(); sxCal = { y: n.getFullYear(), m: n.getMonth(), s: sxKey(n), v: 'd' }; sxCalRender(); window.mxDrOpen(d); d.onclick = e => { if (e.target === d) mxCalClose(); }; };
         window.mxCalClose = function () { window.mxDrClose(qsEl('mxCalDrawer')); };
-        window.mxCalNav = function (dl) { sxCal.m += dl; if (sxCal.m < 0) { sxCal.m = 11; sxCal.y--; } if (sxCal.m > 11) { sxCal.m = 0; sxCal.y++; } sxCalRender(); };
-        window.mxCalToday = function () { const n = new Date(); sxCal = { y: n.getFullYear(), m: n.getMonth(), s: sxKey(n) }; sxCalRender(); };
-        window.mxCalPick = function (k) { sxCal.s = k; const [y, m] = k.split('-').map(Number); sxCal.y = y; sxCal.m = m - 1; sxCalRender(); };
+        /* Hiệu ứng chuyển cảnh: lướt trái/phải khi đổi tháng/năm, zoom khi vào/ra bảng chọn tháng */
+        const sxRM = () => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+        function sxCalGo(kind, mut) {
+            const dr = qsEl('mxCalDrawer'), old = dr && dr.querySelector('.mxc-view:not(.old)'), clone = old ? old.cloneNode(true) : null;
+            try { const s0 = dr && dr.querySelector('.mxc-stage'); if (s0 && sxCal.v === 'd' && s0.offsetHeight > 0) sxCal.h = s0.offsetHeight; } catch (e) {}
+            mut(); sxCalRender();
+            const st = dr && dr.querySelector('.mxc-stage'), nv = st && st.querySelector('.mxc-view:not(.old)');
+            if (!kind || !clone || !nv || sxRM()) return;
+            clone.classList.add('old', 'mxa-' + kind + '-o'); nv.classList.add('mxa-' + kind + '-i');
+            st.appendChild(clone);
+            setTimeout(() => { try { clone.remove(); nv.classList.remove('mxa-' + kind + '-i'); } catch (e) {} }, 360);
+        }
+        const sxMonthDir = (y, m) => (y * 12 + m) - (sxCal.y * 12 + sxCal.m);
+        window.mxCalNav = function (dl) {
+            const kind = dl > 0 ? 'next' : 'prev';
+            if (sxCal.v === 'm') { sxCalGo(kind, () => { sxCal.py += dl; }); return; }
+            sxCalGo(kind, () => { sxCal.m += dl; if (sxCal.m < 0) { sxCal.m = 11; sxCal.y--; } if (sxCal.m > 11) { sxCal.m = 0; sxCal.y++; } });
+        };
+        window.mxCalYM = function () { sxCalGo(sxCal.v === 'm' ? 'zin' : 'zout', () => { if (sxCal.v === 'm') sxCal.v = 'd'; else { sxCal.v = 'm'; sxCal.py = sxCal.y; } }); };
+        window.mxCalPickMonth = function (i) { sxCalGo('zin', () => { sxCal.y = sxCal.py; sxCal.m = i; sxCal.v = 'd'; }); };
+        window.mxCalToday = function () { const n = new Date(), dir = sxMonthDir(n.getFullYear(), n.getMonth()), wasM = sxCal.v === 'm'; sxCalGo(wasM ? 'zin' : (dir === 0 ? null : (dir > 0 ? 'next' : 'prev')), () => { sxCal = { y: n.getFullYear(), m: n.getMonth(), s: sxKey(n), v: 'd', h: sxCal.h }; }); };
+        window.mxCalPick = function (k) { const [y, m] = k.split('-').map(Number), dir = sxMonthDir(y, m - 1); sxCalGo(dir === 0 ? null : (dir > 0 ? 'next' : 'prev'), () => { sxCal.s = k; sxCal.y = y; sxCal.m = m - 1; sxCal.v = 'd'; }); };
         window.mxCalAdd = function () {
             const i = qsEl('mxCalIn'), t = i ? i.value.trim() : ''; if (!t) { if (i) i.focus(); return; }
             const r = qsEl('mxCalRep');
@@ -5542,11 +5580,17 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const holHtml = sh.map(h => `<div class="mxc-hol">${sxIco(h[4])} ${h[en ? 3 : 2]}</div>`).join('');
             const evHtml = se.length ? se.map(e => `<div class="mxc-ev"><span>${escapeHtml(e.t)}${e.r ? ' <small>🔁</small>' : ''}</span><button type="button" onclick="mxCalDel('${e.id}')" aria-label="${sxL('Xóa', 'Delete')}"><i class="fa-solid fa-trash-can"></i></button></div>`).join('') : `<p class="mxc-none">${sxL('Chưa có sự kiện', 'No events')}</p>`;
             const mode = sxMode(), cur = window.__sxId;
+            const tn = new Date(), moNames = en ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] : Array.from({ length: 12 }, (_, i) => 'Tháng ' + (i + 1));
+            if (sxCal.py === undefined) sxCal.py = y;
+            const ymLbl = sxCal.v === 'm' ? sxCal.py : (en ? first.toLocaleString('en-US', { month: 'long' }) : 'Tháng ' + (m + 1)) + ' ' + y;
+            const viewHtml = sxCal.v === 'm'
+                ? `<div class="mxc-view"><div class="mxc-mgrid">${moNames.map((n, i) => `<button type="button" class="mxc-mo${sxCal.py === y && i === m ? ' sel' : ''}${sxCal.py === tn.getFullYear() && i === tn.getMonth() ? ' today' : ''}" onclick="mxCalPickMonth(${i})">${n}</button>`).join('')}</div></div>`
+                : `<div class="mxc-view"><div class="mxc-grid">${wd.map(w => `<div class="mxc-wd">${w}</div>`).join('')}${cells}</div></div>`;
             const opts = `<option value="auto"${mode === 'auto' ? ' selected' : ''}>${sxL('Tự động theo ngày', 'Auto by date')}</option><option value="off"${mode === 'off' ? ' selected' : ''}>${sxL('Tắt', 'Off')}</option>` + SXORD.map(k => `<option value="${k}"${mode === k ? ' selected' : ''}>${SX[k].e} ${SX[k].n[en ? 1 : 0]}</option>`).join('');
             dr.innerHTML = `<div class="mxc-panel" role="dialog" aria-modal="true">
-                <div class="mxc-head"><div><div class="mxc-sub">${sxL('Lịch & sự kiện', 'Calendar & events')}</div><h3>📅 ${en ? first.toLocaleString('en-US', { month: 'long' }) : 'Tháng ' + (m + 1)} ${y}</h3></div><button type="button" onclick="mxCalClose()" class="mxc-x" aria-label="${sxL('Đóng', 'Close')}">×</button></div>
-                <div class="mxc-nav"><button type="button" onclick="mxCalNav(-1)" aria-label="prev"><i class="fa-solid fa-chevron-left"></i></button><button type="button" class="mxc-tdy" onclick="mxCalToday()">${sxL('Hôm nay', 'Today')}</button><button type="button" onclick="mxCalNav(1)" aria-label="next"><i class="fa-solid fa-chevron-right"></i></button></div>
-                <div class="mxc-grid">${wd.map(w => `<div class="mxc-wd">${w}</div>`).join('')}${cells}</div>
+                <div class="mxc-head"><h3>📅 ${sxL('Lịch & sự kiện', 'Calendar & events')}</h3><button type="button" onclick="mxCalClose()" class="mxc-x" aria-label="${sxL('Đóng', 'Close')}">×</button></div>
+                <div class="mxc-nav"><button type="button" onclick="mxCalNav(-1)" aria-label="prev"><i class="fa-solid fa-chevron-left"></i></button><div class="mxc-mid"><button type="button" class="mxc-tdy mxc-ym" onclick="mxCalYM()" aria-expanded="${sxCal.v === 'm'}" title="${sxL('Chọn tháng / năm', 'Pick month / year')}">${ymLbl}</button><button type="button" class="mxc-tdy" onclick="mxCalToday()">${sxL('Hôm nay', 'Today')}</button></div><button type="button" onclick="mxCalNav(1)" aria-label="next"><i class="fa-solid fa-chevron-right"></i></button></div>
+                <div class="mxc-stage">${viewHtml}</div>
                 <div class="mxc-box"><div class="mxc-date">${sxFmt(sd, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</div>
                     <div class="mxc-lun">🌙 ${sxL('Âm lịch', 'Lunar')}: ${sl[0]}/${sl[1]}${sl[3] ? sxL(' (nhuận)', ' (leap)') : ''} · ${sxCC(sl[2])}</div>${holHtml}
                     <div class="mxc-evs">${evHtml}</div>
@@ -5555,6 +5599,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 <div class="mxc-box"><label class="mxc-sea" data-no-hover>${sxL('Giao diện theo mùa', 'Seasonal theme')}<select onchange="mxCalSeason(this.value);sxCalRender()">${opts}</select></label>
                     <div class="mxc-none">${cur && SX[cur] ? sxL('Đang áp dụng: ', 'Active: ') + SX[cur].e + ' ' + SX[cur].n[en ? 1 : 0] : sxL('Hiện không có giao diện mùa/lễ', 'No seasonal theme right now')}</div></div>
             </div>`;
+            const stg = dr.querySelector('.mxc-stage');
+            if (stg) { if (sxCal.v === 'm') stg.style.height = (sxCal.h || 340) + 'px'; else sxCal.h = stg.offsetHeight; }
         }
         window.sxCalRender = sxCalRender;
 
@@ -6629,6 +6675,29 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
           }
         }
         // Ghi nhận một lượt dùng quà thành công (sau khi lưu thành công) để tính huy hiệu #78/#79. Không có giao diện.
+        // ===== Thông báo huy hiệu mới: danh sách "chưa xem" lưu theo học sinh và theo khóa (st._badgeUnseen) =====
+        window.bkNewBadgeHtml=function(st){const n=st&&Array.isArray(st._badgeUnseen)?st._badgeUnseen.length:0;return n>0?`<span class="bk-nc" aria-label="${n}">${n>99?'99+':n}</span>`:''};
+        window.bkRefreshRoster=function(){try{if(typeof renderStudentRoster==='function')renderStudentRoster()}catch(e){}};
+        window.bkIsArchivedView=function(){return typeof viewingArchivedCourseId!=='undefined'&&!!viewingArchivedCourseId};
+        /* ===== Thưởng PTS khi nhận huy hiệu MỚI: Common +1, Rare +5, Epic +10, Legendary +15, Mythic +20 =====
+           Huy hiệu đã có trong sổ tại thời điểm cập nhật được "đóng băng" (st._badgePtsPaid[n]=0) nên không được cộng bù.
+           PTS cộng thẳng vào st.rewardPoints (chính là số Pts hiển thị trong Túi quà) và lưu cùng lượt lưu dữ liệu. */
+        const BK_PTS_BY_RARITY=[1,5,10,15,20];
+        const BK_RARITY_FALLBACK='0012301234001212342300123123241223432134000112233400112233440011231213001201122300123011231233344444'; // độ hiếm #1–#100, trùng bảng ROWS trong sổ huy hiệu
+        function bkPtsFor(n){let r=-1;try{const b=window.BK_BADGES&&window.BK_BADGES[n-1];if(b&&Number.isInteger(b.r))r=b.r}catch(e){}if(r<0){const x=parseInt(BK_RARITY_FALLBACK[n-1],10);r=Number.isFinite(x)?x:-1}return r>=0?BK_PTS_BY_RARITY[r]:0}
+        function bkPtsInit(st){if(!st||(st._badgePtsPaid&&typeof st._badgePtsPaid==='object'&&!Array.isArray(st._badgePtsPaid)))return;st._badgePtsPaid={};for(const k of Object.keys(st.badges||{}))st._badgePtsPaid[k]=0}
+        function bkPayBadgePts(st,n){
+          if(!st)return 0;
+          if(!(st._badgePtsPaid&&typeof st._badgePtsPaid==='object'&&!Array.isArray(st._badgePtsPaid))){bkPtsInit(st);delete st._badgePtsPaid[n]}
+          if(st._badgePtsPaid[n]!==undefined)return 0;
+          const pts=bkPtsFor(n);if(!(pts>0))return 0;
+          st._badgePtsPaid[n]=pts;
+          st.rewardPoints=Math.round(((Number(st.rewardPoints)||0)+pts)*100)/100;
+          return pts;
+        }
+        window.bkBadgePts=bkPtsFor;window.bkPtsInit=bkPtsInit;window.bkPayBadgePts=bkPayBadgePts;
+        function bkQueueNew(st,n){const u=Array.isArray(st._badgeUnseen)?st._badgeUnseen:(st._badgeUnseen=[]);if(!u.includes(n))u.push(n);let pts=0;try{pts=bkPayBadgePts(st,n)}catch(e){console.warn('Badge PTS skipped',e)}(window.__bkNewQueue=window.__bkNewQueue||[]).push({sid:st.id,n,pts})}
+        function bkFlushNew(){const q=window.__bkNewQueue;if(!q||!q.length)return;window.__bkNewQueue=[];try{window.bkNotifyNew&&window.bkNotifyNew(q)}catch(e){console.warn('Badge notify skipped',e)}window.bkRefreshRoster();if(q.some(x=>x&&x.pts>0))setTimeout(()=>{try{renderCurrentView()}catch(e){}},0)}
         // Ghi nhận PTS nhận được từ phúc lành thú cưng (mỗi lần nhận = một bản ghi duy nhất) cho huy hiệu #72–74.
         window.bkNotePts=function(st,amount,id){
           try{
@@ -6690,6 +6759,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
           const chain=(arr,n,p)=>{let run=0;for(const x of arr){run=p(x)?run+1:0;if(run>=n)return true}return false};
           const rankDate=st=>st.classId;
           for(const st of appData.students){
+            bkPtsInit(st);
             const a=(byStudent[st.id]||[]).filter(x=>!isRest(st.classId,x.date)).sort((a,b)=>a.date.localeCompare(b.date)||a.ts-b.ts||a.key.localeCompare(b.key));
             const grades=a.filter(x=>!x.raw.absent && x.raw.score!==null && x.raw.score!=='' && x.raw.score!==undefined && Number.isFinite(Number(x.raw.score)) && !x.raw.giftNeutral && !x.raw.manual).map(x=>({...x,v:Number(x.raw.score)}));
             const speak=a.reduce((n,x)=>n+Math.max(0,Number(x.raw.speakingCount)||0),0);
@@ -6800,12 +6870,13 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             set(97,best>=90&&speak>=100);
             // 96,98,99 need final course closing / ranked snapshots / audited discipline sessions.
             for(let i=1;i<=99;i++)if(valid[i]&&!(st.badges&&st.badges[i])){
-              st.badges=st.badges||{};st.badges[i]=Date.now();newly++;
+              st.badges=st.badges||{};st.badges[i]=Date.now();newly++;bkQueueNew(st,i);
               st._badgeProof=st._badgeProof||{};
               st._badgeProof[i]={courseId:appData.courseManager?.activeCourseId||null,awardedAt:st.badges[i],engine:'v3'};
             }
-            if(Array.from({length:99},(_,i)=>i+1).every(have)&&!(st.badges&&st.badges[100])){st.badges=st.badges||{};st.badges[100]=Date.now();newly++;st._badgeProof=st._badgeProof||{};st._badgeProof[100]={courseId:appData.courseManager?.activeCourseId||null,awardedAt:st.badges[100],engine:'v3'}}
+            if(Array.from({length:99},(_,i)=>i+1).every(have)&&!(st.badges&&st.badges[100])){st.badges=st.badges||{};st.badges[100]=Date.now();newly++;bkQueueNew(st,100);st._badgeProof=st._badgeProof||{};st._badgeProof[100]={courseId:appData.courseManager?.activeCourseId||null,awardedAt:st.badges[100],engine:'v3'}}
           }
+          bkFlushNew();
           return newly;
         }
         window.bkRecheck=()=>{if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId)return 0;bkEnsureActiveCourseBadges();const n=bkEvaluateAll();for(const st of (appData.students||[]))bkSaveStudentCourse(st,appData.courseManager?.activeCourseId);if(n)saveData();return n};
@@ -12064,7 +12135,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
            Each student keeps independent achievement state keyed by course ID.
            Legacy unscoped state belongs ONLY to the course active at migration time.
         */
-        const BK_COURSE_FIELDS = ['badges','_badgeProof','_badgeAudit','_badgeShopLedger','_badgeRankHistory','_badgeCourseClosure','_badgeMonthRanks'];
+        const BK_COURSE_FIELDS = ['badges','_badgeProof','_badgeAudit','_badgeShopLedger','_badgeRankHistory','_badgeCourseClosure','_badgeMonthRanks','_badgeUnseen','_badgePtsPaid'];
         function bkCourseKey(id){ return String(id == null ? 'course_initial' : id); }
         function bkIsolateStudent(st,courseId,reset){
           if(!st || typeof st!=='object')return;
@@ -12145,7 +12216,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
           if(lbl)lbl.textContent=appData.language==='en'?'Students':'Tỉ Số';
           if(num&&num.textContent!==String(n)){num.textContent=String(n);num.classList.remove('scb-pop');void num.offsetWidth;num.classList.add('scb-pop');}
         }
-        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);scbUpdate(arr.length);box.className=rosterViewMode('students')==='list'?'roster-list grid grid-cols-1 gap-2 content-start':'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start';rosterViewApply('students');box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':ctCls(st)}">${xfBdayFx(st)}${xfBdayToday(st)?'':ctFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar"><span class="ra-ico" style="animation-delay:${raDelay(st.id)}">${escapeHtml(st.icon||'🎓')}</span></div><div class="min-w-0 flex-1 rs-body"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3 rs-acts"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="ctOpenPicker('${st.id}')" aria-label="${appData.language==='en'?'Card template':'Mẫu thẻ'}" title="${appData.language==='en'?'Choose card template':'Chọn template thẻ'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 text-xs"><i class="fa-solid fa-palette"></i></button><button onclick="bkOpen('${st.id}')" aria-label="${appData.language==='en'?'Badge book':'Sổ huy hiệu'}" title="${appData.language==='en'?'Badge collection book':'Sổ sưu tầm huy hiệu'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs"><i class="fa-solid fa-medal"></i></button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
+        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);scbUpdate(arr.length);box.className=rosterViewMode('students')==='list'?'roster-list grid grid-cols-1 gap-2 content-start':'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start';rosterViewApply('students');box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':ctCls(st)}">${xfBdayFx(st)}${xfBdayToday(st)?'':ctFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar"><span class="ra-ico" style="animation-delay:${raDelay(st.id)}">${escapeHtml(st.icon||'🎓')}</span></div><div class="min-w-0 flex-1 rs-body"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3 rs-acts"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="ctOpenPicker('${st.id}')" aria-label="${appData.language==='en'?'Card template':'Mẫu thẻ'}" title="${appData.language==='en'?'Choose card template':'Chọn template thẻ'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 text-xs"><i class="fa-solid fa-palette"></i></button><button onclick="bkOpen('${st.id}')" aria-label="${appData.language==='en'?'Badge book':'Sổ huy hiệu'}" title="${appData.language==='en'?'Badge collection book':'Sổ sưu tầm huy hiệu'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs" style="position:relative"><i class="fa-solid fa-medal"></i>${window.bkNewBadgeHtml?window.bkNewBadgeHtml(st):''}</button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
         window.openStudentProgress=function(studentId){ensureNewModules();const st=appData.students.find(x=>String(x.id)===String(studentId));if(!st)return;window.studentProgressViewingId=String(studentId);document.getElementById('studentProgressTitle').innerText=(st.icon||'🎓')+' '+getStudentDisplayName(st)+' · '+(appData.language==='en'?'Progress profile':'Hồ sơ tiến độ');window.renderStudentProgress();showModuleModal('studentProgressModal');};
 window.closeStudentProgress=function(){hideModuleModal('studentProgressModal');};
 window.renderStudentProgress=function(){
@@ -16785,6 +16856,17 @@ html.mx-dark .ctl-chips .ctl-chip.live{color:#fff;background:var(--c)}
 @media (max-height:780px){.bk-cd{display:none}.bk-card{padding:10px 12px}}
 @media (max-width:859px){.bk-gr{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,minmax(0,1fr))}.bk-nav.p{left:-4px}.bk-nav.n{right:-4px}.bk-cd{display:none}}
 @media (prefers-reduced-motion:reduce){.bk-sp polygon,.bk-c.on .bk-art svg{animation:none!important}}
+.bk-nc{position:absolute;top:-7px;right:-7px;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;border-radius:999px;background:#dc2626;color:#fff;font-size:10px;font-weight:900;line-height:17px;text-align:center;box-shadow:0 0 0 2px #fff;pointer-events:none;font-style:normal}
+.bk-c.bk-new{animation:bkBounce 1s ease-in-out infinite;border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.55),0 6px 16px rgba(217,119,6,.35)}
+@keyframes bkBounce{0%,100%{transform:translateY(0)}35%{transform:translateY(-9px)}60%{transform:translateY(0)}78%{transform:translateY(-3px)}}
+.bk-tw{position:fixed;top:14px;right:14px;z-index:9700;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:calc(100vw - 28px)}
+.bk-t{pointer-events:auto;display:flex;align-items:center;gap:10px;min-width:240px;max-width:340px;padding:8px 10px 8px 8px;border-radius:14px;background:linear-gradient(160deg,#2a1c10,#15110d);border:1px solid #d9a520;color:#f5e9d3;box-shadow:0 10px 28px rgba(0,0,0,.45);cursor:pointer;animation:bkTIn .4s cubic-bezier(.2,1.3,.4,1);transition:opacity .35s,transform .35s}
+.bk-t.out{opacity:0;transform:translateX(30px)}
+.bk-t svg{width:56px;height:56px;flex:none}.bk-tx{display:flex;flex-direction:column;min-width:0;flex:1}.bk-tx small{font-size:.66rem;font-weight:900;color:#fcd34d}.bk-tx b{font-size:.9rem;line-height:1.2;font-weight:900}.bk-tx span{font-size:.66rem;opacity:.75;font-weight:700}
+.bk-tp{display:block;margin-top:2px;font-style:normal;font-size:.7rem;font-weight:900;color:#86efac}
+.bk-tc{border:0;background:none;color:#c9b594;font-size:.8rem;cursor:pointer;align-self:flex-start;padding:2px 4px}
+@keyframes bkTIn{from{opacity:0;transform:translateX(40px) scale(.9)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.bk-c.bk-new,.bk-t{animation:none!important}}
 </style>
 <script id="bkJs">
 (function(){
@@ -16970,7 +17052,7 @@ const items=()=>BK.filter(b=>(S.cat<0||b.c===S.cat)&&(S.tab==='all'||(S.tab==='o
 const two=()=>innerWidth>=860;
 const np=()=>Math.max(1,Math.ceil(items().length/6));
 const nm=b=>lang()==='en'?b.en:b.vi,cd=b=>lang()==='en'?b.ec:b.vc,cn=c=>CAT[c][0]+' '+(lang()==='en'?CAT[c][2]:CAT[c][1]);
-function card(b){const o=on(b);return `<button type="button" class="bk-c r${b.r} ${o?'on':'lk'}" data-n="${b.n}"><i class="bk-rt">${RN[b.r]}</i><span class="bk-art">${art(b)}${o?'':'<i class="fa-solid fa-lock bk-lock"></i>'}</span><span class="bk-no">${N3(b.n)}</span><b class="bk-nm">${esc(nm(b))}</b><span class="bk-cd">${esc(cd(b))}</span><span class="bk-s">${o?T('Đã mở khóa','Unlocked'):T('Chưa mở','Locked')}</span></button>`}
+function card(b){const o=on(b);return `<button type="button" class="bk-c r${b.r} ${o?'on':'lk'}${S&&S.fresh&&S.fresh.has(b.n)?' bk-new':''}" data-n="${b.n}"><i class="bk-rt">${RN[b.r]}</i><span class="bk-art">${art(b)}${o?'':'<i class="fa-solid fa-lock bk-lock"></i>'}</span><span class="bk-no">${N3(b.n)}</span><b class="bk-nm">${esc(nm(b))}</b><span class="bk-cd">${esc(cd(b))}</span><span class="bk-s">${o?T('Đã mở khóa','Unlocked'):T('Chưa mở','Locked')}</span></button>`}
 function page(i){
   const all=items(),pn=np();
   if(i<0||i>=pn)return `<div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:2.4rem;color:#d8bd8a">✦</div>`;
@@ -17002,7 +17084,7 @@ function go(d){
 }
 function detail(n){
   const b=BK[n-1],o=on(b),d=document.createElement('div');d.className='bk-det';d.id='bkDet';
-  d.innerHTML=`<div class="bk-dbox ${o?'':'lk'}"><button class="bk-btn" style="position:absolute;top:10px;right:10px;color:#f5e9d3" data-x="1">✕</button>${art(b)}<div style="font-size:.75rem;font-weight:800;color:#8a6a3a">${N3(b.n)} · ${cn(b.c)}</div><h4>${esc(nm(b))}</h4><span class="bk-rt r${b.r}">${RN[b.r]}</span><p><b>${T('Điều kiện','Condition')}:</b> ${esc(cd(b))}</p><p style="font-weight:900;color:${o?'#15803d':'#8a7550'}">${o?T('Đã mở khóa','Unlocked'):T('Chưa mở khóa','Locked')}</p></div>`;
+  d.innerHTML=`<div class="bk-dbox ${o?'':'lk'}"><button class="bk-btn" style="position:absolute;top:10px;right:10px;color:#f5e9d3" data-x="1">✕</button>${art(b)}<div style="font-size:.75rem;font-weight:800;color:#8a6a3a">${N3(b.n)} · ${cn(b.c)}</div><h4>${esc(nm(b))}</h4><span class="bk-rt r${b.r}">${RN[b.r]}</span><p><b>${T('Điều kiện','Condition')}:</b> ${esc(cd(b))}</p><p><b>${T('Phần thưởng','Reward')}:</b> +${window.bkBadgePts?window.bkBadgePts(b.n):0} pts</p><p style="font-weight:900;color:${o?'#15803d':'#8a7550'}">${o?T('Đã mở khóa','Unlocked'):T('Chưa mở khóa','Locked')}</p></div>`;
   d.addEventListener('click',e=>{if(e.target===d||e.target.dataset.x)d.remove()});$('bkCard').appendChild(d);
 }
 function key(e){
@@ -17011,23 +17093,31 @@ function key(e){
   else if(e.key==='ArrowRight')go(1);else if(e.key==='ArrowLeft')go(-1);
 }
 let rz;function onRz(){clearTimeout(rz);rz=setTimeout(()=>{if($('bkOv')&&!busy)render()},120)}
-window.bkClose=function(){const o=$('bkOv');if(o)o.remove();document.removeEventListener('keydown',key);removeEventListener('resize',onRz);busy=false};
+function markSeen(ns){
+  if(!S||!S.st||!Array.isArray(S.st._badgeUnseen)||!ns.length)return;
+  const keep=S.st._badgeUnseen.filter(n=>!ns.includes(n));
+  if(keep.length===S.st._badgeUnseen.length)return;
+  S.st._badgeUnseen=keep;
+  try{window.bkRefreshRoster&&window.bkRefreshRoster()}catch(e){}
+  try{if(!(window.bkIsArchivedView&&window.bkIsArchivedView()))saveData()}catch(e){}
+}
+window.bkClose=function(){try{if(S&&S.fresh&&S.fresh.size){markSeen([...S.fresh]);S.fresh=new Set()}}catch(e){}const o=$('bkOv');if(o)o.remove();document.removeEventListener('keydown',key);removeEventListener('resize',onRz);busy=false};
 window.bkOpen=function(id){
   let st;try{st=appData.students.find(x=>String(x.id)===String(id))}catch(e){}if(!st)return;
   try{if(window.bkEnsureActiveCourseBadges)window.bkEnsureActiveCourseBadges()}catch(e){}
   try{if(window.bkRecheck)window.bkRecheck()}catch(e){console.warn('Badge sync:',e)}
-  bkClose();S={st,cat:-1,tab:'all',pg:0,pv:false};
+  bkClose();S={st,cat:-1,tab:'all',pg:0,pv:false,fresh:new Set(Array.isArray(st._badgeUnseen)?st._badgeUnseen:[])};
   let sn='';try{sn=getStudentDisplayName(st)}catch(e){sn=st.name||''}
   const o=document.createElement('div');o.id='bkOv';o.className='bk-ov';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');
   o.innerHTML=`${DEFS}<div class="bk-card" id="bkCard"><div class="bk-top"><div><h3>🏅 ${T('Sổ sưu tầm huy hiệu','Badge Collection')}</h3><small>${esc(sn)}</small></div><div style="display:flex;gap:6px"><button class="bk-btn" id="bkPvB" title="${T('Chỉ xem thử giao diện, không lưu','Preview only, nothing is saved')}">👁 ${T('Xem thử mở khóa','Preview unlocked')}</button><button class="bk-btn" data-x="1" aria-label="Close">✕</button></div></div>
 <div class="bk-prog"><div><b>${T('Sổ thành tựu học sinh','Student achievement book')}</b><small id="bkCnt"></small></div><em id="bkPct"></em></div><div class="bk-bar"><i id="bkFill"></i></div>
 <div class="bk-flt"><select id="bkCat"><option value="-1">${T('Tất cả danh mục','All categories')}</option>${CAT.map((c,i)=>`<option value="${i}">${cn(i)}</option>`).join('')}</select><div class="bk-tabs" id="bkTabs"><button class="on" data-t="all">${T('Tất cả','All')}</button><button data-t="on">${T('Đã mở','Unlocked')}</button><button data-t="off">${T('Chưa mở','Locked')}</button></div></div>
 <div class="bk-book" id="bkBook"><button class="bk-nav p" id="bkPv" aria-label="Prev"><i class="fa-solid fa-chevron-left"></i></button><div class="bk-in" id="bkIn"><div class="bk-pg bk-L" id="bkL"></div><div class="bk-pg bk-R" id="bkR"></div></div><button class="bk-nav n" id="bkNx" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button></div>
-<div class="bk-foot"><span id="bkPi"></span><div class="bk-lg">${RN.map((n,i)=>`<span><i style="background:${RC[i]}"></i>${n}</span>`).join('')}</div></div></div>`;
+<div class="bk-foot"><span id="bkPi"></span><div class="bk-lg">${RN.map((n,i)=>`<span><i style="background:${RC[i]}"></i>${n} +${[1,5,10,15,20][i]}</span>`).join('')}</div></div></div>`;
   document.body.appendChild(o);
   o.addEventListener('click',e=>{
     if(e.target===o||(e.target.dataset&&e.target.dataset.x&&!e.target.closest('.bk-det'))){bkClose();return}
-    const c=e.target.closest('.bk-c');if(c&&!busy)detail(+c.dataset.n);
+    const c=e.target.closest('.bk-c');if(c&&!busy){const nn=+c.dataset.n;detail(nn);if(S.fresh&&S.fresh.has(nn)){S.fresh.delete(nn);c.classList.remove('bk-new');markSeen([nn])}}
   });
   $('bkPv').onclick=()=>go(-1);$('bkNx').onclick=()=>go(1);
   $('bkCat').onchange=e=>{S.cat=+e.target.value;S.pg=0;render()};
@@ -17036,7 +17126,27 @@ window.bkOpen=function(id){
   document.addEventListener('keydown',key);addEventListener('resize',onRz);render();
 };
 /* API dành cho logic nhận huy hiệu sau này: bkUnlock(studentId, số huy hiệu 1–100). Dữ liệu lưu ở student.badges = {số: thời điểm} */
-window.bkUnlock=function(id,n){const st=appData.students.find(x=>String(x.id)===String(id));if(!st||!BK[n-1])return false;try{if(window.bkEnsureActiveCourseBadges)window.bkEnsureActiveCourseBadges()}catch(e){}if(!st.badges)st.badges={};if(!st.badges[n]){st.badges[n]=Date.now();try{saveData()}catch(e){}}return true};
+/* ===== Thông báo khi nhận huy hiệu mới ===== */
+function ensureDefs(){if(document.getElementById('bkDefsHold'))return;const h=document.createElement('div');h.id='bkDefsHold';h.style.cssText='position:absolute;width:0;height:0;overflow:hidden';h.innerHTML=DEFS;document.body.appendChild(h)}
+function toastWrap(){let w=$('bkTW');if(!w){w=document.createElement('div');w.id='bkTW';w.className='bk-tw';w.setAttribute('role','status');w.setAttribute('aria-live','polite');document.body.appendChild(w)}return w}
+function dropToast(el){if(!el||!el.parentNode)return;el.classList.add('out');setTimeout(()=>{if(el.parentNode)el.remove()},380)}
+window.bkNotifyNew=function(list){
+  if(!list||!list.length)return;ensureDefs();const w=toastWrap();
+  list.slice(0,3).forEach((it,i)=>setTimeout(()=>{
+    const b=BK[it.n-1];if(!b)return;let sn='';
+    try{sn=getStudentDisplayName(appData.students.find(x=>String(x.id)===String(it.sid)))}catch(e){}
+    const el=document.createElement('div');el.className='bk-t';
+    el.innerHTML=`${art(b)}<div class="bk-tx"><small>🏅 ${T('Huy hiệu mới!','New badge!')}</small><b>${esc(nm(b))}</b><span>${esc(sn)} · ${N3(b.n)} · ${RN[b.r]}</span>${it.pts>0?`<em class="bk-tp">+${it.pts} pts ${T('đã vào túi quà','added to gift bag')}</em>`:''}</div><button type="button" class="bk-tc" data-x="1" aria-label="Close">✕</button>`;
+    el.addEventListener('click',e=>{if(e.target.dataset&&e.target.dataset.x){dropToast(el);return}dropToast(el);try{window.bkOpen(it.sid)}catch(_){}});
+    w.appendChild(el);setTimeout(()=>dropToast(el),7000);
+  },i*350));
+  if(list.length>3){const rest=list.length-3;const restPts=list.slice(3).reduce((n,x)=>n+(Number(x&&x.pts)||0),0);setTimeout(()=>{
+    const el=document.createElement('div');el.className='bk-t';
+    el.innerHTML=`<div class="bk-tx"><small>🏅 ${T('Huy hiệu mới!','New badge!')}</small><b>+${rest} ${T('huy hiệu mới khác','more new badges')}</b>${restPts>0?`<em class="bk-tp">+${restPts} pts ${T('đã vào túi quà','added to gift bag')}</em>`:''}</div><button type="button" class="bk-tc" data-x="1" aria-label="Close">✕</button>`;
+    el.addEventListener('click',()=>dropToast(el));w.appendChild(el);setTimeout(()=>dropToast(el),7000);
+  },3*350)}
+};
+window.bkUnlock=function(id,n){const st=appData.students.find(x=>String(x.id)===String(id));if(!st||!BK[n-1])return false;try{if(window.bkEnsureActiveCourseBadges)window.bkEnsureActiveCourseBadges()}catch(e){}if(!st.badges)st.badges={};if(!st.badges[n]){try{window.bkPtsInit(st)}catch(e){}st.badges[n]=Date.now();try{st._badgeUnseen=Array.isArray(st._badgeUnseen)?st._badgeUnseen:[];if(!st._badgeUnseen.includes(n))st._badgeUnseen.push(n);let pts=0;try{pts=window.bkPayBadgePts(st,n)}catch(e){}window.bkNotifyNew([{sid:st.id,n,pts}])}catch(e){}try{saveData()}catch(e){}}return true};
 window.BK_BADGES=BK;
 })();
 </script>
