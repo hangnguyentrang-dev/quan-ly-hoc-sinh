@@ -3089,7 +3089,38 @@ body.mx-student header,body.mx-student #appNavBar,body.mx-student #qsToolbar,bod
 body.mx-student #qsFab,body.mx-student #qgFab,body.mx-student #qsBagFab,body.mx-student #mxNoteFab,body.mx-student .mx-bub,
 body.mx-student #bkPvB,body.mx-student #mxPortalBtn{display:none !important}
 body.mx-student #scoreMatrix,body.mx-student #scoreMatrix *{cursor:default !important}
-body.mx-stu-only #teacherCards,body.mx-stu-only #teacherGate .mt-6,body.mx-stu-only #teacherGate #mxStuGateBtn{display:none !important}
+body.mx-stu-only #teacherCards,body.mx-stu-only #teacherGate .mt-6{display:none !important}
+body.mx-stu-only #roleGate,body.mx-student #roleGate{display:none !important}
+#roleGate{transition:opacity .25s ease}
+/* Chuyển cổng mượt: không bật hover/nảy thẻ giáo viên khi cổng vai trò đang mờ; cổng giáo viên mờ dần khi vào */
+body.role-switching #teacherGate{pointer-events:none}
+/* Hộp mật khẩu giáo viên: bỏ làm mờ nền (rất nặng vì nền đang có hiệu ứng), hiện bằng fade + pop nhẹ, tạm dừng hiệu ứng nền */
+#rolePwModal{-webkit-backdrop-filter:none !important;backdrop-filter:none !important;background:rgba(15,23,42,.58) !important}
+#rolePwModal:not(.hidden){animation:pwFade .2s ease-out both}
+#rolePwModal:not(.hidden)>div{animation:pwPop .28s cubic-bezier(.2,.8,.2,1) both}
+@keyframes pwFade{from{opacity:0}to{opacity:1}}
+@keyframes pwPop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+body.role-pw-open #roleGate .tg-float,body.role-pw-open #roleGate .tg-logo{animation-play-state:paused}
+#roleGate .teacher-card{transition:transform .22s ease-out,box-shadow .25s ease,border-color .25s ease}
+#roleGate .teacher-card .teacher-avatar{transition:transform .25s ease-out,background-color .25s}
+@media (prefers-reduced-motion:reduce){#rolePwModal:not(.hidden),#rolePwModal:not(.hidden)>div{animation:none}}
+#teacherGate{transition:opacity .42s cubic-bezier(.4,0,.2,1)}
+#teacherGate.tg-leave{opacity:0;pointer-events:none}
+#teacherGate.tg-busy{pointer-events:none}
+#teacherGate.tg-busy>.relative{opacity:.35;transform:scale(.985);transition:opacity .25s ease,transform .25s ease}
+#teacherGate>.relative{transition:opacity .25s ease,transform .25s ease}
+#teacherGate.tg-busy::after{content:"";position:fixed;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;border:4px solid rgba(99,102,241,.22);border-top-color:#4f46e5;animation:tgSpin .8s linear infinite;z-index:5;will-change:transform;filter:none;background:transparent;bottom:auto;right:auto}
+@keyframes tgSpin{to{transform:rotate(360deg)}}
+/* Cổng giáo viên hiện nhẹ nhàng sau khi cổng vai trò mờ */
+body.role-switching #teacherGate>.relative{animation:tgRise .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes tgRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+#teacherGate .teacher-card{transition:transform .22s ease-out,box-shadow .25s ease,border-color .25s ease}
+#teacherGate .teacher-card .teacher-avatar{transition:transform .25s ease-out,background-color .25s}
+@media (prefers-reduced-motion:reduce){#teacherGate{transition:none}}
+#roleGate.role-leave{opacity:0;pointer-events:none}
+#roleGate .teacher-card{cursor:pointer;font-family:inherit}
+#roleGate .teacher-card:focus-visible{outline:3px solid #a5b4fc;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){#roleGate{transition:none}}
 /* Thẻ giáo viên trống: nét đứt + dấu cộng để thêm giáo viên mới */
 .teacher-card-add{display:flex;align-items:center;justify-content:center;min-height:11rem;border:2px dashed #94a3b8;border-radius:1rem;background:rgba(255,255,255,.55);color:#94a3b8;font-size:2.6rem;cursor:pointer;transition:transform .2s ease,border-color .2s ease,color .2s ease,background .2s ease,box-shadow .2s ease}
 .teacher-card-add:hover,.teacher-card-add:focus-visible{transform:translateY(-3px);border-color:#6366f1;color:#4f46e5;background:#eef2ff;box-shadow:0 10px 24px rgba(99,102,241,.2);outline:0}
@@ -3109,6 +3140,16 @@ body.mx-student #mxStuNavBar{display:block}
 #mxStuHome .mxh-h i{color:#4f46e5;margin-right:.4rem}
 #mxStuHome .mxh-chip{display:inline-flex;align-items:center;gap:.25rem;font-size:.68rem;font-weight:800;padding:.18rem .6rem;border-radius:999px;border:1px solid #c7d2fe;background:#eef2ff;color:#4338ca;white-space:nowrap}
 #mxStuHome .mxh-chip.ok{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
+#mxStuHome .mxh-chip.gold{background:#fef3c7;border:2px solid #f59e0b;color:#92400e;font-weight:900}
+html.mx-dark #mxStuHome .mxh-chip.gold{background:#78350f;border-color:#fbbf24;color:#fef3c7}
+#mxStuHome .mxh-bless{margin-top:.75rem;padding:.75rem;border-radius:.85rem;background:linear-gradient(135deg,#f5f3ff,#eef2ff);border:1px solid #c4b5fd;text-align:left;overflow-wrap:anywhere}
+#mxStuHome .mxh-bless-t{font-size:12px;font-weight:900;color:#6d28d9;margin-bottom:.35rem}
+#mxStuHome .mxh-bless-n{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:13px;font-weight:850;color:#4c1d95;margin-bottom:.3rem}
+#mxStuHome .mxh-bless-d{font-size:12px;line-height:1.5;color:#475569}
+#mxStuHome .mxh-bless-x{margin-top:.45rem;padding-top:.4rem;border-top:1px dashed #c4b5fd;font-size:11px;line-height:1.4;color:#64748b}
+html.mx-dark #mxStuHome .mxh-bless{background:#312e81;border-color:#4f46e5}
+html.mx-dark #mxStuHome .mxh-bless-t,html.mx-dark #mxStuHome .mxh-bless-n{color:#e0e7ff}
+html.mx-dark #mxStuHome .mxh-bless-d,html.mx-dark #mxStuHome .mxh-bless-x{color:#e2e8f0}
 #mxStuHome .mxh-chip.off{background:#f1f5f9;border-color:#e2e8f0;color:#64748b}
 #mxStuHome .mxh-chip.bad{background:#fff1f2;border-color:#fecdd3;color:#be123c}
 #mxStuHome .mxh-chip.gift{background:#fffbeb;border-color:#fde68a;color:#b45309}
@@ -3214,6 +3255,60 @@ html.mx-dark .pq-pane.pq-class,html.mx-dark .pq-inl .pq-pane{border-color:#4c1d9
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
 
+    <div id="roleGate" data-no-extra-i18n class="teacher-gate-background fixed inset-0 z-[10400] overflow-y-auto p-4 md:p-8">
+      <div class="tg-deco" aria-hidden="true">
+        <img class="tg-deco-trophy" alt="" draggable="false">
+        <i class="fa-solid fa-graduation-cap tg-float" style="left:6%;top:14%;font-size:64px;--d:0s"></i>
+        <i class="fa-solid fa-book-open tg-float" style="right:8%;top:10%;font-size:56px;--d:-3s"></i>
+        <i class="fa-solid fa-pencil tg-float" style="left:12%;bottom:12%;font-size:48px;--d:-6s"></i>
+        <i class="fa-solid fa-star tg-float" style="right:14%;bottom:16%;font-size:44px;--d:-2s"></i>
+        <i class="fa-solid fa-chalkboard-user tg-float" style="left:44%;top:6%;font-size:46px;--d:-5s"></i>
+        <i class="fa-solid fa-medal tg-float" style="right:34%;bottom:6%;font-size:46px;--d:-8s"></i>
+      </div>
+      <div class="relative z-10 max-w-3xl mx-auto min-h-full flex flex-col justify-center">
+        <div class="flex flex-wrap justify-between items-center gap-3 mb-8">
+          <div class="tg-brand flex items-center gap-4">
+            <img id="roleGateLogo" alt="" class="tg-logo h-14 w-14 md:h-16 md:w-16 object-contain" draggable="false">
+            <div>
+              <div id="roleGateBrand" class="text-xl md:text-3xl font-black tracking-wide text-indigo-900 uppercase">QUẢN LÝ LỚP HỌC</div>
+              <h1 id="roleGateTitle" class="mt-0.5 text-sm md:text-base font-bold text-slate-500">Chào mừng! Bạn là ai?</h1>
+            </div>
+          </div>
+          <button type="button" onclick="teacherToggleLanguage()" class="rounded-xl bg-indigo-700 text-white px-4 py-2 font-bold"><i class="fa-solid fa-globe mr-2"></i><span id="roleLangLabel">EN</span></button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <button type="button" onclick="roleChooseTeacher()" class="teacher-card bg-white rounded-2xl border border-slate-200 shadow-sm p-8 flex flex-col items-center gap-3 text-center">
+            <div class="teacher-avatar w-20 h-20 rounded-2xl bg-indigo-50 flex items-center justify-center text-5xl">👩‍🏫</div>
+            <h2 id="roleTeacherTitle" class="font-black text-xl text-slate-800">Tôi là giáo viên</h2>
+            <p id="roleTeacherSub" class="text-sm text-slate-500">Nhập mật khẩu để vào khu vực giáo viên.</p>
+          </button>
+          <button type="button" id="mxStuGateBtn" onclick="roleChooseStudent()" class="teacher-card bg-white rounded-2xl border border-slate-200 shadow-sm p-8 flex flex-col items-center gap-3 text-center">
+            <div class="teacher-avatar w-20 h-20 rounded-2xl bg-emerald-50 flex items-center justify-center text-5xl">🎓</div>
+            <h2 id="roleStudentTitle" class="font-black text-xl text-slate-800">Tôi là học sinh</h2>
+            <p id="roleStudentSub" class="text-sm text-slate-500">Nhập mã học sinh để xem trang của bạn.</p>
+          </button>
+        </div>
+      </div>
+    </div>
+    <script>try{if(localStorage.getItem('mxRoleTeacher')==='1'||/^#hocsinh/i.test(location.hash))document.getElementById('roleGate').classList.add('hidden')}catch(e){}</script>
+    <div id="rolePwModal" data-no-extra-i18n class="fixed inset-0 z-[10450] hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4" onclick="if(event.target===this)rolePwClose()">
+      <div class="w-full max-w-md overflow-hidden rounded-3xl border border-white/60 bg-white shadow-2xl">
+        <div class="bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 px-6 py-5 text-white">
+          <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-2xl"><i class="fa-solid fa-lock"></i></div>
+          <h2 id="rolePwTitle" class="text-xl font-black">Khu vực giáo viên</h2>
+          <p id="rolePwSub" class="mt-1 text-sm text-indigo-100">Nhập mật khẩu để tiếp tục.</p>
+        </div>
+        <form id="rolePwForm" class="space-y-4 p-6" onsubmit="rolePwSubmit(event)">
+          <input id="rolePwInput" type="password" autocomplete="off" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100" placeholder="Mật khẩu">
+          <div id="rolePwErr" class="hidden rounded-xl bg-rose-50 border border-rose-200 px-3 py-2 text-sm font-bold text-rose-700"></div>
+          <div class="flex justify-end gap-2 border-t border-slate-100 pt-4">
+            <button type="button" id="rolePwCancel" onclick="rolePwClose()" class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50">Hủy</button>
+            <button type="submit" id="rolePwOk" class="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-indigo-700">Xác nhận</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <div id="teacherGate" data-no-extra-i18n class="teacher-gate-background fixed inset-0 z-[10000] overflow-y-auto p-4 md:p-8">
       <div class="tg-deco" aria-hidden="true">
         <img class="tg-deco-trophy" alt="" draggable="false">
@@ -3225,7 +3320,7 @@ html.mx-dark .pq-pane.pq-class,html.mx-dark .pq-inl .pq-pane{border-color:#4c1d9
         <i class="fa-solid fa-medal tg-float" style="right:34%;bottom:6%;font-size:46px;--d:-8s"></i>
         <i class="fa-solid fa-shapes tg-float" style="left:30%;bottom:22%;font-size:40px;--d:-4s"></i>
       </div>
-      <div class="relative z-10 max-w-5xl mx-auto pb-24">
+      <div class="relative z-10 max-w-5xl mx-auto">
         <div class="flex flex-wrap justify-between items-center gap-3 mb-7">
           <div class="tg-brand flex items-center gap-4">
             <img id="teacherGateLogo" alt="" class="tg-logo h-14 w-14 md:h-16 md:w-16 object-contain" draggable="false">
@@ -3234,10 +3329,12 @@ html.mx-dark .pq-pane.pq-class,html.mx-dark .pq-inl .pq-pane{border-color:#4c1d9
               <h1 id="teacherGateTitle" class="mt-0.5 text-sm md:text-base font-bold text-slate-500">Chọn giáo viên</h1>
             </div>
           </div>
-          <button onclick="teacherToggleLanguage()" class="rounded-xl bg-indigo-700 text-white px-4 py-2 font-bold"><i class="fa-solid fa-globe mr-2"></i><span id="teacherLangLabel">EN</span></button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="roleGateShow()" class="rounded-xl border border-indigo-200 bg-white text-indigo-700 hover:bg-indigo-50 px-4 py-2 font-bold shadow-sm transition hover:-translate-y-0.5"><i class="fa-solid fa-arrow-left mr-2"></i><span id="teacherBackLabel">Quay lại</span></button>
+            <button onclick="teacherToggleLanguage()" class="rounded-xl bg-indigo-700 text-white px-4 py-2 font-bold"><i class="fa-solid fa-globe mr-2"></i><span id="teacherLangLabel">EN</span></button>
+          </div>
         </div>
         <div id="teacherCards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        <button id="mxStuGateBtn" type="button" onclick="mxStuGateOpen()" class="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-20 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 font-bold shadow-lg shadow-emerald-200 transition hover:-translate-y-0.5"><i class="fa-solid fa-user-graduate mr-2"></i>Tôi là học sinh</button>
       </div>
     </div>
 
@@ -12888,8 +12985,8 @@ window.openStudentProfile=function(studentId){
         let unsubscribeTeacherData = null;
         let teacherGateLanguage = 'vi';
         const teacherText = {
-          vi:{title:'Chọn giáo viên',sub:'Mỗi giáo viên có không gian dữ liệu riêng.',add:'Thêm giáo viên',note:'Mật khẩu chỉ phân luồng giao diện, không thay thế bảo mật Firebase.',switch:'Đổi giáo viên',no:'Chưa có giáo viên nào. Hãy tạo giáo viên đầu tiên.',password:'Giáo viên này yêu cầu mật khẩu:',wrong:'Mật khẩu không đúng.',name:'Tên giáo viên:',icon:'Biểu tượng (emoji):',desc:'Mô tả (không bắt buộc):',pass:'Mật khẩu (để trống nếu không cần):',confirm:'Xác nhận mật khẩu:',exists:'Tên giáo viên đã tồn tại.',course:'Tên khóa học đầu tiên:',start:'Ngày bắt đầu (YYYY-MM-DD, có thể để trống):',end:'Ngày kết thúc (YYYY-MM-DD, có thể để trống):',badDate:'Ngày kết thúc không được trước ngày bắt đầu.',delete:'Xóa giáo viên này và toàn bộ dữ liệu của họ? Hãy sao lưu trước khi tiếp tục.',edit:'Để sửa, nhập tên mới; bỏ trống để giữ nguyên:',cancel:'Đã hủy.',hasPass:'Có mật khẩu',noPass:'Không có mật khẩu',remove:'Xóa',editBtn:'Sửa',enter:'Vào làm việc',return:'Quay lại chọn giáo viên',formTitle:'Thêm giáo viên mới',formSub:'Tạo không gian quản lý riêng cho giáo viên.',nameLabel:'Tên giáo viên *',iconLabel:'Biểu tượng',descLabel:'Mô tả (không bắt buộc)',passwordHeading:'Mật khẩu (không bắt buộc)',passwordHelp:'Để trống cả hai ô nếu không cần mật khẩu.',passwordPlaceholder:'Mật khẩu',confirmPlaceholder:'Nhập lại mật khẩu',cancelBtn:'Hủy',createBtn:'Tạo giáo viên',required:'Vui lòng nhập tên giáo viên.',passwordMismatch:'Hai mật khẩu không khớp.',formExists:'Tên giáo viên này đã tồn tại.',passwordModalTitle:'Nhập mật khẩu',passwordModalSub:'Nhập mật khẩu để tiếp tục.',passwordModalCancel:'Hủy',passwordModalSubmit:'Xác nhận',namePh:'Nhập tên giáo viên',descPh:'Ví dụ: Tiếng Anh — Khối 8',editTitle:'Chỉnh sửa thông tin giáo viên',editSub:'Cập nhật thông tin không gian làm việc.',editNameLabel:'Tên giáo viên',editDescLabel:'Mô tả',editPassHelp:'Để trống mật khẩu mới nếu muốn giữ nguyên mật khẩu hiện tại.',editPassPh:'Mật khẩu mới',editPassConfirmPh:'Xác nhận mật khẩu',editRemove:'Bỏ mật khẩu bảo vệ',editCancel:'Hủy',editSave:'Lưu thay đổi',iconSearchPh:'Tìm icon theo tên hoặc emoji...',iconHint:'Chọn một icon bên dưới hoặc nhập emoji riêng.',iconInputPh:'Chọn bên dưới hoặc nhập emoji riêng',iconNone:'Không tìm thấy icon phù hợp.'},
-          en:{title:'Choose a teacher',sub:'Each teacher has a separate workspace and dataset.',add:'Add teacher',note:'Passwords only separate the interface; they do not replace Firebase security.',switch:'Switch teacher',no:'No teachers yet. Create the first teacher.',password:'Enter this teacher’s password:',wrong:'Incorrect password.',name:'Teacher name:',icon:'Avatar emoji:',desc:'Description (optional):',pass:'Password (leave blank for none):',confirm:'Confirm password:',exists:'A teacher with this name already exists.',course:'First course name:',start:'Start date (YYYY-MM-DD, optional):',end:'End date (YYYY-MM-DD, optional):',badDate:'End date cannot be earlier than start date.',delete:'Delete this teacher and all of their data? Back up first.',edit:'Enter a new name, or leave blank to keep current name:',cancel:'Cancelled.',hasPass:'Password protected',noPass:'No password',remove:'Delete',editBtn:'Edit',enter:'Open workspace',return:'Back to teacher selection',formTitle:'Add a teacher',formSub:'Create a separate workspace for this teacher.',nameLabel:'Teacher name *',iconLabel:'Icon',descLabel:'Description (optional)',passwordHeading:'Password (optional)',passwordHelp:'Leave both fields empty if no password is needed.',passwordPlaceholder:'Password',confirmPlaceholder:'Confirm password',cancelBtn:'Cancel',createBtn:'Create teacher',required:'Please enter a teacher name.',passwordMismatch:'Passwords do not match.',formExists:'A teacher with this name already exists.',passwordModalTitle:'Enter password',passwordModalSub:'Enter the password to continue.',passwordModalCancel:'Cancel',passwordModalSubmit:'Confirm',namePh:'Enter teacher name',descPh:'e.g. English — Grade 8',editTitle:'Edit teacher information',editSub:'Update this teacher workspace information.',editNameLabel:'Teacher name',editDescLabel:'Description',editPassHelp:'Leave the new password blank to keep the current password.',editPassPh:'New password',editPassConfirmPh:'Confirm password',editRemove:'Remove password protection',editCancel:'Cancel',editSave:'Save changes',iconSearchPh:'Search icon or emoji...',iconHint:'Pick an icon below or type your own emoji.',iconInputPh:'Pick below or type your own emoji',iconNone:'No matching icons.'}
+          vi:{title:'Chọn giáo viên',sub:'Mỗi giáo viên có không gian dữ liệu riêng.',add:'Thêm giáo viên',note:'Mật khẩu chỉ phân luồng giao diện, không thay thế bảo mật Firebase.',switch:'Đổi giáo viên',no:'Chưa có giáo viên nào. Hãy tạo giáo viên đầu tiên.',password:'Giáo viên này yêu cầu mật khẩu:',wrong:'Mật khẩu không đúng.',name:'Tên giáo viên:',icon:'Biểu tượng (emoji):',desc:'Mô tả (không bắt buộc):',pass:'Mật khẩu (để trống nếu không cần):',confirm:'Xác nhận mật khẩu:',exists:'Tên giáo viên đã tồn tại.',course:'Tên khóa học đầu tiên:',start:'Ngày bắt đầu (YYYY-MM-DD, có thể để trống):',end:'Ngày kết thúc (YYYY-MM-DD, có thể để trống):',badDate:'Ngày kết thúc không được trước ngày bắt đầu.',delete:'Xóa giáo viên này và toàn bộ dữ liệu của họ? Hãy sao lưu trước khi tiếp tục.',edit:'Để sửa, nhập tên mới; bỏ trống để giữ nguyên:',cancel:'Đã hủy.',hasPass:'Có mật khẩu',noPass:'Không có mật khẩu',remove:'Xóa',editBtn:'Sửa',enter:'Vào làm việc',return:'Quay lại chọn giáo viên',formTitle:'Thêm giáo viên mới',formSub:'Tạo không gian quản lý riêng cho giáo viên.',nameLabel:'Tên giáo viên *',iconLabel:'Biểu tượng',descLabel:'Mô tả (không bắt buộc)',passwordHeading:'Mật khẩu (không bắt buộc)',passwordHelp:'Để trống cả hai ô nếu không cần mật khẩu.',passwordPlaceholder:'Mật khẩu',confirmPlaceholder:'Nhập lại mật khẩu',cancelBtn:'Hủy',createBtn:'Tạo giáo viên',required:'Vui lòng nhập tên giáo viên.',passwordMismatch:'Hai mật khẩu không khớp.',formExists:'Tên giáo viên này đã tồn tại.',passwordModalTitle:'Nhập mật khẩu',passwordModalSub:'Nhập mật khẩu để tiếp tục.',passwordModalCancel:'Hủy',passwordModalSubmit:'Xác nhận',namePh:'Nhập tên giáo viên',descPh:'Ví dụ: Tiếng Anh — Khối 8',editTitle:'Chỉnh sửa thông tin giáo viên',editSub:'Cập nhật thông tin không gian làm việc.',editNameLabel:'Tên giáo viên',editDescLabel:'Mô tả',editPassHelp:'Để trống mật khẩu mới nếu muốn giữ nguyên mật khẩu hiện tại.',editPassPh:'Mật khẩu mới',editPassConfirmPh:'Xác nhận mật khẩu',editRemove:'Bỏ mật khẩu bảo vệ',editCancel:'Hủy',editSave:'Lưu thay đổi',iconSearchPh:'Tìm icon theo tên hoặc emoji...',iconHint:'Chọn một icon bên dưới hoặc nhập emoji riêng.',iconInputPh:'Chọn bên dưới hoặc nhập emoji riêng',iconNone:'Không tìm thấy icon phù hợp.',back:'Quay lại',roleTitle:'Chào mừng! Bạn là ai?',roleTeacher:'Tôi là giáo viên',roleTeacherSub:'Nhập mật khẩu để vào khu vực giáo viên.',roleStudent:'Tôi là học sinh',roleStudentSub:'Nhập mã học sinh để xem trang của bạn.',rolePwTitle:'Khu vực giáo viên',rolePwSub:'Nhập mật khẩu để tiếp tục. Thiết bị này sẽ ghi nhớ sau khi nhập đúng.',rolePwWrong:'Mật khẩu không đúng.'},
+          en:{title:'Choose a teacher',sub:'Each teacher has a separate workspace and dataset.',add:'Add teacher',note:'Passwords only separate the interface; they do not replace Firebase security.',switch:'Switch teacher',no:'No teachers yet. Create the first teacher.',password:'Enter this teacher’s password:',wrong:'Incorrect password.',name:'Teacher name:',icon:'Avatar emoji:',desc:'Description (optional):',pass:'Password (leave blank for none):',confirm:'Confirm password:',exists:'A teacher with this name already exists.',course:'First course name:',start:'Start date (YYYY-MM-DD, optional):',end:'End date (YYYY-MM-DD, optional):',badDate:'End date cannot be earlier than start date.',delete:'Delete this teacher and all of their data? Back up first.',edit:'Enter a new name, or leave blank to keep current name:',cancel:'Cancelled.',hasPass:'Password protected',noPass:'No password',remove:'Delete',editBtn:'Edit',enter:'Open workspace',return:'Back to teacher selection',formTitle:'Add a teacher',formSub:'Create a separate workspace for this teacher.',nameLabel:'Teacher name *',iconLabel:'Icon',descLabel:'Description (optional)',passwordHeading:'Password (optional)',passwordHelp:'Leave both fields empty if no password is needed.',passwordPlaceholder:'Password',confirmPlaceholder:'Confirm password',cancelBtn:'Cancel',createBtn:'Create teacher',required:'Please enter a teacher name.',passwordMismatch:'Passwords do not match.',formExists:'A teacher with this name already exists.',passwordModalTitle:'Enter password',passwordModalSub:'Enter the password to continue.',passwordModalCancel:'Cancel',passwordModalSubmit:'Confirm',namePh:'Enter teacher name',descPh:'e.g. English — Grade 8',editTitle:'Edit teacher information',editSub:'Update this teacher workspace information.',editNameLabel:'Teacher name',editDescLabel:'Description',editPassHelp:'Leave the new password blank to keep the current password.',editPassPh:'New password',editPassConfirmPh:'Confirm password',editRemove:'Remove password protection',editCancel:'Cancel',editSave:'Save changes',iconSearchPh:'Search icon or emoji...',iconHint:'Pick an icon below or type your own emoji.',iconInputPh:'Pick below or type your own emoji',iconNone:'No matching icons.',back:'Back',roleTitle:'Welcome! Who are you?',roleTeacher:'I am a teacher',roleTeacherSub:'Enter the password to open the teacher area.',roleStudent:'I am a student',roleStudentSub:'Enter your student code to see your page.',rolePwTitle:'Teacher area',rolePwSub:'Enter the password to continue. This device will remember it after a correct entry.',rolePwWrong:'Incorrect password.'}
         };
         function tt(k){return teacherText[teacherGateLanguage][k]||k;}
         async function teacherHash(s){const bytes=new TextEncoder().encode(s);const digest=await crypto.subtle.digest('SHA-256',bytes);return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');}
@@ -12917,8 +13014,59 @@ window.openStudentProfile=function(studentId){
             renderTeacherGate();
           },err=>{console.error('Teacher list load failed',err);renderTeacherGate('Firebase connection failed. Please check your connection.');});
         }
+        /* ===== Màn hình chọn vai trò: Giáo viên / Học sinh ===== */
+        const ROLE_PW = '12345', ROLE_LS = 'mxRoleTeacher'; // mật khẩu mặc định của khu vực giáo viên
+        function roleGateRender() {
+          const set = (id, k) => { const e = document.getElementById(id); if (e) e.textContent = tt(k); };
+          set('roleGateTitle', 'roleTitle'); set('roleTeacherTitle', 'roleTeacher'); set('roleTeacherSub', 'roleTeacherSub');
+          set('roleStudentTitle', 'roleStudent'); set('roleStudentSub', 'roleStudentSub'); set('teacherBackLabel', 'back');
+          set('rolePwTitle', 'rolePwTitle'); set('rolePwSub', 'rolePwSub'); set('rolePwCancel', 'passwordModalCancel'); set('rolePwOk', 'passwordModalSubmit');
+          const pw = document.getElementById('rolePwInput'); if (pw) pw.placeholder = tt('passwordPlaceholder');
+          const lg = document.getElementById('roleLangLabel'); if (lg) lg.textContent = teacherGateLanguage === 'vi' ? 'EN' : 'VI';
+          const brand = document.getElementById('roleGateBrand'); if (brand) brand.textContent = (translations[teacherGateLanguage] && translations[teacherGateLanguage].appTitle) || 'QUẢN LÝ LỚP HỌC';
+          const fav = (document.querySelector('link[rel="icon"]') || {}).href || '';
+          const logo = document.getElementById('roleGateLogo'); if (logo && fav && logo.src !== fav) logo.src = fav;
+          const tr = document.querySelector('#roleGate .tg-deco-trophy'); if (tr && fav && tr.src !== fav) tr.src = fav;
+          const err = document.getElementById('rolePwErr'); if (err && !err.classList.contains('hidden')) err.textContent = tt('rolePwWrong');
+        }
+        window.roleGateShow = function () {
+          const g = document.getElementById('roleGate'); if (!g) return;
+          roleGateRender(); g.classList.add('role-leave'); g.classList.remove('hidden'); void g.offsetWidth; g.classList.remove('role-leave');
+        };
+        function roleGateHide() {
+          const g = document.getElementById('roleGate'); if (!g || g.classList.contains('hidden')) return;
+          document.body.classList.add('role-switching');
+          g.classList.add('role-leave'); setTimeout(() => { g.classList.add('hidden'); g.classList.remove('role-leave'); setTimeout(() => document.body.classList.remove('role-switching'), 120); }, 260);
+        }
+        window.roleChooseTeacher = function () {
+          let ok = false; try { ok = localStorage.getItem(ROLE_LS) === '1'; } catch (e) {}
+          if (ok) { roleGateHide(); return; }
+          const m = document.getElementById('rolePwModal'), inp = document.getElementById('rolePwInput'), err = document.getElementById('rolePwErr');
+          roleGateRender(); if (err) { err.classList.add('hidden'); err.textContent = ''; } if (inp) inp.value = '';
+          document.body.classList.add('role-pw-open');
+          m.classList.remove('hidden'); m.classList.add('flex'); setTimeout(() => { if (inp) { try { inp.focus({ preventScroll: true }); } catch (e) { inp.focus(); } } }, 260);
+        };
+        window.roleChooseStudent = function () {
+          try { if (typeof appData === 'object' && appData) appData.language = teacherGateLanguage; } catch (e) {}
+          window.mxStuGateOpen();
+        };
+        window.rolePwClose = function () { document.body.classList.remove('role-pw-open'); const m = document.getElementById('rolePwModal'); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); } };
+        window.rolePwSubmit = function (ev) {
+          if (ev) ev.preventDefault();
+          const inp = document.getElementById('rolePwInput'), err = document.getElementById('rolePwErr');
+          if (inp && inp.value === ROLE_PW) {
+            try { localStorage.setItem(ROLE_LS, '1'); } catch (e) {}
+            window.rolePwClose(); roleGateHide();
+          } else {
+            if (err) { err.textContent = tt('rolePwWrong'); err.classList.remove('hidden'); }
+            if (inp) { inp.value = ''; inp.focus(); }
+          }
+        };
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { const m = document.getElementById('rolePwModal'); if (m && !m.classList.contains('hidden')) window.rolePwClose(); } });
+        try { roleGateRender(); } catch (e) {}
         function renderTeacherGate(error=''){
           const gate=document.getElementById('teacherGate'); if(!gate)return;
+          try{roleGateRender();}catch(e){}
           document.getElementById('teacherGateTitle').textContent=tt('title');
           const brandEl=document.getElementById('teacherGateBrand');
           if(brandEl)brandEl.textContent=(translations[teacherGateLanguage]&&translations[teacherGateLanguage].appTitle)||'QUẢN LÝ LỚP HỌC';
@@ -12978,6 +13126,7 @@ window.openStudentProfile=function(studentId){
         window.enterTeacher=async function(id){
           const t=teacherRecords.find(x=>x.teacherId===id);if(!t)return;
           if(t.passwordHash){const p=await askTeacherPassword();if(p===null)return;if(await teacherHash(p)!==t.passwordHash){alert(tt('wrong'));return;}}
+          document.getElementById('teacherGate').classList.add('tg-busy');
           try{
             // Load/check the selected teacher's Firebase node BEFORE starting the live listener.
             // Otherwise initApp() sees an empty node and saveData() can copy the previous teacher's data into it.
@@ -12990,7 +13139,7 @@ window.openStudentProfile=function(studentId){
               const created=Date.parse(t.createdAt||'')||0;
               if(created && Date.now()-created>10*60*1000){
                 const okNew=await showAppConfirm(teacherGateLanguage==='vi'?'Không tìm thấy dữ liệu của giáo viên này trên Firebase (có thể do mạng chập chờn). Nếu tạo mới, nhánh dữ liệu sẽ bị ghi bản TRỐNG. Chỉ bấm Đồng ý khi chắc chắn. Bạn có muốn tạo không gian trống không?':'No data found for this teacher on Firebase (possibly a network glitch). Creating a new one writes a BLANK dataset. Only confirm if you are sure. Create a blank workspace?');
-                if(!okNew)return;
+                if(!okNew){document.getElementById('teacherGate').classList.remove('tg-busy');return;}
               }
               // Start from a clean structure, never from another teacher's current appData.
               const blank=deepCopy(appData);
@@ -13028,9 +13177,14 @@ window.openStudentProfile=function(studentId){
             qsTeacherSwitch(id);
             currentTeacherId=id;
             sessionViewMode='matrix'; // Luôn mở tab Bảng Điểm (Score Matrix) khi vào không gian giáo viên
-            document.getElementById('teacherGate').classList.add('hidden');
+            // Cổng vẫn đặc + vòng xoay (chạy trên GPU nên không bị đứng khi initApp nặng); dựng xong mới mờ dần
+            await new Promise(r => setTimeout(r, 80));
             initApp();
             try { mxStartInbox(id); } catch (e) { console.warn('Student inbox skipped:', e); }
+            { const tg = document.getElementById('teacherGate');
+              await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+              tg.classList.remove('tg-busy'); tg.classList.add('tg-leave');
+              setTimeout(() => { tg.classList.add('hidden'); tg.classList.remove('tg-leave'); }, 460); }
             // Let the Firebase listener render the clean workspace, then open the existing course manager.
             if(!snap.exists() && id!==LEGACY_TEACHER_ID){
               setTimeout(()=>{if(currentTeacherId===id){applyLanguageUI();window.openCourseManager();}},450);
@@ -13038,7 +13192,7 @@ window.openStudentProfile=function(studentId){
           }catch(err){
             console.error('Unable to open teacher workspace',err);
             alert(teacherGateLanguage==='vi'?'Không mở được không gian giáo viên. Hãy kiểm tra kết nối Firebase.':'Could not open this teacher workspace. Check the Firebase connection.');
-            document.getElementById('teacherGate').classList.remove('hidden');
+            { const tg = document.getElementById('teacherGate'); tg.classList.remove('tg-leave'); tg.classList.remove('tg-busy'); tg.classList.remove('hidden'); }
           }
         };
         // Bộ chọn icon cho giáo viên: dùng chung danh sách STUDENT_ICON_GROUPS của hồ sơ học sinh.
@@ -16094,6 +16248,7 @@ html.mx-dark .gc-bar{background:#334155}
             try { sessionStorage.setItem('mxStu', JSON.stringify({ tid, code })); } catch (e) {}
             document.body.classList.add('mx-student');
             const gate = document.getElementById('teacherGate'); if (gate) gate.classList.add('hidden');
+            const rg = document.getElementById('roleGate'); if (rg) rg.classList.add('hidden');
             const lg = document.getElementById('mxStuLogin'); if (lg) lg.remove();
             mxInstallStudentOverrides();
             sessionViewMode = 'home'; petMode = 'class'; petTarget = sid;
@@ -16287,7 +16442,16 @@ html.mx-dark .gc-bar{background:#334155}
             const nxt = PET_MS.find(m => m > pk), prevM = nxt ? PET_MS[PET_MS.indexOf(nxt) - 1] : 0;
             const pct = nxt ? Math.max(0, Math.min(100, Math.round(((pk - prevM) / (nxt - prevM)) * 100))) : 100;
             let passive = '';
-            try { if (has) { const bi = petBInfo(st.petSp, petLv(pk), st); if (bi) passive = '<div class="text-xs text-slate-600 mt-2">✨ ' + L2('Nội tại: ', 'Passive: ') + '<b>' + E(bi.ic + ' ' + bi.name) + '</b></div>'; } } catch (e) {}
+            try {
+                const bt = '<div class="mxh-bless-t">✨ ' + L2('Nội tại hiện tại', 'Current passive') + '</div>';
+                if (has) {
+                    const lv = petLv(pk), bi = petBInfo(st.petSp, lv, st), b = PET_B[st.petSp], w = en ? 1 : 0;
+                    passive = '<div class="mxh-bless">' + bt + (bi
+                        ? '<div class="mxh-bless-n"><span>' + E(bi.ic + ' ' + bi.name) + '</span>' + petLvTag(lv + 1) + '</div><div class="mxh-bless-d">' + bi.html + '</div>' +
+                          '<div class="mxh-bless-x">' + (lv < 6 ? L2('Cấp tiếp theo', 'Next level') + ' (streak ' + PET_LV[lv + 1] + '): ' + petFmtHl(b.t[w], petEff(st, st.petSp, lv + 1), b.v[lv + 1]) : L2('Đã đạt cấp nội tại tối đa!', 'Innate blessing at max level!')) + '</div>'
+                        : '<div class="mxh-bless-d">' + L2('Nội tại chưa mở khóa. Đạt mốc chuỗi 5 để kích hoạt.', 'Passive locked. Reach streak 5 to unlock.') + '</div>') + '</div>';
+                } else passive = '<div class="mxh-bless">' + bt + '<div class="mxh-bless-d">' + L2('Chọn trứng để xem nội tại.', 'Choose an egg to see its passive.') + '</div></div>';
+            } catch (e) { console.warn('Passive skipped:', e); }
             const equip = pshEq(st).map((e, i) => { const it = e && e.id && PSH_BY[e.id]; return '<span class="mxh-chip ' + (it ? '' : 'off') + '">🎒 ' + (it ? E(L2(it.vi, it.en)) : L2('Ô ', 'Slot ') + (i + 1) + ': ' + L2('Trống', 'Empty')) + '</span>'; }).join(' ');
             // Quà, vi phạm, huy hiệu
             const giftMap = {}; (st.inventory || []).forEach(inv => { let n = ''; try { n = getRewardName(inv); } catch (e) {} if (!n) n = L2('Quà', 'Gift'); giftMap[n] = (giftMap[n] || 0) + 1; });
@@ -16309,7 +16473,7 @@ html.mx-dark .gc-bar{background:#334155}
                 '<div class="mxh-hs">' + hc('<em class="mxh-avgp ' + (tier ? tier.cls : '') + '">' + E(avg) + '</em>', L2('Điểm TB', 'Avg score'), 'matrix', 'fa-chart-line', 'c1') + hc(E(rank) + (mates.length ? '/' + mates.length : ''), L2('Xếp hạng', 'Rank'), 'ranking', 'fa-trophy', 'c2') + hc(E(stats.hasData ? (Number(stats.total) || 0).toFixed(1) : '—'), L2('Tổng điểm', 'Total points'), 'matrix', 'fa-star', 'c3') + hc(E(String(tickets)), L2('Phiếu hiện có', 'Tickets'), 'mypet', 'fa-ticket', 'c4') + '</div></section>' +
                 '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">' +
                   '<div class="flex flex-col gap-4">' +
-                    '<section class="mxh-card"><div class="mxh-h"><span><i class="fa-solid fa-paw"></i>' + L2('Thú cưng của tôi', 'My pet') + '</span><span class="mxh-chip">' + L2('Cấp ', 'Level ') + (f - 1) + '</span></div>' +
+                    '<section class="mxh-card"><div class="mxh-h"><span><i class="fa-solid fa-paw"></i>' + L2('Thú cưng của tôi', 'My pet') + '</span><span class="mxh-chip gold">' + L2('Cấp ', 'Level ') + (f - 1) + '</span></div>' +
                     '<div class="mxh-stage" onclick="mxStuTab(\'mypet\')" title="' + L2('Mở cửa hàng thú cưng', 'Open the pet shop') + '">' + art + '</div>' +
                     '<div class="mt-3 flex items-center justify-between gap-2"><div class="min-w-0"><div class="font-black text-slate-800 break-words">' + E(pname) + '</div><div class="text-xs text-slate-500 mt-0.5">' + L2('Chuỗi hiện tại: ', 'Current streak: ') + inf.cur + ' 🔥 · ' + L2('Kỷ lục: ', 'Record: ') + inf.best + '</div></div><span class="mxh-chip ' + (inf.cur > 0 ? 'ok' : 'off') + '">' + (inf.cur > 0 ? L2('Đang hoạt động', 'Active') : L2('Chưa hoạt động', 'Inactive')) + '</span></div>' +
                     '<div class="mxh-bar mt-3"><i style="width:' + pct + '%"></i></div><div class="text-[11px] text-slate-500 mt-1">' + (nxt ? L2('Mốc tiến hóa tiếp theo: ', 'Next milestone: ') + nxt : L2('Đã đạt dạng cuối!', 'Final form reached!')) + '</div>' + passive +
@@ -17267,6 +17431,15 @@ html.mx-dark #viewPetContainer #petBP,
 html.mx-dark .pl-bless:not(.pl-lock){background:#312e81 !important;border-color:#a78bfa !important;box-shadow:0 0 0 3px rgba(167,139,250,.28) !important}
 html.mx-dark .pet-card .pet-inn-box > div:first-child,
 html.mx-dark .pet-shop-preview-card .pet-preview-blessing-title,html.mx-dark .pet-shop-preview-card .pet-preview-blessing-name{color:#ede9fe !important}
+/* Trang chủ học sinh · Thú cưng của tôi: khung nội tại giống thẻ thú cưng / bảng xếp hạng */
+#mxStuHome .mxh-bless{background:#ede9fe !important;border:2px solid #7c3aed !important;box-shadow:0 0 0 3px rgba(124,58,237,.16) !important}
+#mxStuHome .mxh-bless-t,#mxStuHome .mxh-bless-n{color:#4c1d95 !important}
+#mxStuHome .mxh-bless-d{color:#334155}
+html.mx-dark #mxStuHome .mxh-bless{background:#312e81 !important;border-color:#a78bfa !important;box-shadow:0 0 0 3px rgba(167,139,250,.28) !important}
+html.mx-dark #mxStuHome .mxh-bless-t,html.mx-dark #mxStuHome .mxh-bless-n{color:#ede9fe !important}
+html.mx-dark #mxStuHome .mxh-bless-d{color:#e2e8f0}
+#mxStuHome .mxh-bless-n .pet-lvchip,#mxStuHome .mxh-bless-n .pet-chip{background:#fef3c7 !important;color:#92400e !important;border:2px solid #f59e0b !important;padding:0 8px;font-weight:900;font-size:10px;white-space:nowrap;flex-shrink:0;border-radius:9999px}
+html.mx-dark #mxStuHome .mxh-bless-n .pet-lvchip,html.mx-dark #mxStuHome .mxh-bless-n .pet-chip{background:#78350f !important;border-color:#fbbf24 !important;color:#fef3c7 !important}
 .pet-chip.pet-lvchip,.pl-bn .pet-lvchip{background:#fef3c7 !important;color:#92400e !important;border:2px solid #f59e0b !important;padding:0 8px;font-weight:900;font-size:10px;white-space:nowrap;flex-shrink:0;border-radius:9999px}
 html.mx-dark .pet-chip.pet-lvchip,html.mx-dark .pl-bn .pet-lvchip{background:#78350f !important;border-color:#fbbf24 !important;color:#fef3c7 !important}
 .psh-lock-note{margin-top:.6rem;padding:.5rem .75rem;border-radius:.75rem;border:1px solid #fcd34d;background:#fffbeb;color:#92400e;font-size:12px;font-weight:800;line-height:1.4}
