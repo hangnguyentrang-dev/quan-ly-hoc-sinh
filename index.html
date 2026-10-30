@@ -16244,6 +16244,7 @@ html.mx-dark .gc-bar{background:#334155}
             if (unsubscribeTeacherData) { unsubscribeTeacherData(); unsubscribeTeacherData = null; }
             if (mxInboxUnsub) { mxInboxUnsub(); mxInboxUnsub = null; }
             window.MX_STUDENT = { tid, sid, proof, pend: new Set() };
+            try { localStorage.removeItem('mxRoleTeacher'); } catch (e) {}   // máy đã có học sinh đăng nhập thì không còn tự mở khu vực giáo viên
             currentTeacherId = '__student__'; // mọi đường ghi trực tiếp (nếu có) chỉ rơi vào nhánh rác này, không chạm dữ liệu giáo viên
             try { sessionStorage.setItem('mxStu', JSON.stringify({ tid, code })); } catch (e) {}
             document.body.classList.add('mx-student');
@@ -16303,7 +16304,7 @@ html.mx-dark .gc-bar{background:#334155}
             try { renderCurrentView(); } catch (e) { console.warn('Student render skipped:', e); }
             window.mxStuRefreshBar();
         }
-        window.mxStuLogout = function () { try { sessionStorage.removeItem('mxStu'); } catch (e) {} location.reload(); };
+        window.mxStuLogout = function () { try { sessionStorage.removeItem('mxStu'); sessionStorage.removeItem('mxStuCourse'); } catch (e) {} try { localStorage.removeItem('mxRoleTeacher'); } catch (e) {} location.reload(); };   // thoát học sinh → về màn hình "Bạn là ai?" (thu hồi luôn trạng thái nhớ mật khẩu giáo viên trên máy này)
 
         /* ---------- Phía học sinh: thanh thông tin + tab ---------- */
         const MX_STU_ORDER = ['home', 'ranking', 'finalExam', 'matrix', 'pet', 'mypet'];
