@@ -521,6 +521,15 @@
         .tf-lv i { display:inline-block; width:34px; height:5px; border-radius:9999px; background:#e0e7ff; position:relative; overflow:hidden; }
         .tf-lv i::after { content:""; position:absolute; inset:0 auto 0 0; width:var(--p); background:linear-gradient(90deg,#6366f1,#a855f7); }
         .tf-xpbar { height:8px; border-radius:9999px; background:#e0e7ff; overflow:hidden; margin-top:.2rem; } .tf-xpbar i { display:block; height:100%; background:linear-gradient(90deg,#6366f1,#a855f7); }
+/* Thẻ thành tích: bộ icon đồng bộ (cùng kích thước, bo góc, nét trắng trên nền gradient) */
+.xf-stat{display:flex;align-items:center;justify-content:center;gap:.45rem}
+.xf-ic{flex:none;width:1.75rem;height:1.75rem;border-radius:.6rem;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;line-height:1;color:#fff;box-shadow:0 2px 4px rgba(15,23,42,.16),inset 0 1px 0 rgba(255,255,255,.35)}
+.xf-ic-fire{background:linear-gradient(135deg,#fb923c,#ef4444)}
+.xf-ic-trophy{background:linear-gradient(135deg,#fbbf24,#f59e0b)}
+.xf-ic-avg{background:linear-gradient(135deg,#38bdf8,#6366f1)}
+.xf-ic-speak{background:linear-gradient(135deg,#34d399,#0d9488)}
+.xf-ic-score{background:linear-gradient(135deg,#a78bfa,#7c3aed)}
+.xf-ic-absent{background:linear-gradient(135deg,#fb7185,#e11d48)}
         .tf-smoke { position:absolute; width:26px; height:26px; border-radius:50%; background:radial-gradient(circle,#cbd5e1,#94a3b8); filter:blur(2px); }
         .tf-banner.smoke-b { background:linear-gradient(135deg,#475569,#64748b); border-color:#cbd5e1; box-shadow:0 8px 24px rgba(71,85,105,.45); }
         @media (prefers-reduced-motion: reduce) { .tf-timer-warn { animation:none !important; } }
@@ -3160,7 +3169,8 @@ html.mx-dark #mxStuHome .mxh-bless-d,html.mx-dark #mxStuHome .mxh-bless-x{color:
 #mxStuHome .mxh-xp{height:.5rem;border-radius:999px;background:rgba(255,255,255,.25);overflow:hidden}
 #mxStuHome .mxh-xp i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#fde047,#f59e0b);transition:width .6s ease}
 #mxStuHome .mxh-hs{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin-top:.9rem}
-@media (min-width:640px){#mxStuHome .mxh-hs{grid-template-columns:repeat(4,1fr)}}
+#mxStuHome .mxh-hs>.mxh-hcell:last-child:nth-child(odd){grid-column:1/-1}
+@media (min-width:640px){#mxStuHome .mxh-hs{grid-template-columns:repeat(3,1fr)}#mxStuHome .mxh-hs>.mxh-hcell:last-child:nth-child(odd){grid-column:auto}}
 #mxStuHome .mxh-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:250px;border-radius:.9rem;overflow:hidden;cursor:pointer;background:radial-gradient(ellipse at 50% 30%,#fff 0%,#ede9fe 45%,#e0e7ff 100%);border:1px solid #ddd6fe}
 #mxStuHome .mxh-stage::after{content:"";position:absolute;left:50%;bottom:16px;width:50%;height:20px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(76,29,149,.22),transparent 70%);pointer-events:none}
 #mxStuHome .mxh-stage .pet-art,#mxStuHome .mxh-stage .pet-art.mon,#mxStuHome .mxh-stage .pet-art.egg{position:relative;z-index:1;width:210px;height:210px;max-width:62vw;max-height:62vw;margin:0 auto}
@@ -3292,6 +3302,14 @@ html.mx-dark .pq-pane.pq-class,html.mx-dark .pq-inl .pq-pane{border-color:#4c1d9
 /* ===== Điểm gần đây: giống Lưu trữ điểm của giáo viên ===== */
 #mxStuHome .mxr-row{display:flex;align-items:center;gap:.7rem;padding:.5rem .6rem;margin-bottom:.2rem;border-radius:.85rem;border:1px solid transparent;transition:background .15s,transform .15s ease,box-shadow .15s ease}
 #mxStuHome .mxr-row:last-child{margin-bottom:0}
+/* Khung cuộn: giữ chiều cao thẻ như cũ (~8 dòng), các điểm còn lại cuộn lên/xuống */
+#mxStuHome .mxr-scroll{max-height:26rem;overflow-y:auto;overflow-x:hidden;padding:.2rem .6rem .2rem .15rem;margin-right:-.3rem;scrollbar-width:thin;scrollbar-color:#a5b4fc transparent;-webkit-overflow-scrolling:touch}
+#mxStuHome .mxr-scroll::-webkit-scrollbar{width:6px}
+#mxStuHome .mxr-scroll::-webkit-scrollbar-track{background:transparent}
+#mxStuHome .mxr-scroll::-webkit-scrollbar-thumb{background:#c7d2fe;border-radius:9999px}
+#mxStuHome .mxr-scroll::-webkit-scrollbar-thumb:hover{background:#818cf8}
+html.mx-dark #mxStuHome .mxr-scroll{scrollbar-color:#4f46e5 transparent}
+html.mx-dark #mxStuHome .mxr-scroll::-webkit-scrollbar-thumb{background:#4f46e5}
 #mxStuHome .mxr-row:hover{background:#eef2ff;transform:translateX(4px);box-shadow:0 4px 12px rgba(79,70,229,.14)}
 #mxStuHome .mxr-row.mxr-ten{background:#fffbeb;border-color:#fde68a}#mxStuHome .mxr-row.mxr-ten:hover{background:#fef3c7;box-shadow:0 4px 12px rgba(245,158,11,.2)}
 #mxStuHome .mxr-row.mxr-chain{background:var(--sg-bg);border-color:var(--sg-bd)}#mxStuHome .mxr-row.mxr-chain:hover{background:var(--sg-bg);filter:brightness(.97);box-shadow:0 4px 14px var(--sg-bd)}
@@ -6933,6 +6951,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 ensureNewModules();
                 applyLanguageUI();
                 let sgBootChanged = false; try { const flE = tenFloorInit(); const sgE = sgEnforce(); sgBootChanged = sgSync() || sgE || flE; } catch (e) { console.warn('sgSync skipped:', e); }
+                try { if (lvBaseline()) sgBootChanged = true; } catch (e) { console.warn('Level baseline skipped:', e); }
                 renderClassTabs();
                 renderCurrentView();
                 try { ehFromListener(); } catch (e) { console.warn('ehFromListener skipped:', e); }
@@ -7269,6 +7288,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             } catch (e) {}
             try { bkAuditShopChanges(lastPersistedSnapshot,appData); } catch(e) { console.warn('Badge audit skipped:',e); }
             try { bkEnsureActiveCourseBadges(); bkEvaluateAll(); for(const st of (appData.students||[]))bkSaveStudentCourse(st,appData.courseManager?.activeCourseId); } catch (e) { console.warn('Badge evaluation skipped:',e); }
+            try { lvRewardSync(); } catch (e) { console.warn('Level reward skipped:', e); }
             try { if (appData.studentPortal && appData.studentPortal.enabled) mxEnsureLoginCodes(); } catch (e) { console.warn('Login codes skipped:', e); }
             const saveSnapshot = deepCopy(appData);
             return set(ref(db, `appDataMultiTeacher/teacherData/${currentTeacherId || LEGACY_TEACHER_ID}`), appData).then(() => { // Lưu đúng nhánh dữ liệu giáo viên chính
@@ -10781,9 +10801,51 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         // ===== Cấp độ & XP: XP = tổng điểm các buổi; mỗi XP_PER_LEVEL điểm lên 1 cấp =====
         const XP_PER_LEVEL = 50;
         function xpOf(sid, scores) { return Math.round(tenSeries(sid, scores).filter(e => !e.ghost).reduce((a, e) => a + e.v, 0) * 10) / 10; }
+        /* ===== Thưởng lên cấp: mỗi lần lên 1 cấp +LV_UP_PTS Pts vào điểm phát biểu dư (rewardPoints, hiện trong Túi quà) =====
+           - Chỉ có hiệu lực từ bản cập nhật này: lần đầu mở sau cập nhật, cấp hiện có của mỗi học sinh được "đóng băng" làm mốc, KHÔNG thưởng bù.
+           - st.lvPaid[khóa] = cấp cao nhất đã được thưởng: chỉ tăng, nên sửa/xóa điểm rồi lên lại cùng cấp sẽ không nhận trùng.
+           - Tách riêng theo khóa học (khóa mới bắt đầu lại từ Lv1) và không chạy ở khóa đã lưu / chế độ học sinh. */
+        const LV_UP_PTS = 5;
+        function lvKey() { return String((appData && appData.courseManager && appData.courseManager.activeCourseId) || 'default'); }
+        function lvOf(sid) { return Math.floor(xpOf(sid) / XP_PER_LEVEL) + 1; }
+        function lvMap(st) { if (!st.lvPaid || typeof st.lvPaid !== 'object' || Array.isArray(st.lvPaid)) st.lvPaid = {}; return st.lvPaid; }
+        function lvBaseline() {
+            if (window.MX_STUDENT || !appData || !Array.isArray(appData.students)) return 0;
+            const key = lvKey(); let n = 0;
+            appData.students.forEach(st => { if (!st || st.id == null) return; const m = lvMap(st); if (!Number.isFinite(Number(m[key]))) { m[key] = lvOf(st.id); n++; } });
+            return n;
+        }
+        function lvRewardSync() {
+            if (window.MX_STUDENT || !appData || !Array.isArray(appData.students)) return 0;
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return 0;
+            const key = lvKey(); let total = 0;
+            appData.students.forEach(st => {
+                if (!st || st.id == null) return;
+                const m = lvMap(st), lv = lvOf(st.id), paid = Number(m[key]);
+                if (!Number.isFinite(paid)) { m[key] = lv; return; } // chưa có mốc (học sinh mới/khóa mới): lấy cấp hiện tại làm mốc
+                if (lv <= paid) return;
+                const pts = (lv - paid) * LV_UP_PTS;
+                m[key] = lv;
+                st.rewardPoints = Math.round(((Number(st.rewardPoints) || 0) + pts) * 100) / 100;
+                const q = (window.__lvQ = window.__lvQ || {});
+                q[st.id] = { pts: ((q[st.id] && q[st.id].pts) || 0) + pts, lv };
+                total += pts;
+            });
+            if (total) { setTimeout(lvFlush, 900); setTimeout(() => { try { renderCurrentView(); } catch (e) {} }, 0); }
+            return total;
+        }
+        // Thông báo (chuông) cho các lần thưởng mà banner "lên cấp" không hiển thị (nhập hàng loạt, giảm hiệu ứng...)
+        function lvFlush() {
+            const q = window.__lvQ; if (!q) return; window.__lvQ = {};
+            Object.keys(q).forEach(sid => {
+                const st = appData.students.find(x => String(x.id) === String(sid)); if (!st) return;
+                try { window.mxNotifPush && window.mxNotifPush(`⭐ ${getStudentDisplayName(st)} ${L2('lên cấp', 'reached level')} ${q[sid].lv}! · +${q[sid].pts} Pts ${L2('vào túi quà', 'added to the gift bag')}`, 'level'); } catch (e) {}
+            });
+        }
+        const lvHint = () => L2(`+${LV_UP_PTS} Pts mỗi lần lên cấp`, `+${LV_UP_PTS} Pts per level-up`);
         function levelPillHtml(sid) {
             const xp = xpOf(sid), lv = Math.floor(xp / XP_PER_LEVEL) + 1, cur = xp % XP_PER_LEVEL;
-            return `<span class="tf-lv" title="XP ${cur.toFixed(0)}/${XP_PER_LEVEL}"><b>Lv${lv}</b><i style="--p:${(cur / XP_PER_LEVEL * 100).toFixed(0)}%"></i></span>`;
+            return `<span class="tf-lv" title="XP ${cur.toFixed(0)}/${XP_PER_LEVEL} · ${lvHint()}"><b>Lv${lv}</b><i style="--p:${(cur / XP_PER_LEVEL * 100).toFixed(0)}%"></i></span>`;
         }
         // Hiệu ứng khi đứt streak (lửa tắt, khói) hoặc lên cấp
         // Thông báo lên cấp: hiện ở góc dưới màn hình, tách riêng với banner chúc mừng streak (ở trên)
@@ -10808,7 +10870,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 list.forEach(f => {
                     const st = appData.students.find(x => x.id === f.sid); if (!st) return;
                     const name = getStudentDisplayName(st);
-                    if (f.t === 'lv') { tfLevelToast(`⭐ ${name} ${L2('lên cấp', 'reached level')} ${f.n}!`); return; }
+                    if (f.t === 'lv') { const q = window.__lvQ && window.__lvQ[f.sid]; if (q) delete window.__lvQ[f.sid]; tfLevelToast(`⭐ ${name} ${L2('lên cấp', 'reached level')} ${f.n}!` + (q ? ` · +${q.pts} Pts` : '')); return; }
                     if (f.t === 'drop') { tfToast(L2(`📉 ${name} bị trừ ${f.n} streak · còn ${f.cur}`, `📉 ${name} lost ${f.n} streak · ${f.cur} left`), 'smoke-b'); return; }
                     const best = tenStreakInfo(f.sid).best, layer = tfEnsureLayer();
                     for (let i = 0; i < 7; i++) {
@@ -13741,10 +13803,11 @@ window.openStudentProfile=function(studentId){
             opt = opt || {};
             const scores = opt.snap ? (opt.snap.scores || {}) : (appData.scores || {});
             const st = opt.student || appData.students.find(x => x.id === sid); if (!st) return '';
-            const prefix = sid + '_', pts = []; let absent = 0, anyKey = false;
+            const prefix = sid + '_', pts = []; let absent = 0, speak = 0, anyKey = false;
             Object.keys(scores).forEach(k => {
                 if (k.indexOf(prefix) !== 0) return; const it = scores[k]; if (!it) return; anyKey = true;
                 if (it.absent) { absent++; return; }
+                if (!it.sg) speak += Math.max(0, Number(it.speakingCount) || 0); // bộ đếm số lần phát biểu (cùng nguồn với Sổ thành tựu)
                 const v = parseFloat(it.score); if (!isNaN(v) && it.score !== '' && it.score !== null) pts.push({ v, d: scoreKeyDateMs(k) });
             });
             pts.sort((a, b) => a.d - b.d);
@@ -13759,15 +13822,15 @@ window.openStudentProfile=function(studentId){
                 const xy = last.map((e, i) => [4 + i * (W - 8) / (last.length - 1), 4 + (H - 8) * (1 - Math.min(e.v, 10) / 10)]);
                 chart = `<svg viewBox="0 0 ${W} ${H}" class="w-full h-16"><polyline points="${xy.map(q => q.join(',')).join(' ')}" fill="none" stroke="#6366f1" stroke-width="2" stroke-linejoin="round"/>${xy.map((q, i) => `<circle cx="${q[0]}" cy="${q[1]}" r="${i === xy.length - 1 ? 3.5 : 2}" fill="${last[i].v >= 10 ? '#f59e0b' : '#6366f1'}"/>`).join('')}</svg>`;
             }
-            const box = (ic, val, lb) => `<div class="rounded-xl bg-slate-50 border border-slate-200 p-2 text-center"><div class="text-lg font-black text-slate-800">${ic} ${val}</div><div class="text-[10px] font-bold text-slate-500">${lb}</div></div>`;
-            return `<div class="mt-3"><div class="flex justify-between text-[11px] font-black text-indigo-700"><span>Lv${lv}</span><span>XP ${cur.toFixed(0)}/${XP_PER_LEVEL}</span></div><div class="tf-xpbar"><i style="width:${(cur / XP_PER_LEVEL * 100).toFixed(0)}%"></i></div></div>
-                <div class="grid grid-cols-3 gap-2 mt-3">${box('🔥', `<span class="${opt.snap ? '' : tfNameFx(sid).nm}">${inf.cur}</span>`, L2('Chuỗi 10', 'Streak'))}${box('🏆', inf.best, L2('Kỷ lục', 'Record'))}${box('📊', stats.hasData ? stats.avg : '--', L2('ĐTB', 'AVG'))}${box('🎁', (st.inventory || []).length, L2('Quà đang có', 'Gifts'))}${box('📝', pts.length, L2('Số điểm', 'Scores'))}${box('🚫', absent, L2('Số buổi vắng', 'Absences'))}</div>
+            const box = (ic, tone, val, lb) => `<div class="rounded-xl bg-slate-50 border border-slate-200 p-2 text-center"><div class="xf-stat text-lg font-black text-slate-800"><span class="xf-ic xf-ic-${tone}"><i class="fa-solid ${ic}"></i></span><span>${val}</span></div><div class="text-[10px] font-bold text-slate-500 mt-1">${lb}</div></div>`;
+            return `<div class="mt-3" title="${lvHint()}"><div class="flex justify-between text-[11px] font-black text-indigo-700"><span>Lv${lv}</span><span>XP ${cur.toFixed(0)}/${XP_PER_LEVEL}</span></div><div class="tf-xpbar"><i style="width:${(cur / XP_PER_LEVEL * 100).toFixed(0)}%"></i></div></div>
+                <div class="grid grid-cols-3 gap-2 mt-3">${box('fa-fire', 'fire', `<span class="${opt.snap ? '' : tfNameFx(sid).nm}">${inf.cur}</span>`, L2('Chuỗi 10', 'Streak'))}${box('fa-trophy', 'trophy', inf.best, L2('Kỷ lục', 'Record'))}${box('fa-chart-column', 'avg', stats.hasData ? stats.avg : '--', L2('ĐTB', 'AVG'))}${box('fa-comments', 'speak', speak, L2('Số Lần Phát Biểu', 'Speaking Count'))}${box('fa-file-pen', 'score', pts.length, L2('Số điểm', 'Scores'))}${box('fa-user-xmark', 'absent', absent, L2('Số buổi vắng', 'Absences'))}</div>
                 <div class="mt-3"><p class="text-[11px] font-bold text-slate-500 mb-1">${L2('Điểm 20 lần gần nhất (theo ngày)', 'Last 20 scores (by date)')}</p>${chart}</div>`;
         }
         // Khối thẻ thành tích trong cửa sổ "xem chi tiết" (Danh sách lớp)
         function xfDetailCard(sid, isArchived, snap, dataStudent) {
             const inner = xfStatInner(sid, isArchived ? { snap, student: dataStudent } : {});
-            return `<section class="mb-4 rounded-xl border border-indigo-200 bg-white p-3"><h3 class="font-bold text-sm text-indigo-700">🏅 ${L2('Thẻ thành tích', 'Achievement card')}${isArchived ? ' · ' + L2('khóa đã lưu', 'saved course') : ''}</h3>${inner}</section>`;
+            return `<section class="mb-4 rounded-xl border border-indigo-200 bg-white p-3"><h3 class="font-bold text-sm text-indigo-700"><i class="fa-solid fa-medal mr-1"></i>${L2('Thẻ thành tích', 'Achievement card')}${isArchived ? ' · ' + L2('khóa đã lưu', 'saved course') : ''}</h3>${inner}</section>`;
         }
 
         /* ---------- Hiệu ứng mở hộp quà (Cửa hàng) ---------- */
@@ -16524,12 +16587,11 @@ html.mx-dark .gc-bar{background:#334155}
             try { if (stats.hasData) { tier = gradeTierOf(stats.avg); const lv = gradeStickerLevel(stats.avg); if (lv >= 1 && GRADE_STICKERS[lv]) sticker = gradeStickerSvg(lv, true, 52); } } catch (e) {}
             let xp = 0, lvl = 1, xpCur = 0, inf = { cur: 0, best: 0 };
             try { xp = xpOf(st.id); lvl = Math.floor(xp / XP_PER_LEVEL) + 1; xpCur = xp % XP_PER_LEVEL; inf = tenStreakInfo(st.id); } catch (e) {}
-            const tickets = mxTicketBalance(st);
             // Điểm gần đây: giống Lưu trữ điểm của giáo viên (thời điểm nhập điểm, sáng theo màu mốc streak)
             let recentHtml = '<div class="mxh-empty">' + L2('Chưa có điểm nào.', 'No scores yet.') + '</div>';
             try {
-                const sa = saEntries(st.id), tk = sgTierKey(sa.cur), recentList = sa.list.slice(0, 8);
-                if (recentList.length) recentHtml = recentList.map(e => {
+                const sa = saEntries(st.id), tk = sgTierKey(sa.cur), recentList = sa.list; // toàn bộ điểm từ Lưu trữ điểm, cuộn trong khung
+                if (recentList.length) recentHtml = '<div class="mxr-scroll">' + recentList.map(e => {
                     const f = saFmt(e.ts), vTxt = String(Math.round(e.v * 100) / 100);
                     const tone = e.v >= 10 ? (e.chain ? 'chain' : 'ten') : e.v >= 8 ? 'hi' : e.v >= 5 ? 'mid' : 'low';
                     const bd = [];
@@ -16538,7 +16600,7 @@ html.mx-dark .gc-bar{background:#334155}
                     if (e.exam) bd.push('<span class="mxr-bd mxr-bd-ex"><i class="fa-solid fa-file-pen"></i>' + L2('Bài kiểm tra', 'Test') + '</span>');
                     if (e.manual && !e.sg) bd.push('<span class="mxr-bd mxr-bd-man"><i class="fa-solid fa-pen"></i>' + L2('Sửa tay', 'Manual') + '</span>');
                     return '<div class="mxr-row mxr-' + tone + (e.chain ? ' sg-t' + tk : '') + '"><span class="mxr-score">' + vTxt + '</span><div class="mxr-main"><div class="mxr-when"><i class="fa-regular fa-clock"></i>' + f.date + ' · ' + f.time + '</div>' + (bd.length ? '<div class="mxr-sub">' + bd.join('') + '</div>' : '') + '</div></div>';
-                }).join('');
+                }).join('') + '</div>';
             } catch (err) { console.warn('Recent scores skipped:', err); }
             // Kiểm tra cuối kỳ
             let fe = null, exRank = '—';
@@ -16582,8 +16644,8 @@ html.mx-dark .gc-bar{background:#334155}
                 heroOpen + '<div class="flex items-center gap-4 flex-wrap"><div class="mxh-ava">' + E(st.icon || '🎓') + '</div>' +
                 '<div class="min-w-0 flex-1"><div class="text-xs font-bold text-indigo-100">' + L2('Chào mừng trở lại!', 'Welcome back!') + '</div><div class="text-2xl font-black leading-tight break-words">' + E(getStudentDisplayName(st)) + '</div>' + (sub ? '<div class="text-xs text-indigo-100 mt-1 font-semibold">' + sub + '</div>' : '') + '</div>' +
                 (function () { let fl = ''; try { fl = tenStreakHtml(st.id) || ''; } catch (e) {} if (!tier && !fl) return ''; return '<div class="mxh-gbox">' + (sticker ? '<span class="mxh-stk">' + sticker + '</span>' : '') + fl + (tier ? '<div><div class="gl">' + L2('Xếp loại', 'Grade') + '</div><div class="mxh-gname ' + tier.cls + '">' + E(gradeTierLabel(tier)) + '</div></div>' : '') + '</div>'; })() + '</div>' +
-                '<div class="mt-3"><div class="flex justify-between text-[11px] font-black text-indigo-100"><span>Lv ' + lvl + '</span><span>XP ' + xpCur.toFixed(0) + '/' + XP_PER_LEVEL + '</span></div><div class="mxh-xp mt-1"><i style="width:' + (xpCur / XP_PER_LEVEL * 100).toFixed(0) + '%"></i></div></div>' +
-                '<div class="mxh-hs">' + hc('<em class="mxh-avgp ' + (tier ? tier.cls : '') + '">' + E(avg) + '</em>', L2('Điểm TB', 'Avg score'), 'matrix', 'fa-chart-line', 'c1') + hc(E(rank) + (mates.length ? '/' + mates.length : ''), L2('Xếp hạng', 'Rank'), 'ranking', 'fa-trophy', 'c2') + hc(E(stats.hasData ? (Number(stats.total) || 0).toFixed(1) : '—'), L2('Tổng điểm', 'Total points'), 'matrix', 'fa-star', 'c3') + hc(E(String(tickets)), L2('Phiếu hiện có', 'Tickets'), 'mypet', 'fa-ticket', 'c4') + '</div></section>' +
+                '<div class="mt-3" title="' + lvHint() + '"><div class="flex justify-between text-[11px] font-black text-indigo-100"><span>Lv ' + lvl + '</span><span>XP ' + xpCur.toFixed(0) + '/' + XP_PER_LEVEL + '</span></div><div class="mxh-xp mt-1"><i style="width:' + (xpCur / XP_PER_LEVEL * 100).toFixed(0) + '%"></i></div></div>' +
+                '<div class="mxh-hs">' + hc('<em class="mxh-avgp ' + (tier ? tier.cls : '') + '">' + E(avg) + '</em>', L2('Điểm TB', 'Avg score'), 'matrix', 'fa-chart-line', 'c1') + hc(E(rank) + (mates.length ? '/' + mates.length : ''), L2('Xếp hạng', 'Rank'), 'ranking', 'fa-trophy', 'c2') + hc(E(stats.hasData ? (Number(stats.total) || 0).toFixed(1) : '—'), L2('Tổng điểm', 'Total points'), 'matrix', 'fa-star', 'c3') + '</div></section>' +
                 '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">' +
                   '<div class="flex flex-col gap-4">' +
                     '<section class="mxh-card"><div class="mxh-h"><span><i class="fa-solid fa-paw"></i>' + L2('Thú cưng của tôi', 'My pet') + '</span><span class="mxh-chip gold">' + L2('Cấp ', 'Level ') + (f - 1) + '</span></div>' +
