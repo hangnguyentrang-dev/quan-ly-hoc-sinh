@@ -4412,6 +4412,15 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
                     <input type="date" id="newStudentBirthday" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
                     <p class="mt-1 text-[10px] text-slate-500" data-qs="bdayHint">Đến ngày này hệ thống sẽ thông báo và thẻ học sinh có hiệu ứng sinh nhật.</p>
                 </div>
+                <div class="mb-4 rounded-lg border border-rose-200 bg-rose-50/60 p-3">
+                    <label class="flex items-start gap-2 cursor-pointer select-none">
+                        <input type="checkbox" id="newStudentFlag" class="mt-0.5 w-4 h-4 shrink-0" style="accent-color:#f43f5e">
+                        <span class="min-w-0">
+                            <span class="block text-xs font-bold text-slate-700">🚩 <span data-i18n="lblNewStudentFlag">Gắn cờ học sinh mới</span></span>
+                            <span class="block mt-1 text-[10px] leading-snug text-slate-500" data-i18n="hintNewStudentFlag">Điểm vẫn tính bình thường, nhưng ở Bảng Xếp Hạng bạn này được xếp theo tổng điểm thay vì ĐTB (để công bằng với các bạn học lâu hơn). ĐTB, màu xếp loại và icon vẫn hiển thị như thường.</span>
+                        </span>
+                    </label>
+                </div>
                 <div class="flex justify-end space-x-2">
                     <button type="button" onclick="closeStudentModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold" data-i18n="btnCancel">Hủy</button>
                     <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold" data-i18n="btnSaveStudent">Lưu Học Sinh</button>
@@ -4879,6 +4888,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 lblStudentName: "Họ và Tên Học Sinh:",
                 lblStudentIcon: "Biểu Tượng (Icon / Emoji):",
                 btnSaveStudent: "Lưu Học Sinh",
+                lblNewStudentFlag: "Gắn cờ học sinh mới",
+                hintNewStudentFlag: "Điểm vẫn tính bình thường, nhưng ở Bảng Xếp Hạng bạn này được xếp theo tổng điểm thay vì ĐTB (để công bằng với các bạn học lâu hơn). ĐTB, màu xếp loại và icon vẫn hiển thị như thường.",
                 modalRewardTitle: "Thêm Món Quà Mới",
                 lblRewardName: "Tên món quà:",
                 lblRewardCost: "Giá điểm đổi quà (Pts):",
@@ -5045,6 +5056,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 lblStudentName: "Student Full Name:",
                 lblStudentIcon: "Icon / Emoji Avatar:",
                 btnSaveStudent: "Save Student",
+                lblNewStudentFlag: "Flag as new student",
+                hintNewStudentFlag: "Scores work as usual, but on the leaderboard this student is ranked by total points instead of average (fair to students who started earlier). AVG, grade colors and icons still show as normal.",
                 modalRewardTitle: "Add New Reward Item",
                 lblRewardName: "Reward Name:",
                 lblRewardCost: "Score Cost (Pts):",
@@ -5305,10 +5318,13 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         }
 
         // Hàm dịch Tên Học Sinh sang Tiếng Anh (không dấu)
-        function getStudentDisplayName(student) {
+        // Cờ học sinh mới: hiện 🚩 cạnh tên ở mọi giao diện dùng getStudentDisplayName / nsFlag
+        function nsFlag(st) { return (st && st.isNew) ? ' 🚩' : ''; }
+        function getStudentDisplayName(student, plain) {
             if (!student) return '';
             const lang = appData.language || 'vi';
-            return lang === 'en' ? removeAccents(student.name) : student.name;
+            const base = lang === 'en' ? removeAccents(student.name) : student.name;
+            return plain ? base : base + nsFlag(student);
         }
 
         /* ===================== QS: quick entry, bulk add, presentation, count-up, rank delta ===================== */
@@ -8580,7 +8596,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 const bonus = subjects.map(([key,label]) => `<label class="flex items-center justify-between gap-2 text-[11px] text-slate-600 py-1"><span>${tr('Cộng TB tích lũy vào ','Combine accumulated average with ')}${label}</span><select onchange="updateFinalExamField('${student.id}','bonus:${key}',this.value)" class="border rounded-md px-2 py-1 bg-white"><option value="no" ${!r.bonusTo[key]?'selected':''}>${tr('Không','No')}</option><option value="yes" ${r.bonusTo[key]?'selected':''}>${tr('Có','Yes')}</option></select></label>`).join('');
                 const fmt = n => n === null ? '—' : n.toFixed(2);
                 return `<article class="roster-card fe-card rounded-xl border border-slate-200 p-4 shadow-sm">
-                    <div class="flex items-start justify-between gap-2 mb-3"><div class="flex items-center gap-3 min-w-0"><div class="roster-avatar"><span class="ra-ico" style="animation-delay:${raDelay(student.id)}">${student.icon||'🎓'}</span></div><div class="min-w-0"><h3 class="font-black text-slate-800 text-sm">${student.name}</h3><p class="text-[11px] text-slate-500">${tr('TB tích lũy Ma Trận Điểm:','Score Matrix accumulated average:')} <b>${result.accumulated.toFixed(1)}</b></p></div></div><button type="button" onclick="resetFinalExamStudent('${student.id}')" title="${tr('Reset điểm kiểm tra cuối kỳ của học sinh này','Reset this student’s final exam scores')}" class="shrink-0 inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2 py-1.5 text-[11px] font-bold text-rose-700 transition hover:bg-rose-100 hover:border-rose-300"><i class="fa-solid fa-rotate-left"></i><span>${tr('Reset điểm','Reset scores')}</span></button></div>
+                    <div class="flex items-start justify-between gap-2 mb-3"><div class="flex items-center gap-3 min-w-0"><div class="roster-avatar"><span class="ra-ico" style="animation-delay:${raDelay(student.id)}">${student.icon||'🎓'}</span></div><div class="min-w-0"><h3 class="font-black text-slate-800 text-sm">${escapeHtml(student.name)}${nsFlag(student)}</h3><p class="text-[11px] text-slate-500">${tr('TB tích lũy Ma Trận Điểm:','Score Matrix accumulated average:')} <b>${result.accumulated.toFixed(1)}</b></p></div></div><button type="button" onclick="resetFinalExamStudent('${student.id}')" title="${tr('Reset điểm kiểm tra cuối kỳ của học sinh này','Reset this student’s final exam scores')}" class="shrink-0 inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2 py-1.5 text-[11px] font-bold text-rose-700 transition hover:bg-rose-100 hover:border-rose-300"><i class="fa-solid fa-rotate-left"></i><span>${tr('Reset điểm','Reset scores')}</span></button></div>
                     <div class="grid grid-cols-2 gap-2">${inputs}</div>
                     <div class="mt-3 rounded-lg border border-slate-200 bg-slate-50 overflow-hidden"><button type="button" onclick="toggleFinalExamBonus('${student.id}')" class="w-full flex items-center justify-between gap-2 p-3 text-left hover:bg-slate-100 transition"><span class="text-[11px] font-black text-slate-700">${tr('ĐIỂM TÍCH LŨY ĐƯỢC CHỌN CỘNG','ACCUMULATED POINTS TO COMBINE')}</span><span class="text-[11px] font-semibold text-slate-500 whitespace-nowrap"><i class="fe-chev fa-solid ${bonusExpanded?'fa-chevron-up':'fa-chevron-down'} mr-1"></i><span class="fe-lbl" data-o="${tr('Thu gọn','Collapse')}" data-c="${tr('Mở tùy chọn','Show options')}">${bonusExpanded?tr('Thu gọn','Collapse'):tr('Mở tùy chọn','Show options')}</span></span></button><div class="fe-collapse${bonusExpanded?' open':''}" data-sl="bonus:${student.id}"><div><div class="px-3 pb-3 border-t border-slate-200">${bonus}<p class="text-[10px] text-slate-500 mt-1">${tr('Khi chọn Có, ô điểm phía trên sẽ hiển thị điểm trung bình sau khi cộng TB tích lũy. Điểm gốc được lưu riêng để không bị tính cộng lặp.','When Yes is selected, the score field above displays the averaged score after combining with the accumulated average. The original score is stored separately to prevent repeated averaging.')}</p><p class="text-[10px] text-slate-400 mt-1">${tr('Chọn Có riêng cho Ngữ pháp hoặc Từ vựng để tính trung bình môn đó với TB tích lũy. TB Ngữ pháp + Từ vựng được tính từ hai điểm sau điều chỉnh.','Choose Yes for Grammar or Vocabulary individually to average that subject with the accumulated average. The Grammar + Vocabulary average is calculated from the two adjusted scores.')}</p></div></div></div></div>
                     <div class="mt-3 rounded-xl bg-indigo-600 text-white p-3 flex items-center justify-between"><span class="text-xs font-bold">${tr('ĐIỂM TRUNG BÌNH TỔNG','OVERALL AVERAGE')}</span><strong class="text-2xl">${fmt(result.total)}</strong></div>
@@ -8664,10 +8680,10 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                         const sc = n <= 1 ? 1 : n === 2 ? .8 : n === 3 ? .64 : n === 4 ? .52 : .44;
                         const bursts = [['✨','-1.6rem','-2.2rem'],['🎉','1.7rem','-2.4rem'],['⭐','-2rem','-.6rem'],['✨','2.1rem','-.9rem'],['🎊','0rem','-3rem']]
                             .map((b, k) => `<i class="stage-burst" style="--k:${k};--bx:${b[1]};--by:${b[2]}" aria-hidden="true">${b[0]}</i>`).join('');
-                        const chars = people.map((person, k) => `<div class="stage-char" style="--sc:${sc};--ph:${(k * .18).toFixed(2)}s" title="${escapeHtml(person.student.name)}">
+                        const chars = people.map((person, k) => `<div class="stage-char" style="--sc:${sc};--ph:${(k * .18).toFixed(2)}s" title="${escapeHtml(person.student.name + nsFlag(person.student))}">
                             ${idx === 0 ? '<span class="stage-crown">👑</span>' : ''}
                             <div class="stage-av">${figure(idx, k)}<div class="stage-avatar">${escapeHtml(person.student.icon || '🎓')}</div><span class="stage-medal">${medalsForRank[idx]}</span>${bursts}</div>
-                            <div class="stage-name" title="${escapeHtml(person.student.name)}">${escapeHtml(person.student.name)}</div>
+                            <div class="stage-name" title="${escapeHtml(person.student.name + nsFlag(person.student))}">${escapeHtml(person.student.name + nsFlag(person.student))}</div>
                             <div class="stage-score" data-cu="fep:${person.student.id}" data-to="${person.result.total}" data-dec="2">${person.result.total.toFixed(2)}</div>
                         </div>`).join('');
                         return `<div class="stage-slot s${idx + 1} ${n ? '' : 'st-empty'}" style="--d:${delay}s">
@@ -8684,7 +8700,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     qsCountUp(box, { fromZero: true, delay: 700, dur: 1200 });
                 }
             }
-            document.getElementById('finalExamRankingBody').innerHTML = sorted.map((x,i)=>`<tr class="hl-row ${x.rank===1?'hl-r1':x.rank===2?'hl-r2':x.rank===3?'hl-r3':''}"><td class="p-3 font-black">${x.rank===null?'—':x.rank===1?'🥇':x.rank===2?'🥈':x.rank===3?'🥉':x.rank}</td><td class="p-3 font-extrabold ${x.rank===1?'fe-n1':x.rank===2?'fe-n2':x.rank===3?'fe-n3':'text-slate-800'}"><span class="hl-ico">${x.student.icon||'🎓'}</span> ${x.student.name}</td><td class="p-3 text-center">${x.result.categories.listening===null?'—':x.result.categories.listening.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.speaking===null?'—':x.result.categories.speaking.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.reading===null?'—':x.result.categories.reading.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.writing===null?'—':x.result.categories.writing.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.grammar===null?'—':x.result.categories.grammar.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.vocabulary===null?'—':x.result.categories.vocabulary.toFixed(2)}</td><td class="p-3 text-center font-bold">${x.result.categories.grammarVocabulary===null?'—':x.result.categories.grammarVocabulary.toFixed(2)}</td><td class="p-3 text-center font-black text-indigo-700">${x.result.total===null?'—':`<span data-cu="fet:${x.student.id}" data-to="${x.result.total}" data-dec="2">${x.result.total.toFixed(2)}</span>`}</td></tr>`).join('');
+            document.getElementById('finalExamRankingBody').innerHTML = sorted.map((x,i)=>`<tr class="hl-row ${x.rank===1?'hl-r1':x.rank===2?'hl-r2':x.rank===3?'hl-r3':''}"><td class="p-3 font-black">${x.rank===null?'—':x.rank===1?'🥇':x.rank===2?'🥈':x.rank===3?'🥉':x.rank}</td><td class="p-3 font-extrabold ${x.rank===1?'fe-n1':x.rank===2?'fe-n2':x.rank===3?'fe-n3':'text-slate-800'}"><span class="hl-ico">${x.student.icon||'🎓'}</span> ${x.student.name}${nsFlag(x.student)}</td><td class="p-3 text-center">${x.result.categories.listening===null?'—':x.result.categories.listening.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.speaking===null?'—':x.result.categories.speaking.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.reading===null?'—':x.result.categories.reading.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.writing===null?'—':x.result.categories.writing.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.grammar===null?'—':x.result.categories.grammar.toFixed(2)}</td><td class="p-3 text-center">${x.result.categories.vocabulary===null?'—':x.result.categories.vocabulary.toFixed(2)}</td><td class="p-3 text-center font-bold">${x.result.categories.grammarVocabulary===null?'—':x.result.categories.grammarVocabulary.toFixed(2)}</td><td class="p-3 text-center font-black text-indigo-700">${x.result.total===null?'—':`<span data-cu="fet:${x.student.id}" data-to="${x.result.total}" data-dec="2">${x.result.total.toFixed(2)}</span>`}</td></tr>`).join('');
             qsCountUp(document.getElementById('finalExamRankingBody'), { fromZero: true, dur: 900 });
             function rValue(student, key) { const v = finalExamRecord(student.id)[key]; return v === '' || v === null || v === undefined ? '—' : Number(v).toFixed(2); }
         }
@@ -8759,13 +8775,13 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             box.innerHTML = students.map(s => {
                 const id = String(s.id);
                 const cls = placed.has(id) ? 'placed' : (seatUI.selected.includes(id) ? 'sel' : '');
-                return `<span class="seat-pick-chip ${cls}" onclick="toggleSeatPick('${id}')">${placed.has(id)?'<i class="fa-solid fa-lock"></i>':''}${s.icon||'🎓'} ${s.name}</span>`;
+                return `<span class="seat-pick-chip ${cls}" onclick="toggleSeatPick('${id}')">${placed.has(id)?'<i class="fa-solid fa-lock"></i>':''}${s.icon||'🎓'} ${s.name}${nsFlag(s)}</span>`;
             }).join('');
             const pend = seatPending();
             const hint = document.getElementById('seatPinHint');
             if (pend.length) {
                 const st = seatStudentById(pend[0]);
-                hint.innerHTML = seatLang(`Đang chọn: <b>${st?st.name:''}</b>${pend.length>1?` (+${pend.length-1} học sinh nữa)`:''} — rê chuột vào bàn và bấm để cố định.`, `Selected: <b>${st?st.name:''}</b>${pend.length>1?` (+${pend.length-1} more)`:''} — hover a desk and click to pin.`);
+                hint.innerHTML = seatLang(`Đang chọn: <b>${st?st.name+nsFlag(st):''}</b>${pend.length>1?` (+${pend.length-1} học sinh nữa)`:''} — rê chuột vào bàn và bấm để cố định.`, `Selected: <b>${st?st.name+nsFlag(st):''}</b>${pend.length>1?` (+${pend.length-1} more)`:''} — hover a desk and click to pin.`);
             } else {
                 hint.textContent = seatLang('Bấm tên học sinh để chọn, rồi bấm vào bàn muốn cố định. Bấm vào bàn đã cố định để bỏ cố định.', 'Click students to select, then click a desk to pin them. Click a pinned desk to unpin.');
             }
@@ -8814,7 +8830,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 const cls = ['seat-desk', st ? 'has-name' : '', pinned ? 'is-pinned' : '', (!pinned && hasPending) ? 'can-pin' : ''].join(' ');
                 const tip = pinned ? seatLang('Bỏ cố định', 'Unpin') : (hasPending ? seatLang('Chọn cố định', 'Pin here') : '');
                 const inner = st
-                    ? `<div class="text-xs font-bold text-slate-700">${st.icon||'🎓'} ${st.name}</div>`
+                    ? `<div class="text-xs font-bold text-slate-700">${st.icon||'🎓'} ${st.name}${nsFlag(st)}</div>`
                     : `<div class="seat-lbl"><div class="seat-num">${seatLang('BÀN','SEAT')} ${i+1}</div><div class="seat-rc">${seatLang('Hàng','Row')} ${Math.floor(i/cols)+1} · ${seatLang('Cột','Col')} ${i%cols+1}</div></div>`;
                 html += `<div class="${cls}" onclick="seatDeskClick(${i})">${pinned?'<i class="fa-solid fa-lock seat-pin-badge"></i>':''}${inner}<span class="seat-hover-tip">${tip}</span></div>`;
             }
@@ -10149,11 +10165,20 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             }
             return entries;
         }
+        // Học sinh mới (st.isNew): xếp hạng theo TỔNG ĐIỂM thay vì ĐTB.
+        // Để so sánh được với học sinh cũ (xếp theo ĐTB), tổng điểm được quy về cùng thang bằng cách
+        // chia cho số cột điểm nhiều nhất của lớp (ngày chưa có điểm = 0). Chỉ dùng để xếp hạng;
+        // ĐTB, màu xếp loại và icon vẫn hiển thị theo ĐTB thật.
+        let nsRefCount = 0;
+        function nsRankAvg(item, stats) {
+            if (item.student && item.student.isNew && nsRefCount > 0) return parseFloat((Number(stats.total || 0) / nsRefCount).toFixed(1));
+            return Number(stats.avg || 0);
+        }
         function compareAccumulatedStudents(a, b) {
             const sa = a.stats || calculateStudentStats(a.student.id);
             const sb = b.stats || calculateStudentStats(b.student.id);
             if (!!sa.hasData !== !!sb.hasData) return sa.hasData ? -1 : 1; // chưa đủ 2 điểm xếp sau
-            const avgDiff = Number(sb.avg || 0) - Number(sa.avg || 0);
+            const avgDiff = nsRankAvg(b, sb) - nsRankAvg(a, sa);
             if (avgDiff) return avgDiff;
             const ea = accumulatedScoreEntries(a.student.id), eb = accumulatedScoreEntries(b.student.id);
             const totalA = ea.reduce((sum, x) => sum + x.value, 0);
@@ -10176,6 +10201,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             // compareAccumulatedStudents resolves ties by average, raw total, score-level
             // counts (10 down to 1, then fewer genuine zeros), and finally stable student ID.
             // The same function is used by the Ranking tab, Score Matrix, and rank tracking.
+            nsRefCount = items.reduce((m, it) => Math.max(m, Number((it.stats || calculateStudentStats(it.student.id)).count) || 0), 0);
             return items.slice().sort(compareAccumulatedStudents).map((item, index) => ({
                 ...item,
                 rank: index + 1
@@ -12510,6 +12536,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             document.getElementById('editStudentId').value = '';
             document.getElementById('newStudentName').value = '';
             document.getElementById('newStudentIcon').value = '🎓';
+            { const nf = document.getElementById('newStudentFlag'); if (nf) nf.checked = false; }
             { const bi = document.getElementById('newStudentBirthday'); if (bi) { bi.value = ''; bi.max = xfDateKey(); } }
             document.getElementById('studentIconSearch').value = '';
             renderStudentIconPicker(); updateStudentIconPreview();
@@ -12525,6 +12552,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             document.getElementById('editStudentId').value = student.id;
             document.getElementById('newStudentName').value = student.name;
             document.getElementById('newStudentIcon').value = student.icon || '🎓';
+            { const nf = document.getElementById('newStudentFlag'); if (nf) nf.checked = !!student.isNew; }
             { const bi = document.getElementById('newStudentBirthday'); if (bi) { bi.value = student.birthday || ''; bi.max = xfDateKey(); } }
             document.getElementById('studentIconSearch').value = '';
             renderStudentIconPicker(); updateStudentIconPreview();
@@ -12544,6 +12572,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const icon = document.getElementById('newStudentIcon').value.trim();
             const bdayRaw = (document.getElementById('newStudentBirthday') || {}).value || '';
             const bday = xfNormBday(bdayRaw);
+            const isNewFlag = !!(document.getElementById('newStudentFlag') || {}).checked;
             if (bdayRaw && !bday) { alert(appData.language === 'en' ? 'Invalid birthday date.' : 'Ngày sinh không hợp lệ.'); return; }
 
             if (!name) return;
@@ -12554,6 +12583,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     student.name = name;
                     student.icon = icon || '🎓';
                     if (bday) student.birthday = bday; else delete student.birthday;
+                    if (isNewFlag) student.isNew = true; else delete student.isNew;
                     // Keep the same student's avatar consistent in saved course snapshots and recoverable trash.
                     (appData.courseManager?.courses || []).forEach(course => {
                         const archivedStudent = course.snapshot?.students?.find(s => String(s.id) === String(student.id));
@@ -12572,6 +12602,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     name: name,
                     icon: icon || '🎓',
                     ...(bday ? { birthday: bday } : {}),
+                    ...(isNewFlag ? { isNew: true } : {}),
                     rewardPoints: 0,
                     inventory: [],
                     violations: []
@@ -12859,7 +12890,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         window.deleteCourseRecord=async function(courseId){ensureNewModules();const course=appData.courseManager.courses.find(c=>c.id===courseId);if(!course)return;if(courseId===appData.courseManager.activeCourseId){alert(moduleText('activeCourseDeleteBlocked'));return;}const msg=appData.language==='en'?'Move this course and its saved history to Trash? You can restore it later.':'Chuyển khóa học và lịch sử đã lưu vào Thùng rác? Bạn có thể khôi phục sau.';if(!await showAppConfirm(msg+'\n'+course.name))return;const backup=deepCopy(appData);appData.deletedItems=Array.isArray(appData.deletedItems)?appData.deletedItems:[];appData.deletedItems.unshift({type:'course',id:'trash_course_'+Date.now(),deletedAt:new Date().toISOString(),name:course.name,payload:{course:deepCopy(course),teachingPlan:deepCopy((appData.teachingPlans||{})[courseId]??null)}});appData.courseManager.courses=appData.courseManager.courses.filter(c=>c.id!==courseId);if(appData.teachingPlans)delete appData.teachingPlans[courseId];saveData().then(ok=>{if(!ok){appData=backup;renderCourseList();return;}renderCourseList();});};
         function renderCourseList(){ ensureNewModules(); const list=document.getElementById('courseList'); if(!list)return; list.innerHTML=appData.courseManager.courses.slice().reverse().map(c=>`<div class="border rounded-xl p-3 flex flex-wrap items-center justify-between gap-3"><div><div class="font-bold text-sm">${escapeHtml(c.name)}</div><div class="text-xs text-slate-500">${c.startDate||'—'} → ${c.endDate||'—'} · ${c.status==='active'?moduleText('courseActive'):moduleText('courseArchived')}</div></div><div class="flex gap-2">${c.snapshot?`<button onclick="viewArchivedCourse('${c.id}')" class="px-3 py-1.5 rounded-lg bg-slate-100 text-xs font-bold">${moduleText('viewHistory')}</button><button onclick="activateArchivedCourse('${c.id}')" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-bold">${moduleText('activateCourseBtn')}</button>`:''}${c.id===appData.courseManager.activeCourseId?'<span class="text-xs font-bold text-emerald-700 px-2 py-1">●</span>':''}<button onclick="deleteCourseRecord('${c.id}')" class="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold"><i class="fa-solid fa-trash-can mr-1"></i>${moduleText('deleteCourseBtn')}</button></div></div>`).join('')||'<p class="text-sm text-slate-500">—</p>'; }
         function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
-        window.viewArchivedCourse=function(courseId){const c=appData.courseManager.courses.find(x=>x.id===courseId);if(!c||!c.snapshot)return; const snap=c.snapshot; const students=snap.students||[]; const classes=snap.classes||[]; const html=`<div class="rounded-xl bg-amber-50 border border-amber-200 p-3 mb-3 text-sm font-bold">${escapeHtml(c.name)} — ${moduleText('courseArchived')} · ${c.archivedAt?new Date(c.archivedAt).toLocaleString():''}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-3">${students.map(st=>{const cls=classes.find(x=>x.id===st.classId);const scores=Object.entries(snap.scores||{}).filter(([k])=>k.startsWith(st.id+'_')).map(([k,v])=>`${k.split('_').slice(1).join('_')}: ${v.score??'—'}`).join('<br>');const ex=(snap.finalExams||{})[st.id]||{};return `<article class="border rounded-xl p-3"><div class="font-bold">${escapeHtml(st.icon||'🎓')} ${escapeHtml(st.name)}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div><div class="text-xs mt-2"><b>${moduleText('totalAccumulated')}:</b> ${calculateSnapshotTotal(snap,st.id).total.toFixed(2)} · <b>${moduleText('averageAccumulated')}:</b> ${calculateSnapshotTotal(snap,st.id).avg.toFixed(2)}</div><details class="mt-2 text-xs"><summary class="cursor-pointer font-bold">${moduleText('profileDetails')}</summary><div class="mt-2"><b>${moduleText('finalScore')}:</b> ${archivedFinalTotal(snap,st.id)}<br><b>Listening:</b> ${ex.listening??'—'} · <b>Speaking:</b> ${ex.speaking??'—'} · <b>Reading:</b> ${ex.reading??'—'} · <b>Writing:</b> ${ex.writing??'—'} · <b>Grammar:</b> ${ex.grammar??'—'} · <b>Vocabulary:</b> ${ex.vocabulary??'—'}<hr class="my-2"><b>${moduleText('violationsLabel')}:</b> ${escapeHtml((st.violations||[]).map(v=>v.name||v.type||'').join(', ')||'—')}</div></details></article>`}).join('')}</div>${(c.teachingPlanSnapshot||[]).length?`<h3 class="font-bold mt-5 mb-2">${appData.language==='en'?'Archived teaching plan':'Nội dung giảng dạy đã lưu'}</h3><div class="space-y-2">${c.teachingPlanSnapshot.map(w=>`<section class="border rounded-lg p-3"><b>${moduleText('weekLabel')} ${w.week||''} · ${w.year||''}</b><div class="mt-2 space-y-2">${(w.lessons||[]).map(l=>`<div class="bg-slate-50 rounded p-2 text-xs"><b>${escapeHtml((classes.find(cl=>String(cl.id)===String(l.classId))||{}).name||'')}</b> · ${escapeHtml(l.date||'—')} ${l.makeupDate?`(${escapeHtml(l.makeupDate)})`:''}<br>${escapeHtml(l.content||'')}<br>${escapeHtml(l.detail||'')}<br>${escapeHtml(l.unit||'')}<br>${escapeHtml(l.homework||'')}</div>`).join('')}</div></section>`).join('')}</div>`:''}`;document.getElementById('studentProfileTitle').innerText=c.name+' — '+moduleText('viewHistory');document.getElementById('studentProfileContent').innerHTML=html;showModuleModal('studentProfileModal');};
+        window.viewArchivedCourse=function(courseId){const c=appData.courseManager.courses.find(x=>x.id===courseId);if(!c||!c.snapshot)return; const snap=c.snapshot; const students=snap.students||[]; const classes=snap.classes||[]; const html=`<div class="rounded-xl bg-amber-50 border border-amber-200 p-3 mb-3 text-sm font-bold">${escapeHtml(c.name)} — ${moduleText('courseArchived')} · ${c.archivedAt?new Date(c.archivedAt).toLocaleString():''}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-3">${students.map(st=>{const cls=classes.find(x=>x.id===st.classId);const scores=Object.entries(snap.scores||{}).filter(([k])=>k.startsWith(st.id+'_')).map(([k,v])=>`${k.split('_').slice(1).join('_')}: ${v.score??'—'}`).join('<br>');const ex=(snap.finalExams||{})[st.id]||{};return `<article class="border rounded-xl p-3"><div class="font-bold">${escapeHtml(st.icon||'🎓')} ${escapeHtml(st.name)}${nsFlag(st)}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div><div class="text-xs mt-2"><b>${moduleText('totalAccumulated')}:</b> ${calculateSnapshotTotal(snap,st.id).total.toFixed(2)} · <b>${moduleText('averageAccumulated')}:</b> ${calculateSnapshotTotal(snap,st.id).avg.toFixed(2)}</div><details class="mt-2 text-xs"><summary class="cursor-pointer font-bold">${moduleText('profileDetails')}</summary><div class="mt-2"><b>${moduleText('finalScore')}:</b> ${archivedFinalTotal(snap,st.id)}<br><b>Listening:</b> ${ex.listening??'—'} · <b>Speaking:</b> ${ex.speaking??'—'} · <b>Reading:</b> ${ex.reading??'—'} · <b>Writing:</b> ${ex.writing??'—'} · <b>Grammar:</b> ${ex.grammar??'—'} · <b>Vocabulary:</b> ${ex.vocabulary??'—'}<hr class="my-2"><b>${moduleText('violationsLabel')}:</b> ${escapeHtml((st.violations||[]).map(v=>v.name||v.type||'').join(', ')||'—')}</div></details></article>`}).join('')}</div>${(c.teachingPlanSnapshot||[]).length?`<h3 class="font-bold mt-5 mb-2">${appData.language==='en'?'Archived teaching plan':'Nội dung giảng dạy đã lưu'}</h3><div class="space-y-2">${c.teachingPlanSnapshot.map(w=>`<section class="border rounded-lg p-3"><b>${moduleText('weekLabel')} ${w.week||''} · ${w.year||''}</b><div class="mt-2 space-y-2">${(w.lessons||[]).map(l=>`<div class="bg-slate-50 rounded p-2 text-xs"><b>${escapeHtml((classes.find(cl=>String(cl.id)===String(l.classId))||{}).name||'')}</b> · ${escapeHtml(l.date||'—')} ${l.makeupDate?`(${escapeHtml(l.makeupDate)})`:''}<br>${escapeHtml(l.content||'')}<br>${escapeHtml(l.detail||'')}<br>${escapeHtml(l.unit||'')}<br>${escapeHtml(l.homework||'')}</div>`).join('')}</div></section>`).join('')}</div>`:''}`;document.getElementById('studentProfileTitle').innerText=c.name+' — '+moduleText('viewHistory');document.getElementById('studentProfileContent').innerHTML=html;showModuleModal('studentProfileModal');};
         function archivedFinalTotal(snap,id){const ex=(snap.finalExams||{})[id]||{};const stats=calculateSnapshotTotal(snap,id);const accumulated=stats.avg;const num=v=>v!==''&&v!==null&&v!==undefined&&Number.isFinite(Number(v))?Number(v):null;const cats=['listening','speaking','reading','writing'].map(k=>num(ex[k]));let g=num(ex.grammar),v=num(ex.vocabulary);if(ex.bonusTo?.grammar&&g!==null)g=(g+accumulated)/2;if(ex.bonusTo?.vocabulary&&v!==null)v=(v+accumulated)/2;if(ex.bonusTo?.grammarVocabulary){if(g!==null)g=(g+accumulated)/2;if(v!==null)v=(v+accumulated)/2;}const gv=[g,v].filter(x=>x!==null);if(gv.length)cats.push(gv.reduce((a,b)=>a+b,0)/gv.length);const valid=cats.filter(x=>x!==null);return valid.length? (valid.reduce((a,b)=>a+b,0)/valid.length).toFixed(2):'—';}
         function calculateSnapshotTotal(snap,id){let total=0,count=0;Object.entries(snap.scores||{}).forEach(([k,v])=>{if(k.startsWith(id+'_')){total+=Number(v.score)||0;count++;}});return {total,avg:count?total/count:0};}
         window.closeStudentProfile=function(){hideModuleModal('studentProfileModal');};
@@ -13288,7 +13319,7 @@ window.openStudentProfile=function(studentId){
           const labels={tab:en?'Lucky Wheel':'Vòng Quay May Mắn',sub:en?'Weighted random selection with persistent Firebase history.':'Quay theo trọng số, lưu lịch sử trong Firebase.',manage:en?'Manage prizes':'Quản lý phần thưởng',name:en?'Prize name':'Tên phần thưởng',weight:en?'Weight':'Trọng số',add:en?'Add to wheel':'Thêm vào vòng quay',clear:en?'Clear all configuration':'Xóa toàn bộ cấu hình',help:en?'Weights are relative; probabilities are normalized.':'Trọng số là tỷ lệ tương đối; xác suất được chuẩn hóa.',mode:en?'Spin mode':'Chế độ quay',free:en?'Free spin':'Quay tự do',student:en?'Spin for student (uses 1 turn)':'Quay cho học sinh (dùng 1 lượt)',studentLabel:en?'Student':'Học sinh',classLabel:en?'Filter by class':'Lọc theo lớp',prob:en?'Current probabilities':'Xác suất hiện tại',history:en?'Spin history':'Lịch sử quay',clearHistory:en?'Clear visible history':'Xóa lịch sử hiển thị',spin:en?'SPIN':'QUAY',ready:en?'Ready':'Sẵn sàng',empty:en?'No prizes yet. Add prizes in Manage prizes.':'Chưa có phần thưởng. Hãy thêm trong mục Quản lý phần thưởng.',noValid:en?'No enabled prize has a valid weight.':'Không có phần thưởng đang bật với trọng số hợp lệ.',none:en?'No history yet.':'Chưa có lịch sử quay.',turns:en?'Available turns':'Số lượt còn lại',legend:en?'Green = student has Lucky Wheel turns (x = turns left; each spin uses 1)':'Xanh lá = học sinh còn lượt quay (x = số lượt còn lại; mỗi lần quay dùng 1)',edit:en?'Edit':'Sửa',disable:en?'Disable':'Tắt',enable:en?'Enable':'Bật',del:en?'Delete':'Xóa',emptyStudent:en?'Select a student':'Chọn học sinh',allClasses:en?'All classes':'Tất cả lớp',noTurn:en?'This student has no Lucky Wheel turn gift.':'Học sinh này không có quà lượt quay may mắn.',archived:en?'Archived course is read-only.':'Khóa đã lưu trữ chỉ được xem.',saved:en?'Spin saved successfully.':'Đã lưu kết quả quay thành công.',failed:en?'The spin could not be confirmed. Check Firebase before retrying.':'Chưa xác nhận được lượt quay. Hãy kiểm tra Firebase trước khi thử lại.'};
           const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
           put('wheelTabLabel',labels.tab);put('wheelTitle',labels.tab);put('wheelSubtitle',labels.sub);put('wheelManageToggle',labels.manage);put('wheelCreateBtn',wheelText('Tạo quà vòng quay','Create wheel prize'));put('wheelWeightHelp',labels.help);put('wheelModeTitle',labels.mode);put('wheelFreeLabel',labels.free);put('wheelStudentLabel',labels.student);put('wheelStudentPickerLabel',labels.studentLabel);put('wheelProbabilityTitle',labels.prob);put('wheelHistoryTitle',labels.history);const clearBtn=document.querySelector('#viewWheelContainer button[onclick="clearWheelHistoryView()"]');if(clearBtn)clearBtn.textContent=labels.clearHistory;put('wheelSpinBtn',labels.spin);put('wheelProbabilityToggle',wheelText(wheelProbabilitiesVisible?'Ẩn xác suất':'Hiện xác suất',wheelProbabilitiesVisible?'Hide probabilities':'Show probabilities'));
-          const st=document.getElementById('wheelStudentPicker'),oldStudent=st.value;const eligible=(appData.students||[]).filter(x=>String(x.classId)===String(appData.activeClassId)&&wheelInventory(x).length>0);st.innerHTML=`<option value="" style="color:#334155;font-weight:400;background-color:#fff">${labels.emptyStudent}</option>`+eligible.map(x=>{const n=wheelInventory(x).length;return `<option value="${wheelEsc(x.id)}" style="color:#047857;font-weight:700;background-color:#fff">🎡 ${wheelEsc(x.name)}${n>0?' · x'+n:''}</option>`;}).join('');if([...st.options].some(o=>o.value===oldStudent))st.value=oldStudent;const selTurns=wheelInventory((appData.students||[]).find(x=>String(x.id)===st.value)).length;['text-emerald-700','font-bold','bg-emerald-50','border-emerald-400'].forEach(c=>st.classList.toggle(c,selTurns>0));
+          const st=document.getElementById('wheelStudentPicker'),oldStudent=st.value;const eligible=(appData.students||[]).filter(x=>String(x.classId)===String(appData.activeClassId)&&wheelInventory(x).length>0);st.innerHTML=`<option value="" style="color:#334155;font-weight:400;background-color:#fff">${labels.emptyStudent}</option>`+eligible.map(x=>{const n=wheelInventory(x).length;return `<option value="${wheelEsc(x.id)}" style="color:#047857;font-weight:700;background-color:#fff">🎡 ${wheelEsc(x.name)}${nsFlag(x)}${n>0?' · x'+n:''}</option>`;}).join('');if([...st.options].some(o=>o.value===oldStudent))st.value=oldStudent;const selTurns=wheelInventory((appData.students||[]).find(x=>String(x.id)===st.value)).length;['text-emerald-700','font-bold','bg-emerald-50','border-emerald-400'].forEach(c=>st.classList.toggle(c,selTurns>0));
           const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';st.disabled=mode!=='student';document.getElementById('wheelTurns').textContent=mode==='student'?(labels.turns+': x'+wheelInventory((appData.students||[]).find(x=>String(x.id)===st.value)).length):'';
           const sum=wheelEnabled().reduce((n,p)=>n+Number(p.weight),0);put('wheelStatus',wheelEnabled().length?labels.ready:labels.noValid);
           document.getElementById('wheelProbabilities').innerHTML=wheelProbabilityRows().map(p=>`<div class="wheel-fx flex items-center gap-2 text-sm rounded-lg border bg-white px-3 py-2"><span class="w-3 h-3 rounded-sm shrink-0" style="background:${wheelEsc(p.color||'#64748b')}"></span><span class="flex-1 break-words">${wheelEsc(p.name)}${wheelQty(p)>1?' ×'+wheelQty(p):''}</span><b>${p.prob.toFixed(2)}%</b></div>`).join('')||`<p class="text-sm text-slate-500">${labels.empty}</p>`;
@@ -16273,7 +16304,7 @@ html.mx-dark .gc-bar{background:#334155}
     $('gcCostL').textContent=T('Giá mỗi lần mở (pts)','Cost per box (pts)');$('gcHardL').textContent=T('Bảo hiểm 5★ (số lần)','5★ hard pity (pulls)');$('gcSave').textContent=T('Lưu','Save');
     $('gcModeT').textContent=T('Hộp quà của học sinh','Student mystery box');$('gcStuL').textContent=T('Học sinh','Student');$('gcHistT').textContent=T('Lịch sử mở hộp','Opening history');
     const sig=list.map(s=>s.id+'|'+s.name+'|'+(s.rewardPoints||0)).join(',')+'#'+selId;
-    if(sig!==selSig){selSig=sig;$('gcSel').innerHTML=list.length?list.map(s=>{const p=s.rewardPoints||0;return p>=1?`<option value="${escapeHtml(s.id)}" style="color:#047857;font-weight:700;background-color:#fff"${s.id===selId?' selected':''}>🎁 ${escapeHtml(s.name)} — ${p} pts</option>`:`<option value="${escapeHtml(s.id)}" style="color:#334155;font-weight:400;background-color:#fff"${s.id===selId?' selected':''}>${escapeHtml(s.name)} — ${p} pts</option>`;}).join(''):`<option value="" style="color:#334155;background-color:#fff">${T('Lớp chưa có học sinh','No students in this class')}</option>`;const sp=((list.find(s=>s.id===selId)||{}).rewardPoints)||0;['text-emerald-700','font-bold','bg-emerald-50','border-emerald-400'].forEach(k=>$('gcSel').classList.toggle(k,sp>=1));}
+    if(sig!==selSig){selSig=sig;$('gcSel').innerHTML=list.length?list.map(s=>{const p=s.rewardPoints||0;return p>=1?`<option value="${escapeHtml(s.id)}" style="color:#047857;font-weight:700;background-color:#fff"${s.id===selId?' selected':''}>🎁 ${escapeHtml(s.name)}${nsFlag(s)} — ${p} pts</option>`:`<option value="${escapeHtml(s.id)}" style="color:#334155;font-weight:400;background-color:#fff"${s.id===selId?' selected':''}>${escapeHtml(s.name)}${nsFlag(s)} — ${p} pts</option>`;}).join(''):`<option value="" style="color:#334155;background-color:#fff">${T('Lớp chưa có học sinh','No students in this class')}</option>`;const sp=((list.find(s=>s.id===selId)||{}).rewardPoints)||0;['text-emerald-700','font-bold','bg-emerald-50','border-emerald-400'].forEach(k=>$('gcSel').classList.toggle(k,sp>=1));}
     const st=cur(),g=gs(st?st.id:''),pts=st?(st.rewardPoints||0):0;
     applyInfo();
     $('gcPts').textContent='💎 '+T('Điểm dư hiện có','Bonus points')+': '+pts+' pts';
@@ -16287,7 +16318,7 @@ html.mx-dark .gc-bar{background:#334155}
     if(document.activeElement!==$('gcCost')&&document.activeElement!==$('gcHard')){$('gcCost').value=c.cost;$('gcHard').value=c.hard5;}
     if(!$('gcStage').firstChild)stageIdle();
     const H=G().history.filter(h=>h.sid===selId).slice(-30).reverse();
-    $('gcHistT').textContent=T('Lịch sử mở hộp','Opening history')+(st?' — '+st.name:'');
+    $('gcHistT').textContent=T('Lịch sử mở hộp','Opening history')+(st?' — '+st.name+nsFlag(st):'');
     $('gcHistClear').textContent='🗑 '+T('Xóa lịch sử','Clear history');$('gcHistClear').disabled=!H.length;$('gcHistClear').classList.toggle('opacity-50',!H.length);
     $('gcHist').innerHTML=H.length?H.map(h=>`<div class="flex flex-wrap items-center gap-2 py-1.5 border-b border-slate-100 text-sm"><span class="text-slate-400 text-xs">${new Date(h.t).toLocaleString(appData.language==='en'?'en-US':'vi-VN')}</span><span>${h.n} ${T('hộp','boxes')}:</span>${(Array.isArray(h.g)?h.g.map(x=>{const it=find(x.key);return `<span class="gc-chip gc-c${x.star}">${x.star}★ ${x.n>1?x.n+' × ':''}${escapeHtml(it?gname(it):'?')}</span>`;}):h.stars.map(x=>`<span class="gc-chip gc-c${x}">${x}★</span>`)).join(' ')}</div>`).join(''):`<div class="text-sm text-slate-500">${T('Học sinh này chưa có lượt mở hộp nào.','This student has no openings yet.')}</div>`;
   }
@@ -16600,7 +16631,7 @@ html.mx-dark .gc-bar{background:#334155}
             st.loginCode = c; await saveData(); window.mxPortalOpen();
         };
         window.mxPortalCopy = async function () {
-            const lines = []; (appData.classes || []).forEach(c => { (appData.students || []).filter(s => String(s.classId) === String(c.id)).forEach(s => lines.push((c.name || '') + '\t' + getStudentDisplayName(s) + '\t' + mxFmtCode(s.loginCode))); });
+            const lines = []; (appData.classes || []).forEach(c => { (appData.students || []).filter(s => String(s.classId) === String(c.id)).forEach(s => lines.push((c.name || '') + '\t' + getStudentDisplayName(s, true) + '\t' + mxFmtCode(s.loginCode))); });
             try { await navigator.clipboard.writeText(lines.join('\n')); mxToast(L2('Đã sao chép danh sách mã.', 'Code list copied.'), 'success'); } catch (e) { mxToast(L2('Không sao chép được.', 'Copy failed.'), 'error'); }
         };
 
