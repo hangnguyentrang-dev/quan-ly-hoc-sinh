@@ -7364,24 +7364,24 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const maxSpeak=Math.max(0,...perDay.values());
             const avg=grades.length?grades.reduce((n,x)=>n+x.v,0)/grades.length:0;
             const valid=Array(101).fill(false);const set=(i,ok)=>{if(ok)valid[i]=true};
-            [1,5,10,20,30].forEach((v,i)=>set(i+1,grades.filter(x=>x.v>=9.999999).length>=v));
-            [[6,7,5],[7,8,5],[8,9,5],[9,10,5],[10,10,10]].forEach(([i,min,len])=>set(i,chain(grades,len,x=>x.v>=min-1e-6)));
-            set(11,speak>=1);[3,5,10].forEach((n,i)=>set(12+i,maxSpeak>=n));[25,50,100,200].forEach((n,i)=>set(15+i,speak>=n));
+            [1,5,15,30,50].forEach((v,i)=>set(i+1,grades.filter(x=>x.v>=9.999999).length>=v));
+            [[6,7,5],[7,8,8],[8,9,10],[9,10,7],[10,10,12]].forEach(([i,min,len])=>set(i,chain(grades,len,x=>x.v>=min-1e-6)));
+            set(11,speak>=1);[3,8,15].forEach((n,i)=>set(12+i,maxSpeak>=n));[40,100,200,400].forEach((n,i)=>set(15+i,speak>=n));
             // Buổi học theo lịch (đã đến ngày). Buổi chưa có dữ liệu sẽ LÀM ĐỨT chuỗi (không biến mất, cũng không khóa mọi huy hiệu buổi học).
             const scheduled=confirmedDates(st);
             const todayStr=bkToday();
             const lessons=scheduled.filter(d=>d<todayStr||a.some(x=>x.date===d)).map(date=>({date,rows:a.filter(x=>x.date===date)}));
             const attended=l=>l.rows.some(x=>!x.raw.absent);
-            set(19,consecutive(lessons,10,l=>l.rows.some(x=>!x.raw.absent&&Number(x.raw.speakingCount)>=1)));
-            set(20,consecutive(lessons,15,l=>l.rows.some(x=>!x.raw.absent&&Number(x.raw.speakingCount)>=3)));
-            [6,7,8,9,9.5].forEach((v,i)=>set(21+i,grades.length>=5&&avg>=v));
-            if(grades.length>=10){for(let end=10;end<=grades.length;end++){const prev=grades.slice(end-10,end-5).reduce((n,x)=>n+x.v,0)/5;const last=grades.slice(end-5,end).reduce((n,x)=>n+x.v,0)/5;set(26,last-prev>=1-1e-8);set(27,last-prev>=2-1e-8)}}
-            set(28,grades.some((_,i)=>i>=2&&i+3<grades.length&&grades.slice(i-2,i+1).every(x=>x.v<5)&&grades.slice(i+1,i+4).every(x=>x.v>=8)));
+            set(19,consecutive(lessons,15,l=>l.rows.some(x=>!x.raw.absent&&Number(x.raw.speakingCount)>=1)));
+            set(20,consecutive(lessons,25,l=>l.rows.some(x=>!x.raw.absent&&Number(x.raw.speakingCount)>=3)));
+            [6,7,8.5,9.2,9.6].forEach((v,i)=>set(21+i,grades.length>=(i>=2?10:5)&&avg>=v));
+            if(grades.length>=10){for(let end=10;end<=grades.length;end++){const prev=grades.slice(end-10,end-5).reduce((n,x)=>n+x.v,0)/5;const last=grades.slice(end-5,end).reduce((n,x)=>n+x.v,0)/5;set(26,last-prev>=1.5-1e-8);set(27,last-prev>=2.5-1e-8)}}
+            set(28,grades.some((_,i)=>i>=2&&i+5<grades.length&&grades.slice(i-2,i+1).every(x=>x.v<5)&&grades.slice(i+1,i+6).every(x=>x.v>=8)));
             // ĐTB tích lũy được tính một lần cho mỗi buổi có điểm (theo ngày chấm thực tế, không phụ thuộc lịch giảng dạy).
             {let sum=0,num=0;const averages=[];
               for(const d of [...new Set(grades.map(x=>x.date))].sort()){for(const g of grades.filter(x=>x.date===d)){sum+=g.v;num++}averages.push({n:num,avg:sum/num})}
-              set(29,consecutive(averages,10,x=>x.n>=5&&x.avg>=8));
-              set(30,consecutive(averages,15,x=>x.n>=5&&x.avg>=9));
+              set(29,consecutive(averages,15,x=>x.n>=5&&x.avg>=8));
+              set(30,consecutive(averages,25,x=>x.n>=5&&x.avg>=9));
             }
             const hasPet=st.petSp!==undefined&&st.petSp!==null;
             const peak=Math.max(0,Number(st.petPeak)||0);
@@ -7389,16 +7389,16 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             set(41,hasPet);set(42,hasPet&&!!st.petHatch);
             for(let i=43;i<=50;i++)set(i,hasPet&&petLevel>=i-42);
             let best=0;try{const info=tenStreakInfo(st.id);best=Math.max(Number(info.hist)||0,Number(info.peak)||0,Number(info.cur)||0)}catch(_){best=0}
-            [1,5,10,15,20,30,45,60,90,120].forEach((v,i)=>set(51+i,best>=v));
+            [1,5,15,22,30,45,65,85,120,160].forEach((v,i)=>set(51+i,best>=v));
             // Only read a verified first-positive PTS balance; never confuse current balance with lifetime earnings.
             set(71,Number(st.rewardPoints)>0);
             // Kỷ luật: vi phạm đã ghi vẫn tính kể cả khi học sinh nghỉ. Buổi "sạch" phải có mặt và không vi phạm; buổi chưa ghi dữ liệu làm đứt chuỗi.
             const vdates=new Set((st.violations||[]).filter(v=>v&&v.date).map(v=>String(v.date).slice(0,10)));
             const clean=lessons.map(l=>({...l,viol:vdates.has(l.date),clean:attended(l)&&!vdates.has(l.date),speaks:l.rows.some(x=>!x.raw.absent&&Number(x.raw.speakingCount)>0)}));
-            [3,5,10,15,20,30].forEach((n,i)=>set(61+i,consecutive(clean,n,l=>l.clean)));
-            set(67,consecutive(clean,5,l=>l.clean&&l.speaks));
-            set(68,consecutive(clean,10,l=>l.clean&&l.speaks));
-            set(69,clean.some((l,i)=>l.viol&&clean.slice(i+1,i+6).length===5&&clean.slice(i+1,i+6).every(x=>x.clean)));
+            [3,5,15,22,30,45].forEach((n,i)=>set(61+i,consecutive(clean,n,l=>l.clean)));
+            set(67,consecutive(clean,8,l=>l.clean&&l.speaks));
+            set(68,consecutive(clean,15,l=>l.clean&&l.speaks));
+            set(69,clean.some((l,i)=>l.viol&&clean.slice(i+1,i+9).length===8&&clean.slice(i+1,i+9).every(x=>x.clean)));
             // Shop metrics are sourced from durable transactions only; current inventory
             // and balance cannot establish lifetime purchases or lifetime earned PTS.
             const shopLedger=Array.isArray(st._badgeShopLedger)?st._badgeShopLedger:[];
@@ -7408,13 +7408,13 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const earnedFromScores=a.reduce((n,x)=>n+(x.raw.manual?0:Math.max(0,(Number(x.raw.speakingCount)||0)-maxSpeakM)),0);
             const earnedLedger=shopUnique.filter(x=>x.type==='pts_earned').reduce((n,x)=>n+Math.max(0,Number(x.amount)||0),0);
             const earned=Math.max(earnedFromScores+earnedLedger,Number(st._badgeAudit&&st._badgeAudit.ptsEarned)||0);
-            [50,100,200].forEach((v,i)=>set(72+i,earned>=v));
+            [50,150,350].forEach((v,i)=>set(72+i,earned>=v));
             const buys=shopUnique.filter(x=>x.type==='purchase');const uses=shopUnique.filter(x=>x.type==='use');
-            set(75,buys.length>=1);set(76,buys.length>=5);
+            set(75,buys.length>=1);set(76,buys.length>=8);
             const ownedTypes=new Set(buys.map(x=>String(x.itemId||'')).filter(Boolean));
-            set(77,ownedTypes.size>=5);set(78,uses.length>=10);
-            set(79,new Set(uses.map(x=>x.effectType).filter(Boolean)).size>=3);
-            set(80,ownedTypes.size>=10);
+            set(77,ownedTypes.size>=7);set(78,uses.length>=15);
+            set(79,new Set(uses.map(x=>x.effectType).filter(Boolean)).size>=4);
+            set(80,ownedTypes.size>=13);
             // Completed, student-bound lucky-wheel spins only. Free spins never count.
             const spinIds=new Set();let spins=0;
             for(const w of wheelHistory){
@@ -7422,7 +7422,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
               const wid=String(w.spinId||'');if(!wid||spinIds.has(wid))continue;
               spinIds.add(wid);spins++;
             }
-            [1,5,10,20,30].forEach((v,i)=>set(81+i,spins>=v));
+            [1,5,15,30,50].forEach((v,i)=>set(81+i,spins>=v));
             // Mystery-box history records one entry per purchase, n boxes in that entry.
             // Only unique, plausibly valid student-bound entries count.
             const boxIds=new Set();let boxes=0;
@@ -7432,39 +7432,41 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
               if(!h.t||boxIds.has(bid))continue;boxIds.add(bid);
               const qty=Number(h.n);if(Number.isSafeInteger(qty)&&qty>0&&qty<=10)boxes+=qty;
             }
-            [1,5,10,20].forEach((v,i)=>set(86+i,boxes>=v));
-            set(90,spins>=10&&boxes>=10);
+            [1,8,15,30].forEach((v,i)=>set(86+i,boxes>=v));
+            set(90,spins>=15&&boxes>=15);
             // Private audit-only metrics; no UI or new panels.
             const audit=st._badgeAudit&&typeof st._badgeAudit==='object'?st._badgeAudit:{};
             if(audit.spins!==spins||audit.boxes!==boxes||audit.ptsEarned!==earned){st._badgeAudit={...audit,spins,boxes,ptsEarned:earned};}
             // #35: hạng 1 ở 3 lần chốt cuối tháng liên tiếp trong khóa.
-            {const mr=st._badgeMonthRanks||{};set(35,consecutive(Object.keys(mr).sort(),3,k=>mr[k]===1));}
+            {const mr=st._badgeMonthRanks||{};set(35,consecutive(Object.keys(mr).sort(),4,k=>mr[k]===1));}
             // Only finalized, signed-off course records can award final-course badges.
+            const mrAll=st._badgeMonthRanks||{};
+            const monthTop=k=>Object.values(mrAll).filter(r=>Number.isInteger(r)&&r>0&&r<=k).length;
             const closure=st._badgeCourseClosure?.[activeId];
             const ranked=Array.isArray(st._badgeRankHistory)?st._badgeRankHistory:[];
             const finalized=ranked.filter(x=>x&&x.courseId===activeId&&Number.isInteger(x.cumulativeRank)&&x.cumulativeRank>0);
             if(finalized.length){
               const bestRank=Math.min(...finalized.map(x=>x.cumulativeRank));
-              set(31,bestRank<=10);set(32,bestRank<=5);set(33,bestRank<=3);set(34,bestRank===1);
+              set(31,bestRank<=7);set(32,bestRank<=5&&monthTop(5)>=2);set(33,bestRank<=3&&monthTop(3)>=2);set(34,bestRank===1&&monthTop(1)>=2);
               // A separate finalized course constitutes one snapshot, not each save.
-              set(36,finalized.some(x=>x.finalRank===1));
-              set(37,finalized.some(x=>x.finalRank===2));
-              set(38,finalized.some(x=>x.finalRank===3));
-              set(39,finalized.some(x=>x.cumulativeRank<=3&&Number.isInteger(x.finalRank)&&x.finalRank>0&&x.finalRank<=3));
-              set(40,finalized.some(x=>x.cumulativeRank===1&&x.finalRank===1));
+              set(36,finalized.some(x=>x.finalRank===1&&x.cumulativeRank<=5));
+              set(37,finalized.some(x=>x.finalRank===2&&x.cumulativeRank<=7));
+              set(38,finalized.some(x=>x.finalRank===3&&x.cumulativeRank<=10));
+              set(39,finalized.some(x=>x.cumulativeRank<=2&&Number.isInteger(x.finalRank)&&x.finalRank>0&&x.finalRank<=2));
+              set(40,finalized.some(x=>x.cumulativeRank===1&&x.finalRank===1)&&monthTop(1)>=3);
             }
             if(closure?.confirmed===true&&closure?.courseId===activeId){
-              set(96,petLevel>=8&&avg>=9);
-              set(98,Number(closure.cumulativeRank)<=3&&Number(closure.finalRank)<=3&&petLevel>=5);
-              set(99,avg>=9&&best>=60&&speak>=100&&consecutive(clean,20,l=>l.clean));
-              set(70,lessons.filter(attended).length>=20&&!(st.violations||[]).some(v=>v&&v.date));
+              set(96,petLevel>=8&&avg>=9.3);
+              set(98,Number(closure.cumulativeRank)<=2&&Number(closure.finalRank)<=2&&petLevel>=6);
+              set(99,avg>=9.3&&best>=90&&speak>=200&&consecutive(clean,30,l=>l.clean));
+              set(70,lessons.filter(attended).length>=30&&!(st.violations||[]).some(v=>v&&v.date));
             }
             // Composite achievements: no self-reference.
             const have=i=>!!(st.badges&&st.badges[i])||valid[i];
             const catCount=new Set(Array.from({length:90},(_,i)=>i+1).filter(have).map(i=>Math.floor((i-1)/10))).size;
-            set(91,catCount>=5);const count90=Array.from({length:90},(_,i)=>i+1).filter(have).length;
-            [25,50,75].forEach((v,i)=>set(92+i,count90>=v));set(95,catCount>=9);
-            set(97,best>=90&&speak>=100);
+            set(91,catCount>=6);const count90=Array.from({length:90},(_,i)=>i+1).filter(have).length;
+            [35,65,80].forEach((v,i)=>set(92+i,count90>=v));{const per=Array(9).fill(0);Array.from({length:90},(_,i)=>i+1).filter(have).forEach(i=>per[Math.floor((i-1)/10)]++);set(95,per.every(n=>n>=2));}
+            set(97,best>=120&&speak>=200);
             // 96,98,99 need final course closing / ranked snapshots / audited discipline sessions.
             for(let i=1;i<=99;i++)if(valid[i]&&!(st.badges&&st.badges[i])){
               st.badges=st.badges||{};st.badges[i]=Date.now();newly++;bkQueueNew(st,i);
@@ -16704,14 +16706,14 @@ html.mx-dark .gc-bar{background:#334155}
         window.mxStuLogout = function () { try { sessionStorage.removeItem('mxStu'); sessionStorage.removeItem('mxStuCourse'); } catch (e) {} try { localStorage.removeItem('mxRoleTeacher'); } catch (e) {} location.reload(); };   // thoát học sinh → về màn hình "Bạn là ai?" (thu hồi luôn trạng thái nhớ mật khẩu giáo viên trên máy này)
 
         /* ---------- Phía học sinh: thanh thông tin + tab ---------- */
-        const MX_STU_ORDER = ['home', 'ranking', 'finalExam', 'matrix', 'pet', 'mypet'];
-        const MX_STU_EL = { home: 'mxStuHome', ranking: 'viewRankingContainer', finalExam: 'viewFinalExamContainer', matrix: 'viewMatrixContainer', pet: 'viewPetContainer', mypet: 'viewPetContainer' };
+        const MX_STU_ORDER = ['home', 'ranking', 'finalExam', 'matrix', 'pet', 'mypet', 'exp'];
+        const MX_STU_EL = { home: 'mxStuHome', ranking: 'viewRankingContainer', finalExam: 'viewFinalExamContainer', matrix: 'viewMatrixContainer', pet: 'viewPetContainer', mypet: 'viewPetContainer', exp: 'viewPetContainer' };
         let mxStuBusy = false, mxStuWant = null;
-        function mxStuCurTab() { const m = appData.activeViewMode; return m === 'pet' ? (petMode === 'shop' ? 'mypet' : 'pet') : (m || 'home'); }
+        function mxStuCurTab() { const m = appData.activeViewMode; return m === 'pet' ? (petMode === 'shop' ? 'mypet' : petMode === 'exp' ? 'exp' : 'pet') : (m || 'home'); }
         function mxStuShow(k) {
             const S = window.MX_STUDENT; if (!S) return;
-            if (k === 'pet' || k === 'mypet') {
-                petMode = k === 'mypet' ? 'shop' : 'class'; if (k === 'mypet') petTarget = S.sid;
+            if (k === 'pet' || k === 'mypet' || k === 'exp') {
+                petMode = k === 'mypet' ? 'shop' : k === 'exp' ? 'exp' : 'class'; if (k === 'mypet') petTarget = S.sid;
                 window.__petSlide = 0; appData.activeViewMode = 'pet'; sessionViewMode = 'pet';
             } else { appData.activeViewMode = k; sessionViewMode = k; }
             renderCurrentView();
@@ -16769,7 +16771,7 @@ html.mx-dark .gc-bar{background:#334155}
             } catch (e) { console.warn('Course picker skipped:', e); }
             const pend = S.pend ? S.pend.size : 0, pe = document.getElementById('mxStuPend');
             if (pe) { pe.textContent = pend ? '⏳ ' + L2('Đang chờ giáo viên xử lý: ', 'Waiting for teacher: ') + pend : ''; pe.classList.toggle('hidden', !pend); }
-            const tabs = [['home', 'fa-house', L2('Trang chủ', 'Home')], ['ranking', 'fa-award', L2('Xếp hạng', 'Ranking')], ['finalExam', 'fa-trophy', L2('Xếp hạng cuối kỳ', 'Final ranking')], ['matrix', 'fa-table-cells', L2('Bảng điểm', 'Scores')], ['pet', 'fa-egg', L2('Thú Cưng', 'Pets')], ['mypet', 'fa-store', L2('Cửa hàng thú cưng', 'Pet shop')], ['badge', 'fa-medal', L2('Sổ huy hiệu', 'Badge book')]];
+            const tabs = [['home', 'fa-house', L2('Trang chủ', 'Home')], ['ranking', 'fa-award', L2('Xếp hạng', 'Ranking')], ['finalExam', 'fa-trophy', L2('Xếp hạng cuối kỳ', 'Final ranking')], ['matrix', 'fa-table-cells', L2('Bảng điểm', 'Scores')], ['pet', 'fa-egg', L2('Thú Cưng', 'Pets')], ['mypet', 'fa-store', L2('Cửa hàng thú cưng', 'Pet shop')], ['exp', 'fa-compass', L2('Thám hiểm', 'Expedition')]];
             const nav = document.getElementById('mxStuTabs'), lang = appData.language || 'vi';
             if (nav && nav.dataset.lang !== lang) {
                 nav.dataset.lang = lang;
@@ -16947,7 +16949,7 @@ html.mx-dark .gc-bar{background:#334155}
         /* ---------- Phía học sinh: chặn thao tác ngoài phạm vi (mặc định: chặn) ---------- */
         const MX_OWN = a => String(a[0]) === String(window.MX_STUDENT && window.MX_STUDENT.sid);
         const MX_OK = {
-            petSubTab: () => true, petSetMode: a => a[0] === 'class' || a[0] === 'shop' || a[0] === 'exp', pxpOpen: () => true, pxpBack: () => true, petGoShop: MX_OWN, petPickStu: MX_OWN, petEqOpen: MX_OWN, petSetSel: () => true,
+            petSubTab: () => true, petSetMode: a => a[0] === 'class' || a[0] === 'shop' || a[0] === 'exp', pxpOpen: () => true, pxpBack: () => true, pxpScroll: () => true, petGoShop: MX_OWN, petPickStu: MX_OWN, petEqOpen: MX_OWN, petSetSel: () => true,
             petLbOpen: () => true, petLbClose: () => true, mxStuTab: () => true, pqClose: () => true, pqCnt: () => true, pqPick: () => true, pqEquip: () => true,
             pqUnequip: () => true, pqSaveName: () => true, pqResetName: () => true, pshSet: () => true, pshBuy: () => true
         };
@@ -17076,7 +17078,7 @@ html.mx-dark .gc-bar{background:#334155}
         // Bảng quà của một map: ưu tiên bản giáo viên đã chỉnh (appData.petExp.loot[mapId] = [[mã, %], ...]), không hợp lệ thì dùng mặc định
         function pxpLootTb(z) {
             const d = PXP_LOOT[z.id] || [['p1', 1]], E = appData && appData.petExp, c = E && E.loot && E.loot[z.id];
-            if (Array.isArray(c) && c.length >= 1 && c[0] && c[0][0] === d[0][0] && c.every(x => Array.isArray(x) && isFinite(x[1]) && x[1] >= 0 && (PXP_GIFT[x[0]] || pxpCuDef(x[0]))) && c.some(x => x[1] > 0)) return c;
+            if (Array.isArray(c) && c.length >= 1 && c[0] && c.every(x => Array.isArray(x) && isFinite(x[1]) && x[1] >= 0 && (PXP_GIFT[x[0]] || pxpCuDef(x[0]))) && c.some(x => x[1] > 0)) return c;
             return d;
         }
         function pxpLootList(z) {
@@ -17117,11 +17119,16 @@ html.mx-dark .gc-bar{background:#334155}
         }
         function pxpGrantLoot(st, key, code, vi, en) {
             const cu = pxpCuDef(code);
+            if (cu && cu.kind) { // quà tự tạo dạng Pts / điểm tích lũy / lượt quay / khiên / phiếu: dùng đúng đường trao quà có sẵn
+                const n = Math.max(1, Math.round(Number(cu.n)) || 1);
+                if (cu.kind === 'pts') petGive(st, key, n, vi, en); else if (cu.kind === 'acc') petGiveAccum(st, key, n, vi, en); else if (PET_GIFT[cu.kind]) petGiveInv(st, key, cu.kind, n, vi, en);
+                return;
+            }
             if (cu) { // quà tự tạo trong Cài đặt: xếp hàng như một bản sao quà, học sinh bấm thẻ thú cưng để nhận
                 const P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led[key]) return; led[key] = 1; _petChanged = true;
                 const o = { itemId: 'pxp_cu_' + cu.id, name: cu.name || '', isFixed: false, type: cu.type || null, pxpCu: true };
                 ['targetScore', 'deltaScore', 'matchScore', 'matchOp'].forEach(f => { if (cu[f] !== undefined) o[f] = cu[f]; });
-                petQueue(st, { k: 'copy', n: 1 + petGiftX(st), item: o, vi, en }); return;
+                petQueue(st, { k: 'copy', n: Math.max(1, Math.floor(Number(cu.qty)) || 1) + petGiftX(st), item: o, vi, en }); return;
             }
             const g = PXP_GIFT[code]; if (!g) return;
             if (g.k === 'pts') petGive(st, key, g.n, vi, en);
@@ -17214,7 +17221,7 @@ html.mx-dark .gc-bar{background:#334155}
         }
         const pxpGuard = () => { if (window.MX_STUDENT) return true; if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) { if (window.showAppToast) window.showAppToast(L2('Khóa đã lưu trữ chỉ được xem.', 'Archived course is read-only.'), 'error'); return true; } return false; };
         /* ---- Quy trình 5 bước: Chọn học sinh → Chọn khu vực → Bắt đầu chuyến đi → ④ Tích lũy tiến độ → Hoàn thành & nhận thưởng ---- */
-        let pxpSid = '', pxpView = 'world', pxpAnim = '';
+        let pxpSid = '', pxpView = 'world', pxpAnim = '', pxpAutoSid = '';
         const PXP_STEPS = [['Chọn học sinh', 'Choose student', 'Hiển thị Pet đang sở hữu, cấp tiến hóa, streak và nội tại.', 'Shows the owned pet, evolution level, streak and passive.'],
             ['Chọn khu vực', 'Choose region', 'Kiểm tra yêu cầu tham gia và phần thưởng.', 'Check entry requirements and rewards.'],
             ['Bắt đầu chuyến đi', 'Start the trip', 'Lưu thời điểm bắt đầu và mốc buổi học.', 'Saves the start time and lesson milestone.'],
@@ -17286,6 +17293,32 @@ html.mx-dark .gc-bar{background:#334155}
                 <div class="pxp-cwrap"><button type="button" class="pxp-arr l" onclick="pxpScroll(-1)" aria-label="←">‹</button><div class="pxp-cards" id="pxpCards" onscroll="window.__pxpSX=this.scrollLeft">${cards}</div><button type="button" class="pxp-arr r" onclick="pxpScroll(1)" aria-label="→">›</button></div>`;
         }
         window.pxpScroll = d => { const el = document.getElementById('pxpCards'); if (el) el.scrollBy({ left: d * 420, behavior: xfRM() ? 'auto' : 'smooth' }); };
+        // Rê chuột vào danh sách map rồi lăn con lăn → lướt ngang mượt (dùng chung cho giáo viên & cổng học sinh).
+        // Tới mép trái/phải thì nhường cho trang cuộn dọc bình thường; trackpad vuốt ngang vẫn dùng cơ chế gốc của trình duyệt.
+        if (!window.__pxpWheelOn) {
+            window.__pxpWheelOn = true;
+            let raf = 0, tgt = 0, cur = null;
+            const step = () => {
+                const c = cur; if (!c || !c.isConnected) { raf = 0; return; }
+                const d = tgt - c.scrollLeft;
+                if (Math.abs(d) < 0.8) { c.scrollLeft = tgt; raf = 0; return; }
+                c.scrollLeft += Math.abs(d) < 3 ? d : d * 0.22;
+                raf = requestAnimationFrame(step);
+            };
+            document.addEventListener('wheel', e => {
+                const c = e.target && e.target.closest ? e.target.closest('#pxpCards') : null; if (!c || e.ctrlKey) return;
+                if (Math.abs(e.deltaX) >= Math.abs(e.deltaY) || !e.deltaY) return;
+                const max = c.scrollWidth - c.clientWidth; if (max <= 1) return;
+                const base = (cur === c && raf) ? tgt : c.scrollLeft;
+                if ((e.deltaY < 0 && base <= 0) || (e.deltaY > 0 && base >= max - 1)) return;
+                e.preventDefault();
+                const px = e.deltaY * (e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? c.clientWidth : 1.4);
+                tgt = Math.max(0, Math.min(max, base + px)); cur = c;
+                c.style.scrollSnapType = 'none'; // tránh snap giật khi đang lướt
+                if (xfRM()) { c.scrollLeft = tgt; return; }
+                if (!raf) raf = requestAnimationFrame(step);
+            }, { passive: false });
+        }
 
         // ---------- Cài đặt quà thám hiểm: xem quà từng map, chỉnh xác suất, tạo quà riêng (chỉ giáo viên) ----------
         // appData.petExp.loot[mapId] = [[mã quà, %], ...]  (mã 'cu:<id>' = quà tự tạo, định nghĩa ở appData.petExp.custom[id])
@@ -17295,7 +17328,16 @@ html.mx-dark .gc-bar{background:#334155}
         const pxpFmtN = n => { const t = String(pxpN2(n)); return (appData.language || 'vi') === 'en' ? t : t.replace('.', ','); };
         const pxpCfgToast = (vi, en, t) => { try { if (window.showAppToast) window.showAppToast(L2(vi, en), t || 'success'); } catch (e) {} };
         const pxpTr = (k, vi, en) => { try { const t = translations[appData.language || 'vi']; return (t && t[k]) || L2(vi, en); } catch (e) { return L2(vi, en); } };
-        const pxpGiftObj = c => { const cu = pxpCuDef(c); if (cu) return { type: cu.type || '', itemId: 'pxp_cu_' + cu.id }; const g = PXP_GIFT[c]; if (!g) return {}; if (g.k === 'pts') return { type: 'plus' }; if (g.k === 'acc') return {}; const b = PET_GIFT[g.kind] || {}; return { type: b.type, itemId: b.itemId }; };
+        const pxpKindObj = kind => { if (kind === 'pts') return { type: 'plus' }; if (kind === 'acc') return {}; const b = PET_GIFT[kind] || {}; return { type: b.type, itemId: b.itemId }; };
+        const pxpGiftObj = c => { const cu = pxpCuDef(c); if (cu) return cu.kind ? pxpKindObj(cu.kind) : { type: cu.type || '', itemId: 'pxp_cu_' + cu.id }; const g = PXP_GIFT[c]; if (!g) return {}; return pxpKindObj(g.k === 'inv' ? g.kind : g.k); };
+        // Quà có sẵn -> định nghĩa tương đương để mở trong khung Sửa quà (lưu thành quà tự tạo, chỉ thay trong map đang chọn)
+        const pxpBuiltinDef = code => {
+            const g = PXP_GIFT[code]; if (!g) return null; const name = pxpGiftName(code);
+            if (g.k === 'pts' || g.k === 'acc') return { name, kind: g.k, n: g.n };
+            const b = PET_GIFT[g.kind]; if (!b) return null;
+            if (['plus', 'add', 'change', 'delete_score', 'plus_exam', 'plus_match'].includes(b.type)) { const d = { name, type: b.type }; ['deltaScore', 'targetScore', 'matchScore', 'matchOp'].forEach(f => { if (b[f] !== undefined) d[f] = b[f]; }); if (g.n > 1) d.qty = g.n; return d; }
+            return { name, kind: g.kind, n: g.n };
+        };
         const pxpCfgVals = z => (pxpCfgDraft[z.id] || pxpLootTb(z)).map(x => [x[0], x[1]]);
         const pxpCfgSum = a => pxpN2(a.reduce((t, x) => t + (Number(x[1]) || 0), 0));
         const pxpCfgDef = z => (PXP_LOOT[z.id] || [['p1', 1]]).map(x => [x[0], x[1]]);
@@ -17312,13 +17354,13 @@ html.mx-dark .gc-bar{background:#334155}
                 const wm = (typeof QG_ICON !== 'undefined' && QG_ICON[k]) || 'fa-gift';
                 return `<div class="gift-card gift-special gift-sp-${k} pxp-gcard"><span class="gift-wm" aria-hidden="true"><i class="fa-solid ${k === 'lucky' ? 'fa-dharmachakra' : wm}"></i></span>
                     ${i === 0 ? `<span class="pxp-gbase" title="${pxpEsc(L2('Quà cơ bản: không tăng theo sức mạnh thú cưng', 'Base gift: not boosted by pet power'))}">★ ${pxpEsc(L2('Cơ bản', 'Base'))}</span>` : ''}
-                    ${cu ? `<button type="button" class="pxp-gedit" onclick="pxpCuOpen('${x[0]}')" title="${pxpEsc(L2('Sửa quà này', 'Edit this gift'))}" aria-label="${pxpEsc(L2('Sửa quà này', 'Edit this gift'))}"><i class="fa-solid fa-pen"></i></button><button type="button" class="pxp-gdel" onclick="pxpCfgDel(${i})" title="${pxpEsc(L2('Xóa quà này khỏi map', 'Remove this gift from the map'))}" aria-label="${pxpEsc(L2('Xóa quà này khỏi map', 'Remove this gift from the map'))}"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+                    ${`<button type="button" class="pxp-gedit" onclick="pxpCuOpen('${x[0]}',${i})" title="${pxpEsc(L2('Sửa quà này', 'Edit this gift'))}" aria-label="${pxpEsc(L2('Sửa quà này', 'Edit this gift'))}"><i class="fa-solid fa-pen"></i></button><button type="button" class="pxp-gdel" onclick="pxpCfgDel(${i})" title="${pxpEsc(L2('Xóa quà này khỏi map', 'Remove this gift from the map'))}" aria-label="${pxpEsc(L2('Xóa quà này khỏi map', 'Remove this gift from the map'))}"><i class="fa-solid fa-trash-can"></i></button>`}
                     <div class="gift-body"><div class="gift-emoji-wrap text-2xl mb-1 mt-1"><span class="gift-emoji gift-type-ico">${ico}</span></div>
                     <div class="gift-info"><div class="gift-name font-bold text-slate-800 text-sm mb-1">${nm}</div></div>
                     <div class="pxp-gbar"><i id="pxpCfgBar${i}" style="width:${Math.min(100, v)}%"></i></div>
                     <label class="pxp-cfgnum"><input type="number" min="0" max="100" step="0.5" inputmode="decimal" value="${pxpN2(v)}" oninput="pxpCfgEdit(${i},this.value)" onfocus="this.select()" aria-label="${nm} (%)"><span>%</span></label></div></div>`;
             }).join('') + `<button type="button" class="pxp-gadd" onclick="pxpCuOpen()"><i class="fa-solid fa-plus"></i><span>${L2('Thêm quà', 'Add gift')}</span></button>`;
-            return `<div class="pxp-cfgh"><div><div class="pxp-sect" style="margin:0">⚙️ ${L2('Cài đặt quà thám hiểm', 'Expedition gift settings')}</div><div class="pxp-fine">${L2('Chọn một map để xem quà, chỉnh xác suất hoặc thêm quà riêng. Thay đổi chỉ áp dụng cho các chuyến được chốt kết quả sau khi lưu.', 'Pick a map to view its gifts, edit the odds or add your own gifts. Changes apply only to trips that finish after saving.')}</div></div>
+            return `<div class="pxp-cfgh"><div><div class="pxp-sect" style="margin:0">⚙️ ${L2('Cài đặt quà thám hiểm', 'Expedition gift settings')}</div><div class="pxp-fine">${L2('Chọn một map để xem quà, sửa/xóa quà, chỉnh xác suất hoặc thêm quà riêng. Thay đổi chỉ áp dụng cho các chuyến được chốt kết quả sau khi lưu.', 'Pick a map to view its gifts, edit/remove gifts, change the odds or add your own gifts. Changes apply only to trips that finish after saving.')}</div></div>
                 <button type="button" class="pxp-cfgx" onclick="pxpCfgToggle()" aria-label="${pxpEsc(L2('Đóng', 'Close'))}">✕</button></div>
                 <div class="pxp-cfgchips" role="group" aria-label="${pxpEsc(L2('Chọn map', 'Choose a map'))}">${chips}</div>
                 <div class="pxp-cfginfo" style="--zc:${z.col}"><span class="pxp-cfgbig">${z.ic}</span><div><b>${pxpEsc(pxpNm(z))}</b><div class="pxp-ctags"><span class="pxp-tag" style="background:${dv[2]}">${pxpEsc(L2(dv[0], dv[1]))}</span><span class="pxp-tag soft">⏳ ${z.need} ${L2('buổi', 'lessons')}</span><span class="pxp-tag soft">🔒 ${pxpEsc(petFormLevelName(z.min))}+</span></div></div></div>
@@ -17355,7 +17397,7 @@ html.mx-dark .gc-bar{background:#334155}
             const c = document.querySelector('#pxpCfgBody .pxp-cfgchip.on'); if (c && c.scrollIntoView) c.scrollIntoView({ inline: 'center', block: 'nearest', behavior: xfRM() ? 'auto' : 'smooth' });
         };
         window.pxpCfgEdit = (i, v) => { const z = pxpZ(pxpCfgZ), a = pxpCfgVals(z); if (!a[i]) return; a[i][1] = Math.max(0, Math.min(100, Number(v) || 0)); pxpCfgDraft[z.id] = a; pxpCfgSync(); };
-        window.pxpCfgDel = i => { const z = pxpZ(pxpCfgZ), a = pxpCfgVals(z); if (!a[i] || !pxpCuDef(a[i][0])) return; a.splice(i, 1); pxpCfgDraft[z.id] = a; pxpCfgRefresh(); pxpCfgToast('Đã gỡ quà khỏi map. Chỉnh lại xác suất (có thể bấm "Quy về 100%") rồi bấm Lưu.', 'Gift removed from the map. Adjust the odds (you can use "Scale to 100%") then press Save.', 'info'); };
+        window.pxpCfgDel = i => { const z = pxpZ(pxpCfgZ), a = pxpCfgVals(z); if (!a[i]) return; if (a.length <= 1) { pxpCfgToast('Mỗi map cần ít nhất một quà.', 'Each map needs at least one gift.', 'error'); return; } a.splice(i, 1); pxpCfgDraft[z.id] = a; pxpCfgRefresh(); pxpCfgToast('Đã gỡ quà khỏi map. Chỉnh lại xác suất (có thể bấm "Quy về 100%") rồi bấm Lưu.', 'Gift removed from the map. Adjust the odds (you can use "Scale to 100%") then press Save.', 'info'); };
         window.pxpCfgNorm = () => {
             const z = pxpZ(pxpCfgZ), a = pxpCfgVals(z), t = a.reduce((x, y) => x + (Number(y[1]) || 0), 0);
             if (!(t > 0)) { pxpCfgToast('Cần ít nhất một quà có xác suất lớn hơn 0.', 'At least one gift needs a chance above 0.', 'error'); return; }
@@ -17385,43 +17427,53 @@ html.mx-dark .gc-bar{background:#334155}
             try { window.renderPetView(); } catch (e) { pxpCfgRefresh(); }
         };
         // ----- Tạo quà riêng (cùng cơ chế tạo quà của Hộp Quà Bí Ẩn: tên, tính năng áp dụng, giá trị, điều kiện ô điểm) -----
-        window.pxpCuOpen = code => {
+        window.pxpCuOpen = (code, idx) => {
             if (document.getElementById('pxpCuModal')) return;
-            const ed = code ? pxpCuDef(code) : null; window.__pxpCuEditId = ed ? ed.id : null;
+            const cuD = code ? pxpCuDef(code) : null, biD = (code && !cuD) ? pxpBuiltinDef(code) : null, ed = cuD || biD; window.__pxpCuEditId = cuD ? cuD.id : null; window.__pxpCuBuiltin = biD ? { code, idx } : null;
             const T = pxpTr, m = document.createElement('div'); m.id = 'pxpCuModal';
             m.className = 'fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-3';
             const opt = (v, k, vi, en) => `<option value="${v}">${pxpEsc(T(k, vi, en))}</option>`;
             m.innerHTML = `<div class="bg-white rounded-xl shadow-2xl w-96 max-w-full p-6" role="dialog" aria-modal="true"><div class="flex justify-between items-center border-b pb-3 mb-4"><h3 class="text-base font-bold text-slate-800">${ed ? pxpEsc(L2('Sửa quà', 'Edit gift')) : pxpEsc(L2('Thêm quà cho map', 'Add a gift to the map')) + ': ' + pxpZ(pxpCfgZ).ic + ' ' + pxpEsc(pxpNm(pxpZ(pxpCfgZ)))}</h3><button type="button" onclick="pxpCuClose()" class="text-slate-400 hover:text-slate-600" aria-label="${pxpEsc(L2('Đóng', 'Close'))}"><i class="fa-solid fa-xmark text-lg"></i></button></div>
                 <form onsubmit="pxpCuSubmit(event)"><div class="mb-3"><label class="block text-xs font-semibold text-slate-600 mb-1">${pxpEsc(T('lblRewardName', 'Tên món quà:', 'Gift name:'))}</label><input type="text" id="pxpCuName" required maxlength="80" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></div>
-                <div class="mb-3"><label class="block text-xs font-semibold text-slate-600 mb-1">${pxpEsc(T('lblRewardType', 'Tính năng áp dụng khi nhấn ô điểm:', 'Effect when a score cell is clicked:'))}</label><select id="pxpCuType" onchange="pxpCuType(this.value)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">${opt('none', 'optTypeNone', 'Quà thông thường (Đặc quyền / Hiện vật / BTVN)', 'Regular gift (privilege / item / homework)')}${opt('plus', 'optTypePlus', 'Cộng dồn điểm vào ô (+0.5đ, +1đ...)', 'Add points to a cell (+0.5, +1...)')}${opt('add', 'optTypeAdd', 'Tạo điểm mới cho ô trống (Điểm 10, Điểm 9...)', 'Create a new score in an empty cell (10, 9...)')}${opt('change', 'optTypeChange', 'Sửa điểm đã có trong ô (Sửa thành 10...)', 'Change an existing score (to 10...)')}${opt('delete_score', 'optTypeDeleteScore', 'Xóa điểm đã có trong ô', 'Delete an existing score')}${opt('plus_match', 'optTypePlusMatch', 'Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)', 'Add points to a cell with a specified score')}${opt('plus_exam', 'optTypePlusExam', 'Cộng dồn điểm vào Bài Kiểm Tra (+0.5đ, +1đ...)', 'Add points to a Test score (+0.5, +1...)')}</select></div>
+                <div class="mb-3"><label class="block text-xs font-semibold text-slate-600 mb-1">${pxpEsc(T('lblRewardType', 'Tính năng áp dụng khi nhấn ô điểm:', 'Effect when a score cell is clicked:'))}</label><select id="pxpCuType" onchange="window.pxpCuType(this.value)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">${opt('none', 'optTypeNone', 'Quà thông thường (Đặc quyền / Hiện vật / BTVN)', 'Regular gift (privilege / item / homework)')}${opt('plus', 'optTypePlus', 'Cộng dồn điểm vào ô (+0.5đ, +1đ...)', 'Add points to a cell (+0.5, +1...)')}${opt('add', 'optTypeAdd', 'Tạo điểm mới cho ô trống (Điểm 10, Điểm 9...)', 'Create a new score in an empty cell (10, 9...)')}${opt('change', 'optTypeChange', 'Sửa điểm đã có trong ô (Sửa thành 10...)', 'Change an existing score (to 10...)')}${opt('delete_score', 'optTypeDeleteScore', 'Xóa điểm đã có trong ô', 'Delete an existing score')}${opt('plus_match', 'optTypePlusMatch', 'Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)', 'Add points to a cell with a specified score')}${opt('plus_exam', 'optTypePlusExam', 'Cộng dồn điểm vào Bài Kiểm Tra (+0.5đ, +1đ...)', 'Add points to a Test score (+0.5, +1...)')}<option value="x_pts">${pxpEsc(L2('Cộng điểm thưởng (Pts) vào kho', 'Add reward points (Pts)'))}</option><option value="x_acc">${pxpEsc(L2('Quà cộng điểm tích lũy', 'Accumulated-point gift'))}</option><option value="x_spin">${pxpEsc(L2('Lượt quay may mắn', 'Lucky Wheel spin'))}</option><option value="x_shield">${pxpEsc(L2('Khiên giữ chuỗi', 'Streak Shield'))}</option><option value="x_ticket">${pxpEsc(L2('Phiếu Vật Phẩm', 'Item Ticket'))}</option></select></div>
                 <div id="pxpCuValRow" class="mb-4 hidden"><label class="block text-xs font-semibold text-indigo-700 mb-1" id="pxpCuValLbl"></label><input type="number" step="0.1" id="pxpCuVal" class="w-full border border-indigo-200 bg-indigo-50/50 rounded-lg px-3 py-2 text-sm font-bold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"></div>
+                <div id="pxpCuQtyRow" class="mb-4 hidden"><label class="block text-xs font-semibold text-indigo-700 mb-1">${pxpEsc(L2('Số lượng quà mỗi lần nhận:', 'Gifts per drop:'))}</label><input type="number" step="1" min="1" max="20" value="1" id="pxpCuQty" class="w-full border border-indigo-200 bg-indigo-50/50 rounded-lg px-3 py-2 text-sm font-bold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"></div>
                 <div id="pxpCuMatchRow" class="mb-4 hidden"><label class="block text-xs font-semibold text-indigo-700 mb-1">${pxpEsc(T('lblMatchCond', 'Ô điểm quy định được cộng (điều kiện & mức điểm):', 'Cell that receives the points (condition & score):'))}</label><div class="flex gap-2"><select id="pxpCuOp" class="w-3/5 border border-indigo-200 bg-indigo-50/50 rounded-lg px-2 py-2 text-sm font-bold text-indigo-900"><option value="lte">${pxpEsc(T('optMatchLte', 'Từ mức này trở xuống (≤)', 'At or below (≤)'))}</option><option value="eq">${pxpEsc(T('optMatchEq', 'Bằng đúng mức này (=)', 'Exactly (=)'))}</option><option value="gte">${pxpEsc(T('optMatchGte', 'Từ mức này trở lên (≥)', 'At or above (≥)'))}</option></select><input type="number" step="0.1" min="0" max="10" id="pxpCuMs" class="w-2/5 border border-indigo-200 bg-indigo-50/50 rounded-lg px-3 py-2 text-sm font-bold text-indigo-900"></div></div>
                 <div class="flex justify-end space-x-2"><button type="button" onclick="pxpCuClose()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold">${pxpEsc(T('btnCancel', 'Hủy', 'Cancel'))}</button><button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold">${ed ? pxpEsc(L2('Lưu thay đổi', 'Save changes')) : pxpEsc(T('btnSaveReward', 'Lưu Món Quà', 'Save Gift'))}</button></div></form></div>`;
             m.addEventListener('mousedown', e => { if (e.target === m) pxpCuClose(); });
             m.addEventListener('keydown', e => { if (e.key === 'Escape') pxpCuClose(); });
-            document.body.appendChild(m); pxpCuType('none');
+            document.body.appendChild(m); window.pxpCuType('none');
             if (ed) {
-                document.getElementById('pxpCuName').value = ed.name || ''; document.getElementById('pxpCuType').value = ed.type || 'none'; pxpCuType(ed.type || 'none');
-                const v = ed.deltaScore !== undefined ? ed.deltaScore : ed.targetScore; if (v !== undefined) document.getElementById('pxpCuVal').value = v;
+                document.getElementById('pxpCuName').value = ed.name || ''; const tv = ed.kind ? 'x_' + ed.kind : (ed.type || 'none'); document.getElementById('pxpCuType').value = tv; window.pxpCuType(tv);
+                const v = ed.kind ? (ed.kind === 'pts' || ed.kind === 'acc' ? ed.n : undefined) : (ed.deltaScore !== undefined ? ed.deltaScore : ed.targetScore); if (v !== undefined) document.getElementById('pxpCuVal').value = v;
+                document.getElementById('pxpCuQty').value = ed.kind ? ((ed.kind === 'pts' || ed.kind === 'acc') ? 1 : (ed.n || 1)) : (ed.qty || 1);
                 if (ed.type === 'plus_match') { document.getElementById('pxpCuOp').value = ed.matchOp || 'lte'; document.getElementById('pxpCuMs').value = ed.matchScore; }
             }
             setTimeout(() => { const n = document.getElementById('pxpCuName'); if (n) n.focus(); }, 30);
         };
-        window.pxpCuClose = () => { const m = document.getElementById('pxpCuModal'); if (m) m.remove(); window.__pxpCuEditId = null; };
+        window.pxpCuClose = () => { const m = document.getElementById('pxpCuModal'); if (m) m.remove(); window.__pxpCuEditId = null; window.__pxpCuBuiltin = null; };
         window.pxpCuType = t => {
-            const row = document.getElementById('pxpCuValRow'), lbl = document.getElementById('pxpCuValLbl'), inp = document.getElementById('pxpCuVal'), mr = document.getElementById('pxpCuMatchRow');
+            const row = document.getElementById('pxpCuValRow'), lbl = document.getElementById('pxpCuValLbl'), inp = document.getElementById('pxpCuVal'), mr = document.getElementById('pxpCuMatchRow'), qr = document.getElementById('pxpCuQtyRow');
             if (!row) return;
-            const show = !(t === 'none' || t === 'delete_score' || !t);
-            row.classList.toggle('hidden', !show); mr.classList.toggle('hidden', t !== 'plus_match');
+            const amt = t === 'x_pts' || t === 'x_acc', isKind = /^x_/.test(t || '');
+            const show = amt || !(t === 'none' || t === 'delete_score' || !t || isKind);
+            row.classList.toggle('hidden', !show); mr.classList.toggle('hidden', t !== 'plus_match'); if (qr) qr.classList.toggle('hidden', amt);
+            inp.step = amt ? '1' : '0.1'; inp.min = amt ? '1' : '';
             if (t === 'plus' || t === 'plus_match' || t === 'plus_exam') { lbl.textContent = L2('Số điểm muốn cộng thêm:', 'Bonus score to add:'); inp.placeholder = L2('VD: 1 (Cộng 1 điểm)', 'e.g. 1 (+1 point)'); }
             else if (t === 'add' || t === 'change') { lbl.textContent = L2('Điểm số thiết lập mục tiêu:', 'Target score value:'); inp.placeholder = L2('VD: 10 (Đặt thành 10đ)', 'e.g. 10 (Set as 10)'); }
+            else if (t === 'x_pts') { lbl.textContent = L2('Số Pts cộng vào kho:', 'Pts to add:'); inp.placeholder = L2('VD: 3 (+3 Pts)', 'e.g. 3 (+3 Pts)'); }
+            else if (t === 'x_acc') { lbl.textContent = L2('Số điểm tích lũy của quà:', 'Accumulated points in the gift:'); inp.placeholder = L2('VD: 2 (Cộng 2 điểm tích lũy)', 'e.g. 2 (+2 accumulated points)'); }
         };
         window.pxpCuSubmit = async e => {
             e.preventDefault();
             const name = document.getElementById('pxpCuName').value.trim(), type = document.getElementById('pxpCuType').value, val = parseFloat(document.getElementById('pxpCuVal').value);
             if (!name) return;
-            const editId = window.__pxpCuEditId, def = { id: editId || ('pc' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5)), name, type: type !== 'none' ? type : null };
-            if (type === 'plus' || type === 'plus_exam') def.deltaScore = !isNaN(val) ? val : 1;
+            const editId = window.__pxpCuEditId, isKind = /^x_/.test(type), def = { id: editId || ('pc' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5)), name, type: (type !== 'none' && !isKind) ? type : null };
+            const qtyV = Math.max(1, Math.min(20, Math.floor(Number(document.getElementById('pxpCuQty').value)) || 1));
+            if (isKind) { def.kind = type.slice(2); def.n = (def.kind === 'pts' || def.kind === 'acc') ? Math.max(1, Math.round(!isNaN(val) ? val : 1)) : qtyV; }
+            else if (qtyV > 1) def.qty = qtyV;
+            if (isKind) { /* dạng Pts / tích lũy / lượt quay / khiên / phiếu: không có thêm trường điểm */ }
+            else if (type === 'plus' || type === 'plus_exam') def.deltaScore = !isNaN(val) ? val : 1;
             else if (type === 'add' || type === 'change') def.targetScore = !isNaN(val) ? val : 10;
             else if (type === 'plus_match') {
                 const ms = parseFloat(document.getElementById('pxpCuMs').value);
@@ -17439,7 +17491,13 @@ html.mx-dark .gc-bar{background:#334155}
                 return;
             }
             E.custom[def.id] = def;
-            const z = pxpZ(pxpCfgZ), a = pxpCfgVals(z); a.push(['cu:' + def.id, 0]); pxpCfgDraft[z.id] = a;
+            const bi = window.__pxpCuBuiltin, z = pxpZ(pxpCfgZ), a = pxpCfgVals(z);
+            if (bi && a[bi.idx] && a[bi.idx][0] === bi.code) { // sửa quà có sẵn: thay đúng ô đó trong map đang chọn bằng bản đã sửa, giữ nguyên xác suất
+                a[bi.idx][0] = 'cu:' + def.id; pxpCfgDraft[z.id] = a;
+                pxpCuClose(); pxpCfgRefresh();
+                pxpCfgToast('Đã sửa quà trong map này. Bấm Lưu để áp dụng.', 'Gift updated in this map. Press Save to apply.', 'info'); return;
+            }
+            a.push(['cu:' + def.id, 0]); pxpCfgDraft[z.id] = a;
             pxpCuClose(); pxpCfgRefresh();
             pxpCfgToast('Đã thêm quà vào map. Nhập xác suất cho quà mới rồi bấm Lưu.', 'Gift added to the map. Set its odds, then press Save.', 'info');
         };
@@ -17500,7 +17558,7 @@ html.mx-dark .gc-bar{background:#334155}
                 <text x="70" y="352" text-anchor="middle" font-size="30">⛺</text>${wp}</svg>
                 ${run ? `<div class="pxp-marker" style="left:${(mp[0] / 8).toFixed(2)}%;top:${(mp[1] / 4.2).toFixed(2)}%">${art}</div>` : ''}</div>`;
         }
-        const pxpGiftIc = c => { const g = PXP_GIFT[c]; if (!g) return '🎁'; if (g.k === 'pts') return '⭐'; if (g.k === 'acc') return '📈'; return ({ spin: '🎡', ticket: '🎟️', shield: '🛡️', del: '🗑️', exam05: '📝' })[g.kind] || (/^add/.test(g.kind) ? '🔟' : /^chg/.test(g.kind) ? '🔄' : /^pm/.test(g.kind) ? '➕' : '🎁'); };
+        const pxpGiftIc = c => { let g = PXP_GIFT[c]; const cu = pxpCuDef(c); if (cu) g = cu.kind ? { k: (cu.kind === 'pts' || cu.kind === 'acc') ? cu.kind : 'inv', kind: cu.kind } : { k: 'inv', kind: ({ add: 'add', change: 'chg', delete_score: 'del', plus: 'pm', plus_match: 'pm', plus_exam: 'exam05' })[cu.type] || '' }; if (!g) return '🎁'; if (g.k === 'pts') return '⭐'; if (g.k === 'acc') return '📈'; return ({ spin: '🎡', ticket: '🎟️', shield: '🛡️', del: '🗑️', exam05: '📝' })[g.kind] || (/^add/.test(g.kind) ? '🔟' : /^chg/.test(g.kind) ? '🔄' : /^pm/.test(g.kind) ? '➕' : '🎁'); };
         // Vị trí giữa bảng mô tả: đang thám hiểm / đã thám hiểm thành công + thu hoạch (có hiệu ứng)
         function pxpStatus(st, z, run, here, pr, last) {
             if (here) {
@@ -17574,9 +17632,14 @@ html.mx-dark .gc-bar{background:#334155}
             { const ae = document.activeElement; if (ae && ae.tagName === 'INPUT' && ae.closest && ae.closest('#pxpCfg')) return; }
             const keep = root.scrollTop, E = pxpData(), list = pxpClassList(), st = pxpCurSt(), stu = !!window.MX_STUDENT;
             const run = st ? E.runs[st.id] : null;
+            // Tự mở sẵn bản đồ (khu vực) mà thú cưng của học sinh đang thám hiểm khi đổi/chọn học sinh
+            if (st && String(st.id) !== String(pxpAutoSid)) {
+                pxpAutoSid = String(st.id);
+                if (run && run.z) { pxpZoneId = pxpZ(run.z).id; pxpView = 'zone'; }
+            }
             let step = pxpView === 'world' ? 2 : 3; if (run) step = 4; else if (pxpView === 'zone' && st && pxpLast(st, pxpZoneId)) step = 5;
             const tabs = stu
-                ? `<div class="flex gap-2"><button class="pet-tabbtn" onclick="petSetMode('class')"><i class="fa-solid fa-arrow-left mr-1"></i>${L2('Quay lại Thú cưng', 'Back to Pets')}</button></div>`
+                ? ''
                 : `<div class="flex gap-2"><button class="pet-tabbtn" onclick="petSetMode('class')"><i class="fa-solid fa-paw mr-1"></i>${L2('Thú của lớp', 'Class pets')}</button><button class="pet-tabbtn" onclick="petSetMode('bank')"><i class="fa-solid fa-egg mr-1"></i>${L2('Kho trứng', 'Egg bank')}</button><button class="pet-tabbtn" onclick="petSetMode('shop')"><i class="fa-solid fa-store mr-1"></i>${L2('Cửa hàng vật phẩm', 'Item shop')}</button><button class="pet-tabbtn on" onclick="petSetMode('exp')"><i class="fa-solid fa-compass mr-1"></i>${L2('Thám hiểm', 'Expedition')}</button></div>`;
             const stage = pxpView === 'zone' ? pxpZoneView(st, E) : pxpCards(st, E);
             const slide = window.__petSlide || 0; window.__petSlide = 0;
@@ -17600,11 +17663,14 @@ html.mx-dark .gc-bar{background:#334155}
         }
         // Thêm nút "Thám hiểm" vào hàng nút của tab Thú Cưng (các chế độ khác)
         function pxpAddButton() {
-            const root = document.getElementById('viewPetContainer'); if (!root) return;
+            const root = document.getElementById('viewPetContainer'); if (!root || window.MX_STUDENT) return;
             const btn = `<button class="pet-tabbtn" onclick="petSetMode('exp')"><i class="fa-solid fa-compass mr-1"></i>${L2('Thám hiểm', 'Expedition')}</button>`;
-            const first = root.querySelector('.pet-tabbtn');
-            if (first && first.parentElement) { first.parentElement.insertAdjacentHTML('beforeend', btn); return; }
-            const head = root.querySelector('section > .flex'); if (head) head.insertAdjacentHTML('beforeend', `<div class="flex gap-2">${btn}</div>`);
+            // Chỉ chèn vào thanh tab ở phần đầu trang (không dùng .pet-tabbtn bất kỳ vì nút "Mua" trong cửa hàng cũng mang class này)
+            const head = root.querySelector('section > .flex.flex-wrap.items-start.justify-between'); if (!head) return;
+            if (head.querySelector('[onclick*="petSetMode(\'exp\')"]')) return;
+            const bar = head.querySelector(':scope > .flex.gap-2');
+            if (bar) bar.insertAdjacentHTML('beforeend', btn);
+            else head.insertAdjacentHTML('beforeend', `<div class="flex gap-2">${btn}</div>`);
         }
         const _pxpOrigRender = window.renderPetView;
         window.renderPetView = function renderPetView() {
@@ -18938,44 +19004,44 @@ const RN=['Common','Rare','Epic','Legendary','Mythic'],RC=['#64748b','#2563eb','
 const ROWS=[
 ['star','',0,'Ngôi Sao Đầu Tiên','Lần đầu đạt điểm 10','First Star','Score a 10 for the first time'],
 ['gem','×5',0,'Viên Ngọc Sáng','Đạt 5 điểm 10 trong một khóa','Shining Gem','Score five 10s in one course'],
-['crown','×10',1,'Thập Toàn Thập Mỹ','Đạt 10 điểm 10 trong một khóa','Perfect Ten','Score ten 10s in one course'],
-['gear:10','×20',2,'Cỗ Máy Điểm 10','Đạt 20 điểm 10 trong một khóa','Perfect Score Machine','Score twenty 10s in one course'],
-['trophy','×30',3,'Huyền Thoại Hoàn Hảo','Đạt 30 điểm 10 trong một khóa','Legend of Perfection','Score thirty 10s in one course'],
+['crown','×15',1,'Thập Toàn Thập Mỹ','Đạt 15 điểm 10 trong một khóa','Perfect Ten','Score fifteen 10s in one course'],
+['gear:10','×30',2,'Cỗ Máy Điểm 10','Đạt 30 điểm 10 trong một khóa','Perfect Score Machine','Score thirty 10s in one course'],
+['trophy','×50',3,'Huyền Thoại Hoàn Hảo','Đạt 50 điểm 10 trong một khóa','Legend of Perfection','Score fifty 10s in one course'],
 ['medal:#b45309','≥7',0,'Bước Chân Vững Chắc','Đạt từ 7 điểm trở lên trong 5 lần chấm liên tiếp','Steady Steps','Score 7 or higher in 5 consecutive gradings'],
-['medal:#cbd5e1','≥8',1,'Chiến Binh Xuất Sắc','Đạt từ 8 điểm trở lên trong 5 lần chấm liên tiếp','Outstanding Warrior','Score 8 or higher in 5 consecutive gradings'],
-['medal:#f59e0b','≥9',2,'Tinh Anh Học Thuật','Đạt từ 9 điểm trở lên trong 5 lần chấm liên tiếp','Academic Elite','Score 9 or higher in 5 consecutive gradings'],
-['ten','×5',3,'Chuỗi Điểm Tuyệt Đối','Đạt điểm 10 trong 5 lần chấm liên tiếp','Absolute Streak','Score 10 in 5 consecutive gradings'],
-['galaxy','×10',4,'Kẻ Chinh Phục Hoàn Mỹ','Đạt điểm 10 trong 10 lần chấm liên tiếp','Perfection Conqueror','Score 10 in 10 consecutive gradings'],
+['medal:#cbd5e1','≥8',1,'Chiến Binh Xuất Sắc','Đạt từ 8 điểm trở lên trong 8 lần chấm liên tiếp','Outstanding Warrior','Score 8 or higher in 8 consecutive gradings'],
+['medal:#f59e0b','≥9',2,'Tinh Anh Học Thuật','Đạt từ 9 điểm trở lên trong 10 lần chấm liên tiếp','Academic Elite','Score 9 or higher in 10 consecutive gradings'],
+['ten','×7',3,'Chuỗi Điểm Tuyệt Đối','Đạt điểm 10 trong 7 lần chấm liên tiếp','Absolute Streak','Score 10 in 7 consecutive gradings'],
+['galaxy','×12',4,'Kẻ Chinh Phục Hoàn Mỹ','Đạt điểm 10 trong 12 lần chấm liên tiếp','Perfection Conqueror','Score 10 in 12 consecutive gradings'],
 ['mic','',0,'Tiếng Nói Đầu Tiên','Có lần phát biểu đầu tiên','First Voice','Speak up for the first time'],
 ['bubble','×3',0,'Người Mạnh Dạn','Phát biểu ít nhất 3 lần trong một buổi','Bold Speaker','Speak at least 3 times in one lesson'],
-['mega','×5',1,'Giọng Nói Nổi Bật','Phát biểu ít nhất 5 lần trong một buổi','Standout Voice','Speak at least 5 times in one lesson'],
-['speaker','×10',2,'Chiếc Loa Siêu Cấp','Phát biểu ít nhất 10 lần trong một buổi','Super Loudspeaker','Speak at least 10 times in one lesson'],
-['target','25',1,'Xạ Thủ Ngôn Từ','Tích lũy 25 lần phát biểu','Word Sharpshooter','Reach 25 speaking turns in total'],
-['bolt','50',2,'Cỗ Máy Phát Biểu','Tích lũy 50 lần phát biểu','Speaking Machine','Reach 50 speaking turns in total'],
-['flame','100',3,'Ngọn Lửa Tự Tin','Tích lũy 100 lần phát biểu','Flame of Confidence','Reach 100 speaking turns in total'],
-['comet','200',4,'Bậc Thầy Diễn Đạt','Tích lũy 200 lần phát biểu','Master of Expression','Reach 200 speaking turns in total'],
-['mic:#f97316','10 buổi',2,'Không Một Buổi Im Lặng','Có ít nhất 1 lần phát biểu trong 10 buổi học liên tiếp','Never a Silent Lesson','Speak at least once in 10 consecutive lessons'],
-['crown:#a855f7','15 buổi',3,'Huyền Thoại Diễn Thuyết','Có ít nhất 3 lần phát biểu trong 15 buổi học liên tiếp','Legend of Public Speaking','Speak at least 3 times in each of 15 consecutive lessons'],
+['mega','×8',1,'Giọng Nói Nổi Bật','Phát biểu ít nhất 8 lần trong một buổi','Standout Voice','Speak at least 8 times in one lesson'],
+['speaker','×15',2,'Chiếc Loa Siêu Cấp','Phát biểu ít nhất 15 lần trong một buổi','Super Loudspeaker','Speak at least 15 times in one lesson'],
+['target','40',1,'Xạ Thủ Ngôn Từ','Tích lũy 40 lần phát biểu','Word Sharpshooter','Reach 40 speaking turns in total'],
+['bolt','100',2,'Cỗ Máy Phát Biểu','Tích lũy 100 lần phát biểu','Speaking Machine','Reach 100 speaking turns in total'],
+['flame','200',3,'Ngọn Lửa Tự Tin','Tích lũy 200 lần phát biểu','Flame of Confidence','Reach 200 speaking turns in total'],
+['comet','400',4,'Bậc Thầy Diễn Đạt','Tích lũy 400 lần phát biểu','Master of Expression','Reach 400 speaking turns in total'],
+['mic:#f97316','15 buổi',2,'Không Một Buổi Im Lặng','Có ít nhất 1 lần phát biểu trong 15 buổi học liên tiếp','Never a Silent Lesson','Speak at least once in 15 consecutive lessons'],
+['crown:#a855f7','25 buổi',3,'Huyền Thoại Diễn Thuyết','Có ít nhất 3 lần phát biểu trong 25 buổi học liên tiếp','Legend of Public Speaking','Speak at least 3 times in each of 25 consecutive lessons'],
 ['sprout','6.0',0,'Mầm Non Tri Thức','Đạt ĐTB tích lũy từ 6,0','Seed of Knowledge','Reach a cumulative average of 6.0'],
 ['clover','7.0',0,'Học Giả Tập Sự','Đạt ĐTB tích lũy từ 7,0','Apprentice Scholar','Reach a cumulative average of 7.0'],
-['gem:#60a5fa','8.0',1,'Tài Năng Triển Vọng','Đạt ĐTB tích lũy từ 8,0','Rising Talent','Reach a cumulative average of 8.0'],
-['star','9.0',2,'Ngôi Sao Học Thuật','Đạt ĐTB tích lũy từ 9,0','Academic Star','Reach a cumulative average of 9.0'],
-['crown','9.5',3,'Thiên Tài Toàn Diện','Đạt ĐTB tích lũy từ 9,5','All-Round Genius','Reach a cumulative average of 9.5'],
-['rocket','+1.0',1,'Bước Nhảy Vọt','ĐTB của 5 ô điểm gần nhất cao hơn 5 ô trước đó ít nhất 1,0','Great Leap','Average of the last 5 scores is at least 1.0 above the 5 before'],
-['chart','+2.0',2,'Kẻ Vươn Lên','ĐTB của 5 ô gần nhất cao hơn 5 ô trước đó ít nhất 2,0','Rising Climber','Average of the last 5 scores is at least 2.0 above the 5 before'],
-['bird','',3,'Phượng Hoàng Tái Sinh','Sau 3 điểm dưới 5 liên tiếp, đạt 3 điểm từ 8 trở lên liên tiếp','Reborn Phoenix','After 3 scores below 5 in a row, score 8 or higher 3 times in a row'],
-['shield:#22c55e','10 buổi',2,'Phong Độ Vững Vàng','ĐTB tích lũy duy trì từ 8,0 qua 10 buổi có điểm liên tiếp','Steady Form','Keep a cumulative average of 8.0+ over 10 consecutive scored lessons'],
-['sparkle','15 buổi',4,'Đỉnh Cao Bền Vững','ĐTB tích lũy duy trì từ 9,0 qua 15 buổi có điểm liên tiếp','Lasting Summit','Keep a cumulative average of 9.0+ over 15 consecutive scored lessons'],
-['medal:#b45309','Top 10',1,'Ngôi Sao Top 10','Vào Top 10 bảng xếp hạng tích lũy khi chốt kỳ','Top 10 Star','Enter the Top 10 of the cumulative ranking at term close'],
-['medal:#cbd5e1','Top 5',2,'Tinh Hoa Top 5','Vào Top 5 bảng xếp hạng tích lũy khi chốt kỳ','Top 5 Elite','Enter the Top 5 of the cumulative ranking at term close'],
-['medal:#f59e0b','Top 3',2,'Bộ Ba Danh Giá','Vào Top 3 bảng xếp hạng tích lũy khi chốt kỳ','Prestigious Trio','Enter the Top 3 of the cumulative ranking at term close'],
-['crown','Hạng 1',3,'Vương Miện Quán Quân','Đạt hạng 1 bảng xếp hạng tích lũy khi chốt kỳ','Champion\'s Crown','Rank 1 in the cumulative ranking at term close'],
-['laurel','×3',4,'Kẻ Bất Bại','Đạt hạng 1 bảng xếp hạng tích lũy ở 3 lần chốt cuối tháng liên tiếp trong một khóa','The Undefeated','Rank 1 in the cumulative ranking at 3 consecutive month-end closes in one course'],
-['trophy','Hạng 1',3,'Nhà Vô Địch Cuối Kỳ','Đạt hạng 1 bảng kiểm tra cuối kỳ','Final Exam Champion','Rank 1 in the final exam ranking'],
-['trophy:#cbd5e1','Hạng 2',2,'Á Quân Kiệt Xuất','Đạt hạng 2 bảng kiểm tra cuối kỳ','Outstanding Runner-up','Rank 2 in the final exam ranking'],
-['trophy:#d97706','Hạng 3',1,'Chiến Binh Đồng','Đạt hạng 3 bảng kiểm tra cuối kỳ','Bronze Warrior','Rank 3 in the final exam ranking'],
-['sparkle:#f472b6','Top 3×2',3,'Ngôi Sao Song Bảng','Cùng nằm Top 3 xếp hạng tích lũy và cuối kỳ trong một khóa','Dual-Board Star','Be in the Top 3 of both cumulative and final rankings in one course'],
-['crown:#f0abfc','Hạng 1×2',4,'Đại Quán Quân','Đạt hạng 1 ở cả hai bảng xếp hạng trong một khóa','Grand Champion','Rank 1 on both ranking boards in one course'],
+['gem:#60a5fa','8.5',1,'Tài Năng Triển Vọng','Đạt ĐTB tích lũy từ 8,5 (từ 10 ô điểm trở lên)','Rising Talent','Reach a cumulative average of 8.5 (with at least 10 scores)'],
+['star','9.2',2,'Ngôi Sao Học Thuật','Đạt ĐTB tích lũy từ 9,2 (từ 10 ô điểm trở lên)','Academic Star','Reach a cumulative average of 9.2 (with at least 10 scores)'],
+['crown','9.6',3,'Thiên Tài Toàn Diện','Đạt ĐTB tích lũy từ 9,6 (từ 10 ô điểm trở lên)','All-Round Genius','Reach a cumulative average of 9.6 (with at least 10 scores)'],
+['rocket','+1.5',1,'Bước Nhảy Vọt','ĐTB của 5 ô điểm gần nhất cao hơn 5 ô trước đó ít nhất 1,5','Great Leap','Average of the last 5 scores is at least 1.5 above the 5 before'],
+['chart','+2.5',2,'Kẻ Vươn Lên','ĐTB của 5 ô gần nhất cao hơn 5 ô trước đó ít nhất 2,5','Rising Climber','Average of the last 5 scores is at least 2.5 above the 5 before'],
+['bird','',3,'Phượng Hoàng Tái Sinh','Sau 3 điểm dưới 5 liên tiếp, đạt 5 điểm từ 8 trở lên liên tiếp','Reborn Phoenix','After 3 scores below 5 in a row, score 8 or higher 5 times in a row'],
+['shield:#22c55e','15 buổi',2,'Phong Độ Vững Vàng','ĐTB tích lũy duy trì từ 8,0 qua 15 buổi có điểm liên tiếp','Steady Form','Keep a cumulative average of 8.0+ over 15 consecutive scored lessons'],
+['sparkle','25 buổi',4,'Đỉnh Cao Bền Vững','ĐTB tích lũy duy trì từ 9,0 qua 25 buổi có điểm liên tiếp','Lasting Summit','Keep a cumulative average of 9.0+ over 25 consecutive scored lessons'],
+['medal:#b45309','Top 7',1,'Ngôi Sao Top 7','Vào Top 7 bảng xếp hạng tích lũy khi chốt kỳ','Top 7 Star','Enter the Top 7 of the cumulative ranking at term close'],
+['medal:#cbd5e1','Top 5',2,'Tinh Hoa Top 5','Vào Top 5 bảng xếp hạng tích lũy khi chốt kỳ và đã từng vào Top 5 ở ít nhất 2 lần chốt cuối tháng','Top 5 Elite','Enter the Top 5 of the cumulative ranking at term close and have been Top 5 at 2+ month-end closes'],
+['medal:#f59e0b','Top 3',2,'Bộ Ba Danh Giá','Vào Top 3 bảng xếp hạng tích lũy khi chốt kỳ và đã từng vào Top 3 ở ít nhất 2 lần chốt cuối tháng','Prestigious Trio','Enter the Top 3 of the cumulative ranking at term close and have been Top 3 at 2+ month-end closes'],
+['crown','Hạng 1',3,'Vương Miện Quán Quân','Đạt hạng 1 bảng xếp hạng tích lũy khi chốt kỳ và đã từng hạng 1 ở ít nhất 2 lần chốt cuối tháng','Champion\'s Crown','Rank 1 in the cumulative ranking at term close and have been Rank 1 at 2+ month-end closes'],
+['laurel','×4',4,'Kẻ Bất Bại','Đạt hạng 1 bảng xếp hạng tích lũy ở 4 lần chốt cuối tháng liên tiếp trong một khóa','The Undefeated','Rank 1 in the cumulative ranking at 4 consecutive month-end closes in one course'],
+['trophy','Hạng 1',3,'Nhà Vô Địch Cuối Kỳ','Đạt hạng 1 bảng kiểm tra cuối kỳ và nằm trong Top 5 bảng tích lũy','Final Exam Champion','Rank 1 in the final exam ranking and be in the Top 5 of the cumulative ranking'],
+['trophy:#cbd5e1','Hạng 2',2,'Á Quân Kiệt Xuất','Đạt hạng 2 bảng kiểm tra cuối kỳ và nằm trong Top 7 bảng tích lũy','Outstanding Runner-up','Rank 2 in the final exam ranking and be in the Top 7 of the cumulative ranking'],
+['trophy:#d97706','Hạng 3',1,'Chiến Binh Đồng','Đạt hạng 3 bảng kiểm tra cuối kỳ và nằm trong Top 10 bảng tích lũy','Bronze Warrior','Rank 3 in the final exam ranking and be in the Top 10 of the cumulative ranking'],
+['sparkle:#f472b6','Top 2×2',3,'Ngôi Sao Song Bảng','Cùng nằm Top 2 xếp hạng tích lũy và cuối kỳ trong một khóa','Dual-Board Star','Be in the Top 2 of both cumulative and final rankings in one course'],
+['crown:#f0abfc','Hạng 1×2',4,'Đại Quán Quân','Đạt hạng 1 ở cả hai bảng xếp hạng và hạng 1 ở ít nhất 3 lần chốt cuối tháng trong một khóa','Grand Champion','Rank 1 on both ranking boards and Rank 1 at 3+ month-end closes in one course'],
 ['egg','',0,'Nhà Huấn Luyện Tập Sự','Sở hữu quả trứng thú cưng đầu tiên','Apprentice Trainer','Own your first pet egg'],
 ['chick','',0,'Sự Sống Đầu Tiên','Ấp nở thú cưng lần đầu','First Life','Hatch a pet for the first time'],
 ['paw','Cấp 1',0,'Người Bạn Đồng Hành','Đưa pet đạt cấp 1','Faithful Companion','Raise a pet to level 1'],
@@ -18988,53 +19054,53 @@ const ROWS=[
 ['dragon:#a855f7','Cấp 8',4,'Thần Thú Tối Thượng','Đưa pet đạt cấp 8','Supreme Divine Beast','Raise a pet to level 8'],
 ['flame:#fdba74','1',0,'Tia Lửa Khởi Đầu','Đạt streak 1','Spark of Beginning','Reach a streak of 1'],
 ['candle','5',0,'Ngọn Lửa Kiên Trì','Đạt streak 5','Flame of Perseverance','Reach a streak of 5'],
-['flame','10',1,'Hỏa Diệm Bền Bỉ','Đạt streak 10','Enduring Blaze','Reach a streak of 10'],
-['bolt','15',1,'Ý Chí Rực Cháy','Đạt streak 15','Burning Will','Reach a streak of 15'],
-['volcano','20',2,'Trái Tim Dung Nham','Đạt streak 20','Lava Heart','Reach a streak of 20'],
-['comet','30',2,'Ngọn Lửa Bất Diệt','Đạt streak 30','Undying Flame','Reach a streak of 30'],
-['sun','45',3,'Mặt Trời Bất Khuất','Đạt streak 45','Unyielding Sun','Reach a streak of 45'],
-['sparkle:#fb923c','60',3,'Hỏa Tinh Huyền Thoại','Đạt streak 60','Legendary Fire Star','Reach a streak of 60'],
-['dragon:#ef4444','90',4,'Long Hỏa Vĩnh Cửu','Đạt streak 90','Eternal Fire Dragon','Reach a streak of 90'],
-['crown:#fb923c','120',4,'Bất Diệt Truyền Kỳ','Đạt streak 120','Immortal Legend','Reach a streak of 120'],
+['flame','15',1,'Hỏa Diệm Bền Bỉ','Đạt streak 15','Enduring Blaze','Reach a streak of 15'],
+['bolt','22',1,'Ý Chí Rực Cháy','Đạt streak 22','Burning Will','Reach a streak of 22'],
+['volcano','30',2,'Trái Tim Dung Nham','Đạt streak 30','Lava Heart','Reach a streak of 30'],
+['comet','45',2,'Ngọn Lửa Bất Diệt','Đạt streak 45','Undying Flame','Reach a streak of 45'],
+['sun','65',3,'Mặt Trời Bất Khuất','Đạt streak 65','Unyielding Sun','Reach a streak of 65'],
+['sparkle:#fb923c','85',3,'Hỏa Tinh Huyền Thoại','Đạt streak 85','Legendary Fire Star','Reach a streak of 85'],
+['dragon:#ef4444','120',4,'Long Hỏa Vĩnh Cửu','Đạt streak 120','Eternal Fire Dragon','Reach a streak of 120'],
+['crown:#fb923c','160',4,'Bất Diệt Truyền Kỳ','Đạt streak 160','Immortal Legend','Reach a streak of 160'],
 ['shield','3',0,'Khởi Đầu Gương Mẫu','Hoàn thành 3 buổi học liên tiếp không vi phạm','Model Beginning','Finish 3 consecutive lessons with no violations'],
 ['sprout','5',0,'Học Sinh Kỷ Luật','Hoàn thành 5 buổi học liên tiếp không vi phạm','Disciplined Student','Finish 5 consecutive lessons with no violations'],
-['scales','10',1,'Người Giữ Quy Tắc','Hoàn thành 10 buổi học liên tiếp không vi phạm','Keeper of the Rules','Finish 10 consecutive lessons with no violations'],
-['medal','15',1,'Tấm Gương Sáng','Hoàn thành 15 buổi học liên tiếp không vi phạm','Shining Example','Finish 15 consecutive lessons with no violations'],
-['gem','20',2,'Kỷ Luật Kim Cương','Hoàn thành 20 buổi học liên tiếp không vi phạm','Diamond Discipline','Finish 20 consecutive lessons with no violations'],
-['helmet','30',3,'Hiệp Sĩ Danh Dự','Hoàn thành 30 buổi học liên tiếp không vi phạm','Knight of Honor','Finish 30 consecutive lessons with no violations'],
-['star:#34d399','5',1,'Học Sinh Toàn Diện','Có ít nhất 5 buổi liên tiếp vừa không vi phạm vừa có phát biểu','Well-Rounded Student','At least 5 consecutive lessons with no violations and with speaking'],
-['bird:#3b82f6','10',2,'Người Kiên Định','Có ít nhất 10 buổi liên tiếp vừa không vi phạm vừa có phát biểu','Steadfast One','At least 10 consecutive lessons with no violations and with speaking'],
-['dove','5',1,'Hành Trình Hoàn Thiện','Sau một lần vi phạm, hoàn thành 5 buổi tiếp theo không vi phạm','Journey of Improvement','After a violation, finish the next 5 lessons with no violations'],
-['trophy','20',3,'Biểu Tượng Gương Mẫu','Hoàn thành một khóa học có ít nhất 20 buổi và không có vi phạm','Icon of Exemplary Conduct','Finish a course of 20+ lessons with no violations'],
+['scales','15',1,'Người Giữ Quy Tắc','Hoàn thành 15 buổi học liên tiếp không vi phạm','Keeper of the Rules','Finish 15 consecutive lessons with no violations'],
+['medal','22',1,'Tấm Gương Sáng','Hoàn thành 22 buổi học liên tiếp không vi phạm','Shining Example','Finish 22 consecutive lessons with no violations'],
+['gem','30',2,'Kỷ Luật Kim Cương','Hoàn thành 30 buổi học liên tiếp không vi phạm','Diamond Discipline','Finish 30 consecutive lessons with no violations'],
+['helmet','45',3,'Hiệp Sĩ Danh Dự','Hoàn thành 45 buổi học liên tiếp không vi phạm','Knight of Honor','Finish 45 consecutive lessons with no violations'],
+['star:#34d399','8',1,'Học Sinh Toàn Diện','Có ít nhất 8 buổi liên tiếp vừa không vi phạm vừa có phát biểu','Well-Rounded Student','At least 8 consecutive lessons with no violations and with speaking'],
+['bird:#3b82f6','15',2,'Người Kiên Định','Có ít nhất 15 buổi liên tiếp vừa không vi phạm vừa có phát biểu','Steadfast One','At least 15 consecutive lessons with no violations and with speaking'],
+['dove','8',1,'Hành Trình Hoàn Thiện','Sau một lần vi phạm, hoàn thành 8 buổi tiếp theo không vi phạm','Journey of Improvement','After a violation, finish the next 8 lessons with no violations'],
+['trophy','30',3,'Biểu Tượng Gương Mẫu','Hoàn thành một khóa học có ít nhất 30 buổi và không có vi phạm','Icon of Exemplary Conduct','Finish a course of 30+ lessons with no violations'],
 ['coin','',0,'Đồng Xu Đầu Tiên','Lần đầu có số dư PTS lớn hơn 0','First Coin','Have a PTS balance above 0 for the first time'],
 ['bag','50',0,'Túi Tiền Nhỏ','Tích lũy được 50 PTS kiếm được trong một khóa','Small Purse','Earn 50 PTS in one course'],
-['gem','100',1,'Kho Báu Trăm Điểm','Tích lũy được 100 PTS kiếm được trong một khóa','Hundred-Point Treasure','Earn 100 PTS in one course'],
-['crown','200',2,'Đại Gia Điểm Thưởng','Tích lũy được 200 PTS kiếm được trong một khóa','Reward Tycoon','Earn 200 PTS in one course'],
+['gem','150',1,'Kho Báu Trăm Điểm','Tích lũy được 150 PTS kiếm được trong một khóa','Hundred-Point Treasure','Earn 150 PTS in one course'],
+['crown','350',2,'Đại Gia Điểm Thưởng','Tích lũy được 350 PTS kiếm được trong một khóa','Reward Tycoon','Earn 350 PTS in one course'],
 ['shop','',0,'Khách Hàng Đầu Tiên','Mua món quà đầu tiên tại cửa hàng','First Customer','Buy your first gift in the shop'],
-['gift','×5',1,'Người Sưu Tầm Quà','Mua thành công 5 món quà','Gift Collector','Successfully buy 5 gifts'],
-['chest','5',1,'Kho Đồ Phong Phú','Từng sở hữu 5 loại quà khác nhau','Rich Inventory','Have owned 5 different gift types'],
-['orb:#f97316','×10',2,'Bậc Thầy Vật Phẩm','Sử dụng thành công 10 món quà','Item Master','Successfully use 10 gifts'],
-['hat','3',2,'Nhà Chiến Lược','Sử dụng thành công 3 loại quà có hiệu ứng điểm khác nhau','Strategist','Successfully use 3 different score-effect gift types'],
-['chest:#a855f7','10',3,'Nhà Sưu Tầm Đại Tài','Từng sở hữu 10 loại quà khác nhau','Grand Collector','Have owned 10 different gift types'],
+['gift','×8',1,'Người Sưu Tầm Quà','Mua thành công 8 món quà','Gift Collector','Successfully buy 8 gifts'],
+['chest','7',1,'Kho Đồ Phong Phú','Từng sở hữu 7 loại quà khác nhau','Rich Inventory','Have owned 7 different gift types'],
+['orb:#f97316','×15',2,'Bậc Thầy Vật Phẩm','Sử dụng thành công 15 món quà','Item Master','Successfully use 15 gifts'],
+['hat','4',2,'Nhà Chiến Lược','Sử dụng thành công 4 loại quà có hiệu ứng điểm khác nhau','Strategist','Successfully use 4 different score-effect gift types'],
+['chest:#a855f7','13',3,'Nhà Sưu Tầm Đại Tài','Từng sở hữu 13 loại quà khác nhau','Grand Collector','Have owned 13 different gift types'],
 ['wheel','',0,'Vòng Quay Định Mệnh','Thực hiện lượt quay bằng phiếu đầu tiên','Wheel of Fate','Make your first ticket spin'],
 ['clover','×5',0,'Bàn Tay May Mắn','Hoàn thành 5 lượt quay bằng phiếu','Lucky Hand','Complete 5 ticket spins'],
-['slot','×10',1,'Người Chinh Phục Vận May','Hoàn thành 10 lượt quay bằng phiếu','Fortune Conqueror','Complete 10 ticket spins'],
-['comet','×20',2,'Vận May Phi Thường','Hoàn thành 20 lượt quay bằng phiếu','Extraordinary Luck','Complete 20 ticket spins'],
-['crown','×30',3,'Chúa Tể Vòng Quay','Hoàn thành 30 lượt quay bằng phiếu','Lord of the Wheel','Complete 30 ticket spins'],
+['slot','×15',1,'Người Chinh Phục Vận May','Hoàn thành 15 lượt quay bằng phiếu','Fortune Conqueror','Complete 15 ticket spins'],
+['comet','×30',2,'Vận May Phi Thường','Hoàn thành 30 lượt quay bằng phiếu','Extraordinary Luck','Complete 30 ticket spins'],
+['crown','×50',3,'Chúa Tể Vòng Quay','Hoàn thành 50 lượt quay bằng phiếu','Lord of the Wheel','Complete 50 ticket spins'],
 ['gift:#8b5cf6','',0,'Món Quà Bí Ẩn','Mở hộp quà bí ẩn đầu tiên','Mystery Gift','Open your first mystery box'],
-['gift:#3b82f6','×5',1,'Thợ Săn Hộp Quà','Mở 5 hộp quà bí ẩn','Box Hunter','Open 5 mystery boxes'],
-['heart','×10',1,'Người Khám Phá Bí Mật','Mở 10 hộp quà bí ẩn','Secret Explorer','Open 10 mystery boxes'],
-['orb','×20',2,'Bậc Thầy Bí Ẩn','Mở 20 hộp quà bí ẩn','Master of Mysteries','Open 20 mystery boxes'],
-['rainbow','10+10',3,'Kẻ Được Vận May Chọn','Hoàn thành 10 lượt quay và mở 10 hộp quà','Chosen by Luck','Complete 10 spins and open 10 boxes'],
-['star:#f472b6','5',1,'Ngôi Sao Đa Tài','Sở hữu ít nhất 1 huy hiệu trong 5 danh mục khác nhau','Multi-Talented Star','Own at least 1 badge in 5 different categories'],
-['gem:#a78bfa','25',2,'Nhà Sưu Tầm Tài Ba','Mở khóa 25 huy hiệu khác nhau','Skilled Collector','Unlock 25 different badges'],
-['trophy','50',3,'Bậc Thầy Thành Tựu','Mở khóa 50 huy hiệu khác nhau','Achievement Master','Unlock 50 different badges'],
-['crown','75',3,'Huyền Thoại Sưu Tầm','Mở khóa 75 huy hiệu khác nhau','Collecting Legend','Unlock 75 different badges'],
-['rainbow','9',3,'Người Chinh Phục Toàn Diện','Sở hữu ít nhất 1 huy hiệu trong cả 9 danh mục đầu','All-Round Conqueror','Own at least 1 badge in each of the first 9 categories'],
-['dragon:#22d3ee','Cấp 8',4,'Long Vương Học Thuật','Pet đạt cấp 8 và ĐTB tích lũy từ 9,0 khi kết thúc khóa','Academic Dragon King','Pet at level 8 and cumulative average 9.0+ at course end'],
-['flame:#ef4444','90',4,'Ý Chí Bất Diệt','Đạt streak 90 và có ít nhất 100 lần phát biểu trong khóa','Indomitable Will','Streak of 90 and at least 100 speaking turns in the course'],
-['swords','',4,'Chiến Thần Toàn Năng','Đạt Top 3 tích lũy, Top 3 cuối kỳ và pet từ cấp 5 trong cùng khóa','Almighty War God','Top 3 cumulative, Top 3 final and a level 5+ pet in one course'],
-['sparkle','60',4,'Truyền Thuyết Sống','Đạt ĐTB từ 9,0, streak 60, ít nhất 100 lần phát biểu và không vi phạm trong 20 buổi liên tiếp','Living Legend','Average 9.0+, streak 60, 100+ speaking turns and 20 lessons with no violations'],
+['gift:#3b82f6','×8',1,'Thợ Săn Hộp Quà','Mở 8 hộp quà bí ẩn','Box Hunter','Open 8 mystery boxes'],
+['heart','×15',1,'Người Khám Phá Bí Mật','Mở 15 hộp quà bí ẩn','Secret Explorer','Open 15 mystery boxes'],
+['orb','×30',2,'Bậc Thầy Bí Ẩn','Mở 30 hộp quà bí ẩn','Master of Mysteries','Open 30 mystery boxes'],
+['rainbow','15+15',3,'Kẻ Được Vận May Chọn','Hoàn thành 15 lượt quay và mở 15 hộp quà','Chosen by Luck','Complete 15 spins and open 15 boxes'],
+['star:#f472b6','6',1,'Ngôi Sao Đa Tài','Sở hữu ít nhất 1 huy hiệu trong 6 danh mục khác nhau','Multi-Talented Star','Own at least 1 badge in 6 different categories'],
+['gem:#a78bfa','35',2,'Nhà Sưu Tầm Tài Ba','Mở khóa 35 huy hiệu khác nhau','Skilled Collector','Unlock 35 different badges'],
+['trophy','65',3,'Bậc Thầy Thành Tựu','Mở khóa 65 huy hiệu khác nhau','Achievement Master','Unlock 65 different badges'],
+['crown','80',3,'Huyền Thoại Sưu Tầm','Mở khóa 80 huy hiệu khác nhau','Collecting Legend','Unlock 80 different badges'],
+['rainbow','9×2',3,'Người Chinh Phục Toàn Diện','Sở hữu ít nhất 2 huy hiệu trong mỗi danh mục của 9 danh mục đầu','All-Round Conqueror','Own at least 2 badges in each of the first 9 categories'],
+['dragon:#22d3ee','Cấp 8',4,'Long Vương Học Thuật','Pet đạt cấp 8 và ĐTB tích lũy từ 9,3 khi kết thúc khóa','Academic Dragon King','Pet at level 8 and cumulative average 9.3+ at course end'],
+['flame:#ef4444','120',4,'Ý Chí Bất Diệt','Đạt streak 120 và có ít nhất 200 lần phát biểu trong khóa','Indomitable Will','Streak of 120 and at least 200 speaking turns in the course'],
+['swords','',4,'Chiến Thần Toàn Năng','Đạt Top 2 tích lũy, Top 2 cuối kỳ và pet từ cấp 6 trong cùng khóa','Almighty War God','Top 2 cumulative, Top 2 final and a level 6+ pet in one course'],
+['sparkle','90',4,'Truyền Thuyết Sống','Đạt ĐTB từ 9,3, streak 90, ít nhất 200 lần phát biểu và không vi phạm trong 30 buổi liên tiếp','Living Legend','Average 9.3+, streak 90, 200+ speaking turns and 30 lessons with no violations'],
 ['infinity','99',4,'Thần Thoại Bất Tử','Mở khóa toàn bộ 99 huy hiệu còn lại','Immortal Myth','Unlock all 99 other badges']
 ];
 const BK=ROWS.map((r,i)=>{const [e,a]=r[0].split(':');return{n:i+1,c:(i/10)|0,e,a,t:r[1],r:r[2],vi:r[3],vc:r[4],en:r[5],ec:r[6]}});
@@ -19139,6 +19205,7 @@ window.bkNotifyNew=function(list){
   if(window.MX_STUDENT)return;
   try{list.forEach(it=>{const b=BK[it.n-1];if(!b)return;let sn='';try{sn=getStudentDisplayName(appData.students.find(x=>String(x.id)===String(it.sid)))}catch(e){}
     if(window.mxNotifPush)window.mxNotifPush('🏅 '+T('Huy hiệu mới!','New badge!')+' '+nm(b)+(sn?' — '+sn:''),'badge')})}catch(e){}
+  return; /* Đã tắt popup thông báo huy hiệu mới (chỉ còn ghi vào chuông thông báo + chấm số trên hồ sơ) */
   ensureDefs();const w=toastWrap();
   list.slice(0,3).forEach((it,i)=>setTimeout(()=>{
     const b=BK[it.n-1];if(!b)return;let sn='';
