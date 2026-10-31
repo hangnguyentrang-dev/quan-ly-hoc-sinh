@@ -3345,6 +3345,237 @@ html.mx-dark .pst-seg{background:#1e1b4b;border-color:#4338ca}
 html.mx-dark .pst-b{color:#c7d2fe}html.mx-dark .pst-b.on{color:#fff}
 @media (prefers-reduced-motion:reduce){.pst-ind,.pst-view,.pst-track,.pst-b{transition:none}}
 </style>
+<style id="patch-pet-expedition">
+/* ===== Pet Expedition v2: quy trình 5 bước · bản đồ kỳ ảo · zoom vào khu vực ===== */
+@keyframes pxpBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes pxpTw{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes pxpFl{0%,100%{transform:translateY(0);opacity:.2}50%{transform:translateY(-16px);opacity:.95}}
+@keyframes pxpNx{0%,100%{stroke-width:3.5}50%{stroke-width:7}}
+@keyframes pxpFade{from{opacity:0}to{opacity:1}}
+.pxp{margin-top:1rem}
+/* stepper */
+.pxp-steps{list-style:none;margin:0 0 1rem;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.4rem}
+.pxp-steps li{display:flex;align-items:center;gap:.45rem;padding:.4rem .55rem;border-radius:.8rem;border:1px solid #e2e8f0;background:#f8fafc;color:#64748b;font-size:11.5px;font-weight:800;line-height:1.2;min-width:0;transition:background .2s,border-color .2s,color .2s}
+.pxp-steps li i{flex:none;width:22px;height:22px;border-radius:9999px;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:11px;font-weight:900;background:#e2e8f0;color:#475569}
+.pxp-steps li.done{background:#ecfdf5;border-color:#a7f3d0;color:#047857}.pxp-steps li.done i{background:#10b981;color:#fff}
+.pxp-steps li.cur{background:linear-gradient(100deg,#4338ca,#7c3aed);border-color:transparent;color:#fff;box-shadow:0 4px 12px rgba(99,102,241,.35)}.pxp-steps li.cur i{background:#fff;color:#4338ca}
+@media(max-width:760px){.pxp-steps{grid-template-columns:repeat(5,minmax(0,1fr))}.pxp-steps li{justify-content:center;padding:.4rem 0}.pxp-steps li span{display:none}}
+.pxp-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;align-items:stretch}
+@media(min-width:980px){.pxp-grid{grid-template-columns:minmax(250px,300px) minmax(0,1fr)}.pxp-stu{position:sticky;top:8px}}
+.pxp-stu{align-self:start}
+.pxp-sect{display:flex;align-items:center;gap:.4rem;font-size:13px;font-weight:900;color:#312e81;margin:.9rem 0 .5rem}
+.pxp-fine{font-size:11px;color:#64748b;line-height:1.45;margin-top:.25rem}
+.pxp-empty,.pxp-note{font-size:12px;color:#64748b;text-align:center;padding:.8rem .4rem}
+.pxp-note{background:#fffbeb;border:1px dashed #fcd34d;border-radius:.7rem;color:#92400e;margin-bottom:.5rem;padding:.55rem}
+/* student panel */
+.pxp-stu{border:1px solid #ddd6fe;border-radius:1.1rem;padding:.2rem .9rem .9rem;background:linear-gradient(170deg,#fff,#f5f3ff);text-align:center}
+.pxp-stu .pxp-sect{justify-content:flex-start}
+.pxp-sel{width:100%;border:1px solid #c7d2fe;border-radius:.7rem;padding:.45rem .6rem;font-size:13px;font-weight:800;color:#312e81;background:#fff;cursor:pointer;position:relative;z-index:20}
+.pxp-sname{font-size:15px;font-weight:900;color:#1e293b;margin-top:.6rem}
+.pxp-sart{margin:.2rem auto 0;width:150px;height:150px}.pxp-sart .pet-art{width:150px;height:150px;margin:0 auto}
+.pxp-spet{font-size:12.5px;font-weight:900;color:#6d28d9}
+.pxp-m{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-top:.7rem}
+.pxp-m>div{padding:.5rem .3rem;border-radius:.8rem;background:rgba(255,255,255,.85);border:1px solid #ddd6fe;font-size:11px;font-weight:800;color:#5b21b6}
+.pxp-m strong{display:block;font-size:18px;color:#312e81;margin-top:1px}.pxp-m small{display:block;font-size:10px;font-weight:700;color:#7c3aed}
+.pxp-pass{margin-top:.7rem;text-align:left;border:1px solid #ddd6fe;border-radius:.8rem;background:rgba(255,255,255,.85);padding:.55rem .65rem}
+.pxp-ptitle{font-size:11px;font-weight:900;color:#6d28d9;margin-bottom:.25rem}
+.pxp-pn{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12.5px;font-weight:900;color:#1e293b}
+.pxp-pd{font-size:11.5px;color:#475569;line-height:1.45;margin-top:.2rem}
+/* world map */
+.pxp-stage-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.3rem .8rem;margin-bottom:.5rem}
+.pxp-cwrap{position:relative}
+.pxp-stage.w{display:flex;flex-direction:column;min-width:0}
+.pxp-stage.w .pxp-cwrap{flex:1;display:flex;min-height:360px}
+.pxp-stage.w .pxp-cards{flex:1;min-width:0;align-items:stretch}
+.pxp-cards{display:flex;gap:.8rem;overflow-x:auto;scroll-snap-type:x proximity;padding:.5rem .25rem .9rem;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.pxp-card{flex:none;width:210px;display:flex;flex-direction:column;scroll-snap-align:start;text-align:left;padding:0;cursor:pointer;border:2px solid var(--zc);border-radius:1.1rem;overflow:hidden;background:#fff;box-shadow:0 6px 16px rgba(15,23,42,.14);transition:transform .18s ease,box-shadow .18s ease}
+.pxp-card:hover,.pxp-card:focus-visible{transform:translateY(-4px);box-shadow:0 12px 24px rgba(15,23,42,.22);outline:none}
+.pxp-card.here{box-shadow:0 0 0 3px #6366f1,0 8px 20px rgba(99,102,241,.35)}
+.pxp-cth{position:relative;flex:1 1 auto;min-height:150px;background:#0b1020;overflow:hidden}
+.pxp-cth svg{position:absolute;inset:0;width:100%;height:100%;display:block}.pxp-cth .pxp-fl{animation:none;opacity:.55}
+.pxp-card.lock .pxp-cth svg{filter:grayscale(.55) brightness(.75)}
+.pxp-cic{position:absolute;left:12px;bottom:10px;font-size:52px;line-height:1;filter:drop-shadow(0 3px 4px rgba(0,0,0,.45))}
+.pxp-cb{position:absolute;right:8px;top:8px;border-radius:9999px;padding:2px 9px;font-size:10.5px;font-weight:900;color:#e0e7ff;background:rgba(15,23,42,.72);backdrop-filter:blur(3px)}
+.pxp-cb.on{background:#4f46e5;color:#fff}.pxp-cb.ok{background:rgba(250,204,21,.9);color:#78350f}
+.pxp-cbd{flex:none;padding:.65rem .75rem .8rem}.pxp-cbd b{display:block;font-size:13.5px;font-weight:900;color:#1e293b;line-height:1.25;min-height:2.5em}
+.pxp-ctags{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.3rem}.pxp-cft{margin-top:.4rem;font-size:11px;font-weight:700;color:#64748b;line-height:1.3}
+.pxp-arr{position:absolute;top:50%;transform:translateY(-60%);z-index:3;width:34px;height:34px;border-radius:9999px;border:0;cursor:pointer;font-size:22px;font-weight:900;line-height:1;color:#fff;background:rgba(67,56,202,.88);box-shadow:0 4px 10px rgba(0,0,0,.3);transition:filter .15s,transform .15s}
+.pxp-arr:hover{filter:brightness(1.15);transform:translateY(-60%) scale(1.08)}.pxp-arr.l{left:-6px}.pxp-arr.r{right:-6px}
+@media(max-width:640px){.pxp-arr{display:none}.pxp-card{width:180px}}
+html.mx-dark .pxp-card{background:#1e293b}html.mx-dark .pxp-cbd b{color:#f1f5f9}html.mx-dark .pxp-cft{color:#94a3b8}
+.pxp-tw{animation:pxpTw 3.4s ease-in-out infinite}
+.pxp-isl{cursor:pointer;outline:none}
+.pxp-bob{animation:pxpBob 4.6s ease-in-out infinite}
+.pxp-isl:hover .pxp-bob,.pxp-isl:focus-visible .pxp-bob{animation-duration:1.6s}
+.pxp-isl:hover,.pxp-isl:focus-visible{filter:brightness(1.18) drop-shadow(0 0 8px rgba(255,255,255,.45))}
+.pxp-isl.lock .pxp-bob{opacity:.6;filter:grayscale(.45)}
+.pxp-wl{paint-order:stroke;stroke:#0f172a;stroke-width:3px;stroke-linejoin:round;fill:#fff}
+/* zone scene */
+.pxp-zv{display:block}
+.pxp-stage{transition:opacity .17s ease}.pxp-stage.out{opacity:0}
+.pxp-stage.pxp-fadein{animation:pxpFade .3s ease both}
+.pxp-sc-wrap{position:relative;border-radius:1.2rem;overflow:hidden;border:2px solid var(--zc);box-shadow:0 10px 28px rgba(0,0,0,.28)}
+.pxp-scene{position:relative;aspect-ratio:800/420;background:#0b1020}
+.pxp-scene svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.pxp-fl{animation:pxpFl 5s ease-in-out infinite}
+.pxp-nxt{animation:pxpNx 1.4s ease-in-out infinite}
+.pxp-marker{position:absolute;width:64px;height:64px;transform:translate(-50%,-88%);transition:left .8s ease,top .8s ease;pointer-events:none;filter:drop-shadow(0 6px 5px rgba(0,0,0,.35))}
+.pxp-marker .pet-art{width:64px;height:64px;margin:0}
+.pxp-back{position:absolute;left:10px;top:10px;border:0;border-radius:9999px;padding:.4rem .8rem;font-size:11.5px;font-weight:900;color:#fff;background:rgba(15,23,42,.62);backdrop-filter:blur(4px);cursor:pointer;transition:background .15s,transform .15s}
+.pxp-back:hover{background:rgba(67,56,202,.9);transform:translateX(-2px)}
+.pxp-ztitle{position:absolute;right:10px;bottom:10px;display:flex;gap:.55rem;align-items:center;max-width:calc(100% - 20px);padding:.5rem .75rem;border-radius:1rem;background:rgba(15,23,42,.66);backdrop-filter:blur(4px);color:#fff}
+.pxp-ztitle>span{font-size:30px;line-height:1}.pxp-ztitle b{font-size:16px;font-weight:900}
+.pxp-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.25rem}
+.pxp-tag{font-size:10.5px;font-weight:800;color:#fff;border-radius:9999px;padding:2px 9px}.pxp-tag.soft{background:rgba(99,102,241,.75)}
+.pxp-panel{display:grid;grid-template-columns:minmax(0,1fr);gap:.8rem;margin-top:.8rem}
+@media(min-width:900px){.pxp-panel{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.pxp-pc{border:1px solid #e2e8f0;border-radius:1rem;padding:.2rem .95rem .95rem;background:#fff}
+.pxp-desc{margin:.8rem 0 0;font-size:13px;color:#475569;line-height:1.5}
+.pxp-req,.pxp-rw,.pxp-facts{list-style:none;margin:0;padding:0;display:grid;gap:.3rem;font-size:12.5px;color:#334155}
+.pxp-req li{display:flex;gap:.5rem;align-items:center;font-weight:700}
+.pxp-req li span{flex:none;width:20px;height:20px;border-radius:9999px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff}
+.pxp-req li.ok span{background:#10b981}.pxp-req li.no span{background:#ef4444}.pxp-req li.no{color:#b91c1c}
+.pxp-rw li{display:flex;gap:.35rem;align-items:center;flex-wrap:wrap;font-weight:700}.pxp-rw em{font-style:normal;font-size:11px;color:#94a3b8;font-weight:600}
+.pxp-chips{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.3rem}
+.pxp-chip2{font-size:10.5px;font-weight:800;background:#ede9fe;color:#5b21b6;border-radius:9999px;padding:1px 8px}.pxp-chip2.me{background:#10b981;color:#fff}
+.pxp-chrow{display:flex;align-items:center;gap:.5rem;font-size:12px;font-weight:800;color:#334155}
+.pxp-chbar{flex:1;height:9px;border-radius:9999px;background:#e2e8f0;overflow:hidden}.pxp-chbar i{display:block;height:100%;border-radius:inherit;transition:width .5s ease}
+.pxp-go{border:0;cursor:pointer;border-radius:.8rem;padding:.55rem .9rem;font-size:13px;font-weight:900;color:#fff;background:linear-gradient(100deg,#4338ca,#7c3aed);box-shadow:0 4px 12px rgba(109,40,217,.3);transition:transform .15s,filter .15s}
+.pxp-go.wide{display:block;width:100%;margin-top:.7rem}
+.pxp-go:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.1)}.pxp-go:active:not(:disabled){transform:scale(.97)}
+.pxp-go:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.pxp-ghost{margin-top:.7rem;border:1px solid #c7d2fe;background:#fff;color:#4338ca;border-radius:.7rem;padding:.4rem .8rem;font-size:12px;font-weight:900;cursor:pointer;transition:background .15s,color .15s}
+.pxp-ghost:hover{background:#4338ca;color:#fff}
+.pxp-big{font-size:14px;font-weight:800;color:#475569}.pxp-big b{font-size:34px;color:#4338ca;font-weight:900}.pxp-big span{font-size:12px}
+.pxp-facts li{font-weight:600}.pxp-facts b{color:#1e293b}
+.pxp-ev{margin-top:.5rem;font-size:12px;font-style:italic;color:#7c3aed;line-height:1.4}
+.pxp-res{border-radius:.9rem;padding:.6rem .75rem;margin-top:.8rem;border:1px solid}
+.pxp-res.win{background:#fffbeb;border-color:#fcd34d}.pxp-res.lose{background:#f1f5f9;border-color:#cbd5e1}
+.pxp-res-t{font-size:14px;font-weight:900;color:#1e293b}.pxp-res-s{font-size:12px;color:#475569;margin-top:.2rem;line-height:1.5}
+.pxp-cchip{margin:.3rem auto 0;display:inline-block;font-size:10px;font-weight:900;color:#4338ca;background:#e0e7ff;border-radius:9999px;padding:1px 8px}
+.pxp-cbadges{margin-top:2px;font-size:13px;letter-spacing:1px}
+/* dark mode */
+html.mx-dark .pxp-stu{background:linear-gradient(170deg,#1e293b,#1e1b4b);border-color:#4c1d95}
+html.mx-dark .pxp-pc{background:#1e293b;border-color:#334155}
+html.mx-dark .pxp-sect{color:#c7d2fe}html.mx-dark .pxp-sname{color:#f1f5f9}
+html.mx-dark .pxp-m>div,html.mx-dark .pxp-pass{background:rgba(15,23,42,.6);border-color:#6d28d9;color:#ddd6fe}html.mx-dark .pxp-m strong,html.mx-dark .pxp-pn{color:#f1f5f9}
+html.mx-dark .pxp-pd,html.mx-dark .pxp-desc,html.mx-dark .pxp-req,html.mx-dark .pxp-rw,html.mx-dark .pxp-facts,html.mx-dark .pxp-chrow,html.mx-dark .pxp-big,html.mx-dark .pxp-res-s{color:#cbd5e1}
+html.mx-dark .pxp-facts b,html.mx-dark .pxp-res-t{color:#f1f5f9}html.mx-dark .pxp-big b{color:#a5b4fc}
+html.mx-dark .pxp-steps li{background:#1e293b;border-color:#334155;color:#94a3b8}html.mx-dark .pxp-steps li i{background:#334155;color:#cbd5e1}
+html.mx-dark .pxp-steps li.done{background:#064e3b;border-color:#047857;color:#a7f3d0}html.mx-dark .pxp-steps li.cur{background:linear-gradient(100deg,#4338ca,#7c3aed);color:#fff}
+html.mx-dark .pxp-sel,html.mx-dark .pxp-ghost{background:#1e293b;color:#e0e7ff;border-color:#4c1d95}
+html.mx-dark .pxp-chbar{background:#334155}html.mx-dark .pxp-chip2{background:#4c1d95;color:#ede9fe}html.mx-dark .pxp-chip2.me{background:#10b981;color:#fff}
+html.mx-dark .pxp-res.win{background:#451a03;border-color:#b45309}html.mx-dark .pxp-res.lose{background:#1e293b;border-color:#475569}
+html.mx-dark .pxp-cchip{background:#312e81;color:#e0e7ff}
+@media (prefers-reduced-motion:reduce){.pxp-bob,.pxp-tw,.pxp-fl,.pxp-nxt{animation:none!important}.pxp-world svg,.pxp-marker,.pxp-go,.pxp-back,.pxp-chbar i{transition:none}.pxp-stage,.pxp-stage.pxp-fadein{animation:none;transition:none}}
+</style>
+<style id="patch-pxp-explore-btn">
+.pxp-pc.pxp-nf{border:0;background:transparent;padding:0;display:flex;flex-direction:column;justify-content:center}
+.pxp-go.pxp-explore{margin-top:.4rem;padding:1.15rem 1.2rem;font-size:24px;letter-spacing:.02em;border-radius:1.1rem;background:linear-gradient(100deg,#f59e0b,#ef4444 55%,#db2777);box-shadow:0 8px 22px rgba(239,68,68,.45);animation:pxpBigPulse 1.8s ease-in-out infinite}
+.pxp-go.pxp-explore:disabled{animation:none;background:linear-gradient(100deg,#64748b,#475569)}
+@keyframes pxpBigPulse{0%,100%{box-shadow:0 8px 22px rgba(239,68,68,.45)}50%{box-shadow:0 10px 30px rgba(245,158,11,.75)}}
+@media (prefers-reduced-motion:reduce){.pxp-go.pxp-explore{animation:none}}
+</style>
+<style id="patch-pxp-cfg">
+/* ===== Pet Expedition: khối Cài đặt (tách riêng dưới giao diện thám hiểm) ===== */
+.pxp-cfgsec{margin-top:1rem}
+.pxp-cfgbtn{display:flex;align-items:center;gap:.75rem;width:100%;text-align:left;border:1px solid #c7d2fe;background:linear-gradient(100deg,#eef2ff,#f5f3ff);color:#3730a3;border-radius:.9rem;padding:.7rem 1rem;cursor:pointer;transition:background .15s,box-shadow .15s}
+.pxp-cfgbtn:hover{box-shadow:0 4px 14px rgba(99,102,241,.2)}
+.pxp-cfgbtn.on{background:linear-gradient(100deg,#4338ca,#7c3aed);color:#fff;border-color:transparent}
+.pxp-cfggear{font-size:20px;transition:transform .5s ease}.pxp-cfgbtn.on .pxp-cfggear{transform:rotate(180deg)}
+.pxp-cfgbt1{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.pxp-cfgbt1 b{font-size:15px;font-weight:900}.pxp-cfgbt1 small{font-size:11.5px;font-weight:700;opacity:.8}
+.pxp-cfgcv{flex:none;font-size:16px;transition:transform .3s ease}.pxp-cfgbtn.on .pxp-cfgcv{transform:rotate(180deg)}
+.pxp-cfg{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .4s ease,opacity .3s ease,margin-top .4s ease;margin-top:0}
+.pxp-cfg.open{grid-template-rows:1fr;opacity:1;margin-top:.8rem}
+.pxp-cfgin{overflow:hidden;min-height:0}
+.pxp-cfg:not(.open) .pxp-cfgin{visibility:hidden;transition:visibility 0s .4s}
+.pxp-cfgbox{padding:.1rem}
+.pxp-cfgh{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem}
+.pxp-cfgx{flex:none;width:30px;height:30px;border-radius:9999px;border:1px solid #cbd5e1;background:#fff;color:#475569;font-weight:900;cursor:pointer}
+.pxp-cfgx:hover{background:#e2e8f0}
+.pxp-cfgchips{display:flex;gap:.4rem;overflow-x:auto;padding:.6rem 0 .4rem;scrollbar-width:thin}
+.pxp-cfgchip{flex:none;display:inline-flex;align-items:center;gap:.3rem;position:relative;border:1.5px solid #cbd5e1;background:#fff;color:#334155;border-radius:9999px;padding:.3rem .7rem;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,color .15s}
+.pxp-cfgchip:hover{border-color:var(--zc)}
+.pxp-cfgchip.on{background:var(--zc);border-color:var(--zc);color:#fff;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+.pxp-cfgdot{width:8px;height:8px;border-radius:9999px;background:#f59e0b;box-shadow:0 0 0 2px #fff;display:inline-block}
+.pxp-cfginfo{display:flex;align-items:center;gap:.7rem;margin:.4rem 0 .8rem;padding:.55rem .7rem;border-radius:.9rem;background:#f8fafc;border:1px solid #e2e8f0;border-left:5px solid var(--zc)}
+.pxp-cfgbig{font-size:32px;line-height:1}
+.pxp-cfginfo b{font-size:15px;color:#1e293b}
+.pxp-gcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.75rem}
+.pxp-gcard{border:1px solid #e2e8f0;border-radius:.9rem;padding:.8rem .6rem .7rem;text-align:center;display:flex;flex-direction:column}
+.pxp-gcard .gift-body{display:flex;flex-direction:column;align-items:center;gap:.1rem;margin-top:0}
+.pxp-gcard .gift-name{min-height:2.4em;display:flex;align-items:center;justify-content:center;line-height:1.2;margin-bottom:.2rem}
+.pxp-gbase{position:absolute;top:.4rem;left:.4rem;z-index:2;font-size:9.5px;font-weight:900;color:#92400e;background:#fef3c7;border:1px solid #fcd34d;border-radius:9999px;padding:0 .45rem}
+.pxp-gbar{width:100%;height:6px;border-radius:9999px;background:rgba(15,23,42,.12);overflow:hidden;margin:.15rem 0 .45rem}
+.pxp-gbar i{display:block;height:100%;border-radius:inherit;background:var(--wm,#6366f1);transition:width .25s ease}
+.pxp-cfgnum{display:flex;align-items:center;justify-content:center;gap:.25rem;font-size:13px;font-weight:900;color:#475569}
+.pxp-cfgnum input{width:76px;border:1.5px solid #cbd5e1;border-radius:.6rem;padding:.3rem .4rem;text-align:right;font-size:14px;font-weight:800;color:#1e293b;background:rgba(255,255,255,.92)}
+.pxp-cfgnum input:focus{outline:none;border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.2)}
+.pxp-cfgft{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem;margin-top:.9rem}
+.pxp-cfgsum{font-size:13px;font-weight:800;padding:.35rem .8rem;border-radius:9999px}
+.pxp-cfgsum.ok{background:#dcfce7;color:#166534}.pxp-cfgsum.bad{background:#fee2e2;color:#991b1b}
+.pxp-cfgbt{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.pxp-cfgbt .pxp-ghost,.pxp-cfgbt .pxp-go{margin-top:0}
+html.mx-dark .pxp-cfgbtn{background:#1e293b;color:#e0e7ff;border-color:#4c1d95}
+html.mx-dark .pxp-cfgbtn.on{background:linear-gradient(100deg,#4338ca,#7c3aed);color:#fff}
+html.mx-dark .pxp-cfgx,html.mx-dark .pxp-cfgchip,html.mx-dark .pxp-cfginfo{background:#0f172a;border-color:#334155;color:#e2e8f0}
+html.mx-dark .pxp-cfgchip.on{background:var(--zc);color:#fff}
+html.mx-dark .pxp-cfginfo b,html.mx-dark .pxp-gcard .gift-name{color:#f1f5f9}
+html.mx-dark .pxp-gcard{border-color:#334155}html.mx-dark .pxp-gbar{background:rgba(255,255,255,.18)}
+html.mx-dark .pxp-cfgnum{color:#e2e8f0}html.mx-dark .pxp-cfgnum input{background:#0f172a;border-color:#475569;color:#f1f5f9}
+html.mx-dark .pxp-cfgsum.ok{background:#064e3b;color:#a7f3d0}html.mx-dark .pxp-cfgsum.bad{background:#7f1d1d;color:#fecaca}
+.pxp-gdel{position:absolute;top:.4rem;right:.4rem;z-index:2;width:24px;height:24px;border-radius:9999px;border:0;background:#fff1f2;color:#e11d48;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.85;transition:background .15s,color .15s,opacity .15s}
+.pxp-gdel:hover{background:#e11d48;color:#fff;opacity:1}
+.pxp-gedit{position:absolute;top:.4rem;right:2.2rem;z-index:2;width:24px;height:24px;border-radius:9999px;border:0;background:#eef2ff;color:#4f46e5;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.85;transition:background .15s,color .15s,opacity .15s}
+.pxp-gedit:hover{background:#4f46e5;color:#fff;opacity:1}
+.pxp-gadd{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35rem;min-height:150px;border:2px dashed #a5b4fc;border-radius:.9rem;background:rgba(238,242,255,.6);color:#4338ca;font-size:13px;font-weight:900;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}
+.pxp-gadd i{font-size:22px}.pxp-gadd:hover{background:#e0e7ff;border-color:#6366f1;transform:translateY(-3px)}
+html.mx-dark .pxp-gadd{background:rgba(30,27,75,.6);border-color:#6d28d9;color:#c7d2fe}html.mx-dark .pxp-gadd:hover{background:#312e81}
+@media (prefers-reduced-motion:reduce){.pxp-cfg,.pxp-gbar i,.pxp-cfggear,.pxp-cfgcv,.pxp-gadd{transition:none}}
+</style>
+<style id="patch-pxp-status">
+.pxp-lvbox{border:2px solid #f59e0b!important;background:linear-gradient(180deg,#fffbeb,#fef3c7)!important;color:#92400e!important;box-shadow:0 0 0 2px rgba(251,191,36,.35),0 0 12px rgba(245,158,11,.45)}
+.pxp-lvbox strong{color:#b45309!important}
+html.mx-dark .pxp-lvbox{background:linear-gradient(180deg,#422006,#78350f)!important;color:#fde68a!important}
+html.mx-dark .pxp-lvbox strong{color:#fde047!important}
+.pxp-reqbox{margin-top:.5rem;text-align:left}
+.pxp-reqbox .pxp-sect{margin:.5rem 0 .4rem}
+.pxp-st{position:relative;overflow:hidden;border-radius:1rem;padding:.2rem .85rem .85rem;margin-top:.8rem;border:1px solid #c7d2fe;background:linear-gradient(160deg,#eef2ff,#f5f3ff)}
+html.mx-dark .pxp-st{background:linear-gradient(160deg,#1e1b4b,#312e81);border-color:#4c1d95}
+.pxp-st-h{display:flex;align-items:center;gap:.5rem;font-size:15px;color:#312e81;margin:.7rem 0 .5rem}
+html.mx-dark .pxp-st-h{color:#e0e7ff}
+.pxp-compass{display:inline-block;font-size:24px;animation:pxpSpin 3s ease-in-out infinite;transform-origin:50% 50%}
+@keyframes pxpSpin{0%{transform:rotate(-25deg)}50%{transform:rotate(40deg)}100%{transform:rotate(-25deg)}}
+.pxp-dots i{display:inline-block;width:6px;height:6px;margin-left:3px;border-radius:50%;background:#6366f1;animation:pxpDot 1.2s infinite}
+.pxp-dots i:nth-child(2){animation-delay:.2s}.pxp-dots i:nth-child(3){animation-delay:.4s}
+@keyframes pxpDot{0%,80%,100%{opacity:.2;transform:translateY(0)}40%{opacity:1;transform:translateY(-4px)}}
+.pxp-bar{height:12px;border-radius:9999px;background:rgba(99,102,241,.18);overflow:hidden}
+.pxp-bar-f{height:100%;border-radius:9999px;background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899,#6366f1);background-size:200% 100%;animation:pxpBar 2s linear infinite;transition:width .6s}
+@keyframes pxpBar{to{background-position:-200% 0}}
+.pxp-st-n{font-size:12px;font-weight:800;color:#475569;margin:.35rem 0 .4rem}
+.pxp-st-n b{font-size:30px;color:#4338ca;font-weight:900}
+html.mx-dark .pxp-st-n{color:#cbd5e1}html.mx-dark .pxp-st-n b{color:#a5b4fc}
+.pxp-st.win{background:linear-gradient(160deg,#fffbeb,#fef3c7);border-color:#fbbf24;animation:pxpWin 2.2s ease-in-out infinite}
+html.mx-dark .pxp-st.win{background:linear-gradient(160deg,#451a03,#78350f);border-color:#f59e0b}
+@keyframes pxpWin{0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,0),0 0 14px rgba(251,191,36,.35)}50%{box-shadow:0 0 0 3px rgba(251,191,36,.25),0 0 26px rgba(251,191,36,.65)}}
+.pxp-st.win .pxp-st-h{color:#92400e}html.mx-dark .pxp-st.win .pxp-st-h{color:#fde68a}
+.pxp-trophy{display:inline-block;font-size:28px;animation:pxpBounce 1.1s ease-in-out infinite}
+@keyframes pxpBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.15)}}
+.pxp-spk{position:absolute;top:70%;font-style:normal;font-size:14px;opacity:0;pointer-events:none;animation:pxpFloat 2.6s ease-out infinite;animation-delay:var(--d)}
+@keyframes pxpFloat{0%{opacity:0;transform:translateY(0) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-120px) scale(1.2) rotate(40deg)}}
+.pxp-harv{margin:.2rem 0 .5rem}.pxp-harv em{font-size:10px;font-weight:700;color:#a16207;font-style:normal;margin-left:auto}
+.pxp-loot{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.45rem}
+.pxp-lt{display:flex;align-items:center;gap:.45rem;padding:.45rem .55rem;border-radius:.8rem;background:rgba(255,255,255,.85);border:1px solid #fcd34d;font-size:12px;font-weight:800;color:#78350f;opacity:0;animation:pxpPop .5s cubic-bezier(.2,1.6,.4,1) forwards;animation-delay:calc(var(--i)*.18s)}
+html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b45309}
+.pxp-lt-i{font-size:22px;flex:none}
+.pxp-lt.gift .pxp-lt-i{animation:pxpWig 1.6s ease-in-out infinite;animation-delay:calc(var(--i)*.18s + .6s)}
+@keyframes pxpPop{0%{opacity:0;transform:scale(.3) translateY(14px)}100%{opacity:1;transform:none}}
+@keyframes pxpWig{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+.pxp-tent{font-size:24px;display:inline-block;animation:pxpBounce 2.4s ease-in-out infinite}
+.pxp-st.idle,.pxp-st.lose{background:rgba(148,163,184,.12);border-color:#cbd5e1}
+@media (prefers-reduced-motion:reduce){.pxp-compass,.pxp-dots i,.pxp-bar-f,.pxp-st.win,.pxp-trophy,.pxp-spk,.pxp-lt.gift .pxp-lt-i,.pxp-tent{animation:none!important}.pxp-lt{animation:none;opacity:1}.pxp-spk{display:none}}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -12632,7 +12863,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
               /* Khóa mới: thú cưng, kỷ lục streak, mốc chốt streak và phiếu vật phẩm đều bắt đầu lại từ đầu (chỉ giữ danh sách lớp/học sinh). */
               ['petSp','petNick','petName','petHatch','petPeak','petItems','petEquip','petSpent','petSpentD','petBuys','petStreakSeen','petStreakLossCount','petShown','petLvSeen','petAvgSeen','bestTenStreak','streakFloor','itemTickets','itemTicketHistory','itemTicketWeekly'].forEach(k=>{delete n[k]});
               return n;});
-            appData.petBless={led:{},log:[],recv:{},pend:{}};
+            appData.petBless={led:{},log:[],recv:{},pend:{}};appData.petExp={runs:{},hist:[],col:{}};
             if(appData.gacha&&typeof appData.gacha==='object'){appData.gacha.st={};appData.gacha.history=[];}
             bkStartFreshCourseBadges(c.id);appData.sgLedger={cells:{},gifts:{},chains:{}};
             if(/^\d{4}-\d{2}-\d{2}/.test(c.startDate||'')){appData.year=parseInt(c.startDate.slice(0,4));appData.startMonth=parseInt(c.startDate.slice(5,7));if(/^\d{4}-\d{2}-\d{2}/.test(c.endDate||'')){const span=(parseInt(c.endDate.slice(0,4))*12+parseInt(c.endDate.slice(5,7)))-(appData.year*12+appData.startMonth)+1;if(span>=1&&span<=12)appData.monthCount=span;}appData.yearKeysFixed=true;try{const ms=document.getElementById('startMonthSelect'),mc=document.getElementById('monthCountSelect'),ys=document.getElementById('startYearSelect');if(ms)ms.value=appData.startMonth;if(mc)mc.value=appData.monthCount||3;if(ys){const yv=String(appData.year);if(![...ys.options].some(o=>o.value===yv))ys.add(new Option(yv,yv));ys.value=yv;}}catch(e){}}
@@ -14181,7 +14412,7 @@ window.openStudentProfile=function(studentId){
         };
         window.petSetMode = m => {
             if (m === petMode) return;
-            const root = document.getElementById('viewPetContainer'), pane = root && root.querySelector('.pet-pane'), dir = ({ class: 0, bank: 1, shop: 2 })[m] > ({ class: 0, bank: 1, shop: 2 })[petMode] ? 1 : -1;
+            const root = document.getElementById('viewPetContainer'), pane = root && root.querySelector('.pet-pane'), dir = ({ class: 0, bank: 1, shop: 2, exp: 3 })[m] > ({ class: 0, bank: 1, shop: 2, exp: 3 })[petMode] ? 1 : -1;
             const go = () => { petMode = m; window.__petSlide = dir; renderPetView(); };
             if (pane && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) { pane.style.setProperty('--dir', dir); pane.classList.remove('pet-in'); pane.classList.add('pet-out'); setTimeout(go, 210); } else go();
         };
@@ -15229,6 +15460,16 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             chg8: { itemId: 'fix_change_8', type: 'change', targetScore: 8, isFixed: true, vi: 'Đổi một điểm có sẵn thành 8', en: 'Change existing score to 8' },
             add10: { itemId: 'fix_add_10', type: 'add', targetScore: 10, isFixed: true, vi: 'Một điểm 10', en: 'One score of 10' }
         };
+        Object.assign(PET_GIFT, {
+            add9: { itemId: 'fix_add_9', type: 'add', targetScore: 9, isFixed: true, vi: 'Một điểm 9', en: 'One score of 9' },
+            add8: { itemId: 'fix_add_8', type: 'add', targetScore: 8, isFixed: true, vi: 'Một điểm 8', en: 'One score of 8' },
+            chg10: { itemId: 'fix_change_10', type: 'change', targetScore: 10, isFixed: true, vi: 'Đổi một điểm có sẵn thành 10', en: 'Change existing score to 10' },
+            shield: { itemId: 'fix_streak_shield', type: 'streak_shield', isFixed: true, vi: 'Khiên giữ chuỗi', en: 'Streak Shield' },
+            ticket: { itemId: 'fix_item_ticket_1', type: 'item_ticket', ticketQty: 1, isFixed: true, vi: '1 Phiếu Vật Phẩm', en: '1 Item Ticket' },
+            exam05: { itemId: 'pet_hidden_exam_plus_0_5', type: 'plus_exam', deltaScore: 0.5, isFixed: false, vi: 'Cộng 0,5 điểm vào bài kiểm tra', en: '+0.5 to Test score' },
+            pm5: { itemId: 'pet_hidden_match_le5_p1', type: 'plus_match', deltaScore: 1, matchScore: 5, matchOp: 'lte', isFixed: false, vi: 'Cộng 1 điểm vào ô từ 5 trở xuống', en: '+1 to a cell of 5 or lower' },
+            pm7: { itemId: 'pet_hidden_match_le7_p1', type: 'plus_match', deltaScore: 1, matchScore: 7, matchOp: 'lte', isFixed: false, vi: 'Cộng 1 điểm vào ô từ 7 trở xuống', en: '+1 to a cell of 7 or lower' }
+        });
         const petLog = (P, st, vi, en) => { P.log.push({ d: petPd(new Date()), sid: st.id, vi: `${st.petName || getStudentDisplayName(st)} · ${PET_SP[st.petSp][0]}: ${vi}`, en: `${getStudentDisplayName(st)} · ${PET_SP[st.petSp][1]}: ${en}` }); if (P.log.length > 200) P.log.splice(0, P.log.length - 200); };
         const petToast = (vi, en) => { try { if (window.showAppToast) window.showAppToast(L2(vi, en), 'success'); } catch (e) {} };
         // Chúc phúc KHÔNG cộng ngay và KHÔNG báo ra màn hình: xếp hàng chờ ở thẻ thú cưng, học sinh bấm vào thẻ mới nhận quà
@@ -15298,11 +15539,11 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                     } else if (it.k === 'inv') {
                         const g = PET_GIFT[it.kind]; if (!g) return; const nm = en ? g.en : g.vi;
                         st.inventory = st.inventory || [];
-                        for (let k = 0; k < it.n; k++) { const o = { invId: 'inv_' + Date.now() + '_pet' + k + '_' + Math.random().toString(36).slice(2, 8), itemId: g.itemId, name: nm, itemName: nm, isFixed: g.isFixed, type: g.type, date: petPd(new Date()), fromPet: true }; if (g.deltaScore !== undefined) o.deltaScore = g.deltaScore; if (g.targetScore !== undefined) o.targetScore = g.targetScore; st.inventory.push(o); }
+                        for (let k = 0; k < it.n; k++) { const o = { invId: 'inv_' + Date.now() + '_pet' + k + '_' + Math.random().toString(36).slice(2, 8), itemId: g.itemId, name: nm, itemName: nm, isFixed: g.isFixed, type: g.type, date: petPd(new Date()), fromPet: true }; if (g.deltaScore !== undefined) o.deltaScore = g.deltaScore; if (g.targetScore !== undefined) o.targetScore = g.targetScore; ['matchScore', 'matchOp', 'ticketQty'].forEach(f => { if (g[f] !== undefined) o[f] = g[f]; }); st.inventory.push(o); }
                         petLog(P, st, `${it.vi} (+${it.n} ${g.vi})`, `${it.en} (+${it.n} ${g.en})`);
                         parts.push(`${it.n} × ${nm}`);
                     } else if (it.k === 'copy') {
-                        const g = it.item; if (!g || !g.type) return; const nm = g.name || ''; st.inventory = st.inventory || [];
+                        const g = it.item; if (!g || (!g.type && !g.pxpCu)) return; const nm = g.name || ''; st.inventory = st.inventory || [];
                         for (let k = 0; k < it.n; k++) { const o = { invId: 'inv_' + Date.now() + '_pet' + k + '_' + Math.random().toString(36).slice(2, 8), itemId: g.itemId, name: nm, itemName: nm, isFixed: !!g.isFixed, type: g.type, date: petPd(new Date()), fromPet: true }; ['targetScore', 'deltaScore', 'matchScore', 'matchOp'].forEach(f => { if (g[f] !== undefined) o[f] = g[f]; }); st.inventory.push(o); }
                         petLog(P, st, `${it.vi} (+${it.n} ${nm})`, `${it.en} (+${it.n} ${nm})`);
                         parts.push(`${it.n} × ${nm}`);
@@ -16687,7 +16928,7 @@ html.mx-dark .gc-bar{background:#334155}
             const rawSwitch = window.switchViewMode, rawMode = window.petSetMode, rawGoShop = window.petGoShop, rawPickStu = window.petPickStu;
             window.saveData = () => Promise.resolve(false);
             window.switchViewMode = function (m) { if (window.MX_STUDENT && !['home', 'ranking', 'matrix', 'pet'].includes(m)) return; return rawSwitch.apply(this, arguments); };
-            window.petSetMode = m => { if (m === 'class' || m === 'shop') { if (m === 'shop') petTarget = window.MX_STUDENT.sid; rawMode(m); } };
+            window.petSetMode = m => { if (m === 'class' || m === 'shop' || m === 'exp') { if (m === 'shop') petTarget = window.MX_STUDENT.sid; rawMode(m); } };
             window.petGoShop = () => rawGoShop(window.MX_STUDENT.sid);
             window.petPickStu = () => rawPickStu(window.MX_STUDENT.sid);
             window.petEqOpen = () => { const h = document.getElementById('pqInline'); if (h) { try { h.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {} return; } pqSid = window.MX_STUDENT.sid; pqSlot = -1; pqRender(); };
@@ -16724,7 +16965,7 @@ html.mx-dark .gc-bar{background:#334155}
         /* ---------- Phía học sinh: chặn thao tác ngoài phạm vi (mặc định: chặn) ---------- */
         const MX_OWN = a => String(a[0]) === String(window.MX_STUDENT && window.MX_STUDENT.sid);
         const MX_OK = {
-            petSubTab: () => true, petSetMode: a => a[0] === 'class' || a[0] === 'shop', petGoShop: MX_OWN, petPickStu: MX_OWN, petEqOpen: MX_OWN, petSetSel: () => true,
+            petSubTab: () => true, petSetMode: a => a[0] === 'class' || a[0] === 'shop' || a[0] === 'exp', pxpOpen: () => true, pxpBack: () => true, petGoShop: MX_OWN, petPickStu: MX_OWN, petEqOpen: MX_OWN, petSetSel: () => true,
             petLbOpen: () => true, petLbClose: () => true, mxStuTab: () => true, pqClose: () => true, pqCnt: () => true, pqPick: () => true, pqEquip: () => true,
             pqUnequip: () => true, pqSaveName: () => true, pqResetName: () => true, pshSet: () => true, pshBuy: () => true
         };
@@ -16763,6 +17004,644 @@ html.mx-dark .gc-bar{background:#334155}
             // danh sách giáo viên tải xong sau khi hộp đăng nhập đã mở: điền lại ô chọn
             setInterval(() => { const s = document.getElementById('mxStuTeacher'); if (s && !s.value && (teacherRecords || []).length) s.innerHTML = teacherRecords.map(t => '<option value="' + escapeHtml(String(t.teacherId)) + '">' + escapeHtml((t.icon || '👩‍🏫') + ' ' + (t.name || '')) + '</option>').join(''); }, 1000);
         })();
+
+        /* ===================== PET EXPEDITION: Thám hiểm thú cưng =====================
+           Chế độ thứ 4 của tab Thú Cưng (petMode === 'exp'), chiếm toàn bộ vùng nội dung.
+           Dữ liệu: appData.petExp = { runs:{[sid]:{id,z,t0,need,ch,b}}, hist:[...], col:{[sid]:{b:{zone:ts},d:{decorKey:n},xp:n}} }
+           Tiến độ = số BUỔI HỌC THẬT (Lịch học của lớp, trừ ngày nghỉ) kết thúc sau lúc xuất phát.
+           Kết quả được tính MỘT lần (seed theo id chuyến đi) rồi lưu → tải lại trang không đổi kết quả.
+           Quà đi qua hàng chờ có sẵn (petGive / petGiveInv): học sinh bấm vào thẻ thú cưng để nhận. */
+        const PXP_DUR = 90 * 60000; // cùng độ dài buổi học 90 phút với Timeline lớp
+        // rw: phần thưởng nhỏ khi thành công — {k:'pts',n} hoặc {k:'inv',kind,n}. Chỉnh cân bằng tại đây.
+        const PXP_Z = [
+            { id: 'forest', ic: '🌲', col: '#16a34a', vi: 'Rừng Cổ Thụ', en: 'Ancient Forest', lv: 0, need: 3, base: 70, min: 2, rec: 2,
+              tvi: 'Thám hiểm cơ bản', ten: 'Basic exploration', aff: [5, 7, 9, 10, 15, 20],
+              dvi: 'Những tán cây ngàn năm tuổi che kín bầu trời. Nơi khởi đầu lý tưởng cho thú cưng mới nở.', den: 'Thousand-year-old canopies hide the sky. The ideal first trip for a freshly hatched pet.',
+              bvi: 'Người Khai Phá Rừng Cổ', ben: 'Forest Pathfinder', bic: '🌲',
+              decor: [{ k: 'fo1', ic: '🌱', vi: 'Cây Non Cổ Thụ', en: 'Elder Sapling' }, { k: 'fo2', ic: '🍄', vi: 'Nấm Phát Sáng', en: 'Glowing Mushroom' }, { k: 'fo3', ic: '🪺', vi: 'Tổ Chim Lá', en: 'Leaf Nest' }],
+              rw: { k: 'pts', n: 1 },
+              ev: [['Thú cưng lần theo dấu chân bí ẩn giữa rừng.', 'Your pet follows mysterious tracks through the forest.'], ['Một đàn đom đóm dẫn đường qua bụi rậm.', 'A swarm of fireflies lights the way.'], ['Thú cưng trèo lên cây cổ thụ để quan sát.', 'Your pet climbs an elder tree to scout ahead.']] },
+            { id: 'plains', ic: '🌬️', col: '#84cc16', vi: 'Thảo Nguyên Gió', en: 'Windy Plains', lv: 1, need: 3, base: 68, min: 2, rec: 2,
+              tvi: 'Khám phá và tốc độ', ten: 'Discovery & speed', aff: [1, 2, 6, 11, 13, 17, 24],
+              dvi: 'Cỏ cao rạp theo gió, đường chân trời trải dài bất tận. Thú nhanh nhẹn rất có lợi thế.', den: 'Tall grass bends in the wind under an endless horizon. Swift pets have the edge.',
+              bvi: 'Cơn Gió Thảo Nguyên', ben: 'Plains Wind Runner', bic: '🌬️',
+              decor: [{ k: 'pl1', ic: '🎐', vi: 'Chong Chóng Gió', en: 'Wind Pinwheel' }, { k: 'pl2', ic: '🚩', vi: 'Cờ Thảo Nguyên', en: 'Prairie Banner' }, { k: 'pl3', ic: '🪶', vi: 'Lông Vũ Gió', en: 'Breeze Feather' }],
+              rw: { k: 'inv', kind: 'plus1', n: 1 },
+              ev: [['Thú cưng chạy đua cùng một đàn ngựa hoang.', 'Your pet races a herd of wild horses.'], ['Cơn gió lớn thổi bay mũ nhưng không cản được bước chân.', 'A gust blows hard, but it cannot slow your pet.'], ['Thú cưng phát hiện một con đường tắt ẩn sau đồi cỏ.', 'Your pet spots a shortcut hidden behind a grassy hill.']] },
+            { id: 'desert', ic: '🏜️', col: '#f59e0b', vi: 'Sa Mạc Hoàng Kim', en: 'Golden Desert', lv: 2, need: 5, base: 52, min: 3, rec: 4,
+              tvi: 'Sinh tồn và kho báu', ten: 'Survival & treasure', aff: [0, 16, 18, 21, 24, 25],
+              dvi: 'Cát vàng nóng rực che giấu những kho báu cổ. Cần sức bền để vượt qua cái nắng gay gắt.', den: 'Scorching golden dunes hide ancient treasure. Endurance is key to beating the heat.',
+              bvi: 'Thợ Săn Kho Báu', ben: 'Treasure Hunter', bic: '🏜️',
+              decor: [{ k: 'de1', ic: '🪙', vi: 'Đồng Xu Vàng', en: 'Golden Coin' }, { k: 'de2', ic: '🌵', vi: 'Xương Rồng Mini', en: 'Mini Cactus' }, { k: 'de3', ic: '🏺', vi: 'Bình Cổ Sa Mạc', en: 'Desert Relic Vase' }],
+              rw: { k: 'inv', kind: 'plus2', n: 1 },
+              ev: [['Thú cưng đào được một chiếc rương nhỏ chôn dưới cát.', 'Your pet digs up a small chest buried in the sand.'], ['Bão cát nổi lên, thú cưng trú dưới bóng một tảng đá.', 'A sandstorm hits; your pet shelters behind a boulder.'], ['Ốc đảo xuất hiện phía xa, cả đoàn kịp tiếp nước.', 'An oasis appears in the distance, just in time for water.']] },
+            { id: 'ice', ic: '❄️', col: '#38bdf8', vi: 'Núi Băng Vĩnh Cửu', en: 'Eternal Ice Mountain', lv: 3, need: 5, base: 40, min: 4, rec: 5,
+              tvi: 'Khắc nghiệt và thử thách', ten: 'Harsh & demanding', aff: [2, 3, 8, 14, 22, 26, 29],
+              dvi: 'Gió buốt, vực sâu và băng mỏng. Chỉ những thú cưng đủ mạnh mới dám leo lên tới đỉnh.', den: 'Biting wind, deep crevasses and thin ice. Only strong pets dare reach the summit.',
+              bvi: 'Chiến Binh Băng Giá', ben: 'Frost Warrior', bic: '❄️',
+              decor: [{ k: 'ic1', ic: '💎', vi: 'Tinh Thể Băng', en: 'Ice Crystal' }, { k: 'ic2', ic: '❄️', vi: 'Bông Tuyết Vĩnh Cửu', en: 'Eternal Snowflake' }, { k: 'ic3', ic: '🏮', vi: 'Đèn Lồng Băng', en: 'Frost Lantern' }],
+              rw: { k: 'inv', kind: 'chg8', n: 1 },
+              ev: [['Thú cưng vượt qua một khe băng bằng cây cầu tuyết.', 'Your pet crosses a crevasse on a bridge of snow.'], ['Bão tuyết ập đến, cả đoàn đào hang chờ qua đêm.', 'A blizzard strikes; the team digs in for the night.'], ['Thú cưng thấy cực quang rực sáng trên đỉnh núi.', 'Your pet sees an aurora blazing above the peak.']] },
+            { id: 'ruins', ic: '🗿', col: '#8b5cf6', vi: 'Di Tích Huyền Bí', en: 'Mystic Ruins', lv: 4, need: 7, base: 28, min: 5, rec: 6,
+              tvi: 'Phần thưởng hiếm', ten: 'Rare rewards', aff: [4, 12, 17, 19, 23, 26, 27, 28],
+              dvi: 'Những phiến đá khắc chữ lạ phát sáng trong đêm. Thử thách lớn nhất, đổi lại là phần thưởng hiếm có.', den: 'Strange carved stones glow in the night. The greatest challenge, with the rarest rewards.',
+              bvi: 'Nhà Thám Hiểm Huyền Bí', ben: 'Mystic Explorer', bic: '🗿',
+              decor: [{ k: 'ru1', ic: '🪧', vi: 'Mảnh Bia Cổ', en: 'Ancient Tablet Shard' }, { k: 'ru2', ic: '🔮', vi: 'Mắt Ngọc Di Tích', en: 'Relic Jade Eye' }, { k: 'ru3', ic: '👑', vi: 'Vương Miện Bóng Đêm', en: 'Shadow Crown' }],
+              rw: { k: 'inv', kind: 'chg9', n: 1 },
+              ev: [['Thú cưng giải được câu đố trên cánh cổng đá.', 'Your pet solves the riddle on the stone gate.'], ['Một cạm bẫy cổ kích hoạt, thú cưng lanh lẹ né kịp.', 'An ancient trap triggers; your pet dodges just in time.'], ['Căn phòng bí mật mở ra, ánh sáng xanh tràn ngập.', 'A secret chamber opens, flooded with blue light.']] },
+            {"id": "meadow", "ic": "🌸", "col": "#ec4899", "vi": "Thung Lũng Hoa Anh Đào", "en": "Cherry Blossom Valley", "lv": 0, "need": 3, "min": 2, "tvi": "Dạo chơi thư thái", "ten": "Gentle stroll", "dvi": "Cánh hoa anh đào bay khắp thung lũng. Chuyến đi nhẹ nhàng cho thú cưng mới tập thám hiểm.", "den": "Cherry petals drift across the valley. A gentle trip for beginner explorers.", "bvi": "Người Ngắm Hoa", "ben": "Blossom Watcher", "bic": "🌸", "decor": [{"k": "me1", "ic": "🌸", "vi": "Cành Anh Đào", "en": "Cherry Branch"}, {"k": "me2", "ic": "🎏", "vi": "Cờ Cá Chép", "en": "Carp Streamer"}, {"k": "me3", "ic": "🍡", "vi": "Xiên Dango", "en": "Dango Skewer"}], "rw": {"k": "inv", "kind": "spin", "n": 1}, "ev": [["Thú cưng đuổi theo những cánh hoa rơi.", "Your pet chases falling petals."], ["Một chú bướm đậu lên mũi thú cưng.", "A butterfly lands on your pet's nose."], ["Cả đoàn nghỉ chân dưới tán hoa hồng nhạt.", "The team rests under a pink canopy."]]},
+            {"id": "beach", "ic": "🏖️", "col": "#06b6d4", "vi": "Bãi Biển San Hô", "en": "Coral Beach", "lv": 1, "need": 3, "min": 2, "tvi": "Nhặt vỏ sò", "ten": "Shell hunting", "dvi": "Cát trắng, sóng xanh và những rạn san hô lấp lánh. Thú cưng nhặt được đủ thứ báu vật nhỏ.", "den": "White sand, blue waves and shimmering coral. Pets find all sorts of little treasures.", "bvi": "Thợ Lặn Bãi Biển", "ben": "Beach Diver", "bic": "🏖️", "decor": [{"k": "be1", "ic": "🐚", "vi": "Vỏ Ốc Xà Cừ", "en": "Pearl Shell"}, {"k": "be2", "ic": "⭐", "vi": "Sao Biển Hồng", "en": "Pink Starfish"}, {"k": "be3", "ic": "🪸", "vi": "San Hô Mini", "en": "Mini Coral"}], "rw": {"k": "inv", "kind": "plus1", "n": 1}, "ev": [["Thú cưng đào được một vỏ sò óng ánh.", "Your pet digs up a gleaming shell."], ["Con sóng lớn đánh úp, cả đoàn cười ngặt nghẽo.", "A big wave splashes everyone; the team laughs."], ["Một chú cua nhỏ dẫn đường dọc bờ biển.", "A little crab leads the way along the shore."]]},
+            {"id": "swamp", "ic": "🐸", "col": "#65a30d", "vi": "Đầm Lầy Sương Mù", "en": "Misty Swamp", "lv": 2, "need": 4, "min": 3, "tvi": "Lần mò trong sương", "ten": "Foggy trek", "dvi": "Sương dày đặc phủ lên mặt nước đen. Mỗi bước chân đều phải thật cẩn thận.", "den": "Thick fog hangs over black water. Every step must be careful.", "bvi": "Người Vượt Đầm Lầy", "ben": "Swamp Crosser", "bic": "🐸", "decor": [{"k": "sw1", "ic": "🪷", "vi": "Hoa Sen Đầm Lầy", "en": "Swamp Lotus"}, {"k": "sw2", "ic": "🕯️", "vi": "Đèn Ma Trơi", "en": "Will-o-Wisp Lamp"}, {"k": "sw3", "ic": "🐸", "vi": "Ếch Đá Cổ", "en": "Stone Frog"}], "rw": {"k": "inv", "kind": "plus1", "n": 1}, "ev": [["Ma trơi lập lòe dẫn thú cưng qua bãi lầy.", "Wisps flicker and guide your pet across the bog."], ["Thú cưng nhảy qua từng tảng đá nổi.", "Your pet hops across floating stones."], ["Tiếng ếch rền vang, sương dần tan.", "Frogs croak loudly as the fog lifts."]]},
+            {"id": "cave", "ic": "💎", "col": "#a855f7", "vi": "Hang Pha Lê", "en": "Crystal Cavern", "lv": 2, "need": 4, "min": 3, "tvi": "Khám phá hang động", "ten": "Cave delving", "dvi": "Hàng nghìn tinh thể phát sáng trong bóng tối. Đường hầm quanh co dễ khiến lạc lối.", "den": "Thousands of crystals glow in the dark. Winding tunnels make it easy to get lost.", "bvi": "Người Tìm Pha Lê", "ben": "Crystal Seeker", "bic": "💎", "decor": [{"k": "ca1", "ic": "💎", "vi": "Pha Lê Tím", "en": "Violet Crystal"}, {"k": "ca2", "ic": "🔦", "vi": "Đèn Hầm Mỏ", "en": "Miner's Lantern"}, {"k": "ca3", "ic": "🦇", "vi": "Dơi Đá Mini", "en": "Mini Stone Bat"}], "rw": {"k": "inv", "kind": "plus2", "n": 1}, "ev": [["Ánh pha lê soi sáng một lối đi bí mật.", "Crystal light reveals a secret passage."], ["Đàn dơi bay vụt qua đầu cả đoàn.", "A swarm of bats whooshes overhead."], ["Thú cưng tìm được viên đá phát sáng lớn nhất.", "Your pet finds the biggest glowing stone."]]},
+            {"id": "sky", "ic": "☁️", "col": "#3b82f6", "vi": "Đảo Mây Thiên Không", "en": "Sky Cloud Isles", "lv": 2, "need": 5, "min": 3, "tvi": "Phiêu lưu trên mây", "ten": "Cloud adventure", "dvi": "Những hòn đảo lơ lửng giữa biển mây. Gió mạnh, nhưng tầm nhìn đẹp không đâu sánh bằng.", "den": "Islands drift in a sea of clouds. The wind is strong, but the view is unmatched.", "bvi": "Người Lướt Mây", "ben": "Cloud Glider", "bic": "☁️", "decor": [{"k": "sk1", "ic": "☁️", "vi": "Mây Bông Mini", "en": "Mini Cotton Cloud"}, {"k": "sk2", "ic": "🪁", "vi": "Diều Thiên Không", "en": "Sky Kite"}, {"k": "sk3", "ic": "🌈", "vi": "Cầu Vồng Nhỏ", "en": "Little Rainbow"}], "rw": {"k": "inv", "kind": "plus2", "n": 1}, "ev": [["Thú cưng nhảy từ đám mây này sang đám mây khác.", "Your pet hops from cloud to cloud."], ["Một con chim lớn cho cả đoàn đi nhờ.", "A giant bird gives the team a lift."], ["Cầu vồng hiện ra ngay trước mặt.", "A rainbow appears right ahead."]]},
+            {"id": "volcano", "ic": "🌋", "col": "#ef4444", "vi": "Núi Lửa Rực Cháy", "en": "Blazing Volcano", "lv": 3, "need": 5, "min": 4, "tvi": "Vượt dung nham", "ten": "Lava crossing", "dvi": "Dung nham chảy đỏ rực, tro bụi mù mịt. Cần sức bền thật lớn để tới được miệng núi.", "den": "Lava flows red and ash fills the air. It takes real endurance to reach the crater.", "bvi": "Chiến Binh Dung Nham", "ben": "Lava Warrior", "bic": "🌋", "decor": [{"k": "vo1", "ic": "🔥", "vi": "Ngọn Lửa Vĩnh Cửu", "en": "Eternal Flame"}, {"k": "vo2", "ic": "🪨", "vi": "Đá Núi Lửa", "en": "Volcanic Rock"}, {"k": "vo3", "ic": "🌋", "vi": "Núi Lửa Mini", "en": "Mini Volcano"}], "rw": {"k": "inv", "kind": "chg8", "n": 1}, "ev": [["Thú cưng nhảy qua dòng dung nham trên những tảng đá nguội.", "Your pet leaps over lava on cooled stones."], ["Tro bụi phủ kín, cả đoàn bịt mũi tiến lên.", "Ash blankets everything; the team presses on."], ["Miệng núi rực sáng khi cả đoàn tới nơi.", "The crater glows as the team arrives."]]},
+            {"id": "ocean", "ic": "🌊", "col": "#0891b2", "vi": "Vực Biển Thẳm", "en": "Abyssal Deep", "lv": 3, "need": 6, "min": 5, "tvi": "Lặn sâu đại dương", "ten": "Deep dive", "dvi": "Ánh sáng nhạt dần khi lặn xuống đáy biển. Sinh vật kỳ lạ lẩn khuất trong bóng tối.", "den": "Light fades as you dive to the seabed. Strange creatures lurk in the dark.", "bvi": "Thợ Lặn Vực Thẳm", "ben": "Abyss Diver", "bic": "🌊", "decor": [{"k": "oc1", "ic": "🐚", "vi": "Ngọc Trai Đen", "en": "Black Pearl"}, {"k": "oc2", "ic": "🐠", "vi": "Cá Phát Sáng", "en": "Glow Fish"}, {"k": "oc3", "ic": "🧭", "vi": "La Bàn Hải Tặc", "en": "Pirate Compass"}], "rw": {"k": "inv", "kind": "del", "n": 1}, "ev": [["Đàn cá phát sáng dẫn đường dưới đáy biển.", "Glowing fish light the path along the seabed."], ["Thú cưng né được xúc tu khổng lồ.", "Your pet slips past a giant tentacle."], ["Một con tàu đắm cổ hiện ra trong bóng tối.", "An ancient shipwreck looms out of the dark."]]},
+            {"id": "space", "ic": "🌌", "col": "#6366f1", "vi": "Vùng Tinh Vân", "en": "Nebula Frontier", "lv": 4, "need": 6, "min": 6, "tvi": "Du hành vũ trụ", "ten": "Space voyage", "dvi": "Hành tinh, sao chổi và tinh vân rực rỡ. Thú cưng bước đi nhẹ bẫng giữa không gian.", "den": "Planets, comets and glowing nebulae. Pets float lightly through space.", "bvi": "Nhà Du Hành Tinh Vân", "ben": "Nebula Voyager", "bic": "🌌", "decor": [{"k": "sp1", "ic": "🪐", "vi": "Hành Tinh Mini", "en": "Mini Planet"}, {"k": "sp2", "ic": "☄️", "vi": "Sao Chổi Nhỏ", "en": "Little Comet"}, {"k": "sp3", "ic": "🛰️", "vi": "Vệ Tinh Cổ", "en": "Old Satellite"}], "rw": {"k": "inv", "kind": "chg9", "n": 1}, "ev": [["Thú cưng bám đuôi một sao chổi lướt qua.", "Your pet rides the tail of a passing comet."], ["Bụi sao lấp lánh quanh cả đoàn.", "Stardust sparkles around the team."], ["Một hành tinh vòng đỏ hiện ra phía xa.", "A red-ringed planet comes into view."]]},
+            {"id": "castle", "ic": "🏰", "col": "#7e22ce", "vi": "Lâu Đài Ma Ám", "en": "Haunted Castle", "lv": 4, "need": 7, "min": 7, "tvi": "Đêm trong lâu đài", "ten": "Night in the castle", "dvi": "Tiếng bước chân vọng trong hành lang trống. Đèn trong các ô cửa cứ chớp tắt bí ẩn.", "den": "Footsteps echo in empty halls. Lights flicker mysteriously in the windows.", "bvi": "Kẻ Phá Lời Nguyền", "ben": "Curse Breaker", "bic": "🏰", "decor": [{"k": "cs1", "ic": "🕯️", "vi": "Giá Nến Ma Ám", "en": "Haunted Candelabra"}, {"k": "cs2", "ic": "👻", "vi": "Bóng Ma Nhỏ", "en": "Little Ghost"}, {"k": "cs3", "ic": "🗝️", "vi": "Chìa Khóa Cổ", "en": "Ancient Key"}], "rw": {"k": "inv", "kind": "chg9", "n": 1}, "ev": [["Thú cưng mở được cánh cửa bị khóa từ trăm năm.", "Your pet opens a door locked for a hundred years."], ["Một bóng ma thân thiện chỉ đường cho cả đoàn.", "A friendly ghost shows the team the way."], ["Tiếng đàn piano vang lên từ căn phòng trống.", "Piano music drifts from an empty room."]]},
+            {"id": "dragon", "ic": "🐉", "col": "#f59e0b", "vi": "Hang Rồng Cổ Đại", "en": "Ancient Dragon Lair", "lv": 5, "need": 7, "min": 8, "tvi": "Thử thách huyền thoại", "ten": "Legendary trial", "dvi": "Kho báu vàng chất thành núi dưới sự canh giữ của rồng cổ đại. Chỉ thú cưng tiến hóa tối đa mới dám vào.", "den": "Mountains of gold guarded by an ancient dragon. Only fully evolved pets dare to enter.", "bvi": "Kẻ Chinh Phục Rồng", "ben": "Dragon Conqueror", "bic": "🐉", "decor": [{"k": "dr1", "ic": "🐉", "vi": "Trứng Rồng Vàng", "en": "Golden Dragon Egg"}, {"k": "dr2", "ic": "👑", "vi": "Vương Miện Rồng", "en": "Dragon Crown"}, {"k": "dr3", "ic": "🪙", "vi": "Đồng Xu Cổ Long", "en": "Ancient Dragon Coin"}], "rw": {"k": "inv", "kind": "add10", "n": 1}, "ev": [["Thú cưng lặng lẽ đi qua con rồng đang ngủ.", "Your pet tiptoes past the sleeping dragon."], ["Rồng phun lửa, thú cưng né trong gang tấc.", "The dragon breathes fire; your pet dodges by a hair."], ["Núi vàng lấp lánh trải dài trước mắt.", "A mountain of gold glitters ahead."]]},
+            {"id": "mushroom", "ic": "🍄", "col": "#14b8a6", "vi": "Rừng Nấm Phát Sáng", "en": "Glowing Mushroom Wood", "lv": 0, "need": 3, "min": 2, "tvi": "Dạo rừng đêm", "ten": "Night stroll", "dvi": "Những cây nấm khổng lồ tỏa ánh sáng xanh dịu. Chuyến đi thơ mộng, rất hợp để khởi động.", "den": "Giant mushrooms glow with a soft teal light. A dreamy trip, perfect as a warm-up.", "bvi": "Người Hái Nấm Sáng", "ben": "Glow Forager", "bic": "🍄", "decor": [{"k": "mu1", "ic": "🍄", "vi": "Nấm Dạ Quang", "en": "Night-Glow Mushroom"}, {"k": "mu2", "ic": "🪲", "vi": "Bọ Đom Đóm", "en": "Glow Beetle"}, {"k": "mu3", "ic": "🫧", "vi": "Bào Tử Lấp Lánh", "en": "Sparkling Spores"}], "rw": {"k": "inv", "kind": "spin", "n": 1}, "ev": [["Mũ nấm nảy lên như bạt lò xo dưới chân thú cưng.", "Mushroom caps bounce like trampolines under your pet."], ["Bào tử phát sáng bay lơ lửng quanh cả đoàn.", "Glowing spores drift around the team."], ["Thú cưng tìm được cây nấm sáng nhất khu rừng.", "Your pet finds the brightest mushroom in the wood."]]},
+            {"id": "bamboo", "ic": "🎋", "col": "#65a30d", "vi": "Rừng Trúc Sương Sớm", "en": "Misty Bamboo Grove", "lv": 1, "need": 4, "min": 3, "tvi": "Lặng lẽ giữa trúc", "ten": "Quiet trek", "dvi": "Hàng nghìn thân trúc cao vút trong làn sương sớm. Tiếng gió xào xạc dẫn lối cả đoàn.", "den": "Thousands of tall bamboo stalks in the morning mist. Rustling wind guides the team.", "bvi": "Người Tìm Lối Trúc", "ben": "Bamboo Pathfinder", "bic": "🎋", "decor": [{"k": "ba1", "ic": "🎋", "vi": "Cành Trúc Xanh", "en": "Green Bamboo Stem"}, {"k": "ba2", "ic": "🎍", "vi": "Chuông Gió Trúc", "en": "Bamboo Wind Chime"}, {"k": "ba3", "ic": "🐼", "vi": "Gấu Trúc Gỗ", "en": "Wooden Panda"}], "rw": {"k": "inv", "kind": "plus1", "n": 1}, "ev": [["Thú cưng len qua những thân trúc đung đưa.", "Your pet weaves between swaying stalks."], ["Một chú gấu trúc nhỏ chia cho cả đoàn chút măng.", "A little panda shares some bamboo shoots."], ["Sương tan, ánh nắng rọi qua kẽ lá.", "The mist lifts; sunlight pours through the leaves."]]},
+            {"id": "canyon", "ic": "🏞️", "col": "#ea580c", "vi": "Hẻm Núi Đỏ", "en": "Red Canyon", "lv": 2, "need": 5, "min": 4, "tvi": "Vượt vách đá", "ten": "Cliff crossing", "dvi": "Những vách đá đỏ sừng sững và con đường hẹp hun hút. Cần sự bền bỉ để đi tới cuối hẻm.", "den": "Towering red cliffs and a narrow winding path. Stamina carries you to the canyon's end.", "bvi": "Người Vượt Hẻm Núi", "ben": "Canyon Crosser", "bic": "🏞️", "decor": [{"k": "cn1", "ic": "🪨", "vi": "Đá Đỏ Nung", "en": "Fired Red Stone"}, {"k": "cn2", "ic": "🦅", "vi": "Lông Chim Ưng", "en": "Eagle Feather"}, {"k": "cn3", "ic": "🏜️", "vi": "Bản Đồ Hẻm Núi", "en": "Canyon Map"}], "rw": {"k": "inv", "kind": "plus2", "n": 1}, "ev": [["Thú cưng leo lên mỏm đá để nhìn toàn hẻm núi.", "Your pet climbs a ledge to survey the canyon."], ["Tiếng vọng vang dội khắp vách đá.", "Echoes ring off the canyon walls."], ["Đoàn tìm được dòng suối nhỏ giữa lòng hẻm.", "The team finds a small stream deep in the canyon."]]},
+            {"id": "pirate", "ic": "🏴‍☠️", "col": "#0e7490", "vi": "Đảo Hải Tặc", "en": "Pirate Isle", "lv": 3, "need": 5, "min": 4, "tvi": "Săn kho báu", "ten": "Treasure hunt", "dvi": "Con tàu ma bập bềnh ngoài khơi, bản đồ kho báu chôn đâu đó trên đảo. Ai tìm thấy sẽ đổi đời.", "den": "A ghost ship bobs offshore and a treasure map points somewhere on the isle. Whoever finds it wins big.", "bvi": "Thuyền Trưởng Nhỏ", "ben": "Little Captain", "bic": "🏴‍☠️", "decor": [{"k": "pi1", "ic": "🏴‍☠️", "vi": "Cờ Hải Tặc", "en": "Pirate Flag"}, {"k": "pi2", "ic": "🗺️", "vi": "Bản Đồ Rách", "en": "Torn Map"}, {"k": "pi3", "ic": "💰", "vi": "Túi Vàng Cổ", "en": "Old Gold Pouch"}], "rw": {"k": "inv", "kind": "chg8", "n": 1}, "ev": [["Thú cưng đào lên một chiếc rương gỉ sét.", "Your pet digs up a rusty chest."], ["Con vẹt trên vai chỉ đường tới hang bí mật.", "A parrot points the way to a secret cave."], ["Sóng lớn đánh dạt con tàu ma vào bờ.", "Big waves wash the ghost ship ashore."]]},
+            {"id": "atlantis", "ic": "🔱", "col": "#06b6d4", "vi": "Thành Phố Atlantis", "en": "Lost Atlantis", "lv": 3, "need": 6, "min": 5, "tvi": "Khám phá cổ thành", "ten": "Sunken city", "dvi": "Thành phố cổ chìm dưới đáy biển với những cột đá khổng lồ. Ánh sáng xanh huyền ảo chiếu khắp nơi.", "den": "A sunken ancient city with giant stone columns. Mystic blue light glows everywhere.", "bvi": "Người Đánh Thức Atlantis", "ben": "Atlantis Awakener", "bic": "🔱", "decor": [{"k": "at1", "ic": "🔱", "vi": "Đinh Ba Cổ", "en": "Ancient Trident"}, {"k": "at2", "ic": "🐚", "vi": "Ốc Tiếng Vọng", "en": "Echo Conch"}, {"k": "at3", "ic": "🏛️", "vi": "Cột Đá Mini", "en": "Mini Column"}], "rw": {"k": "inv", "kind": "del", "n": 1}, "ev": [["Thú cưng giải được câu đố trên cánh cổng san hô.", "Your pet solves the riddle on the coral gate."], ["Những cột đá bỗng sáng lên khi đoàn đi qua.", "The columns light up as the team passes."], ["Một con cá voi khổng lồ lướt qua phía trên.", "A giant whale glides overhead."]]},
+            {"id": "clock", "ic": "⚙️", "col": "#b45309", "vi": "Thành Phố Cơ Khí", "en": "Clockwork City", "lv": 4, "need": 6, "min": 6, "tvi": "Giải mã bánh răng", "ten": "Gear puzzle", "dvi": "Hàng nghìn bánh răng xoay không ngừng trong thành phố hơi nước. Một bước sai là cả cỗ máy dừng lại.", "den": "Thousands of gears turn nonstop in a steam-powered city. One wrong step stops the machine.", "bvi": "Thợ Máy Thời Gian", "ben": "Time Mechanic", "bic": "⚙️", "decor": [{"k": "ck1", "ic": "⚙️", "vi": "Bánh Răng Đồng", "en": "Brass Gear"}, {"k": "ck2", "ic": "⏳", "vi": "Đồng Hồ Cát Nhỏ", "en": "Little Hourglass"}, {"k": "ck3", "ic": "🔧", "vi": "Cờ Lê Vàng", "en": "Golden Wrench"}], "rw": {"k": "inv", "kind": "chg9", "n": 1}, "ev": [["Thú cưng nhảy từ bánh răng này sang bánh răng khác.", "Your pet hops from gear to gear."], ["Hơi nước phụt lên, cả đoàn kịp né sang bên.", "Steam bursts out; the team dodges in time."], ["Chiếc đồng hồ khổng lồ điểm giờ khi đoàn đến.", "The giant clock chimes as the team arrives."]]},
+            {"id": "thunder", "ic": "⚡", "col": "#7c3aed", "vi": "Đỉnh Sấm Sét", "en": "Thunder Peak", "lv": 4, "need": 6, "min": 6, "tvi": "Đón bão tố", "ten": "Storm chase", "dvi": "Sấm chớp xé toạc bầu trời trên đỉnh núi cao. Chỉ thú cưng đủ mạnh mới chịu nổi điện giật.", "den": "Lightning rips across the sky above the peak. Only strong pets can bear the shocks.", "bvi": "Kẻ Chế Ngự Sấm", "ben": "Thunder Tamer", "bic": "⚡", "decor": [{"k": "th1", "ic": "⚡", "vi": "Tia Sét Đóng Chai", "en": "Bottled Lightning"}, {"k": "th2", "ic": "🌩️", "vi": "Mây Bão Nhỏ", "en": "Tiny Storm Cloud"}, {"k": "th3", "ic": "🔔", "vi": "Chuông Sấm", "en": "Thunder Bell"}], "rw": {"k": "inv", "kind": "chg8", "n": 1}, "ev": [["Tia sét đánh trúng cột thu lôi ngay sát bên.", "Lightning strikes a rod right beside the team."], ["Thú cưng cười toe khi lông dựng đứng vì tĩnh điện.", "Your pet grins as its fur stands on end."], ["Cơn bão tan, một cầu vồng sáng lên đỉnh núi.", "The storm clears and a rainbow lights the peak."]]},
+            {"id": "phoenix", "ic": "🦅", "col": "#dc2626", "vi": "Đền Phượng Hoàng", "en": "Phoenix Temple", "lv": 4, "need": 7, "min": 7, "tvi": "Hành hương lửa thiêng", "ten": "Sacred flame pilgrimage", "dvi": "Ngôi đền cổ cháy mãi ngọn lửa thiêng, nơi phượng hoàng tái sinh. Chỉ thú cưng tiến hóa cao mới được bước vào.", "den": "An ancient temple with an undying sacred flame where the phoenix is reborn. Only highly evolved pets may enter.", "bvi": "Người Hộ Vệ Lửa Thiêng", "ben": "Flame Guardian", "bic": "🦅", "decor": [{"k": "ph1", "ic": "🪶", "vi": "Lông Phượng Hoàng", "en": "Phoenix Feather"}, {"k": "ph2", "ic": "🔥", "vi": "Hạt Lửa Thiêng", "en": "Sacred Ember"}, {"k": "ph3", "ic": "🏮", "vi": "Đèn Lồng Đỏ", "en": "Red Lantern"}], "rw": {"k": "inv", "kind": "chg9", "n": 1}, "ev": [["Ngọn lửa thiêng xoay quanh thú cưng như một cái ôm ấm áp.", "The sacred flame swirls around your pet like a warm hug."], ["Phượng hoàng vỗ cánh, tàn lửa rơi như mưa sao.", "The phoenix beats its wings, raining embers like stars."], ["Thú cưng cúi chào, ngôi đền bừng sáng.", "Your pet bows and the temple blazes with light."]]},
+            {"id": "fairy", "ic": "🧚", "col": "#c026d3", "vi": "Rừng Tiên Cổ Tích", "en": "Fairytale Grove", "lv": 4, "need": 7, "min": 7, "tvi": "Gặp gỡ tiên nữ", "ten": "Meeting the fairies", "dvi": "Khu rừng phép thuật nơi các nàng tiên sống giữa những tán cây phát sáng. Phép màu có ở khắp nơi.", "den": "A magical grove where fairies live among glowing trees. Wonders are everywhere.", "bvi": "Bạn Của Tiên", "ben": "Fairy Friend", "bic": "🧚", "decor": [{"k": "fa1", "ic": "🧚", "vi": "Tiên Nhỏ Trong Lọ", "en": "Fairy in a Jar"}, {"k": "fa2", "ic": "🪄", "vi": "Đũa Phép Ngôi Sao", "en": "Star Wand"}, {"k": "fa3", "ic": "🌙", "vi": "Trăng Non Pha Lê", "en": "Crystal Crescent"}], "rw": {"k": "inv", "kind": "add10", "n": 1}, "ev": [["Một nàng tiên rắc bụi phép lên đầu thú cưng.", "A fairy sprinkles magic dust on your pet."], ["Cả khu rừng bừng sáng khi thú cưng đi qua.", "The whole grove lights up as your pet passes."], ["Thú cưng được mời dự tiệc trà dưới gốc cây cổ thụ.", "Your pet is invited to a tea party under an elder tree."]]},
+            {"id": "void", "ic": "🕳️", "col": "#4c1d95", "vi": "Hư Không Vô Tận", "en": "Endless Void", "lv": 5, "need": 7, "min": 8, "tvi": "Thử thách tối thượng", "ten": "Ultimate trial", "dvi": "Nơi không còn trên hay dưới, chỉ có cánh cổng xoáy tím và những mảnh vỡ trôi lơ lửng. Dành cho thú cưng tiến hóa tối đa.", "den": "No up or down remains, only a violet portal and drifting shards. Reserved for fully evolved pets.", "bvi": "Kẻ Vượt Hư Không", "ben": "Void Walker", "bic": "🕳️", "decor": [{"k": "vd1", "ic": "🕳️", "vi": "Mảnh Vỡ Hư Không", "en": "Void Shard"}, {"k": "vd2", "ic": "🔮", "vi": "Cầu Tinh Vân Tím", "en": "Violet Nebula Orb"}, {"k": "vd3", "ic": "🌀", "vi": "Xoáy Không Gian", "en": "Space Swirl"}], "rw": {"k": "inv", "kind": "add10", "n": 1}, "ev": [["Thú cưng bước qua cây cầu tạo bởi ánh sáng.", "Your pet crosses a bridge made of light."], ["Mảnh vỡ không gian xoay quanh cả đoàn.", "Shards of space spin around the team."], ["Cánh cổng xoáy mở ra, một giọng nói vang lên: \"Chào mừng\".", "The portal swirls open and a voice says: \"Welcome\"."]]}
+        ];
+        const PXP_LOOT = {"forest":[["p1",30.0],["p2",20.0],["a1",15.0],["m5",15.0],["spin",10.0],["x05",10.0]],"meadow":[["p1",25.0],["p2",20.0],["a1",15.0],["m5",15.0],["spin",15.0],["x05",10.0]],"mushroom":[["p1",25.0],["p2",20.0],["a1",15.0],["m5",15.0],["spin",15.0],["m7",10.0]],"plains":[["p1",20.0],["p2",25.0],["a1",15.0],["m7",15.0],["spin",10.0],["x05",15.0]],"beach":[["p1",20.0],["p2",20.0],["a1",15.0],["x05",15.0],["spin",10.0],["m7",10.0],["g8",10.0]],"bamboo":[["p1",25.0],["p2",20.0],["a1",15.0],["m5",15.0],["spin",10.0],["x05",15.0]],"desert":[["p2",20.0],["p3",15.0],["a1",15.0],["a2",10.0],["g8",10.0],["c8",10.0],["spin",10.0]],"swamp":[["p2",20.0],["p3",15.0],["a1",15.0],["a2",10.0],["g8",10.0],["c8",10.0],["spin",10.0]],"cave":[["p3",20.0],["p5",10.0],["a1",10.0],["a2",15.0],["g8",10.0],["g9",10.0],["c8",10.0],["ticket",5.0]],"sky":[["p3",20.0],["p5",15.0],["a2",15.0],["g8",10.0],["g9",10.0],["c9",10.0],["spin",10.0]],"canyon":[["p2",20.0],["p3",15.0],["a1",15.0],["a2",10.0],["g8",10.0],["g9",10.0],["c8",10.0],["spin",5.0]],"volcano":[["p5",15.0],["p8",10.0],["a2",15.0],["a3",10.0],["g9",10.0],["g10",10.0],["c9",10.0],["shield",5.0],["ticket",5.0],["n2",5.0]],"ocean":[["p5",15.0],["p8",10.0],["a2",15.0],["a3",10.0],["g10",10.0],["n2",5.0],["c10",10.0],["del",5.0],["shield",5.0],["ticket",5.0]],"pirate":[["p5",15.0],["p8",10.0],["a2",15.0],["a3",10.0],["g9",10.0],["g10",10.0],["n2",5.0],["c10",10.0],["shield",5.0],["ticket",5.0]],"atlantis":[["p5",12.0],["p8",8.0],["a2",12.0],["a3",8.0],["g9",10.0],["g10",10.0],["n2",5.0],["c10",10.0],["del",5.0],["shield",5.0],["ticket",5.0]],"ice":[["p5",15.0],["p8",10.0],["a2",15.0],["a3",10.0],["g9",10.0],["g10",8.0],["c9",10.0],["shield",5.0],["ticket",5.0],["spin",5.0]],"ruins":[["p5",10.0],["p8",10.0],["a2",15.0],["a3",10.0],["g10",12.0],["n2",8.0],["c10",10.0],["shield",5.0],["ticket",5.0],["del",5.0]],"space":[["p8",12.0],["p10",8.0],["a2",12.0],["a3",8.0],["g10",12.0],["n2",8.0],["n3",3.0],["c10",10.0],["shield",5.0],["ticket",7.0],["del",7.0]],"castle":[["p8",10.0],["p10",8.0],["a2",12.0],["a3",8.0],["g10",10.0],["n2",8.0],["n3",5.0],["c10",10.0],["shield",5.0],["ticket",6.0],["del",7.0]],"clock":[["p8",12.0],["p10",8.0],["a2",12.0],["a3",8.0],["g10",10.0],["n2",8.0],["n3",5.0],["c10",10.0],["shield",5.0],["ticket",7.0],["del",7.0]],"thunder":[["p8",10.0],["p10",8.0],["a2",12.0],["a3",8.0],["g10",10.0],["n2",8.0],["n3",5.0],["n4",1.0],["c10",10.0],["shield",5.0],["ticket",6.0],["del",6.0]],"phoenix":[["p8",10.0],["p10",8.0],["a2",10.0],["a3",10.0],["g10",10.0],["n2",8.0],["n3",5.0],["n4",2.0],["c10",10.0],["shield",5.0],["ticket",6.0],["del",5.0]],"fairy":[["p8",10.0],["p10",8.0],["a2",10.0],["a3",10.0],["g10",10.0],["n2",8.0],["n3",5.0],["n4",2.0],["n5",0.5],["c10",10.0],["shield",5.0],["ticket",5.0],["del",5.5]],"dragon":[["p10",10.0],["p15",5.0],["a3",10.0],["g10",10.0],["n2",10.0],["n3",8.0],["n4",5.0],["n5",2.0],["c10",10.0],["shield",5.0],["ticket",7.0],["del",5.0]],"void":[["p10",8.0],["p15",5.0],["a3",10.0],["g10",8.0],["n2",10.0],["n3",10.0],["n4",7.0],["n5",4.0],["c10",8.0],["shield",5.0],["ticket",7.0],["del",5.0]]};
+        // Quà thám hiểm: mã quà → cách trao. p/a = pts / điểm tích lũy, g/c = một điểm / đổi điểm, n = nhiều điểm 10 cùng lúc. KHÔNG có quà "Bỏ qua bài tập".
+        const PXP_GIFT = {
+            p1: { k: 'pts', n: 1 }, p2: { k: 'pts', n: 2 }, p3: { k: 'pts', n: 3 }, p5: { k: 'pts', n: 5 }, p8: { k: 'pts', n: 8 }, p10: { k: 'pts', n: 10 }, p15: { k: 'pts', n: 15 },
+            a1: { k: 'acc', n: 1 }, a2: { k: 'acc', n: 2 }, a3: { k: 'acc', n: 3 },
+            m5: { k: 'inv', kind: 'pm5', n: 1 }, m7: { k: 'inv', kind: 'pm7', n: 1 }, spin: { k: 'inv', kind: 'spin', n: 1 }, x05: { k: 'inv', kind: 'exam05', n: 1 },
+            g8: { k: 'inv', kind: 'add8', n: 1 }, g9: { k: 'inv', kind: 'add9', n: 1 }, g10: { k: 'inv', kind: 'add10', n: 1 },
+            n2: { k: 'inv', kind: 'add10', n: 2 }, n3: { k: 'inv', kind: 'add10', n: 3 }, n4: { k: 'inv', kind: 'add10', n: 4 }, n5: { k: 'inv', kind: 'add10', n: 5 },
+            c8: { k: 'inv', kind: 'chg8', n: 1 }, c9: { k: 'inv', kind: 'chg9', n: 1 }, c10: { k: 'inv', kind: 'chg10', n: 1 },
+            del: { k: 'inv', kind: 'del', n: 1 }, shield: { k: 'inv', kind: 'shield', n: 1 }, ticket: { k: 'inv', kind: 'ticket', n: 1 }
+        };
+        const pxpCuDef = code => { const E = appData && appData.petExp; return (typeof code === 'string' && code.slice(0, 3) === 'cu:' && E && E.custom && E.custom[code.slice(3)]) || null; };
+        function pxpGiftName(code) {
+            const cu = pxpCuDef(code); if (cu) return cu.name || '?';
+            const g = PXP_GIFT[code]; if (!g) return '?';
+            if (g.k === 'pts') return L2(`+${g.n} Pts`, `+${g.n} Pts`);
+            if (g.k === 'acc') return L2(`+${g.n} điểm tích lũy`, `+${g.n} accumulated point${g.n > 1 ? 's' : ''}`);
+            const b = PET_GIFT[g.kind];
+            return g.n > 1 ? L2(`${g.n} điểm 10`, `${g.n} scores of 10`) : L2(b.vi, b.en);
+        }
+        // Danh sách quà của một map (không kèm tỷ lệ), gộp các mức cùng loại thành một dòng
+        // Bảng quà của một map: ưu tiên bản giáo viên đã chỉnh (appData.petExp.loot[mapId] = [[mã, %], ...]), không hợp lệ thì dùng mặc định
+        function pxpLootTb(z) {
+            const d = PXP_LOOT[z.id] || [['p1', 1]], E = appData && appData.petExp, c = E && E.loot && E.loot[z.id];
+            if (Array.isArray(c) && c.length >= 1 && c[0] && c[0][0] === d[0][0] && c.every(x => Array.isArray(x) && isFinite(x[1]) && x[1] >= 0 && (PXP_GIFT[x[0]] || pxpCuDef(x[0]))) && c.some(x => x[1] > 0)) return c;
+            return d;
+        }
+        function pxpLootList(z) {
+            const codes = pxpLootTb(z).filter(x => x[1] > 0).map(x => x[0]), out = [];
+            const range = (pre, fmt) => { const ns = codes.filter(c => /^[a-z]+\d+$/.test(c) && c.startsWith(pre) && PXP_GIFT[c].k === (pre === 'p' ? 'pts' : 'acc')).map(c => PXP_GIFT[c].n).sort((a, b) => a - b); if (ns.length) out.push(fmt(ns[0], ns[ns.length - 1])); };
+            range('p', (a, b) => a === b ? L2(`+${a} Pts`, `+${a} Pts`) : L2(`+${a} đến +${b} Pts`, `+${a} to +${b} Pts`));
+            range('a', (a, b) => a === b ? L2(`+${a} điểm tích lũy`, `+${a} accumulated pt`) : L2(`+${a} đến +${b} điểm tích lũy`, `+${a} to +${b} accumulated pts`));
+            ['m5', 'm7', 'x05', 'spin', 'g8', 'g9', 'g10'].forEach(c => { if (codes.includes(c)) out.push(pxpGiftName(c)); });
+            const ns = codes.filter(c => /^n\d$/.test(c)).map(c => PXP_GIFT[c].n).sort((a, b) => a - b);
+            if (ns.length) out.push(ns.length === 1 ? L2(`${ns[0]} điểm 10`, `${ns[0]} scores of 10`) : L2(`${ns[0]}–${ns[ns.length - 1]} điểm 10 cùng lúc`, `${ns[0]}–${ns[ns.length - 1]} scores of 10 at once`));
+            ['c8', 'c9', 'c10', 'del', 'shield', 'ticket'].forEach(c => { if (codes.includes(c)) out.push(pxpGiftName(c)); });
+            codes.filter(c => pxpCuDef(c)).forEach(c => out.push(pxpGiftName(c)));
+            return out;
+        }
+        // Bốc một quà theo tỷ lệ của map (seed theo chuyến đi nên kết quả không đổi khi tải lại trang)
+        // Sức mạnh thú cưng theo streak: streak ≤5 → 0%, tăng đều tới 50% ở streak 100 (cứ +1 streak ≈ +0,526%).
+        // Cách áp dụng: mọi quà của map, TRỪ quà đầu bảng (quà cơ bản nhất của map đó), được nhân trọng số (1 + bonus); sau đó chuẩn hóa lại về 100%.
+        const PXP_PW_MIN = 5, PXP_PW_MAX = 100, PXP_PW_CAP = 50;
+        function pxpPower(streak) {
+            const s = Math.min(Math.floor(Number(streak) || 0), PXP_PW_MAX);
+            return s <= PXP_PW_MIN ? 0 : (s - PXP_PW_MIN) / (PXP_PW_MAX - PXP_PW_MIN) * PXP_PW_CAP;
+        }
+        const pxpPct = p => { const s = p.toFixed(2); return L2('x', 'y') === 'x' ? s.replace('.', ',') : s; };
+        // Dùng streak CAO NHẤT từng đạt: rớt chuỗi không làm mất bonus.
+        function pxpStreakNow(st) { try { const i = tenStreakInfo(st.id); return Math.max(i.best || 0, i.cur || 0); } catch (_) { return 0; } }
+        // Cấp của pet (1–7, theo mốc nội tại) = số quà mỗi chuyến: cấp 1 → 1 quà, cấp 2 → 2 quà, … cấp 7 → 7 quà
+        const pxpGiftCount = lv => Math.max(1, Math.min(7, Math.floor(Number(lv) || 0)));
+        function pxpLootRates(z, pw) {
+            const tb = pxpLootTb(z), m = 1 + (pw || 0) / 100;
+            const w = tb.map((x, i) => [x[0], i === 0 ? x[1] : x[1] * m]), tot = w.reduce((s, x) => s + x[1], 0);
+            return w.map(x => [x[0], x[1] / tot * 100]);
+        }
+        // Bốc một quà theo tỷ lệ của map (seed theo chuyến đi nên kết quả không đổi khi tải lại trang)
+        function pxpRollLoot(z, rng, pw) {
+            const tb = pxpLootRates(z, pw), tot = tb.reduce((s, x) => s + x[1], 0); let r = rng() * tot;
+            for (const x of tb) { r -= x[1]; if (r < 0) return x[0]; }
+            return tb[tb.length - 1][0];
+        }
+        function pxpGrantLoot(st, key, code, vi, en) {
+            const cu = pxpCuDef(code);
+            if (cu) { // quà tự tạo trong Cài đặt: xếp hàng như một bản sao quà, học sinh bấm thẻ thú cưng để nhận
+                const P = petP(), led = P.led[st.id] = P.led[st.id] || {}; if (led[key]) return; led[key] = 1; _petChanged = true;
+                const o = { itemId: 'pxp_cu_' + cu.id, name: cu.name || '', isFixed: false, type: cu.type || null, pxpCu: true };
+                ['targetScore', 'deltaScore', 'matchScore', 'matchOp'].forEach(f => { if (cu[f] !== undefined) o[f] = cu[f]; });
+                petQueue(st, { k: 'copy', n: 1 + petGiftX(st), item: o, vi, en }); return;
+            }
+            const g = PXP_GIFT[code]; if (!g) return;
+            if (g.k === 'pts') petGive(st, key, g.n, vi, en);
+            else if (g.k === 'acc') petGiveAccum(st, key, g.n, vi, en);
+            else petGiveInv(st, key, g.kind, g.n, vi, en);
+        }
+        const PXP_DIFF = [['Dễ', 'Easy', '#16a34a'], ['Dễ', 'Easy', '#16a34a'], ['Trung bình', 'Medium', '#d97706'], ['Khó', 'Hard', '#dc2626'], ['Rất khó', 'Very hard', '#7c3aed'], ['Huyền thoại', 'Legendary', '#db2777']];
+        const PXP_POS = { ruins: [400, 62], plains: [165, 175], ice: [635, 175], forest: [290, 295], desert: [510, 295] };
+        const PXP_H = 420;
+        let pxpZoneId = 'forest';
+        const pxpZ = id => PXP_Z.find(z => z.id === id) || PXP_Z[0];
+        const pxpFmt = d => d ? d.slice(8, 10) + '/' + d.slice(5, 7) : '';
+        const pxpEsc = v => escapeHtml(v);
+        const pxpNm = z => L2(z.vi, z.en);
+        const pxpData = () => {
+            const E = appData.petExp = (appData.petExp && typeof appData.petExp === 'object') ? appData.petExp : {};
+            E.runs = (E.runs && typeof E.runs === 'object') ? E.runs : {};
+            E.hist = Array.isArray(E.hist) ? E.hist : [];
+            E.col = (E.col && typeof E.col === 'object') ? E.col : {};
+            return E;
+        };
+        const pxpCol = sid => { const E = pxpData(); const c = E.col[sid] = E.col[sid] || {}; c.b = c.b || {}; c.d = c.d || {}; c.xp = Number(c.xp) || 0; return c; };
+        const pxpClassList = () => (appData.students || []).filter(s => s.classId === appData.activeClassId);
+        const pxpHatched = st => !!st && st.petSp !== undefined && st.petSp !== null && !!PET_SP[st.petSp] && petFormOf(petPeakOf(st)) >= 2;
+        function pxpRng(seed) {
+            let h = 1779033703 ^ seed.length;
+            for (let i = 0; i < seed.length; i++) { h = Math.imul(h ^ seed.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+            let a = (h >>> 0) || 1;
+            return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+        }
+        // Đếm các buổi học đã KẾT THÚC sau lúc xuất phát (theo Lịch học, bỏ ngày nghỉ). Lớp chưa có lịch: đếm ngày có dữ liệu điểm.
+        function pxpProgress(st, run) {
+            const cid = String(st.classId), now = Date.now(), passed = []; let next = null;
+            const sc = (appData.classSchedules || {})[cid] || {}, has = Object.keys(sc).some(k => sc[k]);
+            let rest; try { rest = window.mxRestDates ? window.mxRestDates(cid) : new Set(); } catch (e) { rest = new Set(); }
+            const startD = petPd(new Date(run.t0));
+            if (has) {
+                for (let i = 0; i < 400 && passed.length < run.need; i++) {
+                    const d = petAdd(startD, i), t = sc[petDow(d)]; if (!t || rest.has(d)) continue;
+                    const m = String(t).match(/(\d{1,2})\s*[:h.]\s*(\d{2})/), p = d.split('-').map(Number);
+                    const end = m && +m[1] <= 23 && +m[2] <= 59 ? new Date(p[0], p[1] - 1, p[2], +m[1], +m[2]).getTime() + PXP_DUR : new Date(p[0], p[1] - 1, p[2], 23, 59).getTime();
+                    if (end <= run.t0) continue;
+                    if (end <= now) passed.push(d); else { next = d; break; }
+                }
+            } else {
+                const ids = new Set(pxpClassList().map(s => String(s.id))), ds = new Set();
+                Object.keys(appData.scores || {}).forEach(k => {
+                    const m = k.match(/^(.*)_(\d{4})-(\d{1,2})-(\d{1,2})$/); if (!m || !ids.has(m[1])) return;
+                    const v = appData.scores[k]; if (!v || v.sg) return;
+                    const d = m[2] + '-' + m[3].padStart(2, '0') + '-' + m[4].padStart(2, '0');
+                    if (d > startD && !rest.has(d)) ds.add(d);
+                });
+                [...ds].sort().forEach(d => passed.push(d));
+            }
+            return { done: Math.min(passed.length, run.need), passed, next };
+        }
+        function pxpResolve(st, run) {
+            const z = pxpZ(run.z), E = pxpData(), col = pxpCol(st.id), rng = pxpRng(run.id + '|' + st.id);
+            const ok = 1, rew = {}; // hoàn thành đủ buổi = thành công
+            
+            if (ok) {
+                if (!col.b[z.id]) { col.b[z.id] = Date.now(); rew.badge = z.id; }
+                const un = z.decor.filter(d => !col.d[d.k]), pool = un.length ? un : z.decor, pk = pool[Math.floor(rng() * pool.length)];
+                col.d[pk.k] = (col.d[pk.k] || 0) + 1; rew.decor = pk.k;
+                const key = 'x:' + run.id, vi = 'thám hiểm ' + z.vi + ' thành công', en = 'expedition to ' + z.en + ' succeeded';
+                const sk = pxpStreakNow(st), pw = pxpPower(sk); rew.sk = sk; rew.pw = +pw.toFixed(2);
+                const n = pxpGiftCount(petLv(petPeakOf(st)) + 1); rew.loots = [];
+                for (let i = 0; i < n; i++) { const code = pxpRollLoot(z, rng, pw); rew.loots.push(code); if (i === 0) rew.loot = code; pxpGrantLoot(st, i ? key + ':' + i : key, code, vi, en); }
+            }
+            col.xp += ok ? 2 : 1;
+            E.hist.push({ id: run.id, sid: st.id, z: z.id, t0: run.t0, t1: Date.now(), ok, rew });
+            if (E.hist.length > 300) E.hist.splice(0, E.hist.length - 300);
+            return ok;
+        }
+        let pxpSig = '';
+        function pxpTick() {
+            if (window.MX_STUDENT || !appData || (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId)) return false;
+            const E = pxpData(); let changed = false, wins = [];
+            Object.keys(E.runs).forEach(sid => {
+                const run = E.runs[sid], st = (appData.students || []).find(x => String(x.id) === String(sid));
+                if (!st || !PET_SP[st.petSp]) { delete E.runs[sid]; changed = true; return; }
+                if (pxpProgress(st, run).done >= run.need) { const ok = pxpResolve(st, run); delete E.runs[sid]; changed = true; wins.push([st, run, ok]); }
+            });
+            if (changed) {
+                Promise.resolve(saveData()).catch(() => {});
+                try { window.petUpdateBadge && window.petUpdateBadge(); } catch (e) {}
+                wins.forEach(w => { try { petToast(`${getStudentDisplayName(w[0])}: ${w[2] ? 'thám hiểm ' + pxpZ(w[1].z).vi + ' thành công!' : 'thú cưng đã về từ ' + pxpZ(w[1].z).vi + ' (chưa thành công)'}`, `${getStudentDisplayName(w[0])}: ${w[2] ? 'expedition to ' + pxpZ(w[1].z).en + ' succeeded!' : 'pet is back from ' + pxpZ(w[1].z).en + ' (not this time)'}`); } catch (e) {} });
+            }
+            return changed;
+        }
+        const pxpGuard = () => { if (window.MX_STUDENT) return true; if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) { if (window.showAppToast) window.showAppToast(L2('Khóa đã lưu trữ chỉ được xem.', 'Archived course is read-only.'), 'error'); return true; } return false; };
+        /* ---- Quy trình 5 bước: Chọn học sinh → Chọn khu vực → Bắt đầu chuyến đi → ④ Tích lũy tiến độ → Hoàn thành & nhận thưởng ---- */
+        let pxpSid = '', pxpView = 'world', pxpAnim = '';
+        const PXP_STEPS = [['Chọn học sinh', 'Choose student', 'Hiển thị Pet đang sở hữu, cấp tiến hóa, streak và nội tại.', 'Shows the owned pet, evolution level, streak and passive.'],
+            ['Chọn khu vực', 'Choose region', 'Kiểm tra yêu cầu tham gia và phần thưởng.', 'Check entry requirements and rewards.'],
+            ['Bắt đầu chuyến đi', 'Start the trip', 'Lưu thời điểm bắt đầu và mốc buổi học.', 'Saves the start time and lesson milestone.'],
+            ['Tích lũy tiến độ', 'Build progress', 'Chỉ tính những buổi học hợp lệ theo lịch và Timeline.', 'Only valid lessons per schedule and Timeline count.'],
+            ['Hoàn thành và nhận thưởng', 'Finish & claim reward', 'Tính kết quả, lưu lịch sử, trao thưởng một lần.', 'Computes the result, saves history, rewards once.']];
+        function pxpCurSt() {
+            const list = pxpClassList();
+            if (window.MX_STUDENT) return list.find(s => String(s.id) === String(window.MX_STUDENT.sid)) || list[0] || null;
+            let st = list.find(s => String(s.id) === String(pxpSid));
+            if (!st) { st = list[0] || null; pxpSid = st ? st.id : ''; }
+            return st;
+        }
+        function pxpReq(st, z) {
+            const E = pxpData(), has = !!(st && st.petSp !== undefined && st.petSp !== null && PET_SP[st.petSp]), f = has ? petFormOf(petPeakOf(st)) : 0, run = st ? E.runs[st.id] : null;
+            const items = [
+                { ok: has && f >= 2, t: L2('Thú cưng đã nở', 'Pet has hatched') },
+                { ok: f >= z.min, t: L2('Dạng tiến hóa tối thiểu: ', 'Minimum evolution: ') + petFormLevelName(z.min) },
+                { ok: !run, t: L2('Chưa tham gia chuyến thám hiểm khác', 'Not on another expedition') }
+            ];
+            return { items, ok: items.every(i => i.ok), has, f, run };
+        }
+        const pxpLast = (st, zid) => { const h = pxpData().hist.filter(x => st && String(x.sid) === String(st.id)); const l = h[h.length - 1]; return l && l.ok >= 0 && (!zid || l.z === zid) && Date.now() - l.t1 < 7 * 86400000 ? l : null; };
+        const pxpTime = ts => { const d = new Date(ts); return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
+        window.pxpStu = sid => { pxpSid = sid; window.renderPetView(); };
+        function pxpSwap(v) {
+            const stg = document.querySelector('#viewPetContainer .pxp-stage'), go = () => { pxpView = v; pxpAnim = 'in'; window.renderPetView(); };
+            if (stg && !xfRM()) { if (stg.classList.contains('out')) return; stg.classList.add('out'); setTimeout(go, 170); } else go();
+        }
+        window.pxpOpen = id => { pxpZoneId = pxpZ(id).id; pxpSwap('zone'); };
+        window.pxpBack = () => pxpSwap('world');
+        window.pxpGo = async function () {
+            if (pxpGuard()) return;
+            const st = pxpCurSt(), z = pxpZ(pxpZoneId), E = pxpData(); if (!st) return;
+            const rq = pxpReq(st, z);
+            if (!rq.ok) { if (window.showAppToast) window.showAppToast(L2('Chưa đủ yêu cầu tham gia khu vực này.', 'Entry requirements not met for this region.'), 'error'); return; }
+            const msg = L2(`Cử ${getStudentDisplayName(st)} đi ${pxpNm(z)}?\nThời gian: ${z.need} buổi học`, `Send ${getStudentDisplayName(st)} to ${pxpNm(z)}?\nDuration: ${z.need} lessons`);
+            let yes = true; try { if (typeof showAppConfirm === 'function') yes = await showAppConfirm(msg); } catch (e) {}
+            if (!yes || E.runs[st.id]) return;
+            // Bước ③: lưu thời điểm bắt đầu + mốc buổi học (buổi đầu tiên được tính)
+            const run = { id: 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), z: z.id, t0: Date.now(), need: z.need };
+            run.d0 = petPd(new Date(run.t0)); run.f = pxpProgress(st, run).next || '';
+            E.runs[st.id] = run;
+            Promise.resolve(saveData()).then(() => { if (window.showAppToast) window.showAppToast(L2(`${PET_SP[st.petSp][0]} của ${getStudentDisplayName(st)} lên đường tới ${pxpNm(z)}!`, `${getStudentDisplayName(st)}'s ${PET_SP[st.petSp][1]} sets off for ${pxpNm(z)}!`), 'success'); });
+            try { if (!xfRM() && window.tfBeep) [392, 523, 659].forEach((f, k) => tfBeep(f, .12, .14, k * .1)); } catch (e) {}
+            window.renderPetView();
+        };
+        window.pxpRecall = async function () {
+            if (pxpGuard()) return;
+            const st = pxpCurSt(), E = pxpData(), run = st && E.runs[st.id]; if (!run) return;
+            let yes = true; try { if (typeof showAppConfirm === 'function') yes = await showAppConfirm(L2('Gọi thú cưng về giữa chuyến? Chuyến đi sẽ bị hủy và không nhận phần thưởng.', 'Recall the pet mid-trip? The expedition is cancelled with no reward.')); } catch (e) {}
+            if (!yes || !E.runs[st.id]) return;
+            E.hist.push({ id: run.id, sid: st.id, z: run.z, t0: run.t0, t1: Date.now(), ok: -1, ch: run.ch, rew: {} }); delete E.runs[st.id];
+            Promise.resolve(saveData()).catch(() => {}); window.renderPetView();
+        };
+        // ---------- Giao diện ----------
+        const pxpLcg = seed => { let s = seed; return () => (s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296; };
+        function pxpCards(st, E) {
+            const run = st ? E.runs[st.id] : null, cl = st ? (E.col[st.id] || {}) : {};
+            const order = PXP_Z.slice().sort((a, b) => a.lv - b.lv || a.min - b.min || a.need - b.need);
+            const cards = order.map(z => {
+                const dv = PXP_DIFF[z.lv], rq = pxpReq(st, z), here = run && run.z === z.id, locked = !!(st && !here && rq.f < z.min), got = cl.b && cl.b[z.id];
+                const rw = L2(`${pxpLootList(z).length} loại quà`, `${pxpLootList(z).length} gift types`);
+                const badge = here ? `<span class="pxp-cb on">🧭 ${pxpProgress(st, run).done}/${run.need}</span>` : locked ? `<span class="pxp-cb">🔒 ${pxpEsc(petFormLevelName(z.min))}+</span>` : got ? `<span class="pxp-cb ok">🏅</span>` : '';
+                return `<button type="button" class="pxp-card${locked ? ' lock' : ''}${here ? ' here' : ''}" style="--zc:${z.col}" onclick="pxpOpen('${z.id}')" aria-label="${pxpEsc(pxpNm(z))}">
+                    <div class="pxp-cth"><svg viewBox="0 0 800 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${pxpSceneArt(z)}</svg><span class="pxp-cic">${z.ic}</span>${badge}</div>
+                    <div class="pxp-cbd"><b>${pxpEsc(pxpNm(z))}</b><div class="pxp-ctags"><span class="pxp-tag" style="background:${dv[2]}">${pxpEsc(L2(dv[0], dv[1]))}</span><span class="pxp-tag soft">⏳ ${z.need} ${L2('buổi', 'lessons')}</span></div><div class="pxp-cft">🎁 ${pxpEsc(rw)}</div></div></button>`;
+            }).join('');
+            return `<div class="pxp-stage-h"><div class="pxp-sect" style="margin:0">${L2('Chọn khu vực', 'Choose a region')}</div><div class="pxp-fine">${L2('Mỗi chuyến chỉ thám hiểm một khu vực. Vuốt ngang để xem thêm.', 'Each trip explores one region. Swipe sideways for more.')}</div></div>
+                <div class="pxp-cwrap"><button type="button" class="pxp-arr l" onclick="pxpScroll(-1)" aria-label="←">‹</button><div class="pxp-cards" id="pxpCards" onscroll="window.__pxpSX=this.scrollLeft">${cards}</div><button type="button" class="pxp-arr r" onclick="pxpScroll(1)" aria-label="→">›</button></div>`;
+        }
+        window.pxpScroll = d => { const el = document.getElementById('pxpCards'); if (el) el.scrollBy({ left: d * 420, behavior: xfRM() ? 'auto' : 'smooth' }); };
+
+        // ---------- Cài đặt quà thám hiểm: xem quà từng map, chỉnh xác suất, tạo quà riêng (chỉ giáo viên) ----------
+        // appData.petExp.loot[mapId] = [[mã quà, %], ...]  (mã 'cu:<id>' = quà tự tạo, định nghĩa ở appData.petExp.custom[id])
+        // Chỉ ảnh hưởng chuyến được chốt kết quả SAU khi lưu. Bản nháp (chưa lưu) giữ trong pxpCfgDraft[mapId] = [[mã, %], ...].
+        let pxpCfgOpen = false, pxpCfgZ = 'forest'; const pxpCfgDraft = {};
+        const pxpN2 = v => { const n = Number(v); return isFinite(n) ? Math.round(n * 100) / 100 : 0; };
+        const pxpFmtN = n => { const t = String(pxpN2(n)); return (appData.language || 'vi') === 'en' ? t : t.replace('.', ','); };
+        const pxpCfgToast = (vi, en, t) => { try { if (window.showAppToast) window.showAppToast(L2(vi, en), t || 'success'); } catch (e) {} };
+        const pxpTr = (k, vi, en) => { try { const t = translations[appData.language || 'vi']; return (t && t[k]) || L2(vi, en); } catch (e) { return L2(vi, en); } };
+        const pxpGiftObj = c => { const cu = pxpCuDef(c); if (cu) return { type: cu.type || '', itemId: 'pxp_cu_' + cu.id }; const g = PXP_GIFT[c]; if (!g) return {}; if (g.k === 'pts') return { type: 'plus' }; if (g.k === 'acc') return {}; const b = PET_GIFT[g.kind] || {}; return { type: b.type, itemId: b.itemId }; };
+        const pxpCfgVals = z => (pxpCfgDraft[z.id] || pxpLootTb(z)).map(x => [x[0], x[1]]);
+        const pxpCfgSum = a => pxpN2(a.reduce((t, x) => t + (Number(x[1]) || 0), 0));
+        const pxpCfgDef = z => (PXP_LOOT[z.id] || [['p1', 1]]).map(x => [x[0], x[1]]);
+        const pxpSamePairs = (a, b) => a.length === b.length && a.every((x, i) => x[0] === b[i][0] && pxpN2(x[1]) === pxpN2(b[i][1]));
+        const pxpCfgDirty = z => { const d = pxpCfgDraft[z.id]; return !!d && !pxpSamePairs(d, pxpLootTb(z)); };
+        function pxpCfgBody() {
+            const order = PXP_Z.slice().sort((a, b) => a.lv - b.lv || a.min - b.min || a.need - b.need);
+            const z = pxpZ(pxpCfgZ), vals = pxpCfgVals(z), dv = PXP_DIFF[z.lv], sum = pxpCfgSum(vals), ok = Math.abs(sum - 100) < 0.005;
+            const chips = order.map(m => `<button type="button" class="pxp-cfgchip${m.id === z.id ? ' on' : ''}" style="--zc:${m.col}" onclick="pxpCfgPick('${m.id}')" aria-pressed="${m.id === z.id}"><span>${m.ic}</span>${pxpEsc(pxpNm(m))}${pxpCfgDirty(m) ? '<i class="pxp-cfgdot" title="' + pxpEsc(L2('Chưa lưu', 'Unsaved')) + '"></i>' : ''}</button>`).join('');
+            const rows = vals.map((x, i) => {
+                const nm = pxpEsc(pxpGiftName(x[0])), v = x[1], go = pxpGiftObj(x[0]), cu = !!pxpCuDef(x[0]);
+                const k = (typeof qgKind === 'function') ? qgKind(go) : 'none';
+                const ico = (typeof giftTypeIconHtml === 'function') ? giftTypeIconHtml(go) : '<i class="fa-solid fa-gift"></i>';
+                const wm = (typeof QG_ICON !== 'undefined' && QG_ICON[k]) || 'fa-gift';
+                return `<div class="gift-card gift-special gift-sp-${k} pxp-gcard"><span class="gift-wm" aria-hidden="true"><i class="fa-solid ${k === 'lucky' ? 'fa-dharmachakra' : wm}"></i></span>
+                    ${i === 0 ? `<span class="pxp-gbase" title="${pxpEsc(L2('Quà cơ bản: không tăng theo sức mạnh thú cưng', 'Base gift: not boosted by pet power'))}">★ ${pxpEsc(L2('Cơ bản', 'Base'))}</span>` : ''}
+                    ${cu ? `<button type="button" class="pxp-gedit" onclick="pxpCuOpen('${x[0]}')" title="${pxpEsc(L2('Sửa quà này', 'Edit this gift'))}" aria-label="${pxpEsc(L2('Sửa quà này', 'Edit this gift'))}"><i class="fa-solid fa-pen"></i></button><button type="button" class="pxp-gdel" onclick="pxpCfgDel(${i})" title="${pxpEsc(L2('Xóa quà này khỏi map', 'Remove this gift from the map'))}" aria-label="${pxpEsc(L2('Xóa quà này khỏi map', 'Remove this gift from the map'))}"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+                    <div class="gift-body"><div class="gift-emoji-wrap text-2xl mb-1 mt-1"><span class="gift-emoji gift-type-ico">${ico}</span></div>
+                    <div class="gift-info"><div class="gift-name font-bold text-slate-800 text-sm mb-1">${nm}</div></div>
+                    <div class="pxp-gbar"><i id="pxpCfgBar${i}" style="width:${Math.min(100, v)}%"></i></div>
+                    <label class="pxp-cfgnum"><input type="number" min="0" max="100" step="0.5" inputmode="decimal" value="${pxpN2(v)}" oninput="pxpCfgEdit(${i},this.value)" onfocus="this.select()" aria-label="${nm} (%)"><span>%</span></label></div></div>`;
+            }).join('') + `<button type="button" class="pxp-gadd" onclick="pxpCuOpen()"><i class="fa-solid fa-plus"></i><span>${L2('Thêm quà', 'Add gift')}</span></button>`;
+            return `<div class="pxp-cfgh"><div><div class="pxp-sect" style="margin:0">⚙️ ${L2('Cài đặt quà thám hiểm', 'Expedition gift settings')}</div><div class="pxp-fine">${L2('Chọn một map để xem quà, chỉnh xác suất hoặc thêm quà riêng. Thay đổi chỉ áp dụng cho các chuyến được chốt kết quả sau khi lưu.', 'Pick a map to view its gifts, edit the odds or add your own gifts. Changes apply only to trips that finish after saving.')}</div></div>
+                <button type="button" class="pxp-cfgx" onclick="pxpCfgToggle()" aria-label="${pxpEsc(L2('Đóng', 'Close'))}">✕</button></div>
+                <div class="pxp-cfgchips" role="group" aria-label="${pxpEsc(L2('Chọn map', 'Choose a map'))}">${chips}</div>
+                <div class="pxp-cfginfo" style="--zc:${z.col}"><span class="pxp-cfgbig">${z.ic}</span><div><b>${pxpEsc(pxpNm(z))}</b><div class="pxp-ctags"><span class="pxp-tag" style="background:${dv[2]}">${pxpEsc(L2(dv[0], dv[1]))}</span><span class="pxp-tag soft">⏳ ${z.need} ${L2('buổi', 'lessons')}</span><span class="pxp-tag soft">🔒 ${pxpEsc(petFormLevelName(z.min))}+</span></div></div></div>
+                <div class="pxp-gcards">${rows}</div>
+                <div class="pxp-cfgft"><div class="pxp-cfgsum ${ok ? 'ok' : 'bad'}" id="pxpCfgSum">${L2('Tổng', 'Total')}: <b>${pxpFmtN(sum)}%</b> ${ok ? '✓' : pxpEsc(L2('(cần đúng 100%)', '(must equal 100%)'))}</div>
+                <div class="pxp-cfgbt"><button type="button" class="pxp-ghost" onclick="pxpCfgNorm()">${L2('Quy về 100%', 'Scale to 100%')}</button><button type="button" class="pxp-ghost" onclick="pxpCfgReset()">↺ ${L2('Mặc định', 'Defaults')}</button><button type="button" class="pxp-go" onclick="pxpCfgSave()">${L2('Lưu', 'Save')}</button></div></div>`;
+        }
+        function pxpCfgHtml() {
+            return `<section class="pxp-cfgsec bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-5"><button type="button" class="pxp-cfgbtn${pxpCfgOpen ? ' on' : ''}" id="pxpCfgBtn" onclick="pxpCfgToggle()" aria-expanded="${pxpCfgOpen}" aria-controls="pxpCfg"><i class="fa-solid fa-gear pxp-cfggear"></i><span class="pxp-cfgbt1"><b>${L2('Cài đặt', 'Settings')}</b><small>${L2('Xem quà, chỉnh xác suất và tạo quà cho từng map thám hiểm', 'View gifts, edit odds and create gifts for each expedition map')}</small></span><span class="pxp-cfgcv">▾</span></button>
+                <div class="pxp-cfg${pxpCfgOpen ? ' open' : ''}" id="pxpCfg"><div class="pxp-cfgin"><div class="pxp-cfgbox" id="pxpCfgBody">${pxpCfgBody()}</div></div></div></section>`;
+        }
+        function pxpCfgRefresh() {
+            const b = document.getElementById('pxpCfgBody'); if (!b) return;
+            const ch = b.querySelector('.pxp-cfgchips'), sx = ch ? ch.scrollLeft : 0;
+            b.innerHTML = pxpCfgBody();
+            const c2 = b.querySelector('.pxp-cfgchips'); if (c2) c2.scrollLeft = sx;
+        }
+        function pxpCfgSync() {
+            const z = pxpZ(pxpCfgZ), a = pxpCfgVals(z), sum = pxpCfgSum(a), ok = Math.abs(sum - 100) < 0.005;
+            a.forEach((x, i) => { const e = document.getElementById('pxpCfgBar' + i); if (e) e.style.width = Math.min(100, x[1]) + '%'; });
+            const el = document.getElementById('pxpCfgSum');
+            if (el) { el.className = 'pxp-cfgsum ' + (ok ? 'ok' : 'bad'); el.innerHTML = `${L2('Tổng', 'Total')}: <b>${pxpFmtN(sum)}%</b> ${ok ? '✓' : pxpEsc(L2('(cần đúng 100%)', '(must equal 100%)'))}`; }
+            const chip = document.querySelector('#pxpCfgBody .pxp-cfgchip.on');
+            if (chip) { let d = chip.querySelector('.pxp-cfgdot'); if (pxpCfgDirty(z)) { if (!d) { d = document.createElement('i'); d.className = 'pxp-cfgdot'; d.title = L2('Chưa lưu', 'Unsaved'); chip.appendChild(d); } } else if (d) d.remove(); }
+        }
+        window.pxpCfgToggle = () => {
+            pxpCfgOpen = !pxpCfgOpen;
+            const p = document.getElementById('pxpCfg'), b = document.getElementById('pxpCfgBtn');
+            if (p) p.classList.toggle('open', pxpCfgOpen);
+            if (b) { b.classList.toggle('on', pxpCfgOpen); b.setAttribute('aria-expanded', String(pxpCfgOpen)); }
+        };
+        window.pxpCfgPick = id => {
+            pxpCfgZ = pxpZ(id).id; pxpCfgRefresh();
+            const c = document.querySelector('#pxpCfgBody .pxp-cfgchip.on'); if (c && c.scrollIntoView) c.scrollIntoView({ inline: 'center', block: 'nearest', behavior: xfRM() ? 'auto' : 'smooth' });
+        };
+        window.pxpCfgEdit = (i, v) => { const z = pxpZ(pxpCfgZ), a = pxpCfgVals(z); if (!a[i]) return; a[i][1] = Math.max(0, Math.min(100, Number(v) || 0)); pxpCfgDraft[z.id] = a; pxpCfgSync(); };
+        window.pxpCfgDel = i => { const z = pxpZ(pxpCfgZ), a = pxpCfgVals(z); if (!a[i] || !pxpCuDef(a[i][0])) return; a.splice(i, 1); pxpCfgDraft[z.id] = a; pxpCfgRefresh(); pxpCfgToast('Đã gỡ quà khỏi map. Chỉnh lại xác suất (có thể bấm "Quy về 100%") rồi bấm Lưu.', 'Gift removed from the map. Adjust the odds (you can use "Scale to 100%") then press Save.', 'info'); };
+        window.pxpCfgNorm = () => {
+            const z = pxpZ(pxpCfgZ), a = pxpCfgVals(z), t = a.reduce((x, y) => x + (Number(y[1]) || 0), 0);
+            if (!(t > 0)) { pxpCfgToast('Cần ít nhất một quà có xác suất lớn hơn 0.', 'At least one gift needs a chance above 0.', 'error'); return; }
+            const n = a.map(x => [x[0], pxpN2((Number(x[1]) || 0) / t * 100)]), mx = n.reduce((m, x, i) => x[1] > n[m][1] ? i : m, 0);
+            n[mx][1] = pxpN2(n[mx][1] + (100 - n.reduce((x, y) => x + y[1], 0)));
+            pxpCfgDraft[z.id] = n; pxpCfgRefresh();
+        };
+        window.pxpCfgReset = () => { const z = pxpZ(pxpCfgZ); pxpCfgDraft[z.id] = pxpCfgDef(z); pxpCfgRefresh(); };
+        window.pxpCfgSave = async function () {
+            if (pxpGuard()) return;
+            const E = pxpData(), ids = Object.keys(pxpCfgDraft).filter(id => pxpCfgDirty(pxpZ(id)));
+            if (!ids.length) { pxpCfgToast('Chưa có thay đổi nào để lưu.', 'No changes to save.', 'info'); return; }
+            for (const id of ids) {
+                const sm = pxpCfgSum(pxpCfgDraft[id]);
+                if (Math.abs(sm - 100) >= 0.005) { pxpCfgZ = id; pxpCfgRefresh(); pxpCfgToast(`Tổng xác suất của "${pxpZ(id).vi}" phải đúng 100% (hiện ${pxpFmtN(sm)}%).`, `Odds for "${pxpZ(id).en}" must total exactly 100% (now ${pxpFmtN(sm)}%).`, 'error'); return; }
+            }
+            const old = E.loot, nl = Object.assign({}, old && typeof old === 'object' ? old : {});
+            ids.forEach(id => {
+                const a = pxpCfgDraft[id].map(x => [x[0], pxpN2(x[1])]);
+                if (pxpSamePairs(a, PXP_LOOT[id] || [])) delete nl[id]; else nl[id] = a;
+            });
+            E.loot = nl;
+            let ok = false; try { ok = (await saveData()) !== false; } catch (e) { ok = false; }
+            if (!ok) { E.loot = old; pxpCfgToast('Lưu thất bại, chưa áp dụng thay đổi.', 'Save failed; changes not applied.', 'error'); return; }
+            ids.forEach(id => { delete pxpCfgDraft[id]; });
+            pxpCfgToast(`Đã lưu xác suất quà (${ids.length} map).`, `Gift odds saved (${ids.length} map${ids.length > 1 ? 's' : ''}).`);
+            try { window.renderPetView(); } catch (e) { pxpCfgRefresh(); }
+        };
+        // ----- Tạo quà riêng (cùng cơ chế tạo quà của Hộp Quà Bí Ẩn: tên, tính năng áp dụng, giá trị, điều kiện ô điểm) -----
+        window.pxpCuOpen = code => {
+            if (document.getElementById('pxpCuModal')) return;
+            const ed = code ? pxpCuDef(code) : null; window.__pxpCuEditId = ed ? ed.id : null;
+            const T = pxpTr, m = document.createElement('div'); m.id = 'pxpCuModal';
+            m.className = 'fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-3';
+            const opt = (v, k, vi, en) => `<option value="${v}">${pxpEsc(T(k, vi, en))}</option>`;
+            m.innerHTML = `<div class="bg-white rounded-xl shadow-2xl w-96 max-w-full p-6" role="dialog" aria-modal="true"><div class="flex justify-between items-center border-b pb-3 mb-4"><h3 class="text-base font-bold text-slate-800">${ed ? pxpEsc(L2('Sửa quà', 'Edit gift')) : pxpEsc(L2('Thêm quà cho map', 'Add a gift to the map')) + ': ' + pxpZ(pxpCfgZ).ic + ' ' + pxpEsc(pxpNm(pxpZ(pxpCfgZ)))}</h3><button type="button" onclick="pxpCuClose()" class="text-slate-400 hover:text-slate-600" aria-label="${pxpEsc(L2('Đóng', 'Close'))}"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+                <form onsubmit="pxpCuSubmit(event)"><div class="mb-3"><label class="block text-xs font-semibold text-slate-600 mb-1">${pxpEsc(T('lblRewardName', 'Tên món quà:', 'Gift name:'))}</label><input type="text" id="pxpCuName" required maxlength="80" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></div>
+                <div class="mb-3"><label class="block text-xs font-semibold text-slate-600 mb-1">${pxpEsc(T('lblRewardType', 'Tính năng áp dụng khi nhấn ô điểm:', 'Effect when a score cell is clicked:'))}</label><select id="pxpCuType" onchange="pxpCuType(this.value)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">${opt('none', 'optTypeNone', 'Quà thông thường (Đặc quyền / Hiện vật / BTVN)', 'Regular gift (privilege / item / homework)')}${opt('plus', 'optTypePlus', 'Cộng dồn điểm vào ô (+0.5đ, +1đ...)', 'Add points to a cell (+0.5, +1...)')}${opt('add', 'optTypeAdd', 'Tạo điểm mới cho ô trống (Điểm 10, Điểm 9...)', 'Create a new score in an empty cell (10, 9...)')}${opt('change', 'optTypeChange', 'Sửa điểm đã có trong ô (Sửa thành 10...)', 'Change an existing score (to 10...)')}${opt('delete_score', 'optTypeDeleteScore', 'Xóa điểm đã có trong ô', 'Delete an existing score')}${opt('plus_match', 'optTypePlusMatch', 'Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)', 'Add points to a cell with a specified score')}${opt('plus_exam', 'optTypePlusExam', 'Cộng dồn điểm vào Bài Kiểm Tra (+0.5đ, +1đ...)', 'Add points to a Test score (+0.5, +1...)')}</select></div>
+                <div id="pxpCuValRow" class="mb-4 hidden"><label class="block text-xs font-semibold text-indigo-700 mb-1" id="pxpCuValLbl"></label><input type="number" step="0.1" id="pxpCuVal" class="w-full border border-indigo-200 bg-indigo-50/50 rounded-lg px-3 py-2 text-sm font-bold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"></div>
+                <div id="pxpCuMatchRow" class="mb-4 hidden"><label class="block text-xs font-semibold text-indigo-700 mb-1">${pxpEsc(T('lblMatchCond', 'Ô điểm quy định được cộng (điều kiện & mức điểm):', 'Cell that receives the points (condition & score):'))}</label><div class="flex gap-2"><select id="pxpCuOp" class="w-3/5 border border-indigo-200 bg-indigo-50/50 rounded-lg px-2 py-2 text-sm font-bold text-indigo-900"><option value="lte">${pxpEsc(T('optMatchLte', 'Từ mức này trở xuống (≤)', 'At or below (≤)'))}</option><option value="eq">${pxpEsc(T('optMatchEq', 'Bằng đúng mức này (=)', 'Exactly (=)'))}</option><option value="gte">${pxpEsc(T('optMatchGte', 'Từ mức này trở lên (≥)', 'At or above (≥)'))}</option></select><input type="number" step="0.1" min="0" max="10" id="pxpCuMs" class="w-2/5 border border-indigo-200 bg-indigo-50/50 rounded-lg px-3 py-2 text-sm font-bold text-indigo-900"></div></div>
+                <div class="flex justify-end space-x-2"><button type="button" onclick="pxpCuClose()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold">${pxpEsc(T('btnCancel', 'Hủy', 'Cancel'))}</button><button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold">${ed ? pxpEsc(L2('Lưu thay đổi', 'Save changes')) : pxpEsc(T('btnSaveReward', 'Lưu Món Quà', 'Save Gift'))}</button></div></form></div>`;
+            m.addEventListener('mousedown', e => { if (e.target === m) pxpCuClose(); });
+            m.addEventListener('keydown', e => { if (e.key === 'Escape') pxpCuClose(); });
+            document.body.appendChild(m); pxpCuType('none');
+            if (ed) {
+                document.getElementById('pxpCuName').value = ed.name || ''; document.getElementById('pxpCuType').value = ed.type || 'none'; pxpCuType(ed.type || 'none');
+                const v = ed.deltaScore !== undefined ? ed.deltaScore : ed.targetScore; if (v !== undefined) document.getElementById('pxpCuVal').value = v;
+                if (ed.type === 'plus_match') { document.getElementById('pxpCuOp').value = ed.matchOp || 'lte'; document.getElementById('pxpCuMs').value = ed.matchScore; }
+            }
+            setTimeout(() => { const n = document.getElementById('pxpCuName'); if (n) n.focus(); }, 30);
+        };
+        window.pxpCuClose = () => { const m = document.getElementById('pxpCuModal'); if (m) m.remove(); window.__pxpCuEditId = null; };
+        window.pxpCuType = t => {
+            const row = document.getElementById('pxpCuValRow'), lbl = document.getElementById('pxpCuValLbl'), inp = document.getElementById('pxpCuVal'), mr = document.getElementById('pxpCuMatchRow');
+            if (!row) return;
+            const show = !(t === 'none' || t === 'delete_score' || !t);
+            row.classList.toggle('hidden', !show); mr.classList.toggle('hidden', t !== 'plus_match');
+            if (t === 'plus' || t === 'plus_match' || t === 'plus_exam') { lbl.textContent = L2('Số điểm muốn cộng thêm:', 'Bonus score to add:'); inp.placeholder = L2('VD: 1 (Cộng 1 điểm)', 'e.g. 1 (+1 point)'); }
+            else if (t === 'add' || t === 'change') { lbl.textContent = L2('Điểm số thiết lập mục tiêu:', 'Target score value:'); inp.placeholder = L2('VD: 10 (Đặt thành 10đ)', 'e.g. 10 (Set as 10)'); }
+        };
+        window.pxpCuSubmit = async e => {
+            e.preventDefault();
+            const name = document.getElementById('pxpCuName').value.trim(), type = document.getElementById('pxpCuType').value, val = parseFloat(document.getElementById('pxpCuVal').value);
+            if (!name) return;
+            const editId = window.__pxpCuEditId, def = { id: editId || ('pc' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5)), name, type: type !== 'none' ? type : null };
+            if (type === 'plus' || type === 'plus_exam') def.deltaScore = !isNaN(val) ? val : 1;
+            else if (type === 'add' || type === 'change') def.targetScore = !isNaN(val) ? val : 10;
+            else if (type === 'plus_match') {
+                const ms = parseFloat(document.getElementById('pxpCuMs').value);
+                if (isNaN(ms)) { pxpCfgToast('Nhập mức điểm quy định cho ô được cộng.', 'Enter the specified cell score.', 'error'); return; }
+                def.deltaScore = !isNaN(val) ? val : 1; def.matchScore = Math.min(10, Math.max(0, ms)); def.matchOp = document.getElementById('pxpCuOp').value || 'lte';
+            }
+            const E = pxpData(); E.custom = (E.custom && typeof E.custom === 'object') ? E.custom : {};
+            if (editId) { // sửa quà: lưu ngay (áp dụng cho mọi map đang dùng quà này; quà đã nằm trong túi học sinh giữ nguyên)
+                if (pxpGuard()) return;
+                const prev = E.custom[editId]; E.custom[editId] = def;
+                let ok = false; try { ok = (await saveData()) !== false; } catch (er) { ok = false; }
+                if (!ok) { E.custom[editId] = prev; pxpCfgToast('Lưu thất bại, chưa sửa quà.', 'Save failed; gift not changed.', 'error'); return; }
+                pxpCuClose(); pxpCfgToast('Đã sửa quà.', 'Gift updated.');
+                try { window.renderPetView(); } catch (er) { pxpCfgRefresh(); }
+                return;
+            }
+            E.custom[def.id] = def;
+            const z = pxpZ(pxpCfgZ), a = pxpCfgVals(z); a.push(['cu:' + def.id, 0]); pxpCfgDraft[z.id] = a;
+            pxpCuClose(); pxpCfgRefresh();
+            pxpCfgToast('Đã thêm quà vào map. Nhập xác suất cho quà mới rồi bấm Lưu.', 'Gift added to the map. Set its odds, then press Save.', 'info');
+        };
+        function pxpBez(t) { const P = [[70, 345], [330, 470], [420, 60], [735, 120]], u = 1 - t; return [0, 1].map(k => u * u * u * P[0][k] + 3 * u * u * t * P[1][k] + 3 * u * t * t * P[2][k] + t * t * t * P[3][k]); }
+
+        const PXP_FLC = { meadow: '#ffffff', beach: '#ffffff', swamp: '#bef264', cave: '#e9d5ff', sky: '#ffffff', volcano: '#fb923c', ocean: '#e0f2fe', space: '#fef3c7', castle: '#e9d5ff', dragon: '#fde047' };
+        const PXP_ART2 = {
+            meadow: r => `<circle cx="640" cy="110" r="46" fill="#fff7ed" opacity=".9"/><path d="M0 300Q180 230 360 290T800 250V420H0Z" fill="#f472b6" opacity=".55"/><path d="M0 350Q240 300 480 345T800 320V420H0Z" fill="#86efac"/>` + [[140, 330], [330, 345], [560, 335], [710, 330]].map(p => `<rect x="${p[0] - 5}" y="${p[1] - 60}" width="10" height="60" fill="#7c2d12"/><circle cx="${p[0]}" cy="${p[1] - 80}" r="42" fill="#f9a8d4"/><circle cx="${p[0] - 26}" cy="${p[1] - 62}" r="28" fill="#fbcfe8"/><circle cx="${p[0] + 26}" cy="${p[1] - 64}" r="28" fill="#f472b6"/>`).join(''),
+            beach: r => `<circle cx="150" cy="110" r="52" fill="#fef9c3" opacity=".95"/><path d="M0 250Q200 225 400 250T800 240V330H0Z" fill="#0ea5e9"/><path d="M0 262Q200 240 400 262T800 252" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="3"/><path d="M0 320Q240 290 460 325T800 305V420H0Z" fill="#fcd34d"/><path d="M0 380Q260 350 480 385T800 365V420H0Z" fill="#fbbf24"/><path d="M650 340Q660 280 640 230" stroke="#92400e" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M640 230Q600 200 570 225M640 230Q640 185 680 190M640 230Q690 215 710 245M640 230Q600 250 585 275" stroke="#16a34a" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M300 360Q306 320 296 290" stroke="#92400e" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M296 290Q268 272 250 288M296 290Q300 262 326 266M296 290Q322 292 336 312" stroke="#16a34a" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M430 388q14-22 28 0z" fill="#fb7185"/>`,
+            swamp: r => `<circle cx="620" cy="100" r="40" fill="#d9f99d" opacity=".5"/><path d="M0 300Q220 270 440 300T800 285V420H0Z" fill="#14532d"/><path d="M0 350Q240 325 470 352T800 338V420H0Z" fill="#365314"/>` + [120, 330, 540, 730].map((x, i) => `<path d="M${x} 335V${170 + (i % 2) * 30}M${x} 240l-30-30M${x} 262l34-34M${x} 206l-22-26" stroke="#1c1917" stroke-width="9" fill="none" stroke-linecap="round"/>`).join('') + `<ellipse cx="260" cy="320" rx="260" ry="26" fill="#d1fae5" opacity=".18"/><ellipse cx="600" cy="350" rx="240" ry="22" fill="#d1fae5" opacity=".16"/><ellipse cx="430" cy="388" rx="26" ry="8" fill="#4ade80"/><ellipse cx="472" cy="396" rx="18" ry="6" fill="#22c55e"/>`,
+            cave: r => `<circle cx="400" cy="220" r="150" fill="#7c3aed" opacity=".18"/><path d="M0 0H800V60L760 30 720 110 680 40 630 130 580 50 520 120 470 36 410 100 350 30 300 125 240 44 190 110 130 30 70 90 20 40 0 70Z" fill="#1e1b4b"/><path d="M0 372Q220 345 440 375T800 355V420H0Z" fill="#1e1b4b"/>` + [[110, 380, 40, '#a78bfa'], [215, 392, 26, '#67e8f9'], [470, 384, 46, '#f0abfc'], [610, 396, 30, '#a78bfa'], [710, 372, 42, '#67e8f9']].map(c => `<path d="M${c[0] - 14} ${c[1]}L${c[0]} ${c[1] - c[2]}L${c[0] + 14} ${c[1]}Z" fill="${c[3]}" opacity=".92"/><path d="M${c[0]} ${c[1] - c[2]}L${c[0] + 14} ${c[1]}L${c[0]} ${c[1]}Z" fill="#fff" opacity=".25"/>`).join(''),
+            sky: r => `<circle cx="90" cy="70" r="40" fill="#fef08a"/>` + [[130, 120, 1], [420, 70, 1.3], [640, 160, .9], [300, 230, .8]].map(c => `<g transform="translate(${c[0]} ${c[1]}) scale(${c[2]})" fill="#fff" opacity=".92"><ellipse rx="60" ry="22"/><circle cx="-22" cy="-16" r="24"/><circle cx="14" cy="-24" r="30"/></g>`).join('') + `<path d="M560 230Q640 252 720 230L690 282Q640 314 590 282Z" fill="#78350f"/><ellipse cx="640" cy="230" rx="80" ry="16" fill="#4ade80"/><path d="M0 340Q120 300 240 335T480 330T800 325V420H0Z" fill="#fff" opacity=".95"/><path d="M0 385Q160 355 320 385T640 380T800 375V420H0Z" fill="#e0f2fe"/>`,
+            volcano: r => `<ellipse cx="400" cy="70" rx="170" ry="30" fill="#44403c" opacity=".7"/><path d="M120 380L330 150L400 120L470 150L700 380Z" fill="#292524"/><path d="M330 150L400 120L470 150L430 168L400 150L365 172Z" fill="#f97316"/><path d="M400 150Q380 250 340 380H420Q410 260 400 150Z" fill="#ef4444" opacity=".85"/><path d="M0 380Q200 355 420 385T800 365V420H0Z" fill="#1c1917"/><path d="M0 398Q200 380 420 402T800 390" fill="none" stroke="#f97316" stroke-width="6" stroke-linecap="round"/>`,
+            ocean: r => `<path d="M200 0L360 420H120Z M480 0L640 420H420Z" fill="#67e8f9" opacity=".08"/><path d="M0 370Q200 340 420 372T800 350V420H0Z" fill="#164e63"/>` + [90, 250, 520, 700].map((x, i) => `<path d="M${x} 385q-10-50 0-80M${x} 345q-24-10-28-36M${x} 335q22-8 26-34" stroke="${i % 2 ? '#f472b6' : '#fb7185'}" stroke-width="9" fill="none" stroke-linecap="round"/>`).join('') + `<path d="M330 200q30-26 60 0q-30 26-60 0zM390 200l22-14v28z" fill="#fbbf24"/><path d="M560 140q24-20 48 0q-24 20-48 0zM608 140l18-11v22z" fill="#fb7185"/>`,
+            space: r => Array.from({ length: 50 }, () => `<circle cx="${(r() * 800) | 0}" cy="${(r() * 330) | 0}" r="${(r() * 1.6 + .5).toFixed(1)}" fill="#fff"/>`).join('') + `<ellipse cx="400" cy="200" rx="260" ry="70" fill="#a21caf" opacity=".18"/><circle cx="600" cy="130" r="60" fill="#f97316"/><ellipse cx="600" cy="130" rx="100" ry="20" fill="none" stroke="#fde68a" stroke-width="6" transform="rotate(-18 600 130)"/><circle cx="170" cy="90" r="26" fill="#38bdf8"/><circle cx="160" cy="82" r="8" fill="#fff" opacity=".35"/><path d="M0 372Q200 340 420 375T800 355V420H0Z" fill="#1e1b4b"/><ellipse cx="200" cy="396" rx="40" ry="8" fill="#312e81"/><ellipse cx="560" cy="392" rx="30" ry="6" fill="#312e81"/>`,
+            castle: r => `<circle cx="640" cy="100" r="50" fill="#fef9c3" opacity=".92"/><rect x="260" y="220" width="280" height="160" fill="#0f0a1e"/><rect x="240" y="170" width="60" height="210" fill="#0f0a1e"/><path d="M236 170l34-50 34 50z" fill="#1e1b4b"/><rect x="500" y="150" width="60" height="230" fill="#0f0a1e"/><path d="M496 150l34-56 34 56z" fill="#1e1b4b"/><rect x="370" y="180" width="60" height="200" fill="#0f0a1e"/><path d="M366 180l34-52 34 52z" fill="#1e1b4b"/><rect x="264" y="200" width="12" height="20" rx="6" fill="#fde047"/><rect x="524" y="190" width="12" height="20" rx="6" fill="#fde047"/><rect x="393" y="220" width="14" height="24" rx="7" fill="#fde047"/><path d="M0 372Q220 350 440 376T800 358V420H0Z" fill="#0b0617"/>` + [110, 640, 720].map(x => `<path d="M${x - 16} 396V370q16-24 32 0v26z" fill="#475569"/>`).join('') + `<text x="140" y="120" font-size="28">🦇</text><text x="700" y="190" font-size="24">🦇</text><text x="420" y="80" font-size="22">🦇</text>`,
+            dragon: r => `<circle cx="400" cy="200" r="190" fill="#f59e0b" opacity=".14"/><path d="M0 0H800V50L740 90 690 30 620 100 560 40 500 110 440 36 380 100 310 34 250 110 180 44 110 100 50 40 0 80Z" fill="#450a0a"/><path d="M0 360Q200 330 420 365T800 345V420H0Z" fill="#431407"/>` + [120, 300, 560, 700].map(x => `<path d="M${x - 60} 398Q${x} 332 ${x + 60} 398Z" fill="#facc15"/><circle cx="${x - 14}" cy="370" r="6" fill="#fde68a"/><circle cx="${x + 16}" cy="376" r="5" fill="#fff7ad"/>`).join('') + `<text x="400" y="200" font-size="110" text-anchor="middle">🐉</text>`
+        };
+        const PXP_SKY = { forest: ['#052e16', '#14532d', '#0f766e'], plains: ['#4c1d95', '#be185d', '#f59e0b'], desert: ['#7c2d12', '#c2410c', '#fbbf24'], ice: ['#0c1a3a', '#075985', '#67e8f9'], ruins: ['#1e1b4b', '#4c1d95', '#a855f7'],
+            meadow: ['#fbcfe8', '#f9a8d4', '#fde68a'], beach: ['#0369a1', '#38bdf8', '#fde68a'], swamp: ['#0f2a1d', '#1f5f4a', '#6b8f3a'], cave: ['#0b0720', '#312e81', '#7c3aed'], sky: ['#1d4ed8', '#60a5fa', '#e0f2fe'], volcano: ['#1c0a0a', '#7f1d1d', '#f97316'], ocean: ['#020617', '#0c4a6e', '#0891b2'], space: ['#020010', '#1e1b4b', '#6d28d9'], castle: ['#111827', '#312e81', '#9d174d'], dragon: ['#1c0505', '#7c2d12', '#facc15'] };
+        Object.assign(PXP_SKY, { mushroom: ['#042f2e', '#115e59', '#5eead4'], bamboo: ['#14532d', '#4d7c0f', '#d9f99d'], canyon: ['#7c2d12', '#ea580c', '#fcd34d'], pirate: ['#312e81', '#be185d', '#fb923c'], atlantis: ['#082f49', '#0e7490', '#22d3ee'], clock: ['#451a03', '#92400e', '#fbbf24'], thunder: ['#0f172a', '#312e81', '#7c3aed'], phoenix: ['#450a0a', '#b91c1c', '#fb923c'], fairy: ['#2e1065', '#701a75', '#f0abfc'], void: ['#000000', '#1e1b4b', '#581c87'] });
+        Object.assign(PXP_FLC, { mushroom: '#99f6e4', bamboo: '#ecfccb', canyon: '#fde68a', pirate: '#ffffff', atlantis: '#e0f2fe', clock: '#fde68a', thunder: '#fde047', phoenix: '#fdba74', fairy: '#fef9c3', void: '#e9d5ff' });
+        Object.assign(PXP_ART2, {
+            mushroom: r => `<circle cx="400" cy="220" r="170" fill="#2dd4bf" opacity=".14"/><path d="M0 372Q220 350 440 376T800 358V420H0Z" fill="#134e4a"/>` + [[130, 372, .9, '#ef4444'], [330, 388, 1.2, '#a855f7'], [540, 372, 1, '#f59e0b'], [690, 382, .8, '#ec4899']].map(m => `<g transform="translate(${m[0]} ${m[1]}) scale(${m[2]})"><rect x="-10" y="-70" width="20" height="70" rx="8" fill="#fef3c7"/><path d="M-62 -64Q0 -142 62 -64Z" fill="${m[3]}"/><circle cx="-24" cy="-88" r="7" fill="#fff" opacity=".85"/><circle cx="14" cy="-102" r="6" fill="#fff" opacity=".85"/><circle cx="34" cy="-80" r="5" fill="#fff" opacity=".85"/></g>`).join(''),
+            bamboo: r => `<circle cx="640" cy="90" r="44" fill="#f7fee7" opacity=".9"/>` + Array.from({ length: 12 }, (_, i) => { const x = 30 + i * 68; return `<rect x="${x}" y="${(i % 3) * 20}" width="12" height="400" fill="${i % 2 ? '#4d7c0f' : '#65a30d'}"/><path d="M${x} 100h12M${x} 200h12M${x} 300h12" stroke="#365314" stroke-width="3"/>`; }).join('') + `<ellipse cx="400" cy="300" rx="420" ry="50" fill="#fff" opacity=".25"/><path d="M0 372Q220 355 440 378T800 362V420H0Z" fill="#365314"/>`,
+            canyon: r => `<circle cx="150" cy="110" r="52" fill="#fef3c7" opacity=".9"/><path d="M0 320V240H140V210H260V250H340V190H500V240H600V220H720V260H800V320Z" fill="#9a3412"/><path d="M0 360V300H100V280H220V310H360V270H520V310H660V290H800V360Z" fill="#c2410c"/><path d="M0 395Q220 365 440 395T800 375V420H0Z" fill="#7c2d12"/><path d="M690 380v-46m0 18q-14 0-14-14m14 6q14 0 14-12" stroke="#166534" stroke-width="8" fill="none" stroke-linecap="round"/>`,
+            pirate: r => `<circle cx="640" cy="130" r="50" fill="#fde68a" opacity=".9"/><path d="M0 270Q200 250 400 270T800 262V420H0Z" fill="#0e7490"/><path d="M0 300Q200 282 400 300T800 292" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/><path d="M0 345Q220 325 440 348T800 335V420H0Z" fill="#155e75"/><path d="M250 290h150l-26 40H278Z" fill="#451a03"/><path d="M325 290V190" stroke="#451a03" stroke-width="6"/><path d="M325 196L385 270H325Z" fill="#f8fafc"/><path d="M325 206L282 270H325Z" fill="#e2e8f0"/><path d="M325 190l22 8-22 8z" fill="#111827"/><path d="M600 345Q640 300 700 345Z" fill="#fcd34d"/><path d="M650 322Q652 290 640 262" stroke="#92400e" stroke-width="7" fill="none"/><path d="M640 262Q614 248 600 262M640 262Q650 240 674 244" stroke="#16a34a" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M0 395Q240 372 460 398T800 380V420H0Z" fill="#164e63"/><text x="120" y="400" font-size="30">💰</text>`,
+            atlantis: r => `<path d="M120 0L300 420H80Z M520 0L700 420H480Z" fill="#a5f3fc" opacity=".08"/><circle cx="420" cy="270" r="150" fill="#22d3ee" opacity=".16"/><path d="M270 230H570L420 170Z" fill="#a5f3fc"/>` + [300, 360, 420, 480, 540].map(x => `<rect x="${x - 8}" y="230" width="16" height="150" fill="#cffafe" opacity=".92"/>`).join('') + `<rect x="260" y="378" width="320" height="14" fill="#67e8f9"/><text x="420" y="152" font-size="38" text-anchor="middle">🔱</text><path d="M0 395Q220 372 440 398T800 380V420H0Z" fill="#164e63"/>`,
+            clock: r => [[140, 120, 60], [260, 185, 40], [620, 110, 70], [720, 235, 44]].map(g => `<circle cx="${g[0]}" cy="${g[1]}" r="${g[2]}" fill="none" stroke="#78350f" stroke-width="14" stroke-dasharray="10 8"/><circle cx="${g[0]}" cy="${g[1]}" r="${g[2] - 12}" fill="#92400e"/><circle cx="${g[0]}" cy="${g[1]}" r="10" fill="#fcd34d"/>`).join('') + `<path d="M0 420V320h60V270h50V330h50V230h60V350h70V290h60V370h60V250h60V340h70V280h60V360h200V420Z" fill="#451a03"/>` + [[85, 296], [185, 262], [330, 300], [470, 280], [610, 300], [740, 320]].map(w => `<circle cx="${w[0]}" cy="${w[1]}" r="4" fill="#fde047"/>`).join(''),
+            thunder: r => `<ellipse cx="200" cy="80" rx="200" ry="50" fill="#1e1b4b" opacity=".9"/><ellipse cx="560" cy="60" rx="240" ry="56" fill="#312e81" opacity=".9"/><path d="M420 90L380 190L420 190L370 300L470 170L430 170L470 90Z" fill="#fde047" stroke="#fff" stroke-width="2"/><path d="M650 120L625 190H650L620 250L685 170H660L680 120Z" fill="#fef08a"/><path d="M0 370L130 250L230 330L360 230L500 340L620 260L800 350V420H0Z" fill="#1e293b"/><path d="M0 392Q220 372 440 394T800 380V420H0Z" fill="#0f172a"/>`,
+            phoenix: r => `<circle cx="400" cy="200" r="170" fill="#f97316" opacity=".18"/><rect x="290" y="150" width="16" height="230" fill="#b91c1c"/><rect x="494" y="150" width="16" height="230" fill="#b91c1c"/><path d="M260 150H540L520 126H280Z" fill="#7f1d1d"/><rect x="300" y="190" width="200" height="12" fill="#b91c1c"/><path d="M0 372Q220 350 440 376T800 358V420H0Z" fill="#431407"/><text x="400" y="112" font-size="76" text-anchor="middle">🦅</text><text x="400" y="150" font-size="34" text-anchor="middle">🔥</text>`,
+            fairy: r => `<circle cx="400" cy="190" r="170" fill="#f0abfc" opacity=".16"/>` + [90, 250, 560, 720].map(x => `<rect x="${x - 14}" y="190" width="28" height="190" fill="#4a044e"/><circle cx="${x}" cy="170" r="70" fill="#86198f"/><circle cx="${x - 40}" cy="196" r="46" fill="#a21caf"/><circle cx="${x + 42}" cy="196" r="46" fill="#c026d3"/><circle cx="${x}" cy="262" r="8" fill="#fef08a"/>`).join('') + `<path d="M0 372Q220 350 440 376T800 358V420H0Z" fill="#701a75"/><text x="420" y="140" font-size="52" text-anchor="middle">🧚</text>`,
+            void: r => Array.from({ length: 40 }, () => `<circle cx="${(r() * 800) | 0}" cy="${(r() * 340) | 0}" r="${(r() * 1.5 + .5).toFixed(1)}" fill="#fff"/>`).join('') + `<circle cx="400" cy="190" r="170" fill="#7c3aed" opacity=".14"/><circle cx="400" cy="190" r="120" fill="none" stroke="#a855f7" stroke-width="10" opacity=".8"/><circle cx="400" cy="190" r="86" fill="none" stroke="#e879f9" stroke-width="6" opacity=".7"/><circle cx="400" cy="190" r="56" fill="#000"/>` + [[120, 260], [680, 280], [240, 120], [600, 100]].map(p => `<path d="M${p[0]} ${p[1]}l16-22 18 22-16 26z" fill="#6d28d9" stroke="#c084fc"/>`).join('') + `<path d="M0 380Q220 358 440 384T800 366V420H0Z" fill="#0b0220"/>`
+        });
+        function pxpSceneArt(z) {
+            const sk = PXP_SKY[z.id], r = pxpLcg(z.id.charCodeAt(0) * 31), id = 'pxs-' + z.id;
+            let parts = PXP_ART2[z.id] ? PXP_ART2[z.id](r) : '';
+            if (parts) { } else if (z.id === 'forest') parts = `<circle cx="640" cy="80" r="38" fill="#fef9c3" opacity=".85"/>` + [0, 1, 2, 3, 4, 5, 6, 7].map(i => `<path d="M${i * 115 - 20} 330L${i * 115 + 40} ${150 + (i % 3) * 30}L${i * 115 + 100} 330Z" fill="#064e3b" opacity=".75"/>`).join('') + [0, 1, 2, 3, 4, 5].map(i => `<path d="M${i * 150} 380L${i * 150 + 60} ${200 + (i % 2) * 40}L${i * 150 + 120} 380Z" fill="#022c22"/>`).join('') + `<ellipse cx="640" cy="372" rx="26" ry="9" fill="#a7f3d0" opacity=".5"/><path d="M620 372q20-34 40 0z" fill="#fb7185"/><path d="M180 384q14-26 28 0z" fill="#67e8f9"/>`;
+            else if (z.id === 'plains') parts = `<circle cx="560" cy="200" r="64" fill="#fde68a" opacity=".9"/><path d="M0 300Q160 220 340 290T800 260V420H0Z" fill="#a21caf" opacity=".7"/><path d="M0 350Q220 290 430 345T800 320V420H0Z" fill="#4d7c0f" opacity=".85"/><path d="M60 140q60-30 120 0M520 70q50-24 100 0M300 110q40-16 80 0" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="3" stroke-linecap="round"/>`;
+            else if (z.id === 'desert') parts = `<circle cx="600" cy="150" r="70" fill="#fef3c7" opacity=".92"/><path d="M0 310Q200 230 400 300T800 270V420H0Z" fill="#b45309" opacity=".85"/><path d="M0 360Q240 310 470 355T800 335V420H0Z" fill="#92400e"/><path d="M110 300L170 190L230 300Z" fill="#78350f" opacity=".8"/><path d="M670 330l-6-38 6-12 6 12z" fill="#065f46"/>`;
+            else if (z.id === 'ice') parts = `<path d="M-20 150Q200 60 420 140T830 90V200Q600 250 400 190T-20 230Z" fill="#6ee7b7" opacity=".3"/><path d="M0 330L120 160L230 300L350 120L470 310L600 150L720 300L800 220V420H0Z" fill="#bae6fd" opacity=".85"/><path d="M350 120L395 195L350 185L318 205Z" fill="#fff"/><path d="M600 150L638 215L600 205L570 222Z" fill="#fff"/><path d="M0 370Q220 335 440 372T800 350V420H0Z" fill="#e0f2fe"/>`;
+            else parts = `<circle cx="400" cy="130" r="86" fill="#e9d5ff" opacity=".28"/><circle cx="400" cy="130" r="60" fill="#f5d0fe" opacity=".5"/><path d="M60 360V200q0-60 60-60t60 60v160z" fill="#2e1065" stroke="#c084fc" stroke-opacity=".6"/><path d="M620 360V180q0-60 60-60t60 60v180z" fill="#2e1065" stroke="#c084fc" stroke-opacity=".6"/><path d="M0 372Q220 340 440 374T800 352V420H0Z" fill="#1e1b4b"/><text x="120" y="250" font-size="22" text-anchor="middle" fill="#e879f9" opacity=".9">ᚠ</text><text x="680" y="230" font-size="22" text-anchor="middle" fill="#e879f9" opacity=".9">ᛟ</text>`;
+            let fl = ''; const col = PXP_FLC[z.id] ? PXP_FLC[z.id] : z.id === 'ice' ? '#fff' : z.id === 'desert' ? '#fde68a' : z.id === 'plains' ? '#fef3c7' : z.id === 'ruins' ? '#e879f9' : '#bef264';
+            for (let i = 0; i < 18; i++) fl += `<circle class="pxp-fl" cx="${(r() * 800).toFixed(0)}" cy="${(120 + r() * 280).toFixed(0)}" r="${(r() * 2.2 + 1).toFixed(1)}" fill="${col}" style="animation-delay:${(r() * 5).toFixed(1)}s;animation-duration:${(4 + r() * 4).toFixed(1)}s"/>`;
+            return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sk[0]}"/><stop offset=".6" stop-color="${sk[1]}"/><stop offset="1" stop-color="${sk[2]}"/></linearGradient></defs><rect width="800" height="420" fill="url(#${id})"/>${parts}${fl}`;
+        }
+        function pxpScene(z, st, run, done) {
+            const need = z.need, pts = Array.from({ length: need + 1 }, (_, i) => pxpBez(i / need));
+            const t = run ? Math.min(1, done / need) : 0, mp = pxpBez(t);
+            let path = 'M' + pts[0][0] + ' ' + pts[0][1] + ' C 330 470, 420 60, 735 120';
+            const wp = pts.slice(1).map((p, i) => {
+                const last = i === need - 1, ok = run && done > i, nxt = run && done === i;
+                return `<g transform="translate(${p[0].toFixed(0)} ${p[1].toFixed(0)})"><circle r="${last ? 19 : 14}" fill="${ok ? z.col : '#0f172a'}" fill-opacity="${ok ? 1 : .6}" stroke="#fff" stroke-width="${nxt ? 3.5 : 2}" ${nxt ? 'class="pxp-nxt"' : ''}/><text text-anchor="middle" dy="${last ? 7 : 5}" font-size="${last ? 20 : 13}" font-weight="900" fill="#fff">${last ? '🎁' : ok ? '✓' : i + 1}</text></g>`;
+            }).join('');
+            const art = run && st && st.petSp !== undefined ? petArt(st.petSp, petFormOf(petPeakOf(st)), true) : '';
+            return `<div class="pxp-scene" style="--zc:${z.col}"><svg viewBox="0 0 800 420" preserveAspectRatio="xMidYMid slice">${pxpSceneArt(z)}
+                <path d="${path}" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="9" stroke-linecap="round"/><path d="${path}" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="4" stroke-dasharray="2 11" stroke-linecap="round"/>
+                <text x="70" y="352" text-anchor="middle" font-size="30">⛺</text>${wp}</svg>
+                ${run ? `<div class="pxp-marker" style="left:${(mp[0] / 8).toFixed(2)}%;top:${(mp[1] / 4.2).toFixed(2)}%">${art}</div>` : ''}</div>`;
+        }
+        const pxpGiftIc = c => { const g = PXP_GIFT[c]; if (!g) return '🎁'; if (g.k === 'pts') return '⭐'; if (g.k === 'acc') return '📈'; return ({ spin: '🎡', ticket: '🎟️', shield: '🛡️', del: '🗑️', exam05: '📝' })[g.kind] || (/^add/.test(g.kind) ? '🔟' : /^chg/.test(g.kind) ? '🔄' : /^pm/.test(g.kind) ? '➕' : '🎁'); };
+        // Vị trí giữa bảng mô tả: đang thám hiểm / đã thám hiểm thành công + thu hoạch (có hiệu ứng)
+        function pxpStatus(st, z, run, here, pr, last) {
+            if (here) {
+                const pct = Math.round(Math.min(1, pr.done / run.need) * 100), ready = pr.done >= run.need, ev = pr.done > 0 ? z.ev[(pr.done - 1 + run.id.charCodeAt(run.id.length - 1)) % z.ev.length] : null;
+                return `<div class="pxp-st run"><div class="pxp-st-h"><span class="pxp-compass">🧭</span><b>${L2('Đang thám hiểm', 'Exploring')}</b><span class="pxp-dots"><i></i><i></i><i></i></span></div>
+                    <div class="pxp-bar"><div class="pxp-bar-f" style="width:${pct}%"></div></div>
+                    <div class="pxp-st-n"><b>${pr.done}</b>/${run.need} <span>${L2('buổi học hợp lệ', 'valid lessons')}</span></div>
+                    <ul class="pxp-facts"><li>🕒 ${L2('Bắt đầu', 'Started')}: <b>${pxpTime(run.t0)}</b></li>${run.f ? `<li>📍 ${L2('Buổi đầu được tính', 'First counted lesson')}: <b>${pxpFmt(run.f)}</b></li>` : ''}<li>${ready ? L2('✅ Đã đủ buổi — đang chờ chốt kết quả…', '✅ All lessons done — awaiting the result…') : pr.next ? '📅 ' + L2('Buổi kế tiếp', 'Next lesson') + ': <b>' + pxpFmt(pr.next) + '</b>' : '📅 ' + L2('Đang chờ buổi học kế tiếp', 'Waiting for the next lesson')}</li></ul>
+                    ${ev ? `<div class="pxp-ev">💬 ${pxpEsc(L2(ev[0], ev[1]))}</div>` : ''}</div>`;
+            }
+            if (run) return '';
+            if (last) {
+                const gz = pxpZ(last.z), rw = last.rew || {}, dec = rw.decor ? gz.decor.find(d => d.k === rw.decor) : null;
+                const loots = (rw.loots || [rw.loot]).filter(c => c && (PXP_GIFT[c] || pxpCuDef(c)));
+                if (!last.ok) return `<div class="pxp-st lose"><div class="pxp-st-h"><b>${L2('❌ Lần này chưa thành công', '❌ Not this time')}</b></div><div class="pxp-fine">${L2('Thú cưng đã về trại an toàn và nhận thêm kinh nghiệm thám hiểm.', 'The pet is safe at camp and gained expedition experience.')}</div></div>`;
+                const items = [];
+                if (rw.badge) items.push(['🏅', L2(gz.bvi, gz.ben), 'badge']);
+                if (dec) items.push([dec.ic, L2(dec.vi, dec.en), 'decor']);
+                loots.forEach(c => items.push([pxpGiftIc(c), pxpGiftName(c), 'gift']));
+                if (rw.pw > 0) items.push(['⚡', L2('Sức mạnh', 'Power') + ' +' + pxpPct(rw.pw) + '%', 'power']);
+                const sp = [8, 22, 38, 54, 70, 86].map((x, i) => `<i class="pxp-spk" style="left:${x}%;--d:${(i * .35).toFixed(2)}s">✨</i>`).join('');
+                return `<div class="pxp-st win">${sp}<div class="pxp-st-h"><span class="pxp-trophy">${last.ok === 2 ? '🌟' : '🏆'}</span><b>${last.ok === 2 ? L2('Thành công lớn!', 'Great success!') : L2('Đã thám hiểm thành công!', 'Expedition successful!')}</b></div>
+                    <div class="pxp-sect pxp-harv">🧺 ${L2('Thu hoạch', 'Harvest')} <em>${pxpTime(last.t1)}</em></div>
+                    <div class="pxp-loot">${items.map((x, i) => `<div class="pxp-lt ${x[2]}" style="--i:${i}"><span class="pxp-lt-i">${x[0]}</span><span class="pxp-lt-t">${pxpEsc(x[1])}</span></div>`).join('')}</div>
+                    <div class="pxp-fine">${L2('Thẻ thú cưng sẽ sáng lên — bấm vào thẻ để nhận quà.', 'The pet card will glow — click it to claim the gift.')}</div></div>`;
+            }
+            return `<div class="pxp-st idle"><div class="pxp-st-h"><span class="pxp-tent">⛺</span><b>${L2('Sẵn sàng khởi hành', 'Ready to set off')}</b></div><div class="pxp-fine">${L2('Chọn thám hiểm để cử thú cưng lên đường và nhận quà khi hoàn thành.', 'Start an expedition to send the pet out and earn gifts on completion.')}</div></div>`;
+        }
+        function pxpZoneView(st, E) {
+            const z = pxpZ(pxpZoneId), dv = PXP_DIFF[z.lv], stu = !!window.MX_STUDENT, rq = pxpReq(st, z), run = st ? E.runs[st.id] : null, here = run && run.z === z.id;
+            const pr = here ? pxpProgress(st, run) : null, last = !run ? pxpLast(st, z.id) : null;
+            let act;
+            if (here) {
+                act = stu ? '' : `<button class="pxp-ghost" onclick="pxpRecall()">↩ ${L2('Gọi thú về', 'Recall pet')}</button><div class="pxp-fine">${L2('Chỉ tính buổi học theo Lịch học và Timeline (đã kết thúc, không tính ngày nghỉ).', 'Only lessons from the schedule and Timeline count (ended, rest days excluded).')}</div>`;
+            } else if (run) {
+                const oz = pxpZ(run.z);
+                act = `<div class="pxp-note">${L2('Học sinh đang thám hiểm tại ', 'This student is exploring ')}<b>${oz.ic} ${pxpEsc(pxpNm(oz))}</b>.</div><button class="pxp-go wide" onclick="pxpOpen('${oz.id}')">${L2('Xem chuyến đi', 'View the trip')}</button>`;
+            } else {
+                const canGo = rq.ok && !stu;
+                act = `${stu ? `<div class="pxp-note">${L2('Giáo viên sẽ bắt đầu chuyến đi cho bạn.', 'Your teacher will start the trip for you.')}</div>` : `<button class="pxp-go wide pxp-explore" ${canGo ? '' : 'disabled'} onclick="pxpGo()">🧭 ${L2('Thám hiểm', 'Expedition')}</button>`}`;
+            }
+            return `<div class="pxp-zv" style="--zc:${z.col}">
+                <div class="pxp-sc-wrap">${pxpScene(z, st, here ? run : null, pr ? pr.done : 0)}
+                    <button class="pxp-back" onclick="pxpBack()">← ${L2('Chọn khu vực khác', 'Other regions')}</button>
+                    <div class="pxp-ztitle"><span>${z.ic}</span><div><b>${pxpEsc(pxpNm(z))}</b><div class="pxp-tags"><span class="pxp-tag" style="background:${dv[2]}">${pxpEsc(L2(dv[0], dv[1]))}</span><span class="pxp-tag soft">⏳ ${z.need} ${L2('buổi học', 'lessons')}</span><span class="pxp-tag soft">${pxpEsc(L2(z.tvi, z.ten))}</span></div></div></div></div>
+                <div class="pxp-panel"><div class="pxp-pc">
+                    <p class="pxp-desc">${pxpEsc(L2(z.dvi, z.den))}</p>
+                    ${pxpStatus(st, z, run, here, pr, last)}
+                </div>
+                    <div class="pxp-pc${here ? '' : ' pxp-nf'}">${act}</div></div></div>`;
+        }
+        function pxpStuPanel(st, list) {
+            const stu = !!window.MX_STUDENT;
+            const sel = stu ? '' : `<select class="pxp-sel" onchange="pxpStu(this.value)">${list.map(s => `<option value="${s.id}" ${st && s.id === st.id ? 'selected' : ''}>${pxpEsc((s.icon || '🎓') + ' ' + getStudentDisplayName(s))}</option>`).join('')}</select>`;
+            if (!st) return `<aside class="pxp-stu"><div class="pxp-sect">${L2('Chọn học sinh', 'Choose student')}</div><div class="pxp-empty">${L2('Lớp chưa có học sinh.', 'This class has no students.')}</div></aside>`;
+            const pk = petPeakOf(st), f = petFormOf(pk), has = st.petSp !== undefined && st.petSp !== null && !!PET_SP[st.petSp];
+            const cur = (() => { try { return tenStreakInfo(st.id).cur; } catch (_) { return 0; } })();
+            const plv = has ? petLv(pk) + 1 : 0, zq = pxpView === 'zone' ? pxpReq(st, pxpZ(pxpZoneId)) : null;
+            const zLoot = pxpView === 'zone' ? pxpLootList(pxpZ(pxpZoneId)).map(x => `<span class="pxp-chip2">${pxpEsc(x)}</span>`).join('') : '';
+            const art = has ? petArt(st.petSp, f, pk >= 1) : '<div class="pet-art" style="display:flex;align-items:center;justify-content:center;font-size:56px;opacity:.5">🥚</div>';
+            return `<aside class="pxp-stu"><div class="pxp-sect">${L2('Chọn học sinh', 'Choose student')}</div>${sel}
+                <div class="pxp-sname">${pxpEsc((st.icon || '🎓') + ' ' + getStudentDisplayName(st))}</div>
+                <div class="pxp-sart">${art}</div>
+                <div class="pxp-spet">${has ? pxpEsc(typeof pshDisp === 'function' ? pshDisp(st) : L2(PET_SP[st.petSp][0], PET_SP[st.petSp][1])) : L2('Chưa chọn trứng', 'No egg chosen')}</div>
+                <div class="pxp-m"><div class="pxp-lvbox">${L2('Cấp của pet', 'Pet level')}<strong>${plv > 0 ? plv + '/7' : '—'}</strong></div><div>${L2('Streak hiện tại', 'Current streak')}<strong>🔥 ${cur}</strong></div></div>
+                <div class="pxp-fine" style="margin:.4rem 0">⚡ ${L2('Sức mạnh thú cưng', 'Pet power')}: <b>+${pxpPct(pxpPower(pxpStreakNow(st)))}%</b> ${L2('tỉ lệ quà', 'gift chance')} (${L2('streak cao nhất', 'best streak')} 🔥 ${pxpStreakNow(st)})<br>🎁 ${L2('Số quà mỗi chuyến', 'Gifts per trip')}: <b>${has ? pxpGiftCount(plv) : '—'}</b></div>
+                <div class="pxp-reqbox"><div class="pxp-sect">${L2('Yêu cầu tham gia', 'Entry requirements')}</div>${zq ? `<ul class="pxp-req">${zq.items.map(i => `<li class="${i.ok ? 'ok' : 'no'}"><span>${i.ok ? '✓' : '✕'}</span>${pxpEsc(i.t)}</li>`).join('')}</ul>` : `<div class="pxp-fine">${L2('Chọn một khu vực để xem yêu cầu tham gia.', 'Pick a region to see its entry requirements.')}</div>`}${zq ? `<div class="pxp-sect">🎁 ${L2('Phần thưởng', 'Rewards')}</div><div class="pxp-fine">🎀 ${L2('Quà có thể nhận khi hoàn thành', 'Possible gifts on completion')}:</div><div class="pxp-chips">${zLoot}</div>` : ''}</div></aside>`;
+        }
+        function pxpRender() {
+            const root = document.getElementById('viewPetContainer'); if (!root || !appData) return;
+            { const ae = document.activeElement; if (ae && ae.tagName === 'INPUT' && ae.closest && ae.closest('#pxpCfg')) return; }
+            const keep = root.scrollTop, E = pxpData(), list = pxpClassList(), st = pxpCurSt(), stu = !!window.MX_STUDENT;
+            const run = st ? E.runs[st.id] : null;
+            let step = pxpView === 'world' ? 2 : 3; if (run) step = 4; else if (pxpView === 'zone' && st && pxpLast(st, pxpZoneId)) step = 5;
+            const tabs = stu
+                ? `<div class="flex gap-2"><button class="pet-tabbtn" onclick="petSetMode('class')"><i class="fa-solid fa-arrow-left mr-1"></i>${L2('Quay lại Thú cưng', 'Back to Pets')}</button></div>`
+                : `<div class="flex gap-2"><button class="pet-tabbtn" onclick="petSetMode('class')"><i class="fa-solid fa-paw mr-1"></i>${L2('Thú của lớp', 'Class pets')}</button><button class="pet-tabbtn" onclick="petSetMode('bank')"><i class="fa-solid fa-egg mr-1"></i>${L2('Kho trứng', 'Egg bank')}</button><button class="pet-tabbtn" onclick="petSetMode('shop')"><i class="fa-solid fa-store mr-1"></i>${L2('Cửa hàng vật phẩm', 'Item shop')}</button><button class="pet-tabbtn on" onclick="petSetMode('exp')"><i class="fa-solid fa-compass mr-1"></i>${L2('Thám hiểm', 'Expedition')}</button></div>`;
+            const stage = pxpView === 'zone' ? pxpZoneView(st, E) : pxpCards(st, E);
+            const slide = window.__petSlide || 0; window.__petSlide = 0;
+            const anim = pxpAnim; pxpAnim = '';
+            root.innerHTML = `<section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="text-xl font-black text-slate-800"><i class="fa-solid fa-egg mr-2 text-violet-600"></i>${L2('Thú Cưng', 'Pets')}</h2><p class="text-sm text-slate-500 mt-1">${L2('Cử thú cưng đã nở thám hiểm 3–7 buổi học, hoàn thành đủ buổi để nhận thưởng.', 'Send hatched pets on 3–7 lesson expeditions and finish them to earn rewards.')}</p></div>${tabs}</div>
+                <div class="pet-pane${slide ? ' pet-in' : ''} pxp" style="--dir:${slide || 1}">
+                <div class="pxp-grid">${pxpStuPanel(st, list)}<div class="pxp-stage${pxpView === 'zone' ? '' : ' w'}${anim === 'in' ? ' pxp-fadein' : ''}">${stage}</div></div></div></section>${stu ? '' : pxpCfgHtml()}`;
+            root.scrollTop = keep;
+            { const cs = root.querySelector('#pxpCards'); if (cs && window.__pxpSX) cs.scrollLeft = window.__pxpSX; }
+        }
+        // Thẻ thú cưng ở tab Thú của lớp: hiện chip "đang thám hiểm" và huy hiệu đã có
+        function pxpDecorate() {
+            const root = document.getElementById('viewPetContainer'); if (!root) return;
+            const E = pxpData();
+            root.querySelectorAll('.pet-card[data-sid]').forEach(card => {
+                const sid = card.getAttribute('data-sid'), run = E.runs[sid], c = E.col[sid]; let h = '';
+                if (run) { const st = (appData.students || []).find(x => String(x.id) === String(sid)); if (st) h += `<div class="pxp-cchip">🧭 ${pxpZ(run.z).ic} ${pxpProgress(st, run).done}/${run.need}</div>`; }
+                const bs = c && c.b ? Object.keys(c.b) : []; if (bs.length) h += `<div class="pxp-cbadges">${bs.map(id => `<span title="${pxpEsc(L2(pxpZ(id).bvi, pxpZ(id).ben))}">${pxpZ(id).bic}</span>`).join('')}</div>`;
+                if (h) card.insertAdjacentHTML('beforeend', h);
+            });
+        }
+        // Thêm nút "Thám hiểm" vào hàng nút của tab Thú Cưng (các chế độ khác)
+        function pxpAddButton() {
+            const root = document.getElementById('viewPetContainer'); if (!root) return;
+            const btn = `<button class="pet-tabbtn" onclick="petSetMode('exp')"><i class="fa-solid fa-compass mr-1"></i>${L2('Thám hiểm', 'Expedition')}</button>`;
+            const first = root.querySelector('.pet-tabbtn');
+            if (first && first.parentElement) { first.parentElement.insertAdjacentHTML('beforeend', btn); return; }
+            const head = root.querySelector('section > .flex'); if (head) head.insertAdjacentHTML('beforeend', `<div class="flex gap-2">${btn}</div>`);
+        }
+        const _pxpOrigRender = window.renderPetView;
+        window.renderPetView = function renderPetView() {
+            try { pxpTick(); } catch (e) { console.warn('pxpTick', e); }
+            if (petMode === 'exp') { try { pxpRender(); return; } catch (e) { console.warn('pxpRender', e); petMode = 'class'; } }
+            _pxpOrigRender.apply(this, arguments);
+            try { pxpAddButton(); if (petMode === 'class') pxpDecorate(); } catch (e) { console.warn('pxp decorate', e); }
+        };
+        // Cập nhật định kỳ: kết thúc chuyến đi khi đủ buổi (kể cả khi đang ở tab khác) và làm mới giao diện khi tiến độ đổi
+        setInterval(() => {
+            try {
+                if (!appData || document.hidden) return;
+                const ch = pxpTick();
+                const sig = Object.keys(pxpData().runs).map(sid => { const st = (appData.students || []).find(x => String(x.id) === String(sid)); return st ? sid + ':' + pxpProgress(st, pxpData().runs[sid]).done : sid; }).join('|') + '#' + pxpData().hist.length;
+                if (appData.activeViewMode === 'pet' && petMode === 'exp' && (ch || sig !== pxpSig) && !document.querySelector('#viewPetContainer select:focus')) window.renderPetView();
+                pxpSig = sig;
+            } catch (e) {}
+        }, 30000);
+        setTimeout(() => { try { if (pxpTick() && appData.activeViewMode === 'pet') window.renderPetView(); } catch (e) {} }, 5000);
     </script>
 
 
