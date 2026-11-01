@@ -2657,7 +2657,10 @@ html .pbg.pbg-phoenix{background:linear-gradient(160deg,#7f1d1d,#b91c1c 50%,#ea5
 html .pbg.pbg-void{background:radial-gradient(circle at 50% 40%,#5b21b6aa,transparent 60%),linear-gradient(160deg,#0a0414,#1e1b4b 60%,#2e1065) !important;border-color:rgba(15,23,42,.18)}
 .pbg.pbg-void::before{content:'🌀🌑🔮🌀🌌'}
 .pq-bgh{display:flex;align-items:center;gap:6px}
-.pq-bgc,.pq-bgc:hover,.pq-bgc:focus,.pq-bgc:active{margin-left:auto;width:18px;height:18px;padding:0;border:0 !important;border-radius:0 !important;background:none !important;box-shadow:none !important;transform:none !important;filter:none !important;outline:none;cursor:pointer;color:#6366f1;font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center}
+.pq-bgc{margin-left:auto;width:26px;height:26px;padding:0;border:1.5px solid #c7d2fe !important;border-radius:9999px !important;background:#fff !important;box-shadow:0 1px 2px rgba(67,56,202,.18) !important;cursor:pointer;color:#4338ca;font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s ease,background .15s ease,box-shadow .15s ease,border-color .15s ease}
+.pq-bgc:hover{transform:translateY(-1px) !important;background:#eef2ff !important;border-color:#818cf8 !important;box-shadow:0 4px 10px rgba(99,102,241,.32) !important}
+.pq-bgc:active{transform:scale(.92) !important}
+html.mx-dark .pq-bgc{background:rgba(15,23,42,.7) !important;border-color:#6d28d9 !important;color:#ddd6fe}html.mx-dark .pq-bgc:hover{background:rgba(49,46,129,.8) !important}
 .pq-bgc:focus-visible{outline:2px solid #6366f1;outline-offset:2px}
 .pq-bgc i{transition:transform .3s ease}
 .pq-bgc[aria-expanded="true"] i{transform:rotate(180deg)}
@@ -3550,7 +3553,9 @@ html.mx-dark .pxp-res.win{background:#451a03;border-color:#b45309}html.mx-dark .
 html.mx-dark .pxp-cchip{background:#312e81;color:#e0e7ff}
 @media (prefers-reduced-motion:reduce){.pxp-bob,.pxp-tw,.pxp-fl,.pxp-nxt{animation:none!important}.pxp-world svg,.pxp-marker,.pxp-go,.pxp-back,.pxp-chbar i{transition:none}.pxp-stage,.pxp-stage.pxp-fadein{animation:none;transition:none}}
 /* ===== Pet Habitat: Khu sinh sống thú cưng ===== */
-.hab-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr);gap:16px;margin-top:16px;align-items:start}
+.hab-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr);gap:16px;margin-top:2px;align-items:start}
+.hab-lvrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:10px}.hab-lvrow .hab-lv{flex:1;min-width:260px;margin-bottom:0}
+.hab-lv-ctl{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px}.hab-lv-ctl .sp{display:none}
 @media(max-width:920px){.hab-grid{grid-template-columns:1fr}}
 .hab-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px}
 .hab-bar .sp{flex:1}
@@ -3673,14 +3678,12 @@ html.mx-dark .hab-ico{background:radial-gradient(circle at 30% 22%,#334155 0,col
 html.mx-dark .hab-zone .zh>span,html.mx-dark .hab-cc .nm{color:#e2e8f0}
 
 /* Cửa sổ danh mục (thu gọn trượt lên xuống) */
-.hab-cat{margin-top:20px;border:1px solid #e2e8f0;border-radius:1rem;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.06);overflow:hidden}
-.hab-cat-h{display:flex;align-items:center;gap:10px;width:100%;padding:14px 18px;background:linear-gradient(90deg,#eef2ff,#f5f3ff);border:0;cursor:pointer;font-family:inherit;text-align:left}
-.hab-cat-h .t{font-size:14px;font-weight:900;color:#312e81}.hab-cat-h .c{margin-left:auto;font-size:11px;font-weight:800;color:#6d28d9}
-.hab-cat-ch{font-size:13px;color:#4338ca;transition:transform .35s ease}
-.hab-cat.closed .hab-cat-ch{transform:rotate(180deg)}
-.hab-cat-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .38s ease}
-.hab-cat.closed .hab-cat-body{grid-template-rows:0fr}
-.hab-cat-in{min-height:0;overflow:hidden;padding:0 18px}
+.hab-cat{margin-top:20px;border:1px solid #e2e8f0;border-radius:1rem;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.06);padding:1rem}
+.hab-cat-body{display:grid;grid-template-rows:1fr;opacity:1;margin-top:.8rem;transition:grid-template-rows .4s ease,opacity .3s ease,margin-top .4s ease}
+.hab-cat.closed .hab-cat-body{grid-template-rows:0fr;opacity:0;margin-top:0}
+.hab-cat.closed .hab-cat-in{visibility:hidden;transition:visibility 0s .4s}
+@media (prefers-reduced-motion:reduce){.hab-cat-body{transition:none}}
+.hab-cat-in{min-height:0;overflow:hidden;padding:0 .1rem}
 .hab-cat-in>.hab-sec:first-child{margin-top:12px}.hab-cat-in>*:last-child{margin-bottom:14px}
 .hab-cat-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
 .hab-cat-it{text-align:center;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:8px 4px}
@@ -3692,7 +3695,7 @@ html.mx-dark .hab-zone .zh>span,html.mx-dark .hab-cc .nm{color:#e2e8f0}
 .hab-cat-zh{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12.5px;color:#1e293b}
 .hab-cat-zh em{margin-left:auto;font-style:normal;font-size:10.5px;font-weight:800;color:#b45309}
 .hab-cat-z .hab-cat-row{grid-template-columns:repeat(3,1fr)}
-html.mx-dark .hab-cat{background:#0f172a;border-color:#334155;box-shadow:none}html.mx-dark .hab-cat-h{background:linear-gradient(90deg,#1e1b4b,#1e293b)}
+html.mx-dark .hab-cat{background:#0f172a;border-color:#334155;box-shadow:none}
 html.mx-dark .hab-cat-h .t{color:#c7d2fe}html.mx-dark .hab-cat-h .c{color:#a78bfa}
 html.mx-dark .hab-cat-it{background:#1e293b;border-color:#334155}html.mx-dark .hab-cat-it .nm{color:#e2e8f0}
 html.mx-dark .hab-cat-z{background:color-mix(in srgb,var(--c) 12%,#0f172a)}html.mx-dark .hab-cat-zh{color:#f1f5f9}
@@ -3765,6 +3768,7 @@ html.mx-dark .pxp-gadd{background:rgba(30,27,75,.6);border-color:#6d28d9;color:#
 @media (prefers-reduced-motion:reduce){.pxp-cfg,.pxp-gbar i,.pxp-cfggear,.pxp-cfgcv,.pxp-gadd{transition:none}}
 </style>
 <style id="patch-pxp-status">
+.pq-m{margin-top:.35rem}.pq-m>div{padding:.3rem .2rem;font-size:10px;text-align:center}.pq-m strong{font-size:15px}
 .pxp-lvbox{border:2px solid #f59e0b!important;background:linear-gradient(180deg,#fffbeb,#fef3c7)!important;color:#92400e!important;box-shadow:0 0 0 2px rgba(251,191,36,.35),0 0 12px rgba(245,158,11,.45)}
 .pxp-lvbox strong{color:#b45309!important}
 html.mx-dark .pxp-lvbox{background:linear-gradient(180deg,#422006,#78350f)!important;color:#fde68a!important}
@@ -4124,7 +4128,6 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
             <nav class="pt-2" aria-label="View modes">
                 <div class="view-tabs" id="viewTabsScroll">
                     <div class="tab-group">
-                        <span class="tab-group-label" data-i18n="grpScores">Sư phạm &amp; Điểm số</span>
                         <div class="tab-pills">
                             <button id="btnViewMatrix" onclick="switchViewMode('matrix')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-table-cells mr-1"></i> <span data-i18n="tabMatrix">Bảng Điểm</span></button>
                             <button id="btnViewRanking" onclick="switchViewMode('ranking')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-award mr-1"></i> <span data-i18n="tabRanking">Bảng Xếp Loại</span></button>
@@ -4132,7 +4135,6 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
                         </div>
                     </div>
                     <div class="tab-group">
-                        <span class="tab-group-label" data-i18n="grpClass">Quản lý lớp</span>
                         <div class="tab-pills">
                             <button id="btnViewStudents" onclick="switchViewMode('students')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-address-card mr-1"></i><span data-i18n="tabStudents">Danh sách lớp</span></button>
                             <button id="btnViewViolation" onclick="switchViewMode('violation')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-triangle-exclamation mr-1"></i> <span data-i18n="tabViolation">Vi Phạm</span></button>
@@ -4140,7 +4142,6 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
                         </div>
                     </div>
                     <div class="tab-group">
-                        <span class="tab-group-label" data-i18n="grpReward">Tương tác &amp; Thưởng</span>
                         <div class="tab-pills">
                             <button id="btnViewShop" onclick="switchViewMode('shop')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-gift mr-1"></i> <span data-i18n="tabShop">Cửa Hàng Quà</span></button>
                             <button id="btnViewWheel" onclick="switchViewMode('wheel')" class="px-3 py-1 rounded-md transition text-slate-600 hover:text-slate-900"><i class="fa-solid fa-circle-notch mr-1"></i><span id="wheelTabLabel">Vòng Quay May Mắn</span></button>
@@ -14683,8 +14684,8 @@ window.openStudentProfile=function(studentId){
                 <div class="font-extrabold text-violet-700 text-sm mt-1">${escapeHtml(petName)}</div></div>
                 ${art}
                 <div class="pet-preview-metrics">
+                    <div class="pet-preview-metric pxp-lvbox">${L2('Cấp của pet', 'Pet level')}<strong>${has && petLv(pk) >= 0 ? (petLv(pk) + 1) + '/7' : '—'}</strong></div>
                     <div class="pet-preview-metric">${L2('Chuỗi hiện tại', 'Current streak')}<strong>🔥 ${cur}</strong></div>
-                    <div class="pet-preview-metric">${L2('Dạng tiến hóa', 'Evolution form')}<strong>${f}/8</strong></div>
                 </div>
                 <div class="pet-preview-blessing" aria-label="${L2('Nội tại thú cưng hiện tại', 'Current pet passive')}">
                     <div class="pet-preview-blessing-title">✨ ${L2('Nội tại hiện tại', 'Current passive')}</div>
@@ -14702,7 +14703,7 @@ window.openStudentProfile=function(studentId){
             const root = document.getElementById('viewPetContainer'); if (!root || !appData) return;
             const list = (appData.students || []).filter(s => s.classId === appData.activeClassId);
             if (!petTarget || !list.some(s => s.id === petTarget)) petTarget = list.length ? list[0].id : '';
-            const head = `<section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="text-xl font-black text-slate-800"><i class="fa-solid fa-egg mr-2 text-violet-600"></i>${L2('Thú Cưng', 'Pets')}</h2><p class="text-sm text-slate-500 mt-1">${L2('Mốc streak 1 · 5 · 10 · 15 · 20 · 30 · 40 · 50 giúp thú cưng tiến hoá. Mất chuỗi không ảnh hưởng đến thú. Thú nở ở streak 5 sẽ có nội tại ban phúc, mạnh dần theo từng mốc.', 'Streak milestones 1 · 5 · 10 · 15 · 20 · 30 · 40 · 50 evolve your pet. Losing a streak never affects it. A pet that hatches at streak 5 unlocks an innate blessing that grows with each milestone.')}</p></div>${window.MX_STUDENT ? '' : `<div class="flex gap-2"><button class="pet-tabbtn ${petMode === 'class' ? 'on' : ''}" onclick="petSetMode('class')"><i class="fa-solid fa-paw mr-1"></i>${L2('Thú của lớp', 'Class pets')}</button><button class="pet-tabbtn ${petMode === 'bank' ? 'on' : ''}" onclick="petSetMode('bank')"><i class="fa-solid fa-egg mr-1"></i>${L2('Kho trứng', 'Egg bank')}</button><button class="pet-tabbtn ${petMode === 'shop' ? 'on' : ''}" onclick="petSetMode('shop')"><i class="fa-solid fa-store mr-1"></i>${L2('Cửa hàng vật phẩm', 'Item shop')}</button></div>`}</div>`;
+            const head = `<section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="text-xl font-black text-slate-800"><i class="fa-solid fa-egg mr-2 text-violet-600"></i>${L2('Thú Cưng', 'Pets')}</h2></div>${window.MX_STUDENT ? '' : `<div class="flex gap-2"><button class="pet-tabbtn ${petMode === 'class' ? 'on' : ''}" onclick="petSetMode('class')"><i class="fa-solid fa-paw mr-1"></i>${L2('Thú của lớp', 'Class pets')}</button><button class="pet-tabbtn ${petMode === 'bank' ? 'on' : ''}" onclick="petSetMode('bank')"><i class="fa-solid fa-egg mr-1"></i>${L2('Kho trứng', 'Egg bank')}</button><button class="pet-tabbtn ${petMode === 'shop' ? 'on' : ''}" onclick="petSetMode('shop')"><i class="fa-solid fa-store mr-1"></i>${L2('Cửa hàng vật phẩm', 'Item shop')}</button></div>`}</div>`;
             const petBankHtml = () => {
                 const sp = PET_SP[petSel], tgt = list.find(s => s.id === petTarget), locked = tgt && tgt.petSp !== undefined && petFormOf(petPeakOf(tgt)) > 1;
                 const ownerOf = i => { const o = list.filter(s => s.petSp === i); return o.find(s => s.id === petTarget) || o[0] || null; };
@@ -15426,7 +15427,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             { const hd = m.querySelector('#pqHead'); if (hd) { const c = 'flex items-center gap-3 pq-head' + petBgCls(st); if (hd.className !== c) hd.className = c; } pqSet(m.querySelector('#pqBgs'), petBgPicker(st)); }
             pqSet(m.querySelector('#pqWho'), `${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}`);
             pqSet(m.querySelector('#pqDef'), `${L2('Tên mặc định', 'Default name')}: ${escapeHtml(pshDef(st))}` + (pshNickRaw(st) ? `<div class="text-[11px] font-bold text-slate-500">${L2('Đang hiển thị', 'Shown as')}: ${escapeHtml(pshDisp(st))}</div>` : ''));
-            pqSet(m.querySelector('#pqChips'), `<span class="pet-chip">🔥 ${cur}</span> <span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${escapeHtml(petFormLevelName(f))}</span> <span class="pet-chip">${L2('Dạng', 'Form')} ${f}/8</span>`);
+            pqSet(m.querySelector('#pqChips'), `<div class="pxp-m pq-m"><div class="pxp-lvbox">${L2('Cấp của pet', 'Pet level')}<strong>${lv >= 0 ? (lv + 1) + '/7' : '—'}</strong></div><div>${L2('Streak hiện tại', 'Current streak')}<strong>🔥 ${cur}</strong></div></div><div class="mt-1"><span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${escapeHtml(petFormLevelName(f))}</span></div>`);
             pqSet(m.querySelector('#pqInn'), `${b.ic} ${escapeHtml(b.n[w])} ${lv >= 0 ? petLvTag(lv + 1) : '· ' + L2('Nở ở streak 5 để mở nội tại', 'Hatch at streak 5 to unlock')}`);
             pqSet(m.querySelector('#pqStats'), stats);
             pqPatch(m.querySelector('#pqSlots'), [0, 1, 2].map(i => ({ k: 's' + i, h: slotH(i) })), pqPop);
@@ -16785,7 +16786,7 @@ html.mx-dark .gc-bar{background:#334155}
             if (await mxHash('act|' + tid + '|' + st.loginCode) !== a.proof) return no(L2('Xác thực không hợp lệ.', 'Invalid authentication.'));
             const p = (a.p && typeof a.p === 'object') ? a.p : {};
             const old = { t: st.itemTickets, h: st.itemTicketHistory, items: st.petItems, buys: st.petBuys, eq: st.petEquip, nick: st.petNick, bg: st.petBg, hab: (appData.petHab || {})[st.id] };
-            let okMsg = '';
+            let okMsg = '', undo = null;
             if (a.type === 'petBuy') {
                 const id = String(p.itemId || ''), it = PSH_BY[id]; if (!it) return no(L2('Vật phẩm không tồn tại.', 'Item not found.'));
                 if (!pshCanBuy(st)) return no(pshLockWhy());
@@ -16822,6 +16823,19 @@ html.mx-dark .gc-bar{background:#334155}
                 if (pqLen(v) > 34) return no(L2('Tên tối đa 34 ký tự.', 'Name is limited to 34 characters.'));
                 if (!v || v === pshDef(st)) delete st.petNick; else st.petNick = v;
                 okMsg = L2('Đã lưu tên Pet.', 'Pet name saved.');
+            } else if (a.type === 'expGo') {
+                const z = PXP_Z.find(x => x.id === String(p.z || '')); if (!z) return no(L2('Khu vực không tồn tại.', 'Region not found.'));
+                const E = pxpData(); if (E.runs[st.id]) return no(L2('Thú cưng đang thám hiểm rồi.', 'The pet is already exploring.'));
+                if (!pxpReq(st, z).ok) return no(L2('Chưa đủ yêu cầu tham gia khu vực này.', 'Entry requirements not met for this region.'));
+                const run = { id: 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), z: z.id, t0: Date.now(), need: z.need };
+                run.d0 = petPd(new Date(run.t0)); run.f = pxpProgress(st, run).next || '';
+                E.runs[st.id] = run; undo = () => { delete E.runs[st.id]; };
+                okMsg = L2('Thú cưng lên đường tới ' + pxpNm(z) + '!', 'Your pet sets off for ' + pxpNm(z) + '!');
+            } else if (a.type === 'expRecall') {
+                const E = pxpData(), run = E.runs[st.id]; if (!run) return no(L2('Thú cưng không đang thám hiểm.', 'The pet is not exploring.'));
+                E.hist.push({ id: run.id, sid: st.id, z: run.z, t0: run.t0, t1: Date.now(), ok: -1, ch: run.ch, rew: {} }); delete E.runs[st.id];
+                undo = () => { E.hist.pop(); E.runs[st.id] = run; };
+                okMsg = L2('Đã gọi thú cưng về.', 'Pet recalled.');
             } else if (a.type === 'habSet') {
                 const r = habValidate(st, p); if (!r.ok) return no(r.msg);
                 if (!appData.petHab || typeof appData.petHab !== 'object') appData.petHab = {};
@@ -16838,6 +16852,7 @@ html.mx-dark .gc-bar{background:#334155}
                 if (old.eq === undefined) delete st.petEquip; else st.petEquip = old.eq;
                 if (old.nick === undefined) delete st.petNick; else st.petNick = old.nick;
                 if (old.bg === undefined) delete st.petBg; else st.petBg = old.bg;
+                if (undo) undo();
                 if (a.type === 'habSet' && appData.petHab) { if (old.hab === undefined) delete appData.petHab[st.id]; else appData.petHab[st.id] = old.hab; }
                 return no(L2('Không lưu được; đã hoàn nguyên.', 'Could not save; reverted.'));
             }
@@ -17240,7 +17255,7 @@ html.mx-dark .gc-bar{background:#334155}
         /* ---------- Phía học sinh: chặn thao tác ngoài phạm vi (mặc định: chặn) ---------- */
         const MX_OWN = a => String(a[0]) === String(window.MX_STUDENT && window.MX_STUDENT.sid);
         const MX_OK = {
-            petSubTab: () => true, petSetMode: a => a[0] === 'class' || a[0] === 'shop' || a[0] === 'exp' || a[0] === 'hab', pxpOpen: () => true, pxpBack: () => true, pxpScroll: () => true, habTab: () => true, habCat: () => true, habMode: () => true, habReset: () => true, habPick: () => true, habGround: () => true, habTool: () => true, habStuSave: () => true, petGoShop: MX_OWN, petPickStu: MX_OWN, petEqOpen: MX_OWN, petSetSel: () => true,
+            petSubTab: () => true, petSetMode: a => a[0] === 'class' || a[0] === 'shop' || a[0] === 'exp' || a[0] === 'hab', pxpOpen: () => true, pxpBack: () => true, pxpScroll: () => true, habTab: () => true, habCat: () => true, habMode: () => true, habReset: () => true, habPick: () => true, habGround: () => true, habTool: () => true, habStuSave: () => true, pxpGo: () => true, pxpRecall: () => true, petGoShop: MX_OWN, petPickStu: MX_OWN, petEqOpen: MX_OWN, petSetSel: () => true,
             petLbOpen: () => true, petLbClose: () => true, mxStuTab: () => true, pqClose: () => true, pqCnt: () => true, pqPick: () => true, pqEquip: () => true,
             pqUnequip: () => true, pqBg: () => true, pqBgToggle: () => true, pqSaveName: () => true, pqResetName: () => true, pshSet: () => true, pshBuy: () => true
         };
@@ -17571,6 +17586,7 @@ html.mx-dark .gc-bar{background:#334155}
         window.pxpOpen = id => { pxpZoneId = pxpZ(id).id; pxpSwap('zone'); };
         window.pxpBack = () => pxpSwap('world');
         window.pxpGo = async function () {
+            if (window.MX_STUDENT) return pxpStuGo();
             if (pxpGuard()) return;
             const st = pxpCurSt(), z = pxpZ(pxpZoneId), E = pxpData(); if (!st) return;
             const rq = pxpReq(st, z);
@@ -17587,6 +17603,7 @@ html.mx-dark .gc-bar{background:#334155}
             window.renderPetView();
         };
         window.pxpRecall = async function () {
+            if (window.MX_STUDENT) return pxpStuRecall();
             if (pxpGuard()) return;
             const st = pxpCurSt(), E = pxpData(), run = st && E.runs[st.id]; if (!run) return;
             let yes = true; try { if (typeof showAppConfirm === 'function') yes = await showAppConfirm(L2('Gọi thú cưng về giữa chuyến? Chuyến đi sẽ bị hủy và không nhận phần thưởng.', 'Recall the pet mid-trip? The expedition is cancelled with no reward.')); } catch (e) {}
@@ -17594,6 +17611,17 @@ html.mx-dark .gc-bar{background:#334155}
             E.hist.push({ id: run.id, sid: st.id, z: run.z, t0: run.t0, t1: Date.now(), ok: -1, ch: run.ch, rew: {} }); delete E.runs[st.id];
             Promise.resolve(saveData()).catch(() => {}); window.renderPetView();
         };
+        async function pxpStuGo() {
+            const st = pxpCurSt(), z = pxpZ(pxpZoneId); if (!st || pxpData().runs[st.id]) return;
+            if (!pxpReq(st, z).ok) { if (window.showAppToast) window.showAppToast(L2('Chưa đủ yêu cầu tham gia khu vực này.', 'Entry requirements not met for this region.'), 'error'); return; }
+            let yes = true; try { yes = await showAppConfirm(L2(`Cử ${getStudentDisplayName(st)} đi ${pxpNm(z)}?\nThời gian: ${z.need} buổi học`, `Send ${getStudentDisplayName(st)} to ${pxpNm(z)}?\nDuration: ${z.need} lessons`)); } catch (e) {}
+            if (yes) await mxSend('expGo', { z: z.id });
+        }
+        async function pxpStuRecall() {
+            const st = pxpCurSt(); if (!st || !pxpData().runs[st.id]) return;
+            let yes = true; try { yes = await showAppConfirm(L2('Gọi thú cưng về giữa chuyến? Chuyến đi sẽ bị hủy và không nhận phần thưởng.', 'Recall the pet mid-trip? The expedition is cancelled with no reward.')); } catch (e) {}
+            if (yes) await mxSend('expRecall', {});
+        }
         // ---------- Giao diện ----------
         const pxpLcg = seed => { let s = seed; return () => (s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296; };
         function pxpCards(st, E) {
@@ -17912,13 +17940,13 @@ html.mx-dark .gc-bar{background:#334155}
             const pr = here ? pxpProgress(st, run) : null, last = !run ? pxpLast(st, z.id) : null;
             let act;
             if (here) {
-                act = stu ? '' : `<button class="pxp-ghost" onclick="pxpRecall()">↩ ${L2('Gọi thú về', 'Recall pet')}</button><div class="pxp-fine">${L2('Chỉ tính buổi học theo Lịch học và Timeline (đã kết thúc, không tính ngày nghỉ).', 'Only lessons from the schedule and Timeline count (ended, rest days excluded).')}</div>`;
+                act = `<button class="pxp-ghost" onclick="pxpRecall()">↩ ${L2('Gọi thú về', 'Recall pet')}</button><div class="pxp-fine">${L2('Chỉ tính buổi học theo Lịch học và Timeline (đã kết thúc, không tính ngày nghỉ).', 'Only lessons from the schedule and Timeline count (ended, rest days excluded).')}</div>`;
             } else if (run) {
                 const oz = pxpZ(run.z);
                 act = `<div class="pxp-note">${L2('Học sinh đang thám hiểm tại ', 'This student is exploring ')}<b>${oz.ic} ${pxpEsc(pxpNm(oz))}</b>.</div><button class="pxp-go wide" onclick="pxpOpen('${oz.id}')">${L2('Xem chuyến đi', 'View the trip')}</button>`;
             } else {
-                const canGo = rq.ok && !stu;
-                act = `${stu ? `<div class="pxp-note">${L2('Giáo viên sẽ bắt đầu chuyến đi cho bạn.', 'Your teacher will start the trip for you.')}</div>` : `<button class="pxp-go wide pxp-explore" ${canGo ? '' : 'disabled'} onclick="pxpGo()">🧭 ${L2('Thám hiểm', 'Expedition')}</button>`}`;
+                const canGo = rq.ok;
+                act = `<button class="pxp-go wide pxp-explore" ${canGo ? '' : 'disabled'} onclick="pxpGo()">🧭 ${L2('Thám hiểm', 'Expedition')}</button>`;
             }
             return `<div class="pxp-zv" style="--zc:${z.col}">
                 <div class="pxp-sc-wrap">${pxpScene(z, st, here ? run : null, pr ? pr.done : 0)}
@@ -17964,7 +17992,7 @@ html.mx-dark .gc-bar{background:#334155}
             const stage = pxpView === 'zone' ? pxpZoneView(st, E) : pxpCards(st, E);
             const slide = window.__petSlide || 0; window.__petSlide = 0;
             const anim = pxpAnim; pxpAnim = '';
-            root.innerHTML = `<section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="text-xl font-black text-slate-800"><i class="fa-solid fa-egg mr-2 text-violet-600"></i>${L2('Thú Cưng', 'Pets')}</h2><p class="text-sm text-slate-500 mt-1">${L2('Cử thú cưng đã nở thám hiểm 3–7 buổi học, hoàn thành đủ buổi để nhận thưởng.', 'Send hatched pets on 3–7 lesson expeditions and finish them to earn rewards.')}</p></div>${tabs}</div>
+            root.innerHTML = `<section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="text-xl font-black text-slate-800"><i class="fa-solid fa-egg mr-2 text-violet-600"></i>${L2('Thú Cưng', 'Pets')}</h2></div>${tabs}</div>
                 <div class="pet-pane${slide ? ' pet-in' : ''} pxp" style="--dir:${slide || 1}">
                 <div class="pxp-grid">${pxpStuPanel(st, list)}<div class="pxp-stage${pxpView === 'zone' ? '' : ' w'}${anim === 'in' ? ' pxp-fadein' : ''}">${stage}</div></div></div></section>${stu ? '' : pxpCfgHtml()}`;
             root.scrollTop = keep;
@@ -18086,7 +18114,7 @@ html.mx-dark .gc-bar{background:#334155}
             PXP_Z.forEach(z => (z.decor || []).forEach(d => { m[d.k] = { kind: 'e', id: d.k, ic: d.ic, vi: d.vi, en: d.en, w: 1, h: 1, z: z.id }; }));
             return (_habIt = m);
         };
-        const habUI = { mode: 'view', tool: null, tab: 'inv', tm: 0, catOpen: true, draft: null, dirty: false, wait: false };
+        const habUI = { mode: 'view', tool: null, tab: 'inv', tm: 0, catOpen: false, draft: null, dirty: false, wait: false };
         const habT = (m, t) => { try { window.showAppToast(m, t || 'info'); } catch (e) {} };
         const habBeep = f => { try { if (!xfRM() && window.tfBeep) tfBeep(f, .08, .1, 0); } catch (e) {} };
         const habIn = (land, x, y) => x >= land.o && x < land.o + land.n && y >= land.o && y < land.o + land.n;
@@ -18318,14 +18346,14 @@ html.mx-dark .gc-bar{background:#334155}
         const habZoneCol = id => { const z = PXP_Z.find(x => x.id === id); return (z && z.col) || '#7c3aed'; };
         const habTint = it => it.kind === 'b' ? '#f59e0b' : it.kind === 'd' ? '#22c55e' : it.kind === 'c' ? '#0ea5e9' : habZoneCol(it.z);
         const habFi = (fa, t) => `<i class="fa-solid ${fa} mr-1"></i>${t}`;
-        function habLvCard(L) {
+        function habLvCard(L, ctl) {
             const nx = L.next, pct = nx ? Math.round((L.own - L.cur.need) / (nx.need - L.cur.need) * 100) : 100;
-            return `<div class="hab-lv"><div class="hab-lvn"><small>${L2('Cấp', 'Lv')}</small>${L.lv}</div><div class="hab-lvt"><b>${escapeHtml(L2(L.cur.vi, L.cur.en))}</b><small>${nx ? L2('Sở hữu ', 'Own ') + L.own + '/' + nx.need + L2(' món để lên ', ' items to reach ') + escapeHtml(L2(nx.vi, nx.en)) : L2('Đã đạt cấp cao nhất · ', 'Max level · ') + L.own + L2(' món sưu tầm', ' items collected')}</small><div class="hab-bar2"><i style="width:${pct}%"></i></div></div></div>`;
+            return `<div class="hab-lv"><div class="hab-lvn"><small>${L2('Cấp', 'Lv')}</small>${L.lv}</div><div class="hab-lvt"><b>${escapeHtml(L2(L.cur.vi, L.cur.en))}</b><small>${nx ? L2('Sở hữu ', 'Own ') + L.own + '/' + nx.need + L2(' món để lên ', ' items to reach ') + escapeHtml(L2(nx.vi, nx.en)) : L2('Đã đạt cấp cao nhất · ', 'Max level · ') + L.own + L2(' món sưu tầm', ' items collected')}</small><div class="hab-bar2"><i style="width:${pct}%"></i></div></div>${ctl ? `<div class="hab-lv-ctl">${ctl}</div>` : ''}</div>`;
         }
         function habPaintMain() {
             const box = document.getElementById('habMain'); if (!box) return;
             const stu = !!window.MX_STUDENT, st = pxpCurSt(), list = pxpClassList();
-            if (!st) { box.innerHTML = `<div class="pxp-empty">${L2('Lớp chưa có học sinh.', 'This class has no students.')}</div>`; return; }
+            if (!st) { const tp = document.getElementById('habTop'); if (tp) tp.innerHTML = ''; box.innerHTML = `<div class="pxp-empty">${L2('Lớp chưa có học sinh.', 'This class has no students.')}</div>`; return; }
             const land = habLand(st), h = habGet(st.id, false), col = habCol(st.id), items = habItems(), edit = habUI.mode === 'edit', L = habLevel(st.id);
             const ach = habAch(st, h, col), got = ach.filter(a => a.v >= a.n).length;
             const rare = Object.values(items).filter(x => x.kind === 'e');
@@ -18335,9 +18363,9 @@ html.mx-dark .gc-bar{background:#334155}
             const ctl = (stu && habUI.wait) ? waitChip : `<span class="sp"></span><button class="pet-tabbtn ${edit ? '' : 'on'}" onclick="habMode('view')">${habFi('fa-eye', L2('Xem', 'View'))}</button><button class="pet-tabbtn ${edit ? 'on' : ''}" onclick="habMode('edit')">${habFi('fa-pen', L2('Chỉnh sửa', 'Edit'))}</button>${edit ? `<button class="pet-tabbtn" onclick="habReset()">${habFi('fa-broom', L2('Dọn sạch', 'Clear all'))}</button>` : ''}${stu && edit ? `<button class="pet-tabbtn on" onclick="habStuSave()">${habFi('fa-floppy-disk', L2('Lưu khu vườn', 'Save habitat'))}</button>` : ''}`;
             const hint = edit ? (habUI.tool ? habFi('fa-arrow-pointer', escapeHtml(habToolName(habUI.tool, items)) + ' · ' + L2('bấm vào ô trên bản đồ', 'click a tile on the map')) : L2('Chọn một công cụ hoặc vật phẩm ở bên phải, rồi bấm vào bản đồ.', 'Pick a tool or item on the right, then click the map.'))
                 : L2('Bấm “Chỉnh sửa” để bố trí khu vườn.', 'Press “Edit” to arrange the habitat.');
-            box.innerHTML = `<div class="hab-bar">${sel}<div class="hab-who">${escapeHtml((st.icon || '🎓') + ' ' + getStudentDisplayName(st))}<small>${petNm}</small></div>${ctl}</div>
-                ${habLvCard(L)}
-                <div class="hab-chips"><span class="hab-chip">${habFi('fa-map', L2('Khu đất', 'Land') + ' ' + land.n + '×' + land.n)}</span><span class="hab-chip">${habFi('fa-tree', h.o.length + ' ' + L2('vật phẩm đã đặt', 'placed'))}</span><span class="hab-chip">${habFi('fa-gem', L.own + '/' + rare.length + ' ' + L2('sưu tầm', 'collected'))}</span><span class="hab-chip">${habFi('fa-trophy', got + '/' + ach.length)}</span></div>
+            const top = document.getElementById('habTop');
+            if (top) top.innerHTML = `<div class="hab-bar">${sel}<div class="hab-who">${escapeHtml((st.icon || '🎓') + ' ' + getStudentDisplayName(st))}<small>${petNm}</small></div></div><div class="hab-lvrow">${habLvCard(L)}<div class="hab-lv-ctl">${ctl}</div></div>`;
+            box.innerHTML = `<div class="hab-chips"><span class="hab-chip">${habFi('fa-map', L2('Khu đất', 'Land') + ' ' + land.n + '×' + land.n)}</span><span class="hab-chip">${habFi('fa-tree', h.o.length + ' ' + L2('vật phẩm đã đặt', 'placed'))}</span><span class="hab-chip">${habFi('fa-gem', L.own + '/' + rare.length + ' ' + L2('sưu tầm', 'collected'))}</span><span class="hab-chip">${habFi('fa-trophy', got + '/' + ach.length)}</span></div>
                 ${habMapHtml(st, h, land, edit)}<div class="hab-hint">${hint}${stu && edit ? ' · ' + L2('Bấm “Lưu khu vườn” để gửi giáo viên xác nhận.', 'Press “Save habitat” to send it to your teacher.') : ''}</div>`;
             const map = box.querySelector('#habMap');
             if (map) {
@@ -18389,6 +18417,7 @@ html.mx-dark .gc-bar{background:#334155}
         // Cửa sổ danh mục: liệt kê toàn bộ đồ trang trí Habitat và đồ trang trí hiếm của từng map (thu gọn / mở rộng bằng nút)
         function habPaintCat() {
             const box = document.getElementById('habCat'); if (!box) return;
+            if (window.MX_STUDENT) { box.innerHTML = ''; box.style.display = 'none'; return; }
             const st = pxpCurSt(); if (!st) { box.innerHTML = ''; return; }
             const land = habLand(st), col = habCol(st.id), items = habItems();
             const rare = Object.values(items).filter(x => x.kind === 'e'), own = rare.filter(x => Number(col.d[x.id]) > 0).length;
@@ -18402,7 +18431,7 @@ html.mx-dark .gc-bar{background:#334155}
                 return `<div class="hab-cat-z" style="--c:${zc}"><div class="hab-cat-zh">${habIco(z.ic, zc, 'sm')}<b>${escapeHtml(L2(z.vi, z.en))}</b><em class="${hasB ? 'got' : ''}">${hasB ? escapeHtml((z.bic || '') + ' ' + L2(z.bvi || '', z.ben || '')) : ''}</em></div><div class="hab-cat-row">${(z.decor || []).map(d => { const n = Number(col.d[d.k]) || 0; return card(items[d.k], n > 0, n ? L2('Sở hữu ×', 'Owned ×') + n : L2('Chưa có', 'Not found')); }).join('')}</div></div>`;
             }).join('');
             box.classList.toggle('closed', !habUI.catOpen);
-            box.innerHTML = `<button type="button" class="hab-cat-h" onclick="habCat()" aria-expanded="${habUI.catOpen ? 'true' : 'false'}" aria-controls="habCatBody"><span class="t">${habFi('fa-book-atlas', L2('Danh mục vật phẩm', 'Item catalog'))}</span><span class="c">${habFi('fa-gem', own + '/' + rare.length + ' ' + L2('đồ trang trí hiếm', 'rare decor'))}</span><i class="fa-solid fa-chevron-up hab-cat-ch"></i></button>
+            box.innerHTML = `<button type="button" class="pxp-cfgbtn hab-cat-h${habUI.catOpen ? ' on' : ''}" onclick="habCat()" aria-expanded="${habUI.catOpen ? 'true' : 'false'}" aria-controls="habCatBody"><i class="fa-solid fa-book-atlas pxp-cfggear"></i><span class="pxp-cfgbt1"><b>${L2('Danh mục vật phẩm', 'Item catalog')}</b><small>${own + '/' + rare.length + ' ' + L2('đồ trang trí hiếm', 'rare decor')} · ${L2('Công trình, trang trí và đồ hiếm theo map', 'Buildings, decor and rare items by map')}</small></span><span class="pxp-cfgcv">▾</span></button>
                 <div class="hab-cat-body" id="habCatBody"><div class="hab-cat-in"><div class="hab-sec">${habFi('fa-house', L2('Công trình', 'Buildings'))}</div><div class="hab-cat-row">${bld}</div>
                 <div class="hab-sec">${habFi('fa-leaf', L2('Trang trí cơ bản', 'Basic decor'))}</div><div class="hab-cat-row">${bas}</div>
                 <div class="hab-sec">${habFi('fa-box', L2('Đồ thường · Công trình', 'Common · Buildings') + ' · ' + cmOwn + '/' + HAB_C.length)}</div><div class="hab-note" style="margin:0 0 6px">${L2('Nhặt được ở mọi map Thám hiểm — mỗi chuyến thành công rơi ' + HAB_CDROP + ' món.', 'Found on every Expedition map — each successful trip drops ' + HAB_CDROP + ' items.')}</div><div class="hab-cat-row">${cmC('b')}</div>
@@ -18413,7 +18442,7 @@ html.mx-dark .gc-bar{background:#334155}
             habUI.catOpen = !habUI.catOpen;
             const box = document.getElementById('habCat'); if (!box) return;
             box.classList.toggle('closed', !habUI.catOpen);
-            const b = box.querySelector('.hab-cat-h'); if (b) b.setAttribute('aria-expanded', habUI.catOpen ? 'true' : 'false');
+            const b = box.querySelector('.hab-cat-h'); if (b) { b.setAttribute('aria-expanded', habUI.catOpen ? 'true' : 'false'); b.classList.toggle('on', habUI.catOpen); }
         };
         function habPaint() { habPaintMain(); habPaintSide(); habPaintCat(); }
         function habRender() {
@@ -18421,8 +18450,8 @@ html.mx-dark .gc-bar{background:#334155}
             const stu = !!window.MX_STUDENT;
             const slide = window.__petSlide || 0; window.__petSlide = 0;
             const tabs = stu ? '' : `<div class="flex gap-2"><button class="pet-tabbtn" onclick="petSetMode('class')"><i class="fa-solid fa-paw mr-1"></i>${L2('Thú của lớp', 'Class pets')}</button><button class="pet-tabbtn" onclick="petSetMode('bank')"><i class="fa-solid fa-egg mr-1"></i>${L2('Kho trứng', 'Egg bank')}</button><button class="pet-tabbtn" onclick="petSetMode('shop')"><i class="fa-solid fa-store mr-1"></i>${L2('Cửa hàng vật phẩm', 'Item shop')}</button><button class="pet-tabbtn" onclick="petSetMode('exp')"><i class="fa-solid fa-compass mr-1"></i>${L2('Thám hiểm', 'Expedition')}</button><button class="pet-tabbtn on" onclick="petSetMode('hab')"><i class="fa-solid fa-seedling mr-1"></i>${L2('Khu sinh sống', 'Habitat')}</button></div>`;
-            root.innerHTML = `<section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="text-xl font-black text-slate-800"><i class="fa-solid fa-egg mr-2 text-violet-600"></i>${L2('Thú Cưng', 'Pets')}</h2><p class="text-sm text-slate-500 mt-1">${L2('Mỗi học sinh có một khu vườn riêng để đặt Pet, xây công trình và trưng bày vật phẩm sưu tầm. Khu đất mở rộng và mở khoá nhà lớn hơn khi sưu tầm thêm đồ trang trí hiếm (cấp 1 → 10); đồ trang trí hiếm và đồ thường đến từ các chuyến Thám hiểm.', 'Every student has a garden for their pet, buildings and collected decor. The land grows and bigger homes unlock as you collect rare decor (level 1 → 10); rare decor and common items come from Expeditions.')}</p></div>${tabs}</div>
-                <div class="pet-pane${slide ? ' pet-in' : ''}" style="--dir:${slide || 1}"><div class="hab-grid"><div id="habMain"></div><aside class="hab-side" id="habSide"></aside></div></div></section><section class="hab-cat" id="habCat"></section>`;
+            root.innerHTML = `<section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6"><div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="text-xl font-black text-slate-800"><i class="fa-solid fa-egg mr-2 text-violet-600"></i>${L2('Thú Cưng', 'Pets')}</h2></div>${tabs}</div>
+                <div class="pet-pane${slide ? ' pet-in' : ''}" style="--dir:${slide || 1}"><div id="habTop"></div><div class="hab-grid"><div id="habMain"></div><aside class="hab-side" id="habSide"></aside></div></div></section><section class="hab-cat" id="habCat"></section>`;
             habPaint();
         }
         // Nút "Khu sinh sống" trên thanh tab của giáo viên (các chế độ khác)
