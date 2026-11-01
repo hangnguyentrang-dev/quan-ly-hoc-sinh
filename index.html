@@ -10598,8 +10598,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     const bf = tenStreakInfo(sid, prevScores).cur, af = tenStreakInfo(sid).cur;
                     if (bf >= 1 && af === 0) fx.push({ t: 'broke', sid, n: bf });
                     else if (af < bf) fx.push({ t: 'drop', sid, n: bf - af, cur: af });
-                    const nl = Math.floor(xpOf(sid) / XP_PER_LEVEL);
-                    if (nl > Math.floor(xpOf(sid, prevScores) / XP_PER_LEVEL)) fx.push({ t: 'lv', sid, n: nl + 1 });
+                    const nl = lvFromXp(xpOf(sid));
+                    if (nl > lvFromXp(xpOf(sid, prevScores))) fx.push({ t: 'lv', sid, n: nl });
                 });
                 if (fx.length) setTimeout(() => tfStatusFx(fx), 450);
             }
@@ -11270,8 +11270,18 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             c.notes.forEach((f, i) => tfBeep(f, .2, .22, i * .09));
         }
         const L2 = (vi, en) => ((appData.language || 'vi') === 'en' ? en : vi);
-        // ===== Cấp độ & XP: XP = tổng điểm các buổi; mỗi XP_PER_LEVEL điểm lên 1 cấp =====
-        const XP_PER_LEVEL = 50;
+        // ===== Cấp độ & XP: XP = tổng điểm các buổi; Lv1→Lv2 cần 20 XP, mỗi cấp sau +10 XP =====
+        // Lv1→Lv2 cần 20 XP, mỗi cấp sau cần thêm +10 XP (20, 30, 40, ...)
+        const lvCost = lv => 10 * lv + 10;
+        const lvStartXp = lv => 5 * (lv - 1) * (lv + 2);
+        function lvFromXp(xp) {
+            xp = Math.max(0, Number(xp) || 0);
+            let L = Math.max(1, Math.floor((-1 + Math.sqrt(9 + 0.8 * xp)) / 2));
+            while (lvStartXp(L + 1) <= xp) L++;
+            while (L > 1 && lvStartXp(L) > xp) L--;
+            return L;
+        }
+        function lvProg(xp) { const lv = lvFromXp(xp), need = lvCost(lv); return { lv, need, cur: Math.max(0, Number(xp) || 0) - lvStartXp(lv) }; }
         function xpOf(sid, scores) { return Math.round(tenSeries(sid, scores).filter(e => !e.ghost).reduce((a, e) => a + e.v, 0) * 10) / 10; }
         /* ===== Thưởng lên cấp: mỗi lần lên 1 cấp +LV_UP_PTS Pts vào điểm phát biểu dư (rewardPoints, hiện trong Túi quà) =====
            - Chỉ có hiệu lực từ bản cập nhật này: lần đầu mở sau cập nhật, cấp hiện có của mỗi học sinh được "đóng băng" làm mốc, KHÔNG thưởng bù.
@@ -11279,12 +11289,20 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
            - Tách riêng theo khóa học (khóa mới bắt đầu lại từ Lv1) và không chạy ở khóa đã lưu / chế độ học sinh. */
         const LV_UP_PTS = 5;
         function lvKey() { return String((appData && appData.courseManager && appData.courseManager.activeCourseId) || 'default'); }
-        function lvOf(sid) { return Math.floor(xpOf(sid) / XP_PER_LEVEL) + 1; }
+        function lvOf(sid) { return lvFromXp(xpOf(sid)); }
         function lvMap(st) { if (!st.lvPaid || typeof st.lvPaid !== 'object' || Array.isArray(st.lvPaid)) st.lvPaid = {}; return st.lvPaid; }
+        function lvMigrate(st, key) {
+            if (!st.lvFmt || typeof st.lvFmt !== 'object' || Array.isArray(st.lvFmt)) st.lvFmt = {};
+            if (st.lvFmt[key] === 2) return 0;
+            const m = lvMap(st), paid = Number(m[key]);
+            if (Number.isFinite(paid)) m[key] = Math.max(paid, lvOf(st.id));
+            st.lvFmt[key] = 2;
+            return 1;
+        }
         function lvBaseline() {
             if (window.MX_STUDENT || !appData || !Array.isArray(appData.students)) return 0;
             const key = lvKey(); let n = 0;
-            appData.students.forEach(st => { if (!st || st.id == null) return; const m = lvMap(st); if (!Number.isFinite(Number(m[key]))) { m[key] = lvOf(st.id); n++; } });
+            appData.students.forEach(st => { if (!st || st.id == null) return; const m = lvMap(st); if (!Number.isFinite(Number(m[key]))) { m[key] = lvOf(st.id); st.lvFmt = st.lvFmt || {}; st.lvFmt[key] = 2; n++; } else n += lvMigrate(st, key); });
             return n;
         }
         function lvRewardSync() {
@@ -11293,7 +11311,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const key = lvKey(); let total = 0;
             appData.students.forEach(st => {
                 if (!st || st.id == null) return;
-                const m = lvMap(st), lv = lvOf(st.id), paid = Number(m[key]);
+                const m = lvMap(st), lv = lvOf(st.id); lvMigrate(st, key); const paid = Number(m[key]);
                 if (!Number.isFinite(paid)) { m[key] = lv; return; } // chưa có mốc (học sinh mới/khóa mới): lấy cấp hiện tại làm mốc
                 if (lv <= paid) return;
                 const pts = (lv - paid) * LV_UP_PTS;
@@ -11316,8 +11334,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         }
         const lvHint = () => L2(`+${LV_UP_PTS} Pts mỗi lần lên cấp`, `+${LV_UP_PTS} Pts per level-up`);
         function levelPillHtml(sid) {
-            const xp = xpOf(sid), lv = Math.floor(xp / XP_PER_LEVEL) + 1, cur = xp % XP_PER_LEVEL;
-            return `<span class="tf-lv" title="XP ${cur.toFixed(0)}/${XP_PER_LEVEL} · ${lvHint()}"><b>Lv${lv}</b><i style="--p:${(cur / XP_PER_LEVEL * 100).toFixed(0)}%"></i></span>`;
+            const P = lvProg(xpOf(sid)), lv = P.lv, cur = P.cur;
+            return `<span class="tf-lv" title="XP ${cur.toFixed(0)}/${P.need} · ${lvHint()}"><b>Lv${lv}</b><i style="--p:${(cur / P.need * 100).toFixed(0)}%"></i></span>`;
         }
         // Hiệu ứng khi đứt streak (lửa tắt, khói) hoặc lên cấp
         // Thông báo lên cấp: hiện ở góc dưới màn hình, tách riêng với banner chúc mừng streak (ở trên)
@@ -14292,7 +14310,7 @@ window.openStudentProfile=function(studentId){
             let inf;
             if (opt.snap) { let run = 0, best = 0; tenSeries(sid, scores).forEach(e => { if (e.ghost) return; if (e.v >= 10) { run++; if (run > best) best = run; } else run = 0; }); inf = { cur: run, best }; }
             else inf = tenStreakInfo(sid);
-            const xp = xpOf(sid, opt.snap ? scores : undefined), lv = Math.floor(xp / XP_PER_LEVEL) + 1, cur = xp % XP_PER_LEVEL;
+            const xp = xpOf(sid, opt.snap ? scores : undefined), P = lvProg(xp), lv = P.lv, cur = P.cur;
             const stats = opt.snap ? { hasData: anyKey, avg: parseFloat((calculateSnapshotTotal(opt.snap, sid).avg || 0).toFixed(1)) } : calculateStudentStats(sid);
             let chart = `<p class="text-xs text-slate-400 text-center py-3">${L2('Chưa đủ dữ liệu để vẽ biểu đồ', 'Not enough data for a chart')}</p>`;
             if (last.length >= 2) {
@@ -14300,7 +14318,7 @@ window.openStudentProfile=function(studentId){
                 chart = `<svg viewBox="0 0 ${W} ${H}" class="w-full h-16"><polyline points="${xy.map(q => q.join(',')).join(' ')}" fill="none" stroke="#6366f1" stroke-width="2" stroke-linejoin="round"/>${xy.map((q, i) => `<circle cx="${q[0]}" cy="${q[1]}" r="${i === xy.length - 1 ? 3.5 : 2}" fill="${last[i].v >= 10 ? '#f59e0b' : '#6366f1'}"/>`).join('')}</svg>`;
             }
             const box = (ic, tone, val, lb) => `<div class="rounded-xl bg-slate-50 border border-slate-200 p-2 text-center"><div class="xf-stat text-lg font-black text-slate-800"><span class="xf-ic xf-ic-${tone}"><i class="fa-solid ${ic}"></i></span><span>${val}</span></div><div class="text-[10px] font-bold text-slate-500 mt-1">${lb}</div></div>`;
-            return `<div class="mt-3" title="${lvHint()}"><div class="flex justify-between text-[11px] font-black text-indigo-700"><span>Lv${lv}</span><span>XP ${cur.toFixed(0)}/${XP_PER_LEVEL}</span></div><div class="tf-xpbar"><i style="width:${(cur / XP_PER_LEVEL * 100).toFixed(0)}%"></i></div></div>
+            return `<div class="mt-3" title="${lvHint()}"><div class="flex justify-between text-[11px] font-black text-indigo-700"><span>Lv${lv}</span><span>XP ${cur.toFixed(0)}/${P.need}</span></div><div class="tf-xpbar"><i style="width:${(cur / P.need * 100).toFixed(0)}%"></i></div></div>
                 <div class="grid grid-cols-3 gap-2 mt-3">${box('fa-fire', 'fire', `<span class="${opt.snap ? '' : tfNameFx(sid).nm}">${inf.cur}</span>`, L2('Chuỗi 10', 'Streak'))}${box('fa-trophy', 'trophy', inf.best, L2('Kỷ lục', 'Record'))}${box('fa-chart-column', 'avg', stats.hasData ? stats.avg : '--', L2('ĐTB', 'AVG'))}${box('fa-comments', 'speak', speak, L2('Số Lần Phát Biểu', 'Speaking Count'))}${box('fa-file-pen', 'score', pts.length, L2('Số điểm', 'Scores'))}${box('fa-user-xmark', 'absent', absent, L2('Số buổi vắng', 'Absences'))}</div>
                 <div class="mt-3"><p class="text-[11px] font-bold text-slate-500 mb-1">${L2('Điểm 20 lần gần nhất (theo ngày)', 'Last 20 scores (by date)')}</p>${chart}</div>`;
         }
@@ -16000,9 +16018,9 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                         if(sp===22)points.filter(e=>e.v>=10-1e-9&&!e.raw.isExam).forEach(e=>chance(st,'n:ow10d:'+e.key,v[0],()=>petGiveInv(st,'n:ow10d:'+e.key,'chg9',1,'thiên khải hoàn mỹ (ghi nhận điểm 10)','perfect revelation (a score of 10 recorded)')));
                         if(sp===25)points.filter(e=>e.v<5).forEach(e=>chance(st,'n:ge:'+e.key,v[0],()=>petGiveAccum(st,'n:ge:'+e.key,v[1],'niết bàn phúc lộc (điểm dưới 5)','nirvana blessing (score under 5)')));
                         if(sp===26)points.filter(e=>spk(e)===MLIM+1).forEach(e=>chance(st,'n:sp:'+e.key,v[0],()=>petGive(st,'n:sp:'+e.key,v[1],`tinh thể thưởng +${v[1]} pts`,`crystal bonus +${v[1]} pts`)));
-                        // 🐒 Linh Hầu: Cấp độ (XP/50) tăng thêm 1 — mỗi cấp chỉ được tung xác suất một lần
+                        // 🐒 Linh Hầu: Cấp độ tăng thêm 1 — mỗi cấp chỉ được tung xác suất một lần
                         if (sp === 27) {
-                            const lvNow = Math.floor(xpOf(st.id) / XP_PER_LEVEL) + 1, seenL = Number(st.petLvSeen);
+                            const lvNow = lvFromXp(xpOf(st.id)), seenL = Number(st.petLvSeen);
                             if (!Number.isFinite(seenL)) { st.petLvSeen = lvNow; _petChanged = true; }
                             else if (lvNow !== seenL) {
                                 if (lvNow > seenL) for (let l = seenL + 1; l <= lvNow && l <= seenL + 5; l++) chance(st, 'n:mk:' + l, v[0], () => petGiveInv(st, 'n:mk:' + l, 'add10', 1, `thời khắc thăng hoa (lên cấp ${l})`, `moment of ascension (level ${l})`));
@@ -17111,8 +17129,8 @@ html.mx-dark .gc-bar{background:#334155}
             const avg = stats.hasData ? (Math.round((Number(stats.avg) || 0) * 10) / 10).toFixed(1) : '—';
             let tier = null, sticker = '';
             try { if (stats.hasData) { tier = gradeTierOf(stats.avg); const lv = gradeStickerLevel(stats.avg); if (lv >= 1 && GRADE_STICKERS[lv]) sticker = gradeStickerSvg(lv, true, 52); } } catch (e) {}
-            let xp = 0, lvl = 1, xpCur = 0, inf = { cur: 0, best: 0 };
-            try { xp = xpOf(st.id); lvl = Math.floor(xp / XP_PER_LEVEL) + 1; xpCur = xp % XP_PER_LEVEL; inf = tenStreakInfo(st.id); } catch (e) {}
+            let xp = 0, lvl = 1, xpCur = 0, xpNeed = 20, inf = { cur: 0, best: 0 };
+            try { xp = xpOf(st.id); { const P = lvProg(xp); lvl = P.lv; xpCur = P.cur; xpNeed = P.need; } inf = tenStreakInfo(st.id); } catch (e) {}
             // Điểm gần đây: giống Lưu trữ điểm của giáo viên (thời điểm nhập điểm, sáng theo màu mốc streak)
             let recentHtml = '<div class="mxh-empty">' + L2('Chưa có điểm nào.', 'No scores yet.') + '</div>';
             try {
@@ -17170,7 +17188,7 @@ html.mx-dark .gc-bar{background:#334155}
                 heroOpen + '<div class="flex items-center gap-4 flex-wrap"><div class="mxh-ava">' + E(st.icon || '🎓') + '</div>' +
                 '<div class="min-w-0 flex-1"><div class="text-xs font-bold text-indigo-100">' + L2('Chào mừng trở lại!', 'Welcome back!') + '</div><div class="text-2xl font-black leading-tight break-words">' + E(getStudentDisplayName(st)) + '</div>' + (sub ? '<div class="text-xs text-indigo-100 mt-1 font-semibold">' + sub + '</div>' : '') + '</div>' +
                 (function () { let fl = ''; try { fl = tenStreakHtml(st.id) || ''; } catch (e) {} if (!tier && !fl) return ''; return '<div class="mxh-gbox">' + (sticker ? '<span class="mxh-stk">' + sticker + '</span>' : '') + fl + (tier ? '<div><div class="gl">' + L2('Xếp loại', 'Grade') + '</div><div class="mxh-gname ' + tier.cls + '">' + E(gradeTierLabel(tier)) + '</div></div>' : '') + '</div>'; })() + '</div>' +
-                '<div class="mt-3" title="' + lvHint() + '"><div class="flex justify-between text-[11px] font-black text-indigo-100"><span>Lv ' + lvl + '</span><span>XP ' + xpCur.toFixed(0) + '/' + XP_PER_LEVEL + '</span></div><div class="mxh-xp mt-1"><i style="width:' + (xpCur / XP_PER_LEVEL * 100).toFixed(0) + '%"></i></div></div>' +
+                '<div class="mt-3" title="' + lvHint() + '"><div class="flex justify-between text-[11px] font-black text-indigo-100"><span>Lv ' + lvl + '</span><span>XP ' + xpCur.toFixed(0) + '/' + xpNeed + '</span></div><div class="mxh-xp mt-1"><i style="width:' + (xpCur / xpNeed * 100).toFixed(0) + '%"></i></div></div>' +
                 '<div class="mxh-hs">' + hc('<em class="mxh-avgp ' + (tier ? tier.cls : '') + '">' + E(avg) + '</em>', L2('Điểm TB', 'Avg score'), 'matrix', 'fa-chart-line', 'c1') + hc(E(rank) + (mates.length ? '/' + mates.length : ''), L2('Xếp hạng', 'Rank'), 'ranking', 'fa-trophy', 'c2') + hc(E(stats.hasData ? (Number(stats.total) || 0).toFixed(1) : '—'), L2('Tổng điểm', 'Total points'), 'matrix', 'fa-star', 'c3') + '</div></section>' +
                 '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">' +
                   '<div class="flex flex-col gap-4">' +
