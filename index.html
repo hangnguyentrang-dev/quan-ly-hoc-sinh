@@ -1723,30 +1723,7 @@ html.mx-dark .rk-avgpill{background:rgba(var(--c),.28);color:#f8fafc}
 html.mx-dark .rk-t-leg{background:linear-gradient(110deg,#7c2d12,#c2410c 55%,#fb923c);color:#ffedd5}
 html.mx-dark .rk-avgpill.rk-t-none{background:transparent;border-color:#475569;color:#64748b}
 @media (prefers-reduced-motion:reduce){.rk-avgpill,.rk-avgpill::after{animation:none !important}}
-/* ===== Huy hiệu xếp loại (animation nhẹ, mỗi loại một kiểu) ===== */
-.gb-wrap{display:inline-flex;align-items:center;justify-content:center;width:2.9rem;height:2.9rem}
-.gb{overflow:visible;transform-origin:50% 90%}
-/* ===== Sticker tài sản cấp 1–10 theo điểm trung bình tích lũy (animation nhẹ) ===== */
-.gb-stk.gb-anim .gb-spark{transform-box:fill-box;transform-origin:center;animation:gbTwinkle 2.4s ease-in-out infinite}
-.gb-l1{animation:gbBob 3.8s ease-in-out infinite}
-.gb-l2{animation:gbSway 3.4s ease-in-out infinite;transform-origin:50% 90%}
-.gb-l3{animation:gbBob 3.2s ease-in-out infinite}
-.gb-l4{animation:gbFloat 3s ease-in-out infinite}
-.gb-l5{animation:gbBob 2.8s ease-in-out infinite}
-.gb-l6{animation:gbFloat 2.8s ease-in-out infinite}
-.gb-l7{animation:gbFloat 2.6s ease-in-out infinite}
-.gb-l8{animation:gbGlowGold 2.6s ease-in-out infinite;transform-origin:50% 50%}
-.gb-l9{animation:gbSway 3.2s ease-in-out infinite;transform-origin:50% 90%}
-.gb-l10{animation:gbGlowGold 2.2s ease-in-out infinite;transform-origin:50% 50%}
 .gr-leg-break{flex-basis:100%;height:0}
-.gr-stk{display:inline-flex;flex-direction:column;align-items:center;gap:.05rem;cursor:default}
-.gr-stk small{font-size:.62rem;font-weight:800;color:#64748b;white-space:nowrap}
-html.mx-dark .gr-stk small{color:#94a3b8}
-@keyframes gbGlowGold{0%,100%{filter:drop-shadow(0 0 0 rgba(234,179,8,0))}50%{filter:drop-shadow(0 0 6px rgba(234,179,8,.95))}}
-@keyframes gbBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
-@keyframes gbArrow{0%,100%{transform:translateY(1px);opacity:.55}50%{transform:translateY(-2px);opacity:1}}
-@keyframes gbBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-@keyframes gbShake{0%,86%,100%{transform:rotate(0)}90%{transform:rotate(-6deg)}94%{transform:rotate(6deg)}98%{transform:rotate(-3deg)}}
 /* ===== Màu xếp loại thi đua (7 bậc) – dùng cho pill ở Bảng xếp loại, cột ĐTB Ma trận điểm và chú thích ===== */
 .gr-legend{background:linear-gradient(110deg,#fff1b8 0%,#ffc933 40%,#ff9a1f 60%,#fff1b8 100%);background-size:220% 100%;animation:grShine 3.2s linear infinite;color:#9a3412;box-shadow:inset 0 0 0 1px rgba(234,88,12,.5),0 0 8px rgba(251,146,60,.55)}
 @keyframes grShine{0%{background-position:120% 0}100%{background-position:-100% 0}}
@@ -1772,12 +1749,6 @@ html.mx-dark .gr-leg-title{color:#94a3b8}
 .gr-chip{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .65rem;border-radius:9999px;font-size:.72rem;font-weight:800;cursor:default}
 .gr-chip b{font-weight:900}
 @media (prefers-reduced-motion:reduce){.gr-legend{animation:none !important}}
-@keyframes gbGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(16,185,129,0))}50%{filter:drop-shadow(0 0 5px rgba(16,185,129,.75))}}
-@keyframes gbTwinkle{0%,100%{opacity:.2;transform:scale(.6) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(45deg)}}
-@keyframes gbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-@keyframes gbSway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
-@keyframes gbGrow{0%,100%{transform:scale(.92)}50%{transform:scale(1.08)}}
-@media (prefers-reduced-motion:reduce){.gb,.gb .gb-spark,.gb .gb-up{animation:none !important}}
 /* ===== Cửa sổ Cập nhật điểm học sinh: hiệu ứng rê chuột ===== */
 #scoreModal button,#scoreModal label.mx-tgl,#scoreModal input[type=number],#scoreModal #modalSpeakingBox,#scoreModal #inventoryGiftList > *,#scoreModal .bg-indigo-50{transition:transform .15s ease,box-shadow .15s ease,filter .15s ease,border-color .15s ease,background-color .15s ease}
 #scoreModal button:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(15,23,42,.2);filter:brightness(1.04)}
@@ -1980,7 +1951,7 @@ html.mx-dark #qsBagModal .qs-stu:hover{background:#4a1d3a}
 }
 #randomPickerModal .rp-mode-btn:hover { background:#f1f5f9 !important; border-color:#94a3b8 !important; color:#0f172a !important; filter:none !important; transform:translateY(-1px) !important; box-shadow:0 4px 10px rgba(15,23,42,.10) !important; }
 #randomPickerModal .rp-mode-btn.is-active { background:linear-gradient(135deg,#fbbf24,#f97316) !important; color:#fff !important; border-color:#f59e0b !important; outline:2px solid rgba(245,158,11,.25) !important; outline-offset:1px; box-shadow:0 0 0 3px rgba(251,191,36,.16),0 5px 12px rgba(217,119,6,.22) !important; }
-#randomPickerModal #rpModeSaveBtn.is-active { background:linear-gradient(135deg,#38bdf8,#6366f1) !important; border-color:#6366f1 !important; box-shadow:0 0 0 3px rgba(99,102,241,.15),0 5px 12px rgba(79,70,229,.20) !important; }
+#randomPickerModal #rpModeSaveBtn.is-active { background:linear-gradient(135deg,#fbbf24,#f97316) !important; border-color:#f59e0b !important; box-shadow:0 0 0 3px rgba(251,191,36,.16),0 5px 12px rgba(217,119,6,.22) !important; }
 #randomPickerModal .rp-mode-btn.is-active:hover { filter:brightness(1.07) !important; }
 /* Seating plan desk/table tiles should visibly respond when hovered. */
 #seatingPlan .seat-card,#seatingPlan .seat-item,#seatingPlan [class*="seat"],#seatingPlan [class*="desk"],#seatingPlan [class*="table"] { transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background-color .18s ease; }
@@ -2174,10 +2145,50 @@ html.mx-dark tbody tr:not(.score-row):not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>
 #scoreModal .mx-tgl-off{opacity:.4;pointer-events:none}
 </style>
 <style id="patch-css">
-/* Sticker + ĐTB ở Leaderboard: cô lập lớp vẽ để không lộ khung vuông khi hàng được phóng to */
-.hl-row .gb-wrap,.hl-row .rk-avgpill{isolation:isolate;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(0)}
-.hl-row .gb-wrap{overflow:visible}
-.hl-row .gb-wrap svg{overflow:visible;background:transparent !important}
+/* ĐTB ở Leaderboard: cô lập lớp vẽ để không lộ khung vuông khi hàng được phóng to */
+.hl-row .rk-avgpill{isolation:isolate;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(0)}
+/* ===== Leaderboard: đồ thị đường điểm theo ngày nhập ===== */
+.rkc{--rkc-grid:#e2e8f0;--rkc-axis:#64748b;--rkc-dot:#fff;--rkc-chip:#fff;--rkc-chiptx:#1e293b;--rkc-tip:#0f172a;--rkc-tiptx:#f8fafc;position:relative}
+html.mx-dark .rkc{--rkc-grid:#334155;--rkc-axis:#94a3b8;--rkc-dot:#1e293b;--rkc-chip:#1e293b;--rkc-chiptx:#e2e8f0;--rkc-tip:#f8fafc;--rkc-tiptx:#0f172a}
+.rkc-body{display:flex;align-items:stretch}
+.rkc-yaxis{flex:0 0 46px}
+.rkc-scroll{flex:1 1 auto;min-width:0;overflow-x:auto;overflow-y:hidden}
+.rkc svg{display:block;overflow:visible}
+.rkc svg text{font-family:inherit}
+.rkc-gl{stroke:var(--rkc-grid);stroke-width:1}
+.rkc-gl.zero{stroke:var(--rkc-axis);opacity:.55}
+.rkc-gv{stroke:var(--rkc-grid);stroke-width:1;stroke-dasharray:2 4;opacity:.7}
+.rkc-tick{fill:var(--rkc-axis);font-size:11px;font-weight:700}
+.rkc-cap{text-align:center;font-size:11px;font-weight:800;color:var(--rkc-axis);margin-top:.15rem}
+.rkc-line{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.rkc-dot{fill:var(--rkc-dot);stroke-width:2.5}
+.rkc-dot.abs{fill:#fecaca;stroke-dasharray:2 2}
+.rkc-ava circle{fill:var(--rkc-dot);stroke-width:3}
+.rkc-ava text{font-size:16px}
+.rkc-hit{fill:transparent;cursor:pointer}
+.rkc-g{transition:opacity .15s}
+.rkc.hl .rkc-g{opacity:.12}
+.rkc.hl .rkc-g.on{opacity:1}
+.rkc.anim .rkc-line{stroke-dasharray:1;stroke-dashoffset:1;animation:rkcDraw 1.1s ease-out forwards}
+.rkc.anim .rkc-dot,.rkc.anim .rkc-ava{animation:rkcPop .45s ease-out .9s both}
+@keyframes rkcDraw{to{stroke-dashoffset:0}}
+@keyframes rkcPop{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.rkc.anim .rkc-line,.rkc.anim .rkc-dot,.rkc.anim .rkc-ava{animation:none !important;stroke-dasharray:none;stroke-dashoffset:0}}
+.rkc-legend{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin-top:.8rem;max-height:9.5rem;overflow-y:auto;padding:.1rem}
+.rkc-chip{display:inline-flex;align-items:center;gap:.35rem;border:2px solid var(--c);border-radius:9999px;padding:.12rem .6rem .12rem .25rem;font-size:.76rem;font-weight:800;background:var(--rkc-chip);color:var(--rkc-chiptx);cursor:pointer;transition:opacity .15s,transform .15s}
+.rkc-chip:hover{transform:translateY(-1px)}
+.rkc-chip .ci{font-size:1.15rem;line-height:1}
+.rkc-chip small{font-weight:900;color:var(--c)}
+.rkc-chip.off{opacity:.4;border-style:dashed}
+.rkc-chip.off .cn{text-decoration:line-through}
+.rkc-act{border-radius:9999px;border:1px solid #cbd5e1;background:transparent;color:var(--rkc-axis);font-size:.72rem;font-weight:800;padding:.18rem .65rem;cursor:pointer}
+.rkc-act:hover{background:#eef2ff;color:#4338ca}
+html.mx-dark .rkc-act{border-color:#475569}
+html.mx-dark .rkc-act:hover{background:#312e81;color:#e0e7ff}
+.rkc-hint{width:100%;font-size:.7rem;font-weight:700;color:var(--rkc-axis)}
+.rkc-empty{padding:2.5rem 1rem;text-align:center;font-weight:700;color:#94a3b8}
+.rkc-tip{position:absolute;z-index:20;pointer-events:none;background:var(--rkc-tip);color:var(--rkc-tiptx);border-radius:.7rem;padding:.4rem .65rem;font-size:.75rem;font-weight:700;line-height:1.35;box-shadow:0 8px 22px rgba(15,23,42,.35);white-space:nowrap}
+.rkc-tip b{font-weight:900}
 /* Cửa hàng quà: chuyển chế độ xem + kéo thả */
 .shop-view-switch{display:inline-flex;border:1px solid #cbd5e1;border-radius:9999px;background:#fff;padding:2px}
 .shop-view-switch button{display:inline-flex;align-items:center;gap:.35rem;border-radius:9999px;padding:.3rem .7rem;font-size:.75rem;font-weight:800;color:#64748b;transition:background .2s,color .2s}
@@ -2930,8 +2941,6 @@ html.mx-dark #viewPetContainer .pet-card.pet-bless .text-slate-800{color:#fef3c7
 #rankingTableBody td{padding-top:.3rem !important;padding-bottom:.3rem !important}
 #rankingTableBody .pet-art{width:62px !important;height:62px !important}
 #rankingTableBody .pet-art.pet-none{font-size:34px}
-#rankingTableBody .gb-wrap{width:2.3rem;height:2.3rem}
-#rankingTableBody .gb-wrap svg{width:100%;height:100%}
 /* Cửa sổ nội tại của pet */
 .pl-back{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(15,23,42,.55);backdrop-filter:blur(3px);animation:plFade .2s ease-out}
 .pl-back.pl-out{animation:plFadeOut .18s ease-in forwards}
@@ -3099,6 +3108,8 @@ main:has(#viewPetContainer:not(.hidden)){max-width:min(1500px,100%) !important;p
 #viewPetContainer>section{width:100%;padding:clamp(18px,2vw,30px)}
 #viewPetContainer .pet-pane{width:100%;min-width:0;overflow:visible}
 #viewPetContainer .pet-card{padding:clamp(11px,1.1vw,17px)}
+#viewPetContainer .pet-grid5{width:100%}
+#viewPetContainer .pet-grid5 .pet-card{min-width:0}
 #viewPetContainer .pet-card .pet-art{transform:scale(1.045);transform-origin:center center}
 #viewPetContainer .pet-tabbtn{font-size:clamp(12px,.92vw,14px);padding:8px 13px}
 #viewPetContainer .pet-shop-layout{grid-template-columns:minmax(0,1fr);gap:20px;align-items:stretch}
@@ -3350,9 +3361,7 @@ html.mx-dark .pq-pane.pq-class,html.mx-dark .pq-inl .pq-pane{border-color:#4c1d9
 @keyframes mxhJump{0%,100%{transform:translateY(0) scale(1) rotate(0)}22%{transform:translateY(-22px) scale(1.14,.96) rotate(-7deg)}45%{transform:translateY(0) scale(.94,1.06) rotate(0)}68%{transform:translateY(-10px) scale(1.06) rotate(6deg)}85%{transform:translateY(0) scale(1)}}
 @keyframes mxhGoldRing{0%,100%{box-shadow:inset 0 0 0 2px rgba(250,204,21,.55),0 0 6px rgba(250,204,21,.35)}50%{box-shadow:inset 0 0 0 3px #facc15,0 0 20px 4px rgba(250,204,21,.95)}}
 @keyframes mxhFlameHot{0%,100%{filter:brightness(1.1) saturate(1.1) drop-shadow(0 0 4px rgba(251,146,60,.85))}50%{filter:brightness(1.6) saturate(1.5) drop-shadow(0 0 13px rgba(251,191,36,1))}}
-@keyframes mxhWiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-9deg) scale(1.05)}50%{transform:rotate(8deg) scale(1.05)}80%{transform:rotate(-5deg)}}
 @keyframes mxhTierBlink{0%,100%{filter:brightness(1);transform:scale(1);box-shadow:0 0 0 rgba(255,255,255,0)}50%{filter:brightness(1.3) saturate(1.3);transform:scale(1.1);box-shadow:0 0 14px rgba(255,255,255,.95),0 0 4px rgba(250,204,21,.9)}}
-#mxStuHome .mxh-stk{display:inline-flex;transform-origin:50% 90%}
 #mxStuHome .mxh-gname{transition:filter .2s}
 #mxStuHome .mxh-hero:hover .mxh-ava{animation:mxhJump .8s cubic-bezier(.3,.7,.4,1) infinite,mxhGoldRing .9s ease-in-out infinite}
 #mxStuHome .mxh-hero:hover .tf-streak .tf-flame{animation:mxhFlameHot .5s ease-in-out infinite}
@@ -3363,9 +3372,8 @@ html.mx-dark .pq-pane.pq-class,html.mx-dark .pq-inl .pq-pane{border-color:#4c1d9
 #mxStuHome .mxh-hero:hover .tf-streak .tf-flame .tf-sp{animation-duration:.55s}
 #mxStuHome .mxh-hero:hover .tf-streak::after{animation-duration:.55s}
 #mxStuHome .mxh-hero:hover .tf-streak .tf-txt{animation-duration:.5s}
-#mxStuHome .mxh-hero:hover .mxh-stk{animation:mxhWiggle 1.1s ease-in-out infinite}
 #mxStuHome .mxh-hero:hover .mxh-gname{animation:mxhTierBlink .8s ease-in-out infinite}
-@media (prefers-reduced-motion:reduce){#mxStuHome .mxh-hero:hover .mxh-ava,#mxStuHome .mxh-hero:hover .tf-streak .tf-flame,#mxStuHome .mxh-hero:hover .mxh-stk,#mxStuHome .mxh-hero:hover .mxh-gname{animation:none}}
+@media (prefers-reduced-motion:reduce){#mxStuHome .mxh-hero:hover .mxh-ava,#mxStuHome .mxh-hero:hover .tf-streak .tf-flame,#mxStuHome .mxh-hero:hover .mxh-gname{animation:none}}
 /* ===== Thẻ Welcome back: lửa streak cháy Y HỆT hiệu ứng rê chuột ở bảng xếp hạng (rank-card / hl-row) ===== */
 #mxStuHome .mxh-hero .tf-flame{transition:transform .25s cubic-bezier(.2,.9,.3,1.4),filter .25s;transform-origin:50% 85%}
 #mxStuHome .mxh-hero:hover .tf-streak .tf-flame{animation:none}
@@ -3812,7 +3820,6 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
 </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="stkOutline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d3"/><feFlood flood-color="#cbd5e1" result="g"/><feComposite in="g" in2="d3" operator="in" result="gray"/><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d2"/><feFlood flood-color="#ffffff" result="w"/><feComposite in="w" in2="d2" operator="in" result="white"/><feMerge><feMergeNode in="gray"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
 
     <div id="roleGate" data-no-extra-i18n class="teacher-gate-background fixed inset-0 z-[10400] overflow-y-auto p-4 md:p-8">
       <div class="tg-deco" aria-hidden="true">
@@ -4002,11 +4009,11 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
                 </div>
             </div>
             <div id="appHeaderActions" class="flex items-center gap-2 flex-wrap">
+                <button onclick="showTeacherSelector()" data-i18n-title="teacherSwitch" title="Thoát" class="bg-indigo-950 hover:bg-indigo-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5 border border-indigo-400"><i class="fa-solid fa-right-from-bracket"></i><span class="hdr-label" data-i18n="teacherSwitch">Thoát</span></button>
                 <button onclick="toggleLanguage()" class="bg-indigo-900 hover:bg-indigo-950 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5 border border-indigo-500">
                     <i class="fa-solid fa-globe text-amber-300"></i> <span id="langLabel">EN</span>
                 </button>
                 <button onclick="mxToggleDark()" id="mxDarkBtn" data-i18n-title="darkTitle" title="Chế độ tối" class="bg-indigo-900 hover:bg-indigo-950 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5 border border-indigo-500"><i id="mxDarkIcon" class="fa-solid fa-moon text-amber-300"></i></button>
-                <button onclick="showTeacherSelector()" data-i18n-title="teacherSwitch" title="Đổi giáo viên" class="bg-indigo-950 hover:bg-indigo-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5 border border-indigo-400"><i class="fa-solid fa-users-gear"></i><span class="hdr-label" data-i18n="teacherSwitch">Đổi giáo viên</span></button>
                 <span class="hidden md:block h-6 w-px bg-indigo-400/50 mx-1"></span>
                 <!-- Core quick actions -->
                 <button onclick="openTimerModal()" data-i18n-title="btnTimer" title="Đếm Ngược" class="bg-violet-600 hover:bg-violet-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5">
@@ -4033,14 +4040,14 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
                     <div id="utilityMenu" role="menu" class="hidden absolute right-0 top-full mt-2 w-72 rounded-2xl bg-white text-slate-700 shadow-2xl ring-1 ring-slate-200 overflow-hidden z-[60]">
                         <div class="px-4 py-2.5 bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 text-white text-[11px] font-black uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-toolbox"></i><span data-i18n="utilitiesTitle">Tiện ích &amp; Dữ liệu</span></div>
                         <div class="p-1.5">
-                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openCourseManager()"><span class="menu-ico bg-violet-100 text-violet-600"><i class="fa-solid fa-folder-open"></i></span><span data-i18n="courseManagerBtn">Quản lý khóa học</span></button>
+                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openCourseManager()"><span class="menu-ico bg-lime-100 text-lime-700"><i class="fa-solid fa-folder-open"></i></span><span data-i18n="courseManagerBtn">Quản lý khóa học</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openClassModal()"><span class="menu-ico bg-emerald-100 text-emerald-600"><i class="fa-solid fa-folder-plus"></i></span><span data-i18n="btnAddClass">Thêm Lớp Mới</span></button>
-                            <button role="menuitem" type="button" id="mxPortalBtn" class="menu-item" onclick="closeAllMenus();mxPortalOpen()"><span class="menu-ico bg-emerald-100 text-emerald-600"><i class="fa-solid fa-user-graduate"></i></span><span data-i18n="menuStudentPortal">Cổng học sinh</span></button>
-                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openEditHistory()"><span class="menu-ico bg-amber-100 text-amber-600"><i class="fa-solid fa-clock-rotate-left"></i></span><span data-i18n="menuEditHistory">Lịch sử chỉnh sửa</span></button>
-                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openScoreArchive()"><span class="menu-ico bg-teal-100 text-teal-600"><i class="fa-solid fa-box-archive"></i></span><span data-i18n="menuScoreArchive">Lưu Trữ điểm</span></button>
-                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openDeletedStudents()"><span class="menu-ico bg-fuchsia-100 text-fuchsia-600"><i class="fa-solid fa-trash-arrow-up"></i></span><span data-i18n="menuRestoreStudents">Khôi phục học sinh đã xóa</span></button>
-                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();exportData()" data-i18n-title="backupTitle" title="Tải bản sao lưu dữ liệu ra file JSON"><span class="menu-ico bg-slate-100 text-slate-600"><i class="fa-solid fa-download"></i></span><span data-i18n="btnBackup">Sao lưu dữ liệu</span></button>
-                            <label role="menuitem" class="menu-item"><span class="menu-ico bg-sky-100 text-sky-600"><i class="fa-solid fa-cloud-arrow-up"></i></span><span data-i18n="btnRestoreData">Phục hồi dữ liệu</span>
+                            <button role="menuitem" type="button" id="mxPortalBtn" class="menu-item" onclick="closeAllMenus();mxPortalOpen()"><span class="menu-ico bg-cyan-100 text-cyan-700"><i class="fa-solid fa-user-graduate"></i></span><span data-i18n="menuStudentPortal">Cổng học sinh</span></button>
+                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openEditHistory()"><span class="menu-ico bg-yellow-100 text-yellow-700"><i class="fa-solid fa-clock-rotate-left"></i></span><span data-i18n="menuEditHistory">Lịch sử chỉnh sửa</span></button>
+                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openScoreArchive()"><span class="menu-ico bg-pink-100 text-pink-600"><i class="fa-solid fa-box-archive"></i></span><span data-i18n="menuScoreArchive">Lưu Trữ điểm</span></button>
+                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openDeletedStudents()"><span class="menu-ico bg-blue-100 text-blue-600"><i class="fa-solid fa-trash-arrow-up"></i></span><span data-i18n="menuRestoreStudents">Khôi phục học sinh đã xóa</span></button>
+                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();exportData()" data-i18n-title="backupTitle" title="Tải bản sao lưu dữ liệu ra file JSON"><span class="menu-ico bg-red-100 text-red-600"><i class="fa-solid fa-download"></i></span><span data-i18n="btnBackup">Sao lưu dữ liệu</span></button>
+                            <label role="menuitem" class="menu-item"><span class="menu-ico bg-gray-200 text-gray-600"><i class="fa-solid fa-cloud-arrow-up"></i></span><span data-i18n="btnRestoreData">Phục hồi dữ liệu</span>
                                 <input type="file" id="importFileInput" class="hidden" accept=".json" onchange="importData(event);closeAllMenus()">
                             </label>
                         </div>
@@ -4223,6 +4230,10 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
                     </div>
                     <div class="flex items-center gap-2 flex-wrap qs-pres-hide">
                         <button type="button" id="gradeLegendToggle" onclick="toggleGradeLegend()" class="gr-toggle-btn" aria-expanded="false" aria-controls="gradeLegend"><i class="fa-solid fa-medal"></i><span data-i18n="gradeLegendBtn">Xếp Loại</span><i class="fa-solid fa-chevron-down gr-chev"></i></button>
+                        <div class="shop-view-switch" id="rkViewSwitch" role="group" aria-label="View mode">
+                            <button type="button" data-rkv="table" class="on" aria-pressed="true" onclick="rkSetView('table')"><i class="fa-solid fa-table-list"></i><span data-i18n="rkViewTable">Bảng</span></button>
+                            <button type="button" data-rkv="chart" aria-pressed="false" onclick="rkSetView('chart')"><i class="fa-solid fa-chart-line"></i><span data-i18n="rkViewChart">Đồ thị</span></button>
+                        </div>
                         <button type="button" onclick="qsPresent('ranking')" class="qs-pres-btn"><i class="fa-solid fa-display"></i><span data-qs="present">Trình chiếu</span></button>
                     </div>
                 </div>
@@ -4231,14 +4242,14 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
                 <div id="gradeLegend" class="qs-pres-hide"></div>
 
                 <!-- Ranking Table -->
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto" id="rankingTableWrap">
                     <table class="w-full text-sm text-left border-collapse">
                         <thead>
                             <tr class="text-xs font-bold uppercase text-slate-400 border-b border-slate-100">
                                 <th class="py-3 px-4 w-20 text-center" data-i18n="thRank">HẠNG</th>
                                 <th class="py-3 px-4" data-i18n="thName">HỌ VÀ TÊN HỌC SINH</th>
                                 <th class="py-3 px-2 text-center" data-i18n="thPet">THÚ CƯNG</th>
-                                <th class="py-3 px-2 text-center" aria-hidden="true"></th>
+                                <th class="py-3 px-2 text-center" data-i18n="thSpeak">SỐ LẦN PHÁT BIỂU</th>
                                 <th class="py-3 px-4 text-center" data-i18n="thAttended">SỐ ĐIỂM NHẬN ĐƯỢC</th>
                                 <th class="py-3 px-4 text-center" data-i18n="thTotal">TỔNG ĐIỂM</th>
                                 <th class="py-3 px-4 text-center" data-i18n="thAvg">ĐIỂM TRUNG BÌNH</th>
@@ -4250,6 +4261,9 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Đồ thị đường điểm theo ngày nhập -->
+                <div id="rankingChartWrap" class="rkc hidden"></div>
             </div>
         </div>
 
@@ -4390,7 +4404,7 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
     </div>
     <div id="timerModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
         <div class="bg-white rounded-2xl shadow-2xl w-96 p-6 text-center">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
+            <div class="flex justify-between items-center border-b pb-3 mb-4 tool-hdr tool-violet">
                 <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
                     <i class="fa-solid fa-stopwatch text-violet-600"></i> <span data-i18n="modalTimerTitle">Đồng Hồ Đếm Ngược</span>
                 </h3>
@@ -4524,7 +4538,7 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
     <!-- Modal: Gọi Học Sinh Random -->
     <div id="randomPickerModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
         <div class="bg-white rounded-2xl shadow-2xl rp-card p-6 text-center">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
+            <div class="flex justify-between items-center border-b pb-3 mb-4 tool-hdr tool-amber">
                 <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
                     <i class="fa-solid fa-dice text-amber-500"></i> <span data-i18n="modalRandomTitle">Gọi Học Sinh Ngẫu Nhiên</span>
                 </h3>
@@ -4536,6 +4550,7 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
                 <div id="randomStudentName" class="text-xl font-black text-indigo-900" data-i18n="randomPrompt">Bấm nút để gọi!</div>
             </div>
             <div id="randomArena" class="rp-arena"></div>
+            <p id="rpAbsentNote" class="hidden text-center text-[11px] font-bold text-rose-500 mt-2"></p>
 
             <div class="rp-mode-panel mt-4 mb-3 text-left">
                 <div class="text-xs font-extrabold uppercase tracking-wide text-slate-500 mb-2" data-i18n="rpModeLabel">Chế độ gọi học sinh</div>
@@ -4560,7 +4575,7 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
     <!-- Modal: Ghép Nhóm Học Sinh -->
     <div id="groupModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
         <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] flex flex-col">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
+            <div class="flex justify-between items-center border-b pb-3 mb-4 tool-hdr tool-teal">
                 <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
                     <i class="fa-solid fa-users text-teal-600"></i> <span data-i18n="modalGroupTitle">Tự Động Chia Nhóm</span>
                 </h3>
@@ -4575,6 +4590,10 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
                     <button onclick="generateGroups(4)" class="px-3 py-1 bg-teal-100 hover:bg-teal-200 text-teal-800 text-xs font-bold rounded-lg border border-teal-300"><span data-i18n="btnGroup4">Nhóm 4</span></button>
                     <button onclick="generateGroups(5)" class="px-3 py-1 bg-teal-100 hover:bg-teal-200 text-teal-800 text-xs font-bold rounded-lg border border-teal-300"><span data-i18n="btnGroup5">Nhóm 5</span></button>
                 </div>
+            </div>
+
+            <div id="groupAutoHint" class="mb-3 px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 text-xs font-bold text-rose-700 flex items-center gap-2">
+                <i class="fa-solid fa-user-slash"></i><span data-i18n="groupAutoHint">Học sinh bị đánh vắng (ô đỏ) hôm nay sẽ tự động được bỏ qua.</span> <span id="groupAutoCount" class="font-black"></span>
             </div>
 
             <div id="groupResultsContainer" class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-3 p-1">
@@ -4920,7 +4939,7 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
     <!-- Modal: Đổi chỗ ngồi ngẫu nhiên -->
     <div id="seatingModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto">
-        <div class="flex justify-between items-center border-b pb-3 mb-4"><h3 class="text-base font-black text-slate-800 flex items-center gap-2"><i class="fa-solid fa-chair text-sky-600"></i><span data-i18n="seatingModalTitle">Đổi chỗ ngồi ngẫu nhiên</span></h3><button onclick="closeSeatingModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+        <div class="flex justify-between items-center border-b pb-3 mb-4 tool-hdr tool-sky"><h3 class="text-base font-black text-slate-800 flex items-center gap-2"><i class="fa-solid fa-chair text-sky-600"></i><span data-i18n="seatingModalTitle">Đổi chỗ ngồi ngẫu nhiên</span></h3><button onclick="closeSeatingModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button></div>
         <div class="grid grid-cols-2 gap-3 mb-4">
           <label class="text-xs font-bold text-slate-600"><span>Số hàng</span><input id="seatRows" type="number" min="1" max="20" value="5" oninput="renderSeatPreview()" class="block w-full mt-1 border rounded-lg p-2"></label>
           <label class="text-xs font-bold text-slate-600"><span>Số cột</span><input id="seatCols" type="number" min="1" max="20" value="4" oninput="renderSeatPreview()" class="block w-full mt-1 border rounded-lg p-2"></label>
@@ -4935,6 +4954,32 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
       </div>
     </div>
 
+<style id="patch-tool-theme">
+/* Giao diện các công cụ đồng bộ màu với nút trên thanh công cụ */
+.tool-hdr{margin:-1.5rem -1.5rem 1.1rem !important;padding:.85rem 1.25rem !important;border-bottom:0 !important;border-radius:calc(1.5rem - 1px) calc(1.5rem - 1px) 0 0 !important;background:linear-gradient(90deg,var(--tl-a),var(--tl-b)) !important;box-shadow:0 4px 12px var(--tl-sh)}
+.tool-hdr h3,.tool-hdr h3 *{color:#fff !important}
+.tool-hdr>button{color:#fff !important;opacity:.9;width:2rem;height:2rem;border-radius:.6rem;display:inline-flex;align-items:center;justify-content:center;transition:background .15s,transform .15s,opacity .15s}
+.tool-hdr>button:hover{background:rgba(255,255,255,.22);opacity:1}
+.tool-hdr .tm-ibtn{background:rgba(255,255,255,.2) !important;box-shadow:none !important}
+.tool-hdr .tm-ibtn:hover{background:rgba(255,255,255,.34) !important}
+.tool-violet{--tl-a:#8b5cf6;--tl-b:#6d28d9;--tl-sh:rgba(109,40,217,.35)}
+.tool-sky{--tl-a:#38bdf8;--tl-b:#0284c7;--tl-sh:rgba(2,132,199,.35)}
+.tool-amber{--tl-a:#fbbf24;--tl-b:#d97706;--tl-sh:rgba(217,119,6,.35)}
+.tool-teal{--tl-a:#2dd4bf;--tl-b:#0d9488;--tl-sh:rgba(13,148,136,.35)}
+/* Đếm ngược: màn hình số theo tông tím */
+#timerModal .bg-slate-900{background:linear-gradient(135deg,#3b0764,#5b21b6) !important}
+#timerModal #btnPauseTimer{background:#7c3aed}#timerModal #btnPauseTimer:hover{background:#6d28d9}
+/* Gọi random: khung hiển thị theo tông cam */
+#randomPickerModal #randomDisplayArea{background:#fffbeb !important;border-color:#fde68a !important}
+#randomPickerModal #randomStudentName{color:#92400e}
+/* Đổi chỗ ngồi: ô nhập theo tông xanh da trời */
+#seatingModal input:focus{outline:none;border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.22)}
+/* Ghép nhóm: khung chọn cỡ nhóm + học sinh vắng */
+#groupModal .bg-slate-50{background:#f0fdfa !important;border-color:#99f6e4 !important}
+html.mx-dark html.mx-dark html.mx-dark html.mx-dark #groupModal .bg-slate-50{background:#134e4a !important;border-color:#0f766e !important}
+html.mx-dark #randomPickerModal #randomDisplayArea{background:#451a03 !important;border-color:#92400e !important}
+html.mx-dark #randomPickerModal #randomStudentName{color:#fde68a}
+</style>
 <style id="patch-pet-shop">
 .ps-bar{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.6rem 0}
 .ps-chip{border:1px solid #c7d2fe;background:#fff;color:#4338ca;border-radius:9999px;padding:.25rem .65rem;font-size:11px;font-weight:800;cursor:pointer;transition:transform .15s,background .15s}
@@ -4963,6 +5008,11 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
 .pq-in{flex:1;min-width:140px;border:1.5px solid #c7d2fe;border-radius:.6rem;padding:.3rem .5rem;font-weight:800;font-size:13px}
 .pq-h{font-size:12px;font-weight:900;color:#4338ca;margin-top:.7rem}
 .pq-stat{font-size:11px;color:#334155;font-weight:700}
+.pq-cnt{margin-top:6px;padding:5px 8px;border-radius:10px;background:#f5f3ff;border:1px solid #ddd6fe;font-size:11px;font-weight:800;color:#5b21b6}
+.pq-cnt b{font-weight:900}
+.pq-cnt i{display:block;height:5px;border-radius:99px;background:#e9e5ff;margin-top:4px;overflow:hidden}
+.pq-cnt u{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#8b5cf6,#6366f1);text-decoration:none;transition:width .4s}
+html.mx-dark .pq-cnt{background:#2e1065;border-color:#4c1d95;color:#ddd6fe}html.mx-dark .pq-cnt i{background:#4c1d95}
 html.mx-dark .ps-card,html.mx-dark .pq-card,html.mx-dark .pq-row{background:#1e1b4b;border-color:#4c1d95;color:#e2e8f0}
 html.mx-dark .ps-nm,html.mx-dark .pq-slot .t{color:#f1f5f9}html.mx-dark .ps-ds,html.mx-dark .pq-stat{color:#cbd5e1}
 html.mx-dark .pq-in{background:#0f172a;color:#f1f5f9;border-color:#4c1d95}html.mx-dark .ps-chip{background:#1e1b4b;color:#c7d2fe;border-color:#4c1d95}
@@ -5036,7 +5086,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 finalExamRanking: "Bảng xếp hạng cuối kỳ",
                 finalExamRank: "Hạng", finalExamStudent: "Học sinh", finalExamListening: "Nghe", finalExamSpeaking: "Nói", finalExamReading: "Đọc", finalExamWriting: "Viết", finalExamGrammar: "Ngữ pháp", finalExamVocabulary: "Từ vựng", finalExamGrammarVocabulary: "TB Ngữ pháp + Từ vựng", finalExamTotal: "TB tổng",
                 appTitle: "QUẢN LÝ & BẢNG THI ĐUA HỌC SINH",
-                teacherSwitch: "Đổi giáo viên",
+                teacherSwitch: "Thoát",
                 btnTimer: "Đếm Ngược",
                 btnSeating: "Đổi Chỗ Ngồi", tabFinalExam: "Kiểm Tra Cuối Kỳ",
                 btnRandom: "Gọi Random",
@@ -5063,6 +5113,13 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 thName: "HỌ VÀ TÊN HỌC SINH",
                 thBag: "TÚI QUÀ (PTS)",
                 thAttended: "SỐ ĐIỂM NHẬN ĐƯỢC",
+                thSpeak: "SỐ LẦN PHÁT BIỂU",
+                rkViewTable: "Bảng", rkViewChart: "Đồ thị",
+                rkcEmpty: "Chưa có lịch sử điểm để vẽ đồ thị.",
+                rkcAxisY: "Điểm", rkcAxisX: "Thời gian (ngày/tháng)",
+                rkcAbsent: "Vắng", rkcScore: "Điểm", rkcSpeak: "Phát biểu", rkcAvg: "ĐTB", rkcTimes: "lần",
+                rkcShowAll: "Hiện tất cả", rkcHideAll: "Ẩn tất cả",
+                rkcHint: "Bấm vào tên để ẩn/hiện đường · rê chuột vào điểm để xem chi tiết",
                 thTotal: "TỔNG ĐIỂM",
                 thAvg: "ĐIỂM TRUNG BÌNH",
                 thGrade: "XẾP LOẠI THI ĐUA",
@@ -5111,6 +5168,10 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 btnGroup3: "Nhóm 3",
                 btnGroup4: "Nhóm 4",
                 btnGroup5: "Nhóm 5",
+                groupAutoHint: "Học sinh bị đánh vắng (ô đỏ) hôm nay sẽ tự động được bỏ qua.",
+                groupAllAbsent: "Tất cả học sinh hôm nay đều bị đánh vắng!",
+                groupAbsentSkipped: "Đã tự động bỏ qua {n} học sinh vắng hôm nay",
+                rpAbsentSkipped: "Đã tự động bỏ qua {n} học sinh vắng hôm nay",
                 modalAddClassTitle: "Thêm Lớp Học Mới",
                 lblClassName: "Tên Lớp (VD: 8B, 7A, Tiếng Anh K1):",
                 lblClassColor: "Màu Nhận Diện Lớp:",
@@ -5204,7 +5265,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 finalExamRanking: "Final Exam Leaderboard",
                 finalExamRank: "Rank", finalExamStudent: "Student", finalExamListening: "Listening", finalExamSpeaking: "Speaking", finalExamReading: "Reading", finalExamWriting: "Writing", finalExamGrammar: "Grammar", finalExamVocabulary: "Vocabulary", finalExamGrammarVocabulary: "Grammar + Vocabulary Avg.", finalExamTotal: "Overall Avg.",
                 appTitle: "STUDENT COMPETITION MANAGEMENT",
-                teacherSwitch: "Switch teacher",
+                teacherSwitch: "Exit",
                 btnTimer: "Timer",
                 btnSeating: "Seating Plan", tabFinalExam: "Final Exam",
                 btnRandom: "Random Picker",
@@ -5231,6 +5292,13 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 thName: "STUDENT FULL NAME",
                 thBag: "GIFT BAG (PTS)",
                 thAttended: "SCORES RECEIVED",
+                thSpeak: "SPEAKING COUNT",
+                rkViewTable: "Table", rkViewChart: "Chart",
+                rkcEmpty: "No score history to chart yet.",
+                rkcAxisY: "Score", rkcAxisX: "Time (day/month)",
+                rkcAbsent: "Absent", rkcScore: "Score", rkcSpeak: "Speaking", rkcAvg: "AVG", rkcTimes: "times",
+                rkcShowAll: "Show all", rkcHideAll: "Hide all",
+                rkcHint: "Click a name to show/hide its line · hover a point for details",
                 thTotal: "TOTAL SCORE",
                 thAvg: "AVERAGE",
                 thGrade: "GRADE RANK",
@@ -5279,6 +5347,10 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 btnGroup3: "Group of 3",
                 btnGroup4: "Group of 4",
                 btnGroup5: "Group of 5",
+                groupAutoHint: "Students marked absent (red cell) today are skipped automatically.",
+                groupAllAbsent: "Every student is marked absent today!",
+                groupAbsentSkipped: "{n} student(s) absent today skipped automatically",
+                rpAbsentSkipped: "{n} student(s) absent today skipped automatically",
                 modalAddClassTitle: "Add New Class",
                 lblClassName: "Class Name (e.g. 8B, 7A, English K1):",
                 lblClassColor: "Class Color Badge:",
@@ -10244,10 +10316,12 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             let count = 0;
             let attendedCount = 0;
             let absentCount = 0;
+            let speakTotal = 0; // tổng số lần phát biểu (lấy từ lịch sử nhập điểm theo ngày)
 
             for (let key in appData.scores) {
                 if (key.startsWith(studentId + '_')) {
                     const item = appData.scores[key];
+                    const spN = Number(item && item.speakingCount); if (Number.isFinite(spN) && spN > 0) speakTotal += spN;
                     if (item.absent) {
                         total += 0;
                         count++;
@@ -10270,6 +10344,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 count: count, 
                 attendedCount: attendedCount, 
                 absentCount: absentCount, 
+                speakTotal: speakTotal, 
                 hasData: enough 
             };
         }
@@ -10291,37 +10366,6 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         }
         function gradeTierLabel(t) { return appData.language === 'en' ? t.en : t.vi; }
 
-        // Sticker tài sản cấp 1–10 (không chữ/số): 1 bát sứt · 2 túi vải thủng · 3 hộp tiết kiệm · 4 ví da · 5 rương gỗ · 6 rương tím đá quý · 7 rương hoàng gia · 8 núi vàng · 9 ngai vàng · 10 cung điện vàng
-        const GRADE_STICKERS = [
-            null,
-            "<path d=\"M8 30h48c0 14-9 25-24 25S8 44 8 30z\" fill=\"#d1d5db\" stroke=\"#4b5563\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><ellipse cx=\"32\" cy=\"30\" rx=\"24\" ry=\"6.5\" fill=\"#9ca3af\" stroke=\"#4b5563\" stroke-width=\"1.6\"/><ellipse cx=\"32\" cy=\"29\" rx=\"5.6\" ry=\"4.9\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1.3\"/><ellipse cx=\"32\" cy=\"29\" rx=\"3.1\" ry=\"2.7\" fill=\"none\" stroke=\"#6b3b1d\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M21 36l5 6-3 5 4 6\" fill=\"none\" stroke=\"#4b5563\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M12 35c1 6 4 10 8 13\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.6\" stroke-linecap=\"round\" opacity=\".6\"/><path d=\"M5 56l9-3 2 5-8 2z\" fill=\"#d1d5db\" stroke=\"#4b5563\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><path d=\"M45 59l10-3 2 4-9 3z\" fill=\"#d1d5db\" stroke=\"#4b5563\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><path d=\"M37 59l4-1 1 3z\" fill=\"#d1d5db\" stroke=\"#4b5563\" stroke-width=\"1.1\" stroke-linejoin=\"round\"/>",
-            "<path d=\"M23 20C15 26 8 38 8 48c0 8 9 11 24 11s24-3 24-11c0-10-7-22-15-28z\" fill=\"#9a7650\" stroke=\"#4a3320\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M23 20l-4-10 8 4 5-7 5 7 8-4-4 10z\" fill=\"#9a7650\" stroke=\"#4a3320\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M21 21q11 6 22 0\" fill=\"none\" stroke=\"#e5c999\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><path d=\"M30 25l-4 8M34 25l4 7\" fill=\"none\" stroke=\"#e5c999\" stroke-width=\"2.2\" stroke-linecap=\"round\"/><ellipse cx=\"25\" cy=\"44\" rx=\"5\" ry=\"6.5\" fill=\"#2f2012\"/><path d=\"M18 40l3 1M18 47l3-1M32 40l-3 1M31 48l-3-1\" stroke=\"#e5c999\" stroke-width=\"1.3\" stroke-linecap=\"round\"/><rect x=\"37\" y=\"36\" width=\"10\" height=\"8\" rx=\"1\" fill=\"#6b4a2b\" stroke=\"#e5c999\" stroke-width=\"1\" stroke-dasharray=\"2 1.6\"/><ellipse cx=\"27\" cy=\"57\" rx=\"4.4\" ry=\"3.9\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1.3\"/><ellipse cx=\"27\" cy=\"57\" rx=\"2.4\" ry=\"2.1\" fill=\"none\" stroke=\"#6b3b1d\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"47\" cy=\"57\" rx=\"4.8\" ry=\"4.2\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1.3\"/><ellipse cx=\"47\" cy=\"57\" rx=\"2.6\" ry=\"2.3\" fill=\"none\" stroke=\"#6b3b1d\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"56\" cy=\"52\" rx=\"4.4\" ry=\"3.9\" fill=\"#e5e7eb\" stroke=\"#6b7280\" stroke-width=\"1.3\"/><ellipse cx=\"56\" cy=\"52\" rx=\"2.4\" ry=\"2.1\" fill=\"none\" stroke=\"#6b7280\" stroke-width=\".8\" opacity=\".6\"/>",
-            "<path d=\"M14 22l3-13h30l3 13z\" fill=\"#c8924f\" stroke=\"#5a3a1a\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><rect x=\"26\" y=\"13\" width=\"12\" height=\"3\" rx=\"1.5\" fill=\"#5a3a1a\"/><path d=\"M12 22h40l4 8H8z\" fill=\"#6e4521\" stroke=\"#5a3a1a\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><ellipse cx=\"20\" cy=\"26\" rx=\"4.6\" ry=\"4.0\" fill=\"#e5e7eb\" stroke=\"#6b7280\" stroke-width=\"1.3\"/><ellipse cx=\"20\" cy=\"26\" rx=\"2.5\" ry=\"2.2\" fill=\"none\" stroke=\"#6b7280\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"30\" cy=\"25\" rx=\"4.4\" ry=\"3.9\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1.3\"/><ellipse cx=\"30\" cy=\"25\" rx=\"2.4\" ry=\"2.1\" fill=\"none\" stroke=\"#6b3b1d\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"40\" cy=\"26\" rx=\"4.6\" ry=\"4.0\" fill=\"#e5e7eb\" stroke=\"#6b7280\" stroke-width=\"1.3\"/><ellipse cx=\"40\" cy=\"26\" rx=\"2.5\" ry=\"2.2\" fill=\"none\" stroke=\"#6b7280\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"48\" cy=\"27\" rx=\"3.6\" ry=\"3.2\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1.3\"/><ellipse cx=\"48\" cy=\"27\" rx=\"2.0\" ry=\"1.7\" fill=\"none\" stroke=\"#6b3b1d\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M8 30h48v25H8z\" fill=\"#b9824a\" stroke=\"#5a3a1a\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M8 38.5h48M8 47h48\" stroke=\"#8a5a2b\" stroke-width=\"1.4\"/><rect x=\"28\" y=\"35\" width=\"8\" height=\"10\" rx=\"1.6\" fill=\"#9ca3af\" stroke=\"#4b5563\" stroke-width=\"1.3\"/><circle cx=\"32\" cy=\"39\" r=\"1.4\" fill=\"#374151\"/><circle cx=\"12\" cy=\"34\" r=\"1\" fill=\"#5a3a1a\"/><circle cx=\"52\" cy=\"34\" r=\"1\" fill=\"#5a3a1a\"/>",
-            "<rect x=\"27\" y=\"5\" width=\"24\" height=\"9\" rx=\"1.5\" fill=\"#86c474\" stroke=\"#3b6b2b\" stroke-width=\"1.3\"/><rect x=\"24\" y=\"10\" width=\"30\" height=\"32\" rx=\"4\" fill=\"#a8562e\" stroke=\"#4a2410\" stroke-width=\"1.6\"/><path d=\"M24 22h30v16q0 4-4 4H28q-4 0-4-4z\" fill=\"#8e4521\" stroke=\"#4a2410\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><path d=\"M28 15h22\" stroke=\"#e0a070\" stroke-width=\"1.2\" stroke-dasharray=\"2 2\"/><circle cx=\"49\" cy=\"30\" r=\"2.8\" fill=\"#f2c94c\" stroke=\"#8a6414\" stroke-width=\"1.2\"/><rect x=\"5\" y=\"53.4\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#d1d5db\" stroke=\"#6b7280\" stroke-width=\"1\"/><rect x=\"5\" y=\"49.8\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#d1d5db\" stroke=\"#6b7280\" stroke-width=\"1\"/><rect x=\"5\" y=\"46.2\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#d1d5db\" stroke=\"#6b7280\" stroke-width=\"1\"/><rect x=\"5\" y=\"42.6\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#d1d5db\" stroke=\"#6b7280\" stroke-width=\"1\"/><rect x=\"15\" y=\"53.4\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#f5c542\" stroke=\"#a16207\" stroke-width=\"1\"/><rect x=\"15\" y=\"49.8\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#f5c542\" stroke=\"#a16207\" stroke-width=\"1\"/><rect x=\"15\" y=\"46.2\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#f5c542\" stroke=\"#a16207\" stroke-width=\"1\"/><rect x=\"15\" y=\"42.6\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#f5c542\" stroke=\"#a16207\" stroke-width=\"1\"/><rect x=\"15\" y=\"39\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#f5c542\" stroke=\"#a16207\" stroke-width=\"1\"/><rect x=\"15\" y=\"35.4\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#f5c542\" stroke=\"#a16207\" stroke-width=\"1\"/><rect x=\"25\" y=\"53.4\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1\"/><rect x=\"25\" y=\"49.8\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1\"/><rect x=\"25\" y=\"46.2\" width=\"9\" height=\"3.6\" rx=\"1.2\" fill=\"#c9783f\" stroke=\"#6b3b1d\" stroke-width=\"1\"/><path d=\"M33 68l4 -10h16l4 10z\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/>",
-            "<path d=\"M9 30V20C9 11 18 7 32 7s23 4 23 13v10z\" fill=\"#7a4a1f\" stroke=\"#3b2410\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M13 29V21c0-6 8-9 19-9s19 3 19 9v8z\" fill=\"#5a3512\"/><path d=\"M10 33c1-10 8-14 22-14s21 4 22 14z\" fill=\"#fbbf24\" stroke=\"#b45309\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><ellipse cx=\"16\" cy=\"29\" rx=\"3.2\" ry=\"2.8\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"16\" cy=\"29\" rx=\"1.8\" ry=\"1.5\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"24\" cy=\"26\" rx=\"3.2\" ry=\"2.8\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"24\" cy=\"26\" rx=\"1.8\" ry=\"1.5\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"40\" cy=\"26\" rx=\"3.2\" ry=\"2.8\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"40\" cy=\"26\" rx=\"1.8\" ry=\"1.5\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"48\" cy=\"29\" rx=\"3.2\" ry=\"2.8\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"48\" cy=\"29\" rx=\"1.8\" ry=\"1.5\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"32\" cy=\"23\" rx=\"3.2\" ry=\"2.8\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"32\" cy=\"23\" rx=\"1.8\" ry=\"1.5\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M26 33l3.6 -9h12.8l3.6 9z\" fill=\"#fcd34d\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M13 36l2.4000000000000004 -6h10.2l2.4000000000000004 6z\" fill=\"#fde68a\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><rect x=\"8\" y=\"30\" width=\"48\" height=\"25\" rx=\"3\" fill=\"#8b5a2b\" stroke=\"#3b2410\" stroke-width=\"1.6\"/><path d=\"M8 42h48\" stroke=\"#3b2410\" stroke-width=\"1.2\" opacity=\".5\"/><rect x=\"12\" y=\"30\" width=\"6\" height=\"25\" fill=\"#9ca3af\" stroke=\"#4b5563\" stroke-width=\"1.2\"/><rect x=\"46\" y=\"30\" width=\"6\" height=\"25\" fill=\"#9ca3af\" stroke=\"#4b5563\" stroke-width=\"1.2\"/><rect x=\"27\" y=\"36\" width=\"10\" height=\"11\" rx=\"2\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\"1.3\"/><circle cx=\"32\" cy=\"40\" r=\"1.7\" fill=\"#78350f\"/><rect x=\"31.2\" y=\"40.5\" width=\"1.6\" height=\"4.5\" fill=\"#78350f\"/><ellipse cx=\"10\" cy=\"59\" rx=\"3.6\" ry=\"3.2\" fill=\"#fbbf24\" stroke=\"#b45309\" stroke-width=\"1.3\"/><ellipse cx=\"10\" cy=\"59\" rx=\"2.0\" ry=\"1.7\" fill=\"none\" stroke=\"#b45309\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"55\" cy=\"59\" rx=\"3.6\" ry=\"3.2\" fill=\"#fbbf24\" stroke=\"#b45309\" stroke-width=\"1.3\"/><ellipse cx=\"55\" cy=\"59\" rx=\"2.0\" ry=\"1.7\" fill=\"none\" stroke=\"#b45309\" stroke-width=\".8\" opacity=\".6\"/>",
-            "<path d=\"M9 30V20C9 11 18 7 32 7s23 4 23 13v10z\" fill=\"#5b21b6\" stroke=\"#2e1065\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M13 29V21c0-6 8-9 19-9s19 3 19 9v8z\" fill=\"#3b0f86\"/><path d=\"M10 33c1-10 8-14 22-14s21 4 22 14z\" fill=\"#fbbf24\" stroke=\"#b45309\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><path d=\"M25 33l3.6 -9h14.8l3.6 9z\" fill=\"#fcd34d\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M13 37l2.8000000000000003 -7h10.399999999999999l2.8000000000000003 7z\" fill=\"#e5e7eb\" stroke=\"#6b7280\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M40 37l2.8000000000000003 -7h8.399999999999999l2.8000000000000003 7z\" fill=\"#e5e7eb\" stroke=\"#6b7280\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M9 30V20C9 11 18 7 32 7s23 4 23 13\" fill=\"none\" stroke=\"#f59e0b\" stroke-width=\"2.2\"/><rect x=\"8\" y=\"30\" width=\"48\" height=\"25\" rx=\"3\" fill=\"#6d28d9\" stroke=\"#2e1065\" stroke-width=\"1.6\"/><path d=\"M8 42h48\" stroke=\"#2e1065\" stroke-width=\"1.2\" opacity=\".5\"/><rect x=\"12\" y=\"30\" width=\"6\" height=\"25\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.2\"/><rect x=\"46\" y=\"30\" width=\"6\" height=\"25\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.2\"/><rect x=\"27\" y=\"36\" width=\"10\" height=\"11\" rx=\"2\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\"1.3\"/><circle cx=\"32\" cy=\"40\" r=\"1.7\" fill=\"#78350f\"/><rect x=\"31.2\" y=\"40.5\" width=\"1.6\" height=\"4.5\" fill=\"#78350f\"/><path d=\"M6.6 55.46l2.2 -2.8600000000000003h4.4l2.2 2.8600000000000003-4.4 5.940000000000001z\" fill=\"#38bdf8\" stroke=\"#0369a1\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M6.6 55.46h8.8\" stroke=\"#fff\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M18.4 57.74l1.8 -2.3400000000000003h3.6l1.8 2.3400000000000003-3.6 4.86z\" fill=\"#ef4444\" stroke=\"#7f1d1d\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M18.4 57.74h7.2\" stroke=\"#fff\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M48.6 55.46l2.2 -2.8600000000000003h4.4l2.2 2.8600000000000003-4.4 5.940000000000001z\" fill=\"#22c55e\" stroke=\"#166534\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M48.6 55.46h8.8\" stroke=\"#fff\" stroke-width=\".8\" opacity=\".6\"/>",
-            "<path d=\"M3 36h12c0 8-3 11-6 11v7h5v3H4v-3h5v-7c-3 0-6-3-6-11z\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><path d=\"M5.5 38c0 4 1 6 2.5 7\" stroke=\"#fff\" stroke-width=\"1.2\" opacity=\".7\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M49 36h12c0 8-3 11-6 11v7h5v3H50v-3h5v-7c-3 0-6-3-6-11z\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><path d=\"M51.5 38c0 4 1 6 2.5 7\" stroke=\"#fff\" stroke-width=\"1.2\" opacity=\".7\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M15 34V29c0-8 7-12 17-12s17 4 17 12v5z\" fill=\"#be123c\" stroke=\"#4c0519\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><rect x=\"15\" y=\"33\" width=\"34\" height=\"20\" rx=\"2.5\" fill=\"#9f1239\" stroke=\"#4c0519\" stroke-width=\"1.6\"/><rect x=\"19\" y=\"21\" width=\"5\" height=\"32\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.1\"/><rect x=\"40\" y=\"21\" width=\"5\" height=\"32\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.1\"/><rect x=\"15\" y=\"31\" width=\"34\" height=\"4\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\"1.1\"/><rect x=\"28.5\" y=\"31\" width=\"7\" height=\"9\" rx=\"1.2\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.2\"/><circle cx=\"32\" cy=\"35.5\" r=\"1.8\" fill=\"#ef4444\"/><path d=\"M26.4 19l-1.68 -7.699999999999999 4.76 3.36 2.52 -6.16 2.52 6.16 4.76 -3.36 -1.68 7.699999999999999z\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><circle cx=\"27\" cy=\"14\" r=\"1.2\" fill=\"#38bdf8\"/><circle cx=\"32\" cy=\"11\" r=\"1.3\" fill=\"#ef4444\"/><circle cx=\"37\" cy=\"14\" r=\"1.2\" fill=\"#22c55e\"/><circle cx=\"16.0\" cy=\"54.0\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"20.0\" cy=\"56.8\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"24.0\" cy=\"58.9\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"28.0\" cy=\"60.1\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"32.0\" cy=\"60.5\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"36.0\" cy=\"60.1\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"40.0\" cy=\"58.9\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"44.0\" cy=\"56.8\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><circle cx=\"48.0\" cy=\"54.0\" r=\"2.1\" fill=\"#fff\" stroke=\"#9ca3af\" stroke-width=\".8\"/><path class=\"gb-spark\" d=\"M57 6v8M53 10h8\" stroke=\"#fde047\" stroke-width=\"1.8\" stroke-linecap=\"round\"/>",
-            "<path d=\"M3 58C8 44 17 38 24 33c3-8 5-13 8-16 3 3 5 8 8 16 7 5 16 11 21 25z\" fill=\"#fbbf24\" stroke=\"#b45309\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><ellipse cx=\"32\" cy=\"28\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"32\" cy=\"28\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"26\" cy=\"37\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"26\" cy=\"37\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"38\" cy=\"36\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"38\" cy=\"36\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"20\" cy=\"45\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"20\" cy=\"45\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"32\" cy=\"43\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"32\" cy=\"43\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"44\" cy=\"45\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"44\" cy=\"45\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"14\" cy=\"53\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"14\" cy=\"53\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"26\" cy=\"52\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"26\" cy=\"52\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"40\" cy=\"52\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"40\" cy=\"52\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><ellipse cx=\"50\" cy=\"53\" rx=\"3\" ry=\"2.6\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1.3\"/><ellipse cx=\"50\" cy=\"53\" rx=\"1.7\" ry=\"1.4\" fill=\"none\" stroke=\"#d97706\" stroke-width=\".8\" opacity=\".6\"/><rect x=\"5\" y=\"45\" width=\"17\" height=\"11\" rx=\"1.5\" fill=\"#6b7280\" stroke=\"#374151\" stroke-width=\"1.4\"/><path d=\"M5 45v-3c0-3 3-5 8.5-5s8.5 2 8.5 5v3z\" fill=\"#9ca3af\" stroke=\"#374151\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><rect x=\"11\" y=\"46\" width=\"4\" height=\"5\" rx=\"1\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\".9\"/><rect x=\"42\" y=\"40\" width=\"17\" height=\"13\" rx=\"1.5\" fill=\"#8b5a2b\" stroke=\"#3b2410\" stroke-width=\"1.4\"/><path d=\"M42 40v-3c0-3 3-5 8.5-5s8.5 2 8.5 5v3z\" fill=\"#a9743a\" stroke=\"#3b2410\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><rect x=\"48\" y=\"41\" width=\"5\" height=\"6\" rx=\"1\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\".9\"/><path d=\"M22 67l2.8000000000000003 -7h10.399999999999999l2.8000000000000003 7z\" fill=\"#fcd34d\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M36 67l2.8000000000000003 -7h10.399999999999999l2.8000000000000003 7z\" fill=\"#fcd34d\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M28 59l2.4000000000000004 -6h9.2l2.4000000000000004 6z\" fill=\"#fde68a\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M25 5h14l5 6-12 11-12-11z\" fill=\"#67e8f9\" stroke=\"#0e7490\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><path d=\"M20 11h24M25 5l3 6 4 11 4-11 3-6M28 11h8\" fill=\"none\" stroke=\"#e0f2fe\" stroke-width=\"1\" opacity=\".85\" stroke-linejoin=\"round\"/><path class=\"gb-spark\" d=\"M53 5v8M49 9h8\" stroke=\"#fbbf24\" stroke-width=\"1.8\" stroke-linecap=\"round\"/>",
-            "<path d=\"M19 46V17C19 9 24 5 32 5s13 4 13 12v29z\" fill=\"#dc2626\" stroke=\"#7f1d1d\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M23 44V18c0-5 3.5-8 9-8s9 3 9 8v26\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"2\"/><circle cx=\"32\" cy=\"4.5\" r=\"2.6\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\"1.2\"/><rect x=\"15\" y=\"41\" width=\"34\" height=\"10\" rx=\"3\" fill=\"#b91c1c\" stroke=\"#7f1d1d\" stroke-width=\"1.5\"/><rect x=\"9\" y=\"34\" width=\"9\" height=\"20\" rx=\"3\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.5\"/><rect x=\"46\" y=\"34\" width=\"9\" height=\"20\" rx=\"3\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.5\"/><rect x=\"12\" y=\"53\" width=\"6\" height=\"7\" rx=\"1.2\" fill=\"#d97706\" stroke=\"#92400e\" stroke-width=\"1.2\"/><rect x=\"46\" y=\"53\" width=\"6\" height=\"7\" rx=\"1.2\" fill=\"#d97706\" stroke=\"#92400e\" stroke-width=\"1.2\"/><path d=\"M25.2 42l-2.04 -9.35 5.779999999999999 4.08 3.06 -7.48 3.06 7.48 5.779999999999999 -4.08 -2.04 9.35z\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><circle cx=\"32\" cy=\"36.6\" r=\"1.4\" fill=\"#ef4444\"/><path d=\"M59 24v35\" stroke=\"#d97706\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><ellipse cx=\"59\" cy=\"26\" rx=\"3.8\" ry=\"1.7\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\"1\"/><circle cx=\"59\" cy=\"19\" r=\"4.4\" fill=\"#ef4444\" stroke=\"#7f1d1d\" stroke-width=\"1.3\"/><circle cx=\"57.6\" cy=\"17.6\" r=\"1.2\" fill=\"#fff\" opacity=\".7\"/><ellipse cx=\"5\" cy=\"59\" rx=\"3.6\" ry=\"3.2\" fill=\"#fbbf24\" stroke=\"#b45309\" stroke-width=\"1.3\"/><ellipse cx=\"5\" cy=\"59\" rx=\"2.0\" ry=\"1.7\" fill=\"none\" stroke=\"#b45309\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M9 58.95l1.5 -1.9500000000000002h3l1.5 1.9500000000000002-3 4.050000000000001z\" fill=\"#38bdf8\" stroke=\"#0369a1\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M9 58.95h6\" stroke=\"#fff\" stroke-width=\".8\" opacity=\".6\"/><path class=\"gb-spark\" d=\"M6 8v8M2 12h8\" stroke=\"#fde047\" stroke-width=\"1.8\" stroke-linecap=\"round\"/>",
-            "<ellipse cx=\"32\" cy=\"38\" rx=\"30\" ry=\"24\" fill=\"#fde047\" opacity=\".28\"/><ellipse cx=\"32\" cy=\"38\" rx=\"30\" ry=\"24\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"1.6\" opacity=\".8\"/><rect x=\"9\" y=\"38\" width=\"10\" height=\"20\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.4\"/><path d=\"M7 39l7-14 7 14z\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><rect x=\"45\" y=\"38\" width=\"10\" height=\"20\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.4\"/><path d=\"M43 39l7-14 7 14z\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><rect x=\"17\" y=\"40\" width=\"30\" height=\"18\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.4\"/><rect x=\"26\" y=\"24\" width=\"12\" height=\"17\" fill=\"#fde68a\" stroke=\"#92400e\" stroke-width=\"1.4\"/><path d=\"M24 25l8-14 8 14z\" fill=\"#f59e0b\" stroke=\"#92400e\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><path d=\"M27.6 11l-1.32 -6.050000000000001 3.74 2.64 1.9800000000000002 -4.840000000000001 1.9800000000000002 4.840000000000001 3.74 -2.64 -1.32 6.050000000000001z\" fill=\"#fcd34d\" stroke=\"#92400e\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><path d=\"M27 58V50a5 5 0 0 1 10 0v8z\" fill=\"#92400e\"/><rect x=\"12\" y=\"44\" width=\"4\" height=\"7\" rx=\"2\" fill=\"#92400e\"/><rect x=\"48\" y=\"44\" width=\"4\" height=\"7\" rx=\"2\" fill=\"#92400e\"/><rect x=\"29.5\" y=\"29\" width=\"5\" height=\"7\" rx=\"2.5\" fill=\"#92400e\"/><path d=\"M18.8 46.88l1.6 -2.08h3.2l1.6 2.08-3.2 4.32z\" fill=\"#67e8f9\" stroke=\"#0e7490\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M18.8 46.88h6.4\" stroke=\"#fff\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M38.8 46.88l1.6 -2.08h3.2l1.6 2.08-3.2 4.32z\" fill=\"#67e8f9\" stroke=\"#0e7490\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M38.8 46.88h6.4\" stroke=\"#fff\" stroke-width=\".8\" opacity=\".6\"/><path d=\"M1 68l2.8000000000000003 -7h9.399999999999999l2.8000000000000003 7z\" fill=\"#fcd34d\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M48 68l2.8000000000000003 -7h9.399999999999999l2.8000000000000003 7z\" fill=\"#fcd34d\" stroke=\"#b45309\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M23 61l2-3h14l2 3z\" fill=\"#fbbf24\" stroke=\"#92400e\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path class=\"gb-spark\" d=\"M8 8v8M4 12h8\" stroke=\"#fde047\" stroke-width=\"1.8\" stroke-linecap=\"round\"/><path class=\"gb-spark\" d=\"M57 12v8M53 16h8\" stroke=\"#fde047\" stroke-width=\"1.8\" stroke-linecap=\"round\"/>"
-        ];
-        // Cấp sticker = phần nguyên của điểm trung bình tích lũy (0.x → chưa có sticker, 10.0 → cấp 10)
-        function gradeStickerLevel(avg) {
-            const a = Number(avg) || 0;
-            return Math.max(0, Math.min(10, Math.floor(a + 1e-9)));
-        }
-        function gradeStickerSvg(level, animate, size) {
-            const px = size || 44;
-            const cls = 'gb gb-stk' + (animate ? ' gb-anim gb-l' + level : '');
-            return `<svg class="${cls}" viewBox="-6 -6 76 76" width="${px}" height="${px}" aria-hidden="true"><g filter="url(#stkOutline)">${GRADE_STICKERS[level]}</g></svg>`;
-        }
-        function gradeBadgeSvg(avg, hasData) {
-            const en = appData.language === 'en';
-            const lv = hasData ? gradeStickerLevel(avg) : 0;
-            if (lv < 1) return '<span class="gb-wrap" aria-hidden="true"></span>';
-            return `<span class="gb-wrap" role="img" aria-label="${en ? 'Level' : 'Cấp'} ${lv}">${gradeStickerSvg(lv, true)}</span>`;
-        }
-
         function getGradeRankBadge(avg, hasData) {
             if (!hasData) return { label: (appData.language === 'en' ? 'Not enough scores' : 'Chưa đủ điểm'), color: 'bg-slate-100 text-slate-500' };
             const t = gradeTierOf(avg);
@@ -10335,7 +10379,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             return `<span class="rk-avgpill rk-t-${t.key}"><span data-cu="rkt:${id}:a" data-to="${st.avg}" data-dec="1" data-final="${st.avg}">${st.avg}</span></span>`;
         }
 
-        // Nút "Xếp Loại": mở/đóng khung thang xếp loại + cấp sticker (luôn đóng mặc định)
+        // Nút "Xếp Loại": mở/đóng khung thang xếp loại (luôn đóng mặc định)
         function grLegendSet(open) {
             const box = document.getElementById('gradeLegend'), btn = document.getElementById('gradeLegendToggle');
             if (box) {
@@ -10373,12 +10417,6 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 const tip = t.descVi ? ` title="${en ? t.descEn : t.descVi}"` : '';
                 return `<span class="gr-chip ${t.cls}"${tip}><b>${t.range}</b><span>${gradeTierLabel(t)}</span></span>`;
             }).join('') + '<span class="gr-leg-break"></span>' +
-                `<span class="gr-leg-title">${en ? 'Sticker level' : 'Cấp sticker'}:</span>` +
-                Array.from({ length: 10 }, (_, i) => {
-                    const lv = i + 1;
-                    const range = lv === 10 ? '10' : `${lv}.0–${lv}.9`;
-                    return `<span class="gr-stk" title="${en ? 'Level' : 'Cấp'} ${lv}: ${range}">${gradeStickerSvg(lv, false, 38)}<small>${range}</small></span>`;
-                }).join('') + '<span class="gr-leg-break"></span>' +
                 `<span class="gr-leg-title">${en ? 'Streak flame' : 'Lửa chuỗi'}:</span>` +
                 STREAK_LEGEND_TIERS.map(streakLegendFlameHtml).join('');
         }
@@ -11559,7 +11597,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                                 <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> <span class="tf-name-link${tfNameFx(s.id).nm}" onclick="tfOpenProfile('${s.id}')" title="${lang === 'en' ? 'View profile' : 'Xem hồ sơ'}">${getStudentDisplayName(s)}</span>${levelPillHtml(s.id)}${(() => { const f = tenStreakHtml(s.id); return f ? `<span class="sg-open" role="button" tabindex="0" onclick="sgOpenBook('${s.id}')" onkeydown="if(event.key==='Enter')sgOpenBook('${s.id}')" title="${lang === 'en' ? 'Open Streak Gift Book' : 'Mở Sổ quà Chuỗi'}">${f}</span>` : ''; })()} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span></div>
                             </td>
                             <td class="py-2 px-2 text-center">${window.petLbCell ? window.petLbCell(s.id) : ''}</td>
-                            <td class="py-2 px-2 text-center">${gradeBadgeSvg(st.avg, st.hasData)}</td>
+                            <td class="py-3.5 px-2 text-center font-bold text-amber-600"><span data-cu="rkt:${s.id}:sp" data-to="${st.speakTotal}" data-dec="0">${st.speakTotal}</span></td>
                             <td class="py-3.5 px-4 text-center font-semibold text-slate-600"><span data-cu="rkt:${s.id}:n" data-to="${st.attendedCount}" data-dec="0">${st.attendedCount}</span></td>
                             <td class="py-3.5 px-4 text-center font-bold text-indigo-600"><span data-cu="rkt:${s.id}:t" data-to="${st.total}" data-dec="1" data-final="${st.total}">${st.total}</span></td>
                             <td class="py-3.5 px-4 text-center">${rankAvgPillHtml(s.id, st)}</td>
@@ -11572,7 +11610,198 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             }
 
             tbody.innerHTML = tableHtml;
+            try { rkApplyView(); } catch (e) { console.warn('Leaderboard view skipped:', e); }
         }
+
+        /* ===== Leaderboard: chế độ xem Bảng / Đồ thị đường (điểm theo ngày nhập) ===== */
+        window.__rkView = window.__rkView || 'table';
+        window.__rkHidden = window.__rkHidden || {};
+        const RKC_COLORS = ['#4f46e5', '#e11d48', '#059669', '#d97706', '#0891b2', '#9333ea', '#db2777', '#65a30d', '#ea580c', '#2563eb', '#0d9488', '#a16207'];
+        function rkT(k) {
+            const l = (appData && appData.language === 'en') ? 'en' : 'vi';
+            return (translations[l] && translations[l][k]) || (translations.vi && translations.vi[k]) || k;
+        }
+        window.rkSetView = function (v) {
+            window.__rkView = v === 'chart' ? 'chart' : 'table';
+            window.__rkcSig = null; // vẽ lại hiệu ứng khi chuyển sang đồ thị
+            rkApplyView();
+        };
+        function rkApplyView() {
+            const v = window.__rkView === 'chart' ? 'chart' : 'table';
+            const tw = document.getElementById('rankingTableWrap'), cw = document.getElementById('rankingChartWrap');
+            if (!tw || !cw) return;
+            tw.classList.toggle('hidden', v === 'chart');
+            cw.classList.toggle('hidden', v !== 'chart');
+            document.querySelectorAll('#rkViewSwitch button').forEach(b => {
+                const on = b.dataset.rkv === v;
+                b.classList.toggle('on', on);
+                b.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+            if (v === 'chart') renderRankingChart();
+        }
+        // Gom lịch sử điểm theo từng học sinh từ appData.scores (khóa "<idHS>_<năm>-<tháng>-<ngày>")
+        function rkcCollect(students) {
+            const ids = new Set(students.map(s => String(s.id)));
+            const per = new Map();
+            const re = /^(.*)_(\d{4})-(\d{1,2})-(\d{1,2})$/;
+            Object.keys(appData.scores || {}).forEach(key => {
+                const mt = key.match(re);
+                if (!mt || !ids.has(mt[1])) return;
+                const it = appData.scores[key]; if (!it) return;
+                const raw = it.score;
+                const has = raw !== '' && raw !== null && raw !== undefined && Number.isFinite(Number(raw));
+                if (!it.absent && !has) return;
+                const y = +mt[2], m = +mt[3], d = +mt[4];
+                const arr = per.get(mt[1]) || [];
+                arr.push({ ts: Date.UTC(y, m - 1, d), y, m, d, v: it.absent ? 0 : Number(raw), abs: !!it.absent, sp: Number(it.speakingCount) || 0 });
+                per.set(mt[1], arr);
+            });
+            per.forEach(a => a.sort((p, q) => p.ts - q.ts));
+            return per;
+        }
+        function renderRankingChart() {
+            const wrap = document.getElementById('rankingChartWrap');
+            if (!wrap) return;
+            const cls = appData.classes.find(c => c.id === appData.activeClassId);
+            if (!cls) { wrap.innerHTML = ''; return; }
+            const students = appData.students.filter(s => s.classId === cls.id);
+            const ranked = rankAccumulatedStudents(students.map(s => ({ student: s, stats: calculateStudentStats(s.id) })));
+            const per = rkcCollect(students);
+            const colorOf = id => RKC_COLORS[Math.max(0, students.findIndex(s => String(s.id) === String(id))) % RKC_COLORS.length];
+            const series = ranked.filter(it => per.has(String(it.student.id))).map(it => ({
+                id: String(it.student.id), s: it.student, stats: it.stats, color: colorOf(it.student.id), pts: per.get(String(it.student.id))
+            }));
+            if (!series.length) { wrap.innerHTML = `<div class="rkc-empty">${rkT('rkcEmpty')}</div>`; window.__rkcSig = null; return; }
+
+            const hid = window.__rkHidden[cls.id] || (window.__rkHidden[cls.id] = {});
+            const tsSet = new Set(); let maxV = 10;
+            series.forEach(se => se.pts.forEach(p => { tsSet.add(p.ts); if (p.v > maxV) maxV = p.v; }));
+            const dates = [...tsSet].sort((a, b) => a - b), n = dates.length;
+            const dIdx = new Map(dates.map((t, i) => [t, i]));
+            const yMax = Math.ceil(maxV), yStep = yMax > 10 ? 2 : 1;
+
+            const sig = cls.id + '|' + (appData.language || 'vi') + '|' + series.map(se => se.id + ':' + se.pts.map(p => p.ts + '=' + p.v + (p.abs ? 'a' : '')).join(',')).join(';');
+            const animate = window.__rkcSig !== sig;
+            window.__rkcSig = sig;
+
+            const TOP = 24, PLOTH = 340, BOT = 40, H = TOP + PLOTH + BOT, PADL = 30, PADR = 38, YW = 46;
+            const avail = Math.max(260, (wrap.clientWidth || 800) - YW);
+            const inner = Math.max(avail, n * 46 + PADL + PADR);
+            const stepX = n > 1 ? (inner - PADL - PADR) / (n - 1) : 0;
+            const X = i => n > 1 ? PADL + i * stepX : inner / 2;
+            const Y = v => TOP + PLOTH * (1 - v / yMax);
+            const skip = n > 1 ? Math.max(1, Math.ceil(46 / stepX)) : 1;
+            const en = appData.language === 'en';
+
+            let ygrid = '', yticks = '';
+            for (let v = 0; v <= yMax; v += yStep) {
+                ygrid += `<line class="rkc-gl${v === 0 ? ' zero' : ''}" x1="0" x2="${inner}" y1="${Y(v)}" y2="${Y(v)}"/>`;
+                yticks += `<text class="rkc-tick" x="${YW - 8}" y="${Y(v) + 4}" text-anchor="end">${v}</text>`;
+            }
+            let xgrid = '', xticks = '';
+            dates.forEach((t, i) => {
+                const dt = new Date(t);
+                xgrid += `<line class="rkc-gv" x1="${X(i)}" x2="${X(i)}" y1="${TOP}" y2="${TOP + PLOTH}"/>`;
+                if (i % skip === 0) xticks += `<text class="rkc-tick" x="${X(i)}" y="${TOP + PLOTH + 20}" text-anchor="middle">${dt.getUTCDate()}/${dt.getUTCMonth() + 1}</text>`;
+            });
+
+            let lines = '', hits = '';
+            const visible = series.filter(se => !hid[se.id]);
+            [...visible].reverse().forEach(se => {
+                const si = series.indexOf(se);
+                const coords = se.pts.map(p => [X(dIdx.get(p.ts)), Y(p.v)]);
+                const d = coords.map((c, i) => (i ? 'L' : 'M') + c[0].toFixed(1) + ' ' + c[1].toFixed(1)).join(' ');
+                let g = `<g class="rkc-g" data-sid="${escapeHtml(se.id)}"><path class="rkc-line" pathLength="1" d="${d}" stroke="${se.color}"/>`;
+                se.pts.forEach((p, pi) => {
+                    if (pi === se.pts.length - 1) return;
+                    g += `<circle class="rkc-dot${p.abs ? ' abs' : ''}" cx="${coords[pi][0]}" cy="${coords[pi][1]}" r="4.5" stroke="${se.color}"/>`;
+                });
+                const last = coords[coords.length - 1], lp = se.pts[se.pts.length - 1];
+                g += `<g class="rkc-ava" transform="translate(${last[0]} ${last[1]})"><circle r="15" stroke="${se.color}"${lp.abs ? ' stroke-dasharray="4 3"' : ''}/><text y="1" text-anchor="middle" dominant-baseline="central">${escapeHtml(se.s.icon || '🎓')}</text></g></g>`;
+                lines += g;
+                se.pts.forEach((p, pi) => { hits += `<circle class="rkc-hit" cx="${coords[pi][0]}" cy="${coords[pi][1]}" r="${pi === se.pts.length - 1 ? 16 : 11}" data-s="${si}" data-p="${pi}"/>`; });
+            });
+
+            const chips = series.map(se => `<button type="button" class="rkc-chip${hid[se.id] ? ' off' : ''}" data-sid="${escapeHtml(se.id)}" style="--c:${se.color}" aria-pressed="${hid[se.id] ? 'false' : 'true'}"><span class="ci">${escapeHtml(se.s.icon || '🎓')}</span><span class="cn">${escapeHtml(getStudentDisplayName(se.s))}</span>${se.stats.hasData ? `<small>${se.stats.avg}</small>` : ''}</button>`).join('');
+
+            wrap.className = 'rkc' + (animate ? ' anim' : '');
+            wrap.innerHTML = `<div class="rkc-body">
+                <svg class="rkc-yaxis" width="${YW}" height="${H}" viewBox="0 0 ${YW} ${H}" aria-hidden="true">${yticks}<text class="rkc-tick" transform="translate(11 ${TOP + PLOTH / 2}) rotate(-90)" text-anchor="middle">${rkT('rkcAxisY')}</text></svg>
+                <div class="rkc-scroll"><svg width="${inner}" height="${H}" viewBox="0 0 ${inner} ${H}" role="img" aria-label="${rkT('rkViewChart')}">${ygrid}${xgrid}${xticks}${lines}${hits}</svg></div>
+            </div>
+            <div class="rkc-cap">${rkT('rkcAxisX')}</div>
+            <div class="rkc-legend"><button type="button" class="rkc-act" data-act="all">${rkT('rkcShowAll')}</button><button type="button" class="rkc-act" data-act="none">${rkT('rkcHideAll')}</button>${chips}</div>
+            <div class="rkc-tip" id="rkcTip" style="display:none"></div>`;
+            window.__rkcSeries = series;
+            rkcBind(wrap);
+        }
+        function rkcHl(sid) {
+            const wrap = document.getElementById('rankingChartWrap'); if (!wrap) return;
+            wrap.classList.toggle('hl', !!sid);
+            wrap.querySelectorAll('.rkc-g').forEach(g => g.classList.toggle('on', !!sid && g.dataset.sid === sid));
+        }
+        function rkcBind(wrap) {
+            if (wrap.__rkcBound) return;
+            wrap.__rkcBound = true;
+            const tipEl = () => wrap.querySelector('#rkcTip');
+            wrap.addEventListener('click', e => {
+                const cls = appData.classes.find(c => c.id === appData.activeClassId); if (!cls) return;
+                const hid = window.__rkHidden[cls.id] || (window.__rkHidden[cls.id] = {});
+                const act = e.target.closest('.rkc-act');
+                if (act) {
+                    (window.__rkcSeries || []).forEach(se => { if (act.dataset.act === 'none') hid[se.id] = true; else delete hid[se.id]; });
+                    renderRankingChart(); return;
+                }
+                const chip = e.target.closest('.rkc-chip');
+                if (chip) { const sid = chip.dataset.sid, all = window.__rkcSeries || [], onlyThis = all.length > 1 && all.every(se => se.id === sid ? !hid[se.id] : !!hid[se.id]); all.forEach(se => { if (onlyThis || se.id === sid) delete hid[se.id]; else hid[se.id] = true; }); renderRankingChart(); }
+            });
+            wrap.addEventListener('mouseover', e => {
+                const chip = e.target.closest('.rkc-chip');
+                if (chip) { rkcHl(chip.dataset.sid); return; }
+                const hit = e.target.closest('.rkc-hit');
+                if (!hit) return;
+                const se = (window.__rkcSeries || [])[+hit.dataset.s]; if (!se) return;
+                rkcHl(se.id);
+            });
+            wrap.addEventListener('mousemove', e => {
+                const hit = e.target.closest('.rkc-hit'), tip = tipEl(); if (!tip) return;
+                if (!hit) { tip.style.display = 'none'; return; }
+                const se = (window.__rkcSeries || [])[+hit.dataset.s], p = se && se.pts[+hit.dataset.p]; if (!p) return;
+                const en = appData.language === 'en';
+                const date = `${String(p.d).padStart(2, '0')}/${String(p.m).padStart(2, '0')}/${p.y}`;
+                tip.innerHTML = `<div><span style="font-size:1.05rem">${escapeHtml(se.s.icon || '🎓')}</span> <b>${escapeHtml(getStudentDisplayName(se.s))}</b></div>` +
+                    `<div>${date}</div>` +
+                    `<div>${rkT('rkcScore')}: <b>${p.abs ? rkT('rkcAbsent') : p.v}</b></div>` +
+                    `<div>${rkT('rkcSpeak')}: <b>${p.sp}</b> ${rkT('rkcTimes')}</div>`;
+                tip.style.display = 'block';
+                const r = wrap.getBoundingClientRect();
+                let x = e.clientX - r.left + 14, y = e.clientY - r.top - tip.offsetHeight - 10;
+                if (x + tip.offsetWidth > r.width) x = e.clientX - r.left - tip.offsetWidth - 14;
+                if (y < 0) y = e.clientY - r.top + 16;
+                tip.style.left = Math.max(0, x) + 'px'; tip.style.top = y + 'px';
+            });
+            // Lăn chuột trên đồ thị: trượt ngang trái/phải (đến mép thì trả lại cho trang cuộn bình thường)
+            wrap.addEventListener('wheel', e => {
+                const sc = e.target.closest && e.target.closest('.rkc-scroll'); if (!sc || e.ctrlKey) return;
+                const max = sc.scrollWidth - sc.clientWidth; if (max <= 1) return;
+                const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; if (!d) return;
+                const mul = e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? sc.clientWidth : 1;
+                const next = Math.max(0, Math.min(max, sc.scrollLeft + d * mul));
+                if (next === sc.scrollLeft) return;
+                e.preventDefault(); sc.scrollLeft = next;
+                const tip = tipEl(); if (tip) tip.style.display = 'none';
+            }, { passive: false });
+            wrap.addEventListener('mouseout', e => {
+                if (e.relatedTarget && wrap.contains(e.relatedTarget) && e.relatedTarget.closest && (e.relatedTarget.closest('.rkc-hit') || e.relatedTarget.closest('.rkc-chip'))) return;
+                rkcHl(null); const tip = tipEl(); if (tip) tip.style.display = 'none';
+            });
+        }
+        let __rkcRz = null;
+        window.addEventListener('resize', () => {
+            if (window.__rkView !== 'chart') return;
+            clearTimeout(__rkcRz);
+            __rkcRz = setTimeout(() => { const w = document.getElementById('rankingChartWrap'); if (w && w.offsetParent !== null) renderRankingChart(); }, 150);
+        });
 
         // Căn vị trí khóa của cột Họ & Tên và ĐTB theo bề rộng thật của các cột đứng trước (tránh ĐTB bị lệch/trượt khi cột tên rộng hơn mặc định)
         function mxSyncStickyLeft() {
@@ -12373,10 +12602,32 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 rpPendingRemoveId = null;
             }
         }
-        function rpStudents() {
+        // Học sinh bị đánh vắng đỏ (absent) trong ngày hôm nay -> hệ thống tự động bỏ qua ở Gọi Random và Ghép Nhóm
+        function mxTodayScoreKeyPart() {
+            const now = new Date(), m = now.getMonth() + 1, y = now.getFullYear();
+            const slot = (window.mxSlots ? window.mxSlots() : []).find(sl => sl.m === m && sl.y === y);
+            return slot ? `${y}-${m}-${now.getDate()}` : null;
+        }
+        function mxAbsentTodaySet(students) {
+            const part = mxTodayScoreKeyPart(), out = new Set();
+            if (!part) return out;
+            (students || []).forEach(s => { const it = appData.scores && appData.scores[`${s.id}_${part}`]; if (it && it.absent === true) out.add(String(s.id)); });
+            return out;
+        }
+        function rpClassStudents() {
             const activeClass = appData.classes.find(c => c.id === appData.activeClassId);
-            const students = activeClass ? appData.students.filter(s => s.classId === activeClass.id) : [];
+            return activeClass ? appData.students.filter(s => s.classId === activeClass.id) : [];
+        }
+        function rpStudents() {
+            const all = rpClassStudents(), abs = mxAbsentTodaySet(all);
+            const students = all.filter(s => !abs.has(String(s.id)));
             return rpCallMode === 'remove' ? students.filter(s => !rpRemovedStudentIds.includes(String(s.id))) : students;
+        }
+        function rpUpdateAbsentNote() {
+            const el = document.getElementById('rpAbsentNote'); if (!el) return;
+            const n = mxAbsentTodaySet(rpClassStudents()).size;
+            el.textContent = n ? translations[appData.language || 'vi'].rpAbsentSkipped.replace('{n}', n) : '';
+            el.classList.toggle('hidden', !n);
         }
         function rpUpdateModeUI() {
             const remove = rpCallMode === 'remove';
@@ -12428,6 +12679,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         function rpRenderArena(list) {
             const arena = document.getElementById('randomArena');
             arena.classList.remove('done');
+            rpUpdateAbsentNote();
             const n = list.length;
             arena.style.setProperty('--rp-s', n > 36 ? .62 : n > 24 ? .75 : n > 14 ? .9 : 1);
             arena.innerHTML = list.map((st, i) => `<span class="rp-chip" data-i="${i}"><span class="rp-ico">${st.icon || '🎓'}</span><span class="rp-nm">${escapeHtml(getStudentDisplayName(st))}</span></span>`).join('');
@@ -12471,6 +12723,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             if (rpCallMode === 'remove') rpCommitPending(); // bấm quay lần nữa mới xoá người đã gọi trước đó
             const list = rpStudents();
             if (list.length === 0) {
+                const cls = rpClassStudents();
+                if (cls.length && mxAbsentTodaySet(cls).size === cls.length) { alert(translations[appData.language || 'vi'].groupAllAbsent); return; }
                 alert(appData.language === 'en' ? "Current class has no students!" : "Lớp hiện tại chưa có học sinh!");
                 return;
             }
@@ -12518,8 +12772,14 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         };
 
         /* --- CHIA NHÓM --- */
+        window.grpUpdateAutoCount = function() {
+            const el = document.getElementById('groupAutoCount'); if (!el) return;
+            const n = mxAbsentTodaySet(rpClassStudents()).size;
+            el.textContent = n ? `(${n} ${(appData.language || 'vi') === 'en' ? 'absent' : 'vắng'})` : '';
+        };
         window.openGroupModal = function() {
             const lang = appData.language || 'vi';
+            try { window.grpUpdateAutoCount(); } catch (e) {}
             document.getElementById('groupResultsContainer').innerHTML = `<p class='col-span-full text-center text-slate-400 py-8 text-xs italic'>${translations[lang].groupPrompt}</p>`;
             document.getElementById('groupModal').classList.remove('hidden');
             document.getElementById('groupModal').classList.add('flex');
@@ -12534,9 +12794,16 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const activeClass = appData.classes.find(c => c.id === appData.activeClassId);
             if (!activeClass) return;
 
-            const studentsInClass = [...appData.students.filter(s => s.classId === activeClass.id)];
-            if (studentsInClass.length === 0) {
+            const allInClass = appData.students.filter(s => s.classId === activeClass.id);
+            if (allInClass.length === 0) {
                 alert(appData.language === 'en' ? "Current class has no students!" : "Lớp hiện tại chưa có học sinh nào!");
+                return;
+            }
+            // Học sinh bị đánh vắng đỏ hôm nay tự động bị bỏ qua
+            const absentSet = mxAbsentTodaySet(allInClass), skipped = absentSet.size;
+            const studentsInClass = allInClass.filter(s => !absentSet.has(String(s.id)));
+            if (studentsInClass.length === 0) {
+                alert(translations[appData.language || 'vi'].groupAllAbsent);
                 return;
             }
 
@@ -12573,6 +12840,12 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 `;
                 container.appendChild(card);
             });
+            if (skipped > 0) {
+                const note = document.createElement('p');
+                note.className = 'col-span-full text-center text-[11px] font-bold text-rose-500 pt-1';
+                note.textContent = t.groupAbsentSkipped.replace('{n}', skipped);
+                container.appendChild(note);
+            }
         };
 
         window.openClassModal = function() {
@@ -13125,7 +13398,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             appData.scores={};appData.finalExams={};appData.teachingPlans=appData.teachingPlans||{};appData.teachingPlans[c.id]=[];appData.studentNotes={};
             appData.students=(appData.students||[]).map(st=>{const n={...st,rewardPoints:0,inventory:[],violations:[],courseNotes:'',sgAwarded:[]};
               /* Khóa mới: thú cưng, kỷ lục streak, mốc chốt streak và phiếu vật phẩm đều bắt đầu lại từ đầu (chỉ giữ danh sách lớp/học sinh). */
-              ['petSp','petNick','petName','petHatch','petPeak','petItems','petEquip','petBg','petSpent','petSpentD','petBuys','petStreakSeen','petStreakLossCount','petShown','petLvSeen','petAvgSeen','bestTenStreak','streakFloor','itemTickets','itemTicketHistory','itemTicketWeekly'].forEach(k=>{delete n[k]});
+              ['petSp','petNick','petName','petHatch','petPeak','petItems','petEquip','petBg','petSpent','petSpentD','petBuys','petStreakSeen','petStreakLossCount','petShown','petLvSeen','petAvgSeen','petCnt','bestTenStreak','streakFloor','itemTickets','itemTicketHistory','itemTicketWeekly'].forEach(k=>{delete n[k]});
               return n;});
             appData.petBless={led:{},log:[],recv:{},pend:{}};appData.petExp={runs:{},hist:[],col:{}};appData.petHab={};
             if(appData.gacha&&typeof appData.gacha==='object'){appData.gacha.st={};appData.gacha.history=[];}
@@ -13618,8 +13891,8 @@ window.openStudentProfile=function(studentId){
         let unsubscribeTeacherData = null;
         let teacherGateLanguage = 'vi';
         const teacherText = {
-          vi:{title:'Chọn giáo viên',sub:'Mỗi giáo viên có không gian dữ liệu riêng.',add:'Thêm giáo viên',note:'Mật khẩu chỉ phân luồng giao diện, không thay thế bảo mật Firebase.',switch:'Đổi giáo viên',no:'Chưa có giáo viên nào. Hãy tạo giáo viên đầu tiên.',password:'Giáo viên này yêu cầu mật khẩu:',wrong:'Mật khẩu không đúng.',name:'Tên giáo viên:',icon:'Biểu tượng (emoji):',desc:'Mô tả (không bắt buộc):',pass:'Mật khẩu (để trống nếu không cần):',confirm:'Xác nhận mật khẩu:',exists:'Tên giáo viên đã tồn tại.',course:'Tên khóa học đầu tiên:',start:'Ngày bắt đầu (YYYY-MM-DD, có thể để trống):',end:'Ngày kết thúc (YYYY-MM-DD, có thể để trống):',badDate:'Ngày kết thúc không được trước ngày bắt đầu.',delete:'Xóa giáo viên này và toàn bộ dữ liệu của họ? Hãy sao lưu trước khi tiếp tục.',edit:'Để sửa, nhập tên mới; bỏ trống để giữ nguyên:',cancel:'Đã hủy.',hasPass:'Có mật khẩu',noPass:'Không có mật khẩu',remove:'Xóa',editBtn:'Sửa',enter:'Vào làm việc',return:'Quay lại chọn giáo viên',formTitle:'Thêm giáo viên mới',formSub:'Tạo không gian quản lý riêng cho giáo viên.',nameLabel:'Tên giáo viên *',iconLabel:'Biểu tượng',descLabel:'Mô tả (không bắt buộc)',passwordHeading:'Mật khẩu (không bắt buộc)',passwordHelp:'Để trống cả hai ô nếu không cần mật khẩu.',passwordPlaceholder:'Mật khẩu',confirmPlaceholder:'Nhập lại mật khẩu',cancelBtn:'Hủy',createBtn:'Tạo giáo viên',required:'Vui lòng nhập tên giáo viên.',passwordMismatch:'Hai mật khẩu không khớp.',formExists:'Tên giáo viên này đã tồn tại.',passwordModalTitle:'Nhập mật khẩu',passwordModalSub:'Nhập mật khẩu để tiếp tục.',passwordModalCancel:'Hủy',passwordModalSubmit:'Xác nhận',namePh:'Nhập tên giáo viên',descPh:'Ví dụ: Tiếng Anh — Khối 8',editTitle:'Chỉnh sửa thông tin giáo viên',editSub:'Cập nhật thông tin không gian làm việc.',editNameLabel:'Tên giáo viên',editDescLabel:'Mô tả',editPassHelp:'Để trống mật khẩu mới nếu muốn giữ nguyên mật khẩu hiện tại.',editPassPh:'Mật khẩu mới',editPassConfirmPh:'Xác nhận mật khẩu',editRemove:'Bỏ mật khẩu bảo vệ',editCancel:'Hủy',editSave:'Lưu thay đổi',iconSearchPh:'Tìm icon theo tên hoặc emoji...',iconHint:'Chọn một icon bên dưới hoặc nhập emoji riêng.',iconInputPh:'Chọn bên dưới hoặc nhập emoji riêng',iconNone:'Không tìm thấy icon phù hợp.',back:'Quay lại',roleTitle:'Chào mừng! Bạn là ai?',roleTeacher:'Tôi là giáo viên',roleTeacherSub:'Nhập mật khẩu để vào khu vực giáo viên.',roleStudent:'Tôi là học sinh',roleStudentSub:'Nhập mã học sinh để xem trang của bạn.',rolePwTitle:'Khu vực giáo viên',rolePwSub:'Nhập mật khẩu để tiếp tục. Thiết bị này sẽ ghi nhớ sau khi nhập đúng.',rolePwWrong:'Mật khẩu không đúng.'},
-          en:{title:'Choose a teacher',sub:'Each teacher has a separate workspace and dataset.',add:'Add teacher',note:'Passwords only separate the interface; they do not replace Firebase security.',switch:'Switch teacher',no:'No teachers yet. Create the first teacher.',password:'Enter this teacher’s password:',wrong:'Incorrect password.',name:'Teacher name:',icon:'Avatar emoji:',desc:'Description (optional):',pass:'Password (leave blank for none):',confirm:'Confirm password:',exists:'A teacher with this name already exists.',course:'First course name:',start:'Start date (YYYY-MM-DD, optional):',end:'End date (YYYY-MM-DD, optional):',badDate:'End date cannot be earlier than start date.',delete:'Delete this teacher and all of their data? Back up first.',edit:'Enter a new name, or leave blank to keep current name:',cancel:'Cancelled.',hasPass:'Password protected',noPass:'No password',remove:'Delete',editBtn:'Edit',enter:'Open workspace',return:'Back to teacher selection',formTitle:'Add a teacher',formSub:'Create a separate workspace for this teacher.',nameLabel:'Teacher name *',iconLabel:'Icon',descLabel:'Description (optional)',passwordHeading:'Password (optional)',passwordHelp:'Leave both fields empty if no password is needed.',passwordPlaceholder:'Password',confirmPlaceholder:'Confirm password',cancelBtn:'Cancel',createBtn:'Create teacher',required:'Please enter a teacher name.',passwordMismatch:'Passwords do not match.',formExists:'A teacher with this name already exists.',passwordModalTitle:'Enter password',passwordModalSub:'Enter the password to continue.',passwordModalCancel:'Cancel',passwordModalSubmit:'Confirm',namePh:'Enter teacher name',descPh:'e.g. English — Grade 8',editTitle:'Edit teacher information',editSub:'Update this teacher workspace information.',editNameLabel:'Teacher name',editDescLabel:'Description',editPassHelp:'Leave the new password blank to keep the current password.',editPassPh:'New password',editPassConfirmPh:'Confirm password',editRemove:'Remove password protection',editCancel:'Cancel',editSave:'Save changes',iconSearchPh:'Search icon or emoji...',iconHint:'Pick an icon below or type your own emoji.',iconInputPh:'Pick below or type your own emoji',iconNone:'No matching icons.',back:'Back',roleTitle:'Welcome! Who are you?',roleTeacher:'I am a teacher',roleTeacherSub:'Enter the password to open the teacher area.',roleStudent:'I am a student',roleStudentSub:'Enter your student code to see your page.',rolePwTitle:'Teacher area',rolePwSub:'Enter the password to continue. This device will remember it after a correct entry.',rolePwWrong:'Incorrect password.'}
+          vi:{title:'Chọn giáo viên',sub:'Mỗi giáo viên có không gian dữ liệu riêng.',add:'Thêm giáo viên',note:'Mật khẩu chỉ phân luồng giao diện, không thay thế bảo mật Firebase.',switch:'Thoát',no:'Chưa có giáo viên nào. Hãy tạo giáo viên đầu tiên.',password:'Giáo viên này yêu cầu mật khẩu:',wrong:'Mật khẩu không đúng.',name:'Tên giáo viên:',icon:'Biểu tượng (emoji):',desc:'Mô tả (không bắt buộc):',pass:'Mật khẩu (để trống nếu không cần):',confirm:'Xác nhận mật khẩu:',exists:'Tên giáo viên đã tồn tại.',course:'Tên khóa học đầu tiên:',start:'Ngày bắt đầu (YYYY-MM-DD, có thể để trống):',end:'Ngày kết thúc (YYYY-MM-DD, có thể để trống):',badDate:'Ngày kết thúc không được trước ngày bắt đầu.',delete:'Xóa giáo viên này và toàn bộ dữ liệu của họ? Hãy sao lưu trước khi tiếp tục.',edit:'Để sửa, nhập tên mới; bỏ trống để giữ nguyên:',cancel:'Đã hủy.',hasPass:'Có mật khẩu',noPass:'Không có mật khẩu',remove:'Xóa',editBtn:'Sửa',enter:'Vào làm việc',return:'Quay lại chọn giáo viên',formTitle:'Thêm giáo viên mới',formSub:'Tạo không gian quản lý riêng cho giáo viên.',nameLabel:'Tên giáo viên *',iconLabel:'Biểu tượng',descLabel:'Mô tả (không bắt buộc)',passwordHeading:'Mật khẩu (không bắt buộc)',passwordHelp:'Để trống cả hai ô nếu không cần mật khẩu.',passwordPlaceholder:'Mật khẩu',confirmPlaceholder:'Nhập lại mật khẩu',cancelBtn:'Hủy',createBtn:'Tạo giáo viên',required:'Vui lòng nhập tên giáo viên.',passwordMismatch:'Hai mật khẩu không khớp.',formExists:'Tên giáo viên này đã tồn tại.',passwordModalTitle:'Nhập mật khẩu',passwordModalSub:'Nhập mật khẩu để tiếp tục.',passwordModalCancel:'Hủy',passwordModalSubmit:'Xác nhận',namePh:'Nhập tên giáo viên',descPh:'Ví dụ: Tiếng Anh — Khối 8',editTitle:'Chỉnh sửa thông tin giáo viên',editSub:'Cập nhật thông tin không gian làm việc.',editNameLabel:'Tên giáo viên',editDescLabel:'Mô tả',editPassHelp:'Để trống mật khẩu mới nếu muốn giữ nguyên mật khẩu hiện tại.',editPassPh:'Mật khẩu mới',editPassConfirmPh:'Xác nhận mật khẩu',editRemove:'Bỏ mật khẩu bảo vệ',editCancel:'Hủy',editSave:'Lưu thay đổi',iconSearchPh:'Tìm icon theo tên hoặc emoji...',iconHint:'Chọn một icon bên dưới hoặc nhập emoji riêng.',iconInputPh:'Chọn bên dưới hoặc nhập emoji riêng',iconNone:'Không tìm thấy icon phù hợp.',back:'Quay lại',roleTitle:'Chào mừng! Bạn là ai?',roleTeacher:'Tôi là giáo viên',roleTeacherSub:'Nhập mật khẩu để vào khu vực giáo viên.',roleStudent:'Tôi là học sinh',roleStudentSub:'Nhập mã học sinh để xem trang của bạn.',rolePwTitle:'Khu vực giáo viên',rolePwSub:'Nhập mật khẩu để tiếp tục. Thiết bị này sẽ ghi nhớ sau khi nhập đúng.',rolePwWrong:'Mật khẩu không đúng.'},
+          en:{title:'Choose a teacher',sub:'Each teacher has a separate workspace and dataset.',add:'Add teacher',note:'Passwords only separate the interface; they do not replace Firebase security.',switch:'Exit',no:'No teachers yet. Create the first teacher.',password:'Enter this teacher’s password:',wrong:'Incorrect password.',name:'Teacher name:',icon:'Avatar emoji:',desc:'Description (optional):',pass:'Password (leave blank for none):',confirm:'Confirm password:',exists:'A teacher with this name already exists.',course:'First course name:',start:'Start date (YYYY-MM-DD, optional):',end:'End date (YYYY-MM-DD, optional):',badDate:'End date cannot be earlier than start date.',delete:'Delete this teacher and all of their data? Back up first.',edit:'Enter a new name, or leave blank to keep current name:',cancel:'Cancelled.',hasPass:'Password protected',noPass:'No password',remove:'Delete',editBtn:'Edit',enter:'Open workspace',return:'Back to teacher selection',formTitle:'Add a teacher',formSub:'Create a separate workspace for this teacher.',nameLabel:'Teacher name *',iconLabel:'Icon',descLabel:'Description (optional)',passwordHeading:'Password (optional)',passwordHelp:'Leave both fields empty if no password is needed.',passwordPlaceholder:'Password',confirmPlaceholder:'Confirm password',cancelBtn:'Cancel',createBtn:'Create teacher',required:'Please enter a teacher name.',passwordMismatch:'Passwords do not match.',formExists:'A teacher with this name already exists.',passwordModalTitle:'Enter password',passwordModalSub:'Enter the password to continue.',passwordModalCancel:'Cancel',passwordModalSubmit:'Confirm',namePh:'Enter teacher name',descPh:'e.g. English — Grade 8',editTitle:'Edit teacher information',editSub:'Update this teacher workspace information.',editNameLabel:'Teacher name',editDescLabel:'Description',editPassHelp:'Leave the new password blank to keep the current password.',editPassPh:'New password',editPassConfirmPh:'Confirm password',editRemove:'Remove password protection',editCancel:'Cancel',editSave:'Save changes',iconSearchPh:'Search icon or emoji...',iconHint:'Pick an icon below or type your own emoji.',iconInputPh:'Pick below or type your own emoji',iconNone:'No matching icons.',back:'Back',roleTitle:'Welcome! Who are you?',roleTeacher:'I am a teacher',roleTeacherSub:'Enter the password to open the teacher area.',roleStudent:'I am a student',roleStudentSub:'Enter your student code to see your page.',rolePwTitle:'Teacher area',rolePwSub:'Enter the password to continue. This device will remember it after a correct entry.',rolePwWrong:'Incorrect password.'}
         };
         function tt(k){return teacherText[teacherGateLanguage][k]||k;}
         async function teacherHash(s){const bytes=new TextEncoder().encode(s);const digest=await crypto.subtle.digest('SHA-256',bytes);return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');}
@@ -14736,7 +15009,7 @@ window.openStudentProfile=function(studentId){
             };
             let body = '', evo = [];
             if (petMode === 'class') {
-                body = `<div class="grid gap-3 mt-4" style="grid-template-columns:repeat(auto-fill,minmax(214px,1fr))">` + list.map(st => {
+                body = `<div class="grid gap-3 mt-4 pet-grid5" style="grid-template-columns:repeat(auto-fill,minmax(max(168px,calc((100% - 3rem) / 5 - 1px)),1fr))">` + list.map(st => {
                     const pk = petPeakOf(st), f = petFormOf(pk), has = st.petSp !== undefined && PET_SP[st.petSp], nxt = PET_MS.find(m => m > pk), cur = (() => { try { return tenStreakInfo(st.id).cur; } catch (e) { return 0; } })();
                     const isEvo = has && f > (st.petShown || 1); if (isEvo) evo.push(st);
                     const pbl = (has && appData.petBless && appData.petBless.pend && appData.petBless.pend[st.id]) || [], pbn = pbl.length && PET_B[st.petSp] ? PET_B[st.petSp].n[(appData.language || 'vi') === 'en' ? 1 : 0] : '';
@@ -15417,6 +15690,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             let cur = 0; try { cur = tenStreakInfo(st.id).cur; } catch (e) {}
             const b = PET_B[sp]; petApplyCfg();
             const stats = (PET_PM[sp] || []).map((pm, j) => { const base = lv >= 0 ? b.v[lv][j] : null, ef = lv >= 0 ? petEff(st, sp, lv)[j] : null; return `<div class="pq-stat">• ${L2(pm.vi, pm.en)}: ${base === null ? '—' : (ef !== base ? `${pshN(base)} → <b style="color:#16a34a">${pshN(ef)}</b>` : pshN(base))} ${pm.u}</div>`; }).join('') + (R.g ? `<div class="pq-stat">• ${L2('Quà thưởng: hỗ trợ quà bổ sung', 'Gifts: supports bonus gifts')}</div>` : '') + petGiftHl(st, lv);
+            const cn = st.petCnt, cntH = (lv >= 0 && cn && Number.isFinite(+cn.n) && +cn.t > 0) ? `<div class="pq-cnt"><span>${escapeHtml(L2(cn.vi, cn.en))} <b>${+cn.n}/${+cn.t}</b></span><i><u style="width:${Math.max(0, Math.min(100, +cn.n / +cn.t * 100))}%"></u></i></div>` : '';
             const needLv = (it, e) => (it.s === 'm' || it.s === 'p') && e && e.p === undefined;
             const slotH = i => {
                 const e = eq[i], it = e && PSH_BY[e.id], c = it && pshCompat(sp, it);
@@ -15447,7 +15721,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             pqSet(m.querySelector('#pqDef'), `${L2('Tên mặc định', 'Default name')}: ${escapeHtml(pshDef(st))}` + (pshNickRaw(st) ? `<div class="text-[11px] font-bold text-slate-500">${L2('Đang hiển thị', 'Shown as')}: ${escapeHtml(pshDisp(st))}</div>` : ''));
             pqSet(m.querySelector('#pqChips'), `<div class="pxp-m pq-m"><div class="pxp-lvbox">${L2('Cấp của pet', 'Pet level')}<strong>${lv >= 0 ? (lv + 1) + '/7' : '—'}</strong></div><div>${L2('Streak hiện tại', 'Current streak')}<strong>🔥 ${cur}</strong></div></div><div class="mt-1"><span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${escapeHtml(petFormLevelName(f))}</span></div>`);
             pqSet(m.querySelector('#pqInn'), `${b.ic} ${escapeHtml(b.n[w])} ${lv >= 0 ? petLvTag(lv + 1) : '· ' + L2('Nở ở streak 5 để mở nội tại', 'Hatch at streak 5 to unlock')}`);
-            pqSet(m.querySelector('#pqStats'), stats);
+            pqSet(m.querySelector('#pqStats'), stats + cntH);
             pqPatch(m.querySelector('#pqSlots'), [0, 1, 2].map(i => ({ k: 's' + i, h: slotH(i) })), pqPop);
             Array.from(m.querySelectorAll('#pqSlots .pq-slot')).forEach((el, i) => el.classList.toggle('on', pqSlot === i));
             pqSet(m.querySelector('#pqRT'), `${L2('Vật phẩm đã mua', 'Purchased items')} (${owned.length})${pqSlot >= 0 ? ' · ' + L2('đang chọn ô', 'slot') + ' ' + (pqSlot + 1) : ''}`);
@@ -15988,15 +16262,18 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                 const lastDone = (cid, w, wi) => petLastWeekReady(cid, wi.last) && dayDone(cid, wi.last);
                 const chance = (st, key, pct, fn, ok) => { const led = P.led[st.id] = P.led[st.id] || {}, rk = 'r:' + key; if (led[rk]) return; led[rk] = 1; _petChanged = true; if (ok !== false && Math.random() * 100 < pct) fn(); };
                 const statsOf = id => { try { const s = calculateStudentStats(id); return s && s.hasData ? s : null; } catch (e) { return null; } };
+                // Bộ đếm tiêu chí nội tại: lưu trên thẻ học sinh (st.petCnt) để cổng học sinh cũng xem được.
+                // Cổng học sinh không có Lịch học nên chỉ đọc, không tự ghi đè.
+                const cntNow = (st, o) => { if (window.MX_STUDENT) return; const a = st.petCnt ? JSON.stringify(st.petCnt) : '', b = o ? JSON.stringify(o) : ''; if (a === b) return; if (o) st.petCnt = o; else delete st.petCnt; _petChanged = true; };
                 appData.students.forEach(st => {
-                    if (st.petSp === undefined || !PET_SP[st.petSp]) return;
+                    if (st.petSp === undefined || !PET_SP[st.petSp]) { if (st.petCnt) cntNow(st, null); return; }
                     const lv = petLv(petPeakOf(st));
                     let cur = 0; try { cur = tenStreakInfo(st.id).cur; } catch (e) {}
                     // Lưu streak lần trước để phát hiện mọi lần streak giảm, kể cả giảm 1 bậc hoặc về 0.
                     const seen = Number.isFinite(Number(st.petStreakSeen)) ? Number(st.petStreakSeen) : cur;
                     const streakDropped = seen > cur;
                     if (seen !== cur) { st.petStreakSeen = cur; _petChanged = true; }
-                    if (lv < 0) return;
+                    if (lv < 0) { cntNow(st, null); return; }
                     if (!st.petHatch) { st.petHatch = today; _petChanged = true; }
                     const hatch = st.petHatch, sp = st.petSp, v = petEff(st, sp, lv), cid = st.classId, mine = R[st.id] || {};
                     const days = Object.keys(mine).filter(d => d >= hatch && isSched(cid, d)).sort(), att = days.filter(d => attended(cid, mine, d));
@@ -16004,6 +16281,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                     const weekPoints=w=>points.filter(e=>e.d>=w&&e.d<=petAdd(w,6));
                     const mates = appData.students.filter(x => x.classId === cid && x.id !== st.id);
                     const pick = a => a[Math.floor(Math.random() * a.length)];
+                    let CN = null;
                     // ---- Theo ngày ----
                     if (sp === 2) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:th:' + d, v[0], () => petGive(st, 'n:th:' + d, v[1], 'sét đánh trúng', 'lightning struck')));
                     if (sp === 3) att.filter(d => isSched(cid, d)).forEach(d => chance(st, 'n:sea:' + d, v[0], () => petGiveInv(st, 'n:sea:' + d, 'spin', Math.max(1, Math.round(v[1])), 'sóng biển mang quà', 'sea gifts')));
@@ -16028,7 +16306,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                             }
                         }
                         // 🦇 Dơi Lôi Quang: hai điểm 9 (từ 9 đến dưới 10) liên tiếp
-                        if (sp === 28) { let run=0;points.forEach(e=>{if(e.v>=9-1e-9&&e.v<10-1e-9){if(++run===2){run=0;chance(st,'n:ba:'+e.key,v[0],()=>petGiveAccum(st,'n:ba:'+e.key,v[1],'lôi quang liên kết (hai điểm 9 liên tiếp)','linked lightning (two 9s in a row)'));}}else run=0;});}
+                        if (sp === 28) { let run=0;points.forEach(e=>{if(e.v>=9-1e-9&&e.v<10-1e-9){if(++run===2){run=0;chance(st,'n:ba:'+e.key,v[0],()=>petGiveAccum(st,'n:ba:'+e.key,v[1],'lôi quang liên kết (hai điểm 9 liên tiếp)','linked lightning (two 9s in a row)'));}}else run=0;}); CN={vi:'Điểm 9 liên tiếp',en:'Nines in a row',n:run,t:2};}
                         // 🐋 Cá Voi: điểm trung bình giảm so với lần ghi nhận trước (tối đa 1 lần tung xác suất/ngày)
                         if (sp === 29) {
                             const s = statsOf(st.id);
@@ -16043,8 +16321,8 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                         }
                     }
                     // ---- Chuỗi điểm / tháng ----
-                    if (sp === 13) {let run=0;points.forEach(e=>{if(e.v>=10-1e-9){if(++run===3){run=0;petGive(st,'n:bu:'+e.key,v[0],'combo 3 điểm 10','three-10 combo');}}else run=0;});}
-                    if(sp===9){const cap=Math.max(1,Math.round(v[1])),cn={};let low=false;points.forEach(e=>{if(e.v<9)low=true;else if(low){low=false;if(e.d<P.heFrom)return;const wk=petMon(e.d),n=cn[wk]=(cn[wk]||0)+1;if(n<=cap)petGive(st,'n:he:'+e.key,v[0],'hồi phục sau điểm thấp','comeback');}});}
+                    if (sp === 13) {let run=0;points.forEach(e=>{if(e.v>=10-1e-9){if(++run===3){run=0;petGive(st,'n:bu:'+e.key,v[0],'combo 3 điểm 10','three-10 combo');}}else run=0;}); CN={vi:'Điểm 10 liên tiếp',en:'Tens in a row',n:run,t:3};}
+                    if(sp===9){const cap=Math.max(1,Math.round(v[1])),cn={};let low=false;points.forEach(e=>{if(e.v<9)low=true;else if(low){low=false;if(e.d<P.heFrom)return;const wk=petMon(e.d),n=cn[wk]=(cn[wk]||0)+1;if(n<=cap)petGive(st,'n:he:'+e.key,v[0],'hồi phục sau điểm thấp','comeback');}}); CN={vi:'Lần hồi phục tuần này',en:'Comebacks this week',n:Math.min(cap,cn[thisW]||0),t:cap};}
                     // ---- Rùa: cứ 3 buổi học theo lịch liên tiếp không vắng ----
                     if (sp === 16) {
                         let run = 0, n = 0;
@@ -16052,11 +16330,12 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                             if (!isSched(cid, d)) continue;
                             // Buổi đã diễn ra nhưng không có ô điểm/điểm danh: dữ liệu chưa xác nhận,
                             // không được bỏ qua để nối chuỗi và cũng không được tự coi là có mặt/vắng.
-                            if (!mine[d]) { run = 0; continue; }
+                            if (!mine[d]) { if (d === today) continue; run = 0; continue; }
                             if (mine[d].abs) { run = 0; continue; }
                             if (!attended(cid, mine, d)) { run = 0; continue; }
                             if (++run % 3 === 0) { n++; petGive(st, 'n:tu:' + n, v[0], '3 buổi học liên tiếp theo lịch', '3 scheduled classes in a row'); }
                         }
+                        CN = { vi: 'Số buổi đã học', en: 'Classes attended', n: run % 3, t: 3 };
                     }
                     // ---- Phượng Hoàng: kích hoạt ngay mỗi khi streak giảm, kể cả giảm 1 hoặc về 0 ----
                     // Dùng bộ đếm sự kiện để các lần mất streak riêng biệt trong cùng ngày không bị gộp.
@@ -16115,8 +16394,24 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                         }
                     }
                     if (sp === 11) { const cm = {}; owSeq.forEach(o => { const n = cm[o.mk] = (cm[o.mk] || 0) + 1; if (n <= 4) petGive(st, 'n:ow:' + o.w, v[1], 'tuần học giỏi', 'clean week'); if (n === 4 && v[0] > 0) petGive(st, 'n:ow4:' + o.mk, v[0], 'đủ 4 tuần học giỏi', '4 clean weeks'); }); }
+                    if (sp === 11) { const mk = today.slice(0, 7); CN = { vi: 'Tuần học giỏi trong tháng', en: 'Clean weeks this month', n: Math.min(4, owSeq.filter(o => o.mk === mk).length), t: 4 }; }
+                    // Nội tại giới hạn 1 lần/tuần: đọc từ sổ ghi nhận của tuần hiện tại
+                    if (sp === 19) CN = { vi: 'Lượt tuần này', en: 'Uses this week', n: ((P.led[st.id] || {})['t:sq:' + thisW]) ? 1 : 0, t: 1 };
+                    if (sp === 8) CN = { vi: 'Lần hoàn tuần này', en: 'Refunds this week', n: ((P.led[st.id] || {})['n:fx:' + thisW]) ? 1 : 0, t: 1 };
+                    // Nội tại theo tuần/ngày khác: đọc sổ ghi nhận hoặc tính trước số pts của tuần hiện tại
+                    { const L = P.led[st.id] || {}, wk1 = (vi, en, key, chanceKey) => ({ vi, en, n: (L[key] || (chanceKey && L['r:' + key])) ? 1 : 0, t: 1 });
+                      if (sp === 0) CN = wk1('Lượt tuần này', 'Uses this week', 'n:cat:' + thisW);
+                      if (sp === 6) CN = wk1('Lượt tuần này', 'Uses this week', 'n:moon:' + thisW, 1);
+                      if (sp === 10) CN = wk1('Lượt tuần này', 'Uses this week', 'n:frog:' + thisW, 1);
+                      if (sp === 12) CN = wk1('Lượt tuần này', 'Uses this week', 'n:dk:' + thisW, 1);
+                      if (sp === 14) CN = wk1('Lượt tuần này', 'Uses this week', 'n:wo:' + thisW, 1);
+                      if (sp === 15) CN = wk1('Lượt tuần này', 'Uses this week', 'n:pa:' + thisW);
+                      if (sp === 29) CN = wk1('Lượt hôm nay', 'Uses today', 'n:cv:' + today, 1);
+                      if (sp === 1) { const c = (st.violations || []).filter(x => x.date && x.date >= (thisW > hatch ? thisW : hatch) && x.date <= petAdd(thisW, 6)).length; CN = { vi: 'Pts bù tuần này', en: 'Pts compensated this week', n: Math.round(Math.min(v[0], c * v[1])), t: Math.round(v[0]) }; }
+                      if (sp === 7) { const sd = st.petSpentD || {}; let sum = 0; Object.keys(sd).forEach(k => { if (k >= (thisW > hatch ? thisW : hatch) && k <= petAdd(thisW, 6)) sum += sd[k]; }); CN = { vi: 'Hoàn dự kiến tuần này', en: 'Expected cashback this week', n: sum > 0 ? Math.round(Math.min(v[1], Math.max(1, Math.round(sum * v[0] / 100)))) : 0, t: Math.round(v[1]) }; } }
+                    cntNow(st, CN);
                 });
-                if (_petChanged) Promise.resolve(saveData()).catch(() => {});
+                if (_petChanged) { Promise.resolve(saveData()).catch(() => {}); try { if (document.getElementById('pqModal')) pqRender(); } catch (e) {} }
             } catch (e) { console.warn('petBlessRun', e); } finally { _petBusy = false; }
         };
         // Chạy lần đầu khi dữ liệu sẵn sàng; bộ hẹn giờ chỉ là lớp dự phòng.
@@ -17127,8 +17422,8 @@ html.mx-dark .gc-bar{background:#334155}
                 if (me && me.stats && me.stats.hasData) rank = String(me.rank);
             } catch (e) { console.warn('Home stats skipped:', e); }
             const avg = stats.hasData ? (Math.round((Number(stats.avg) || 0) * 10) / 10).toFixed(1) : '—';
-            let tier = null, sticker = '';
-            try { if (stats.hasData) { tier = gradeTierOf(stats.avg); const lv = gradeStickerLevel(stats.avg); if (lv >= 1 && GRADE_STICKERS[lv]) sticker = gradeStickerSvg(lv, true, 52); } } catch (e) {}
+            let tier = null;
+            try { if (stats.hasData) { tier = gradeTierOf(stats.avg); } } catch (e) {}
             let xp = 0, lvl = 1, xpCur = 0, xpNeed = 20, inf = { cur: 0, best: 0 };
             try { xp = xpOf(st.id); { const P = lvProg(xp); lvl = P.lv; xpCur = P.cur; xpNeed = P.need; } inf = tenStreakInfo(st.id); } catch (e) {}
             // Điểm gần đây: giống Lưu trữ điểm của giáo viên (thời điểm nhập điểm, sáng theo màu mốc streak)
@@ -17187,7 +17482,7 @@ html.mx-dark .gc-bar{background:#334155}
             const html = '<div class="mxh-wrap">' +
                 heroOpen + '<div class="flex items-center gap-4 flex-wrap"><div class="mxh-ava">' + E(st.icon || '🎓') + '</div>' +
                 '<div class="min-w-0 flex-1"><div class="text-xs font-bold text-indigo-100">' + L2('Chào mừng trở lại!', 'Welcome back!') + '</div><div class="text-2xl font-black leading-tight break-words">' + E(getStudentDisplayName(st)) + '</div>' + (sub ? '<div class="text-xs text-indigo-100 mt-1 font-semibold">' + sub + '</div>' : '') + '</div>' +
-                (function () { let fl = ''; try { fl = tenStreakHtml(st.id) || ''; } catch (e) {} if (!tier && !fl) return ''; return '<div class="mxh-gbox">' + (sticker ? '<span class="mxh-stk">' + sticker + '</span>' : '') + fl + (tier ? '<div><div class="gl">' + L2('Xếp loại', 'Grade') + '</div><div class="mxh-gname ' + tier.cls + '">' + E(gradeTierLabel(tier)) + '</div></div>' : '') + '</div>'; })() + '</div>' +
+                (function () { let fl = ''; try { fl = tenStreakHtml(st.id) || ''; } catch (e) {} if (!tier && !fl) return ''; return '<div class="mxh-gbox">' + fl + (tier ? '<div><div class="gl">' + L2('Xếp loại', 'Grade') + '</div><div class="mxh-gname ' + tier.cls + '">' + E(gradeTierLabel(tier)) + '</div></div>' : '') + '</div>'; })() + '</div>' +
                 '<div class="mt-3" title="' + lvHint() + '"><div class="flex justify-between text-[11px] font-black text-indigo-100"><span>Lv ' + lvl + '</span><span>XP ' + xpCur.toFixed(0) + '/' + xpNeed + '</span></div><div class="mxh-xp mt-1"><i style="width:' + (xpCur / xpNeed * 100).toFixed(0) + '%"></i></div></div>' +
                 '<div class="mxh-hs">' + hc('<em class="mxh-avgp ' + (tier ? tier.cls : '') + '">' + E(avg) + '</em>', L2('Điểm TB', 'Avg score'), 'matrix', 'fa-chart-line', 'c1') + hc(E(rank) + (mates.length ? '/' + mates.length : ''), L2('Xếp hạng', 'Rank'), 'ranking', 'fa-trophy', 'c2') + hc(E(stats.hasData ? (Number(stats.total) || 0).toFixed(1) : '—'), L2('Tổng điểm', 'Total points'), 'matrix', 'fa-star', 'c3') + '</div></section>' +
                 '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">' +
