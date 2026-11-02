@@ -2,6 +2,23 @@
 <html lang="vi">
 <head>
 <script>try{if(localStorage.getItem('mxDark')==='1')document.documentElement.classList.add('mx-dark')}catch(e){}</script>
+<script>/* Cài đặt hiệu ứng: nạp trước khi vẽ giao diện để không bị nháy */
+(function(){var K='mxFx',D=document.documentElement,G=["cards", "streak", "rank", "score", "random", "wheel", "mystery", "pets", "bday", "badges", "season", "ui", "count"],S={m:1,off:[]};
+try{var r=JSON.parse(localStorage.getItem(K)||'null');if(r&&typeof r==='object'){S.m=r.m===0?0:1;S.off=(Array.isArray(r.off)?r.off:[]).filter(function(x){return G.indexOf(x)>=0})}}catch(e){}
+function apply(){D.classList.toggle('fx-off-all',!S.m);G.forEach(function(g){D.classList.toggle('fx-off-'+g,S.off.indexOf(g)>=0)})}
+function save(){try{localStorage.setItem(K,JSON.stringify({m:S.m,off:S.off}))}catch(e){}apply()}
+window.mxFx={groups:G,state:S,
+ on:function(g){return !!S.m&&S.off.indexOf(g)<0},
+ groupOn:function(g){return S.off.indexOf(g)<0},
+ set:function(g,v){var i=S.off.indexOf(g);if(v&&i>=0)S.off.splice(i,1);if(!v&&i<0)S.off.push(g);save()},
+ master:function(v){S.m=v?1:0;save()},
+ all:function(v){S.off=v?[]:G.slice();save()},
+ reset:function(){S.m=1;S.off=[];save()}};
+window.mxFxOn=window.mxFx.on;
+apply();
+/* Hiệu ứng viết bằng Web Animations: khi tắt toàn bộ thì rút ngắn, trừ hiệu ứng kết thúc bằng ẩn hẳn (giữ thông báo hiện đủ lâu) */
+try{var oa=Element.prototype.animate;Element.prototype.animate=function(k,o){try{if(!S.m&&o&&typeof o==='object'){var last=Array.isArray(k)?k[k.length-1]:null,fin=(o.fill==='forwards'||o.fill==='both')&&last&&String(last.opacity)==='0';if(!fin)o=Object.assign({},o,{duration:1,delay:0,endDelay:0,iterations:1})}}catch(e){}return oa.call(this,k,o)}}catch(e){}
+})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="data:image/png;base64,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">
@@ -3818,6 +3835,510 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
 .pxp-st.idle,.pxp-st.lose{background:rgba(148,163,184,.12);border-color:#cbd5e1}
 @media (prefers-reduced-motion:reduce){.pxp-compass,.pxp-dots i,.pxp-bar-f,.pxp-st.win,.pxp-trophy,.pxp-spk,.pxp-lt.gift .pxp-lt-i,.pxp-tent{animation:none!important}.pxp-lt{animation:none;opacity:1}.pxp-spk{display:none}}
 </style>
+<style id="mx-fx-settings-css">
+/* ===== Cài đặt hiệu ứng (tự sinh): tắt animation theo nhóm; thời lượng ~0 để sự kiện animationend vẫn chạy và trạng thái cuối được giữ ===== */
+html.fx-off-ui .tg-float,
+html.fx-off-ui .tg-logo,
+html.fx-off-ui .tf-timer-warn,
+html.fx-off-ui #timerMini,
+html.fx-off-ui #timerMini.tm-done,
+html.fx-off-ui .app-toast::after,
+html.fx-off-ui .badge-dot,
+html.fx-off-ui .teaching-day-grid.teaching-next-row,
+html.fx-off-ui .teaching-day-grid.teaching-next-row:hover,
+html.fx-off-ui .mx-dr-enter,
+html.fx-off-ui .mx-dr-enter>*,
+html.fx-off-ui .mx-dr-leave,
+html.fx-off-ui .mx-dr-leave>*,
+html.fx-off-ui .tp-badge,
+html.fx-off-ui .gift-wm,
+html.fx-off-ui .pl-back,
+html.fx-off-ui .pl-back.pl-out,
+html.fx-off-ui .pl-card,
+html.fx-off-ui #dailyBackupReminder.active,
+html.fx-off-ui #dailyBackupReminder .backup-panel,
+html.fx-off-ui #dailyBackupReminder .backup-download,
+html.fx-off-ui #dailyBackupReminder .backup-siren,
+html.fx-off-ui #dailyBackupReminder .backup-download::after,
+html.fx-off-ui #dailyBackupReminder.done .backup-panel,
+html.fx-off-ui #dailyBackupReminder.done .backup-siren,
+html.fx-off-ui .mxa-next-i,
+html.fx-off-ui .mxa-next-o,
+html.fx-off-ui .mxa-prev-i,
+html.fx-off-ui .mxa-prev-o,
+html.fx-off-ui .mxa-zin-i,
+html.fx-off-ui .mxa-zin-o,
+html.fx-off-ui .mxa-zout-i,
+html.fx-off-ui .mxa-zout-o,
+html.fx-off-ui #rolePwModal:not(.hidden),
+html.fx-off-ui #rolePwModal:not(.hidden)>div,
+html.fx-off-ui #teacherGate.tg-busy::after,
+html.fx-off-ui body.role-switching #teacherGate>.relative,
+html.fx-off-ui #mxStuHome .mxh-ava,
+html.fx-off-ui #mxStuHome .mxh-hero:hover .mxh-ava,
+html.fx-off-ui #mxStuHome .mxh-hero:hover .tf-streak .tf-flame,
+html.fx-off-ui #mxStuHome .mxh-hero:hover .tf-streak.tf-t100 .tf-flame,
+html.fx-off-ui #mxStuHome .mxh-hero:hover .mxh-gname,
+html.fx-off-ui .mx-quick-backup,
+html.fx-off-ui .mx-quick-backup.is-overdue,
+html.fx-off-ui .mx-quick-backup.is-overdue .mx-qb-pill,
+html.fx-off-ui .ctl-dot,
+html.fx-off-ui .ctl-next.soon{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+html.fx-off-rank .rank-card::before,
+html.fx-off-rank .rank-card.gold::after,
+html.fx-off-rank .gold .rk-icon,
+html.fx-off-rank .silver .rk-icon,
+html.fx-off-rank .bronze .rk-icon,
+html.fx-off-rank .rk-ring,
+html.fx-off-rank .rk-spark,
+html.fx-off-rank .rk-ember,
+html.fx-off-rank .rk-enter,
+html.fx-off-rank .stage-spot,
+html.fx-off-rank .st-conf,
+html.fx-off-rank .stage-crown,
+html.fx-off-rank .stage-avatar,
+html.fx-off-rank .stage-tie-avatar,
+html.fx-off-rank .st-enter .stage-step,
+html.fx-off-rank .st-enter .stage-person,
+html.fx-off-rank .stage-fig,
+html.fx-off-rank .fg-spark,
+html.fx-off-rank .fg-cheer-r,
+html.fx-off-rank .fg-cheer-l,
+html.fx-off-rank .fg-trophy,
+html.fx-off-rank .fg-shine,
+html.fx-off-rank .fg-wave,
+html.fx-off-rank .fg-medal,
+html.fx-off-rank .stage-char:hover .stage-burst,
+html.fx-off-rank .rk-delta,
+html.fx-off-rank .rk-delta.up i,
+html.fx-off-rank .rk-delta.down i,
+html.fx-off-rank .rk-avgpill,
+html.fx-off-rank .rk-avgpill::after,
+html.fx-off-rank .gr-legend,
+html.fx-off-rank #gradeLegend.open,
+html.fx-off-rank .rank-card.gold .rk-icon,
+html.fx-off-rank .rank-card.silver .rk-icon,
+html.fx-off-rank .rank-card.bronze .rk-icon,
+html.fx-off-rank .rank-card:hover .rk-icon,
+html.fx-off-rank .rank-card:hover .rk-coin,
+html.fx-off-rank .rank-card:hover .rk-gem,
+html.fx-off-rank .rank-card.gold .rk-avatar,
+html.fx-off-rank .rank-card.silver .rk-avatar,
+html.fx-off-rank .rank-card.bronze .rk-avatar,
+html.fx-off-rank .rank-card:hover .rk-avatar,
+html.fx-off-rank .rkc.anim .rkc-line,
+html.fx-off-rank .rkc.anim .rkc-dot,
+html.fx-off-rank .rkc.anim .rkc-ava{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+html.fx-off-streak .tf-streak::after,
+html.fx-off-streak .tf-flame .tf-l1,
+html.fx-off-streak .tf-flame .tf-l2,
+html.fx-off-streak .tf-flame .tf-l3,
+html.fx-off-streak .tf-flame .tf-sp,
+html.fx-off-streak .tf-txt,
+html.fx-off-streak .tf-streak.tf-hi,
+html.fx-off-streak .tf-streak.tf-hi .tf-txt,
+html.fx-off-streak .tf-streak.tf-t100 .tf-txt .tf-n,
+html.fx-off-streak .tf-streak.tf-t100 .tf-flame,
+html.fx-off-streak .tf-trend.up,
+html.fx-off-streak .tf-trend.down,
+html.fx-off-streak .tf-streak.tf-hi.tf-t100 .tf-txt,
+html.fx-off-streak .tf-streak.tf-hi.tf-t100 .tf-txt .tf-x,
+html.fx-off-streak .tf-streak.tf-hi.tf-t100 .tf-txt .tf-n,
+html.fx-off-streak .rank-card:hover .tf-flame .tf-l1,
+html.fx-off-streak .hl-row:hover .tf-flame .tf-l1,
+html.fx-off-streak .rank-card:hover .tf-flame .tf-l2,
+html.fx-off-streak .hl-row:hover .tf-flame .tf-l2,
+html.fx-off-streak .rank-card:hover .tf-flame .tf-l3,
+html.fx-off-streak .hl-row:hover .tf-flame .tf-l3,
+html.fx-off-streak .rank-card:hover .tf-flame .tf-sp,
+html.fx-off-streak .hl-row:hover .tf-flame .tf-sp,
+html.fx-off-streak .rank-card:hover .tf-streak::after,
+html.fx-off-streak .hl-row:hover .tf-streak::after,
+html.fx-off-streak #scoreMatrix tbody tr:hover .tf-flame .tf-l1,
+html.fx-off-streak #scoreMatrix tbody tr:hover .tf-flame .tf-l2,
+html.fx-off-streak #scoreMatrix tbody tr:hover .tf-flame .tf-l3,
+html.fx-off-streak #scoreMatrix tbody tr:hover .tf-flame .tf-sp,
+html.fx-off-streak .gr-flm:hover .tf-flame .tf-l1,
+html.fx-off-streak .gr-flm:hover .tf-flame .tf-l2,
+html.fx-off-streak .gr-flm:hover .tf-flame .tf-l3,
+html.fx-off-streak .gr-flm:hover .tf-flame .tf-sp,
+html.fx-off-streak .gr-flm:hover .tf-streak::after,
+html.fx-off-streak #mxStuHome .mxh-hero:hover .tf-streak.tf-t100 .tf-flame,
+html.fx-off-streak #mxStuHome .mxh-hero:hover .tf-flame .tf-l1,
+html.fx-off-streak #mxStuHome .mxh-hero:hover .tf-flame .tf-l2,
+html.fx-off-streak #mxStuHome .mxh-hero:hover .tf-flame .tf-l3,
+html.fx-off-streak #mxStuHome .mxh-hero:hover .tf-flame .tf-sp,
+html.fx-off-streak #mxStuHome .mxh-hero:hover .tf-streak::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+html.fx-off-random .rp-chip.won,
+html.fx-off-random #randomDisplayArea.spinning #randomStudentName,
+html.fx-off-random #randomDisplayArea.spinning::before,
+html.fx-off-random #randomDisplayArea.winner #randomStudentIcon,
+html.fx-off-random #randomDisplayArea.winner #randomStudentName,
+html.fx-off-random .rp-confetti,
+html.fx-off-random #randomDisplayArea.winner{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+html.fx-off-score td.grid-cell.qs-typing::after,
+html.fx-off-score td.grid-cell.qs-flash,
+html.fx-off-score td.grid-cell.qs-bad,
+html.fx-off-score tr.rk-row-up,
+html.fx-off-score tr.rk-row-down,
+html.fx-off-score #studentInventoryList tr.mx-found>td,
+html.fx-off-score select.mx-pick,
+html.fx-off-score #scoreMatrix .score-row.mx-found>td.sticky-col-1,
+html.fx-off-score #scoreMatrix .score-row.mx-found>td.sticky-col-2,
+html.fx-off-score #scoreMatrix .score-row.mx-found>td.sticky-col-3,
+html.fx-off-score #modalSpeakingBox.speak-hl,
+html.fx-off-score .scb,
+html.fx-off-score .scb::after,
+html.fx-off-score .scb i,
+html.fx-off-score .scb-num.scb-pop,
+html.fx-off-score #scoreMatrix td.sticky-col-2 .mx-ico,
+html.fx-off-score #scoreModal #modalStudentName.sm-pop,
+html.fx-off-score #scoreModal .sm-ico,
+html.fx-off-score #scoreModal .sm-nm{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+html.fx-off-bday .roster-card.xf-bday,
+html.fx-off-bday .roster-card.xf-bday::before,
+html.fx-off-bday .xf-bfx .b,
+html.fx-off-bday .xf-bfx .c,
+html.fx-off-bday .xf-bribbon,
+html.fx-off-bday .xf-pop,
+html.fx-off-bday .xf-pop-card,
+html.fx-off-bday .xf-pop-cake,
+html.fx-off-bday .xf-gift,
+html.fx-off-bday .opened .xf-grays,
+html.fx-off-bday .opened .xf-gitem,
+html.fx-off-bday .xf-gbox,
+html.fx-off-bday .xf-gbox.shake,
+html.fx-off-bday #scoreMatrix td.sticky-col-2.mx-bday,
+html.fx-off-bday #scoreModal .sm-hdr>.sm-bg.mx-bday,
+html.fx-off-bday .vl-head.vl-bday,
+html.fx-off-bday .vl-head.vl-bday .roster-avatar{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+html.fx-off-cards .ct .roster-avatar,
+html.fx-off-cards .ct-t01 .ct-fx>i,
+html.fx-off-cards .ct-t01 .ct-fx>b,
+html.fx-off-cards .ct.ct-t02,
+html.fx-off-cards .ct-t02 .ct-fx>i,
+html.fx-off-cards .ct-t02 .ct-fx>s,
+html.fx-off-cards .ct-t03 .ct-fx>i,
+html.fx-off-cards .ct-t04 .ct-fx>i,
+html.fx-off-cards .ct-t05 .ct-fx>i,
+html.fx-off-cards .ct-t05 .ct-fx>s,
+html.fx-off-cards .ct-t06 .ct-fx>i,
+html.fx-off-cards .ct-t06 .ct-x,
+html.fx-off-cards .ct-t07::after,
+html.fx-off-cards .ct-t07 .ct-x.a,
+html.fx-off-cards .ct-t07 .ct-x.b,
+html.fx-off-cards .ct-t07 .ct-fx>i,
+html.fx-off-cards .ct-t08 .ct-fx>i,
+html.fx-off-cards .ct-t08 .ct-x,
+html.fx-off-cards .ct-t09 .ct-fx>s,
+html.fx-off-cards .ct-t09 .ct-fx>i,
+html.fx-off-cards .ct-t09 .ct-x.a,
+html.fx-off-cards .ct-t09 .ct-x.b,
+html.fx-off-cards .ct-t10 .ct-fx>i,
+html.fx-off-cards .ct-t10 .ct-x,
+html.fx-off-cards .ct-t10 .ct-fx>s,
+html.fx-off-cards .ct-t11 .ct-fx>i,
+html.fx-off-cards .ct.ct-t12,
+html.fx-off-cards .ct-t12 .ct-fx>s,
+html.fx-off-cards .ct-t13 .ct-fx>b,
+html.fx-off-cards .ct-t13 .ct-fx>i,
+html.fx-off-cards .ct-t14 .ct-fx>i,
+html.fx-off-cards .ct-t14 .ct-fx>s,
+html.fx-off-cards .ct-t14 .ct-x,
+html.fx-off-cards .ct-t15 .ct-x,
+html.fx-off-cards .ct-t15 .ct-fx>b,
+html.fx-off-cards .ct-t15 .ct-fx>s,
+html.fx-off-cards .ct-t16 .ct-fx>i,
+html.fx-off-cards .ct-t16 .ct-x,
+html.fx-off-cards .ct-t17 .ct-fx>s,
+html.fx-off-cards .ct-t17 .ct-x,
+html.fx-off-cards .ct-t18 .ct-fx>s,
+html.fx-off-cards .ct-t19 .ct-fx>i,
+html.fx-off-cards .ct-t19 .ct-x,
+html.fx-off-cards .ct.ct-t20,
+html.fx-off-cards .ct-t20 .ct-fx>i,
+html.fx-off-cards .ct-t20 .ct-fx>s,
+html.fx-off-cards .ct-t20 .ct-fx>u,
+html.fx-off-cards .ct-t20 .ct-x.a,
+html.fx-off-cards .ct-t21 .ct-fx>i,
+html.fx-off-cards .ct-t21 .ct-fx>s,
+html.fx-off-cards .ct-t21 .ct-fx>u,
+html.fx-off-cards .ct-t22 .ct-fx>s,
+html.fx-off-cards .ct-t22 .ct-fx>i,
+html.fx-off-cards .ct-t22 .ct-fx>u,
+html.fx-off-cards .ct-t23 .ct-fx>s,
+html.fx-off-cards .ct-t23 .ct-fx>u,
+html.fx-off-cards .ct-t23 .ct-fx>i,
+html.fx-off-cards .ct-t24 .ct-fx>i,
+html.fx-off-cards .ct-t24 .ct-fx>s,
+html.fx-off-cards .ct-t25 .ct-fx>.ct-x,
+html.fx-off-cards .ct-t25 .ct-fx>s,
+html.fx-off-cards .ct-t25 .ct-fx>u,
+html.fx-off-cards .ct-t26 .ct-fx>.ct-x.a,
+html.fx-off-cards .ct-t26 .ct-fx>s,
+html.fx-off-cards .ct-t26 .ct-fx>u,
+html.fx-off-cards .ct-t27 .ct-fx>.ct-x.a,
+html.fx-off-cards .ct-t27 .ct-fx>.ct-x.b,
+html.fx-off-cards .ct-t27 .ct-fx>s,
+html.fx-off-cards .ct-t27 .ct-fx>u,
+html.fx-off-cards .ct-t27 .ct-fx>i,
+html.fx-off-cards .ct-t28 .ct-fx>.ct-x,
+html.fx-off-cards .ct-t28 .ct-fx>i,
+html.fx-off-cards .ct-t28 .ct-fx>s,
+html.fx-off-cards .ct-t28 .ct-fx>u,
+html.fx-off-cards .ct.ct-t29,
+html.fx-off-cards .ct-t29 .ct-fx>i,
+html.fx-off-cards .ct-t29 .ct-fx>s,
+html.fx-off-cards .ct-t30 .ct-fx>i,
+html.fx-off-cards .ct-t30 .ct-fx>s,
+html.fx-off-cards .ct-t31 .ct-fx>s,
+html.fx-off-cards .ct-t31 .ct-fx>b,
+html.fx-off-cards .ct-t32 .ct-fx>s,
+html.fx-off-cards .ct-t32 .ct-fx>u,
+html.fx-off-cards .ct-t33 .ct-fx>i,
+html.fx-off-cards .ct-t33 .ct-fx>b,
+html.fx-off-cards .ct-t33 .ct-fx>s,
+html.fx-off-cards .ct-t34 .ct-fx>i,
+html.fx-off-cards .ct-t34 .ct-fx>s,
+html.fx-off-cards .ct-t34 .ct-fx>u,
+html.fx-off-cards .ct-t35 .ct-fx>.ct-x.a,
+html.fx-off-cards .ct-t35 .ct-fx>.ct-x.b,
+html.fx-off-cards .ct-t35 .ct-fx>.ct-x.c,
+html.fx-off-cards .ct-t35 .ct-fx>s,
+html.fx-off-cards .ct-t35 .ct-fx>i,
+html.fx-off-cards .ct-t36 .ct-fx>b,
+html.fx-off-cards .ct-t36 .ct-fx>s,
+html.fx-off-cards .ct-t36 .ct-fx>u,
+html.fx-off-cards .ct-t37 .ct-fx>s,
+html.fx-off-cards .ct-t37 .ct-fx>u,
+html.fx-off-cards .ct-t37 .ct-fx>i,
+html.fx-off-cards .ct.ct-t38,
+html.fx-off-cards .ct-t38 .ct-fx>i,
+html.fx-off-cards .ct-t38 .ct-fx>s,
+html.fx-off-cards .ct-t39 .ct-fx>i,
+html.fx-off-cards .ct-t40 .ct-fx>.ct-x.a,
+html.fx-off-cards .ct-t40 .ct-fx>.ct-x.b,
+html.fx-off-cards .ct-t40 .ct-fx>i,
+html.fx-off-cards .ct-t40 .ct-fx>s,
+html.fx-off-cards .ct-t40 .ct-fx>u,
+html.fx-off-cards .ct-t41 .ct-fx>.ct-x.a,
+html.fx-off-cards .ct-t41 .ct-fx>.ct-x.b,
+html.fx-off-cards .ct-t41 .ct-fx>b,
+html.fx-off-cards .ct-t41 .ct-fx>s,
+html.fx-off-cards .ct-t41 .ct-fx>u,
+html.fx-off-cards .ct-t42 .ct-fx>.ct-x,
+html.fx-off-cards .ct-t42 .ct-fx>i,
+html.fx-off-cards .ct-t42 .ct-fx>s,
+html.fx-off-cards .ct-t42 .ct-fx>b,
+html.fx-off-cards .ct-t43 .ct-fx>.ct-x.a,
+html.fx-off-cards .ct-t43 .ct-fx>i,
+html.fx-off-cards .ct-t43 .ct-fx>s,
+html.fx-off-cards .ct.ct-t44,
+html.fx-off-cards .ct-t44 .ct-fx>s,
+html.fx-off-cards .ct-t45 .ct-fx>.ct-x.a,
+html.fx-off-cards .ct-t45 .ct-fx>.ct-x.b,
+html.fx-off-cards .ct-t45 .ct-fx>.ct-x.c,
+html.fx-off-cards .ct-t45 .ct-fx>i,
+html.fx-off-cards .ct-t45 .ct-fx>s,
+html.fx-off-cards .ct-t46 .ct-fx>.ct-x.c,
+html.fx-off-cards .ct-t46 .ct-fx>s,
+html.fx-off-cards .ct-t46 .ct-fx>u,
+html.fx-off-cards .ct-t46 .ct-fx>b,
+html.fx-off-cards .ct-t47 .ct-fx>.ct-x.a,
+html.fx-off-cards .ct-t47 .ct-fx>i,
+html.fx-off-cards .ct-t47 .ct-fx>b,
+html.fx-off-cards .ct-t47 .ct-fx>u,
+html.fx-off-cards .ct-t48 .ct-fx>.ct-x.a,
+html.fx-off-cards .ct-t48 .ct-fx>s,
+html.fx-off-cards .ct-t48 .ct-fx>b,
+html.fx-off-cards .ct-t48 .ct-fx>i,
+html.fx-off-cards .ct-t49 .ct-fx>.ct-x.a,
+html.fx-off-cards .ct-t49 .ct-fx>.ct-x.b,
+html.fx-off-cards .ct-t49 .ct-fx>.ct-x.c,
+html.fx-off-cards .ct-t49 .ct-fx>s,
+html.fx-off-cards .ct-t49 .ct-fx>i,
+html.fx-off-cards .ct-t49 .ct-fx>u,
+html.fx-off-cards .ct-t50 .ct-fx>.ct-x,
+html.fx-off-cards .ct-t50 .ct-fx>s,
+html.fx-off-cards .ct-t50 .ct-fx>i,
+html.fx-off-cards .ct-t50 .ct-fx>u,
+html.fx-off-cards .roster-avatar .ra-ico,
+html.fx-off-cards .hl-row .hl-ico,
+html.fx-off-cards .roster-card:hover .roster-avatar .ra-ico,
+html.fx-off-cards .hl-row:hover .hl-ico{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+html.fx-off-wheel .wheel-frame::before,
+html.fx-off-wheel .wheel-spin-btn,
+html.fx-off-wheel .wheel-spin-btn::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+html.fx-off-pets .pet-card.pet-evo,
+html.fx-off-pets .pet-art.egg,
+html.fx-off-pets .pet-art.egg.cr,
+html.fx-off-pets .pet-art.mon,
+html.fx-off-pets .pet-aura,
+html.fx-off-pets .p3-fan,
+html.fx-off-pets .p3-sun,
+html.fx-off-pets .p3-spout,
+html.fx-off-pets .p3-idle,
+html.fx-off-pets .p3-head,
+html.fx-off-pets .p3-eyes,
+html.fx-off-pets .p3-pup,
+html.fx-off-pets .p3-tail,
+html.fx-off-pets .p3-wing,
+html.fx-off-pets .p3-ear,
+html.fx-off-pets .p3-armL,
+html.fx-off-pets .p3-armR,
+html.fx-off-pets .p3-jelly,
+html.fx-off-pets .p3-bow,
+html.fx-off-pets .p3-tent,
+html.fx-off-pets .p3-egg,
+html.fx-off-pets .p3-egg.cr,
+html.fx-off-pets .p3-crk,
+html.fx-off-pets .p3-gem,
+html.fx-off-pets .p3-halo,
+html.fx-off-pets .p3-knot,
+html.fx-off-pets .p3-aura,
+html.fx-off-pets .p3-spin,
+html.fx-off-pets .pet-card:hover .p3-idle,
+html.fx-off-pets .pet-sp:hover .p3-idle,
+html.fx-off-pets .pet-line>div:hover .p3-idle,
+html.fx-off-pets .p3-jump .p3-idle,
+html.fx-off-pets .pet-t4 svg,
+html.fx-off-pets .pet-card.pet-evo .pet-art svg,
+html.fx-off-pets .pet-st,
+html.fx-off-pets .p3-pacifier,
+html.fx-off-pets .p3-stage6,
+html.fx-off-pets #petBP .pc-pop,
+html.fx-off-pets .pet-card.pet-bless,
+html.fx-off-pets .pet-card.pet-bless::after,
+html.fx-off-pets .pet-card.pet-bless .pet-art,
+html.fx-off-pets .pet-card.pet-bless .p3-idle,
+html.fx-off-pets .pet-claim-s,
+html.fx-off-pets .pet-pane.pet-out,
+html.fx-off-pets .pet-pane.pet-in,
+html.fx-off-pets .px-sp,
+html.fx-off-pets .px-ray,
+html.fx-off-pets .px-sw,
+html.fx-off-pets .px-pt,
+html.fx-off-pets .px-dash,
+html.fx-off-pets .px3,
+html.fx-off-pets .px4,
+html.fx-off-pets .px4 .px-ic,
+html.fx-off-pets .mx-pet-settings-overlay,
+html.fx-off-pets .mx-pet-settings-panel,
+html.fx-off-pets #mxStuHome .mxh-stage:hover .p3-idle,
+html.fx-off-pets .pxp-tw,
+html.fx-off-pets .pxp-bob,
+html.fx-off-pets .pxp-stage.pxp-fadein,
+html.fx-off-pets .pxp-fl,
+html.fx-off-pets .pxp-nxt,
+html.fx-off-pets .hab-g-w,
+html.fx-off-pets .hab-k-e span,
+html.fx-off-pets .hab-t1 span,
+html.fx-off-pets .hab-t2 span,
+html.fx-off-pets .hab-t3 span,
+html.fx-off-pets .hab-t4 span,
+html.fx-off-pets .hab-t5 span,
+html.fx-off-pets .hab-t6 span,
+html.fx-off-pets .hab-t7 span,
+html.fx-off-pets .hab-t8 span,
+html.fx-off-pets .hab-t9 span,
+html.fx-off-pets .hab-t10 span,
+html.fx-off-pets .hab-t2::after,
+html.fx-off-pets .hab-t3::after,
+html.fx-off-pets .hab-t4::after,
+html.fx-off-pets .hab-t4::before,
+html.fx-off-pets .hab-t5::before,
+html.fx-off-pets .hab-t5::after,
+html.fx-off-pets .hab-t6::after,
+html.fx-off-pets .hab-t7::after,
+html.fx-off-pets .hab-t6::before,
+html.fx-off-pets .hab-t7::before,
+html.fx-off-pets .hab-t8::before,
+html.fx-off-pets .hab-t8::after,
+html.fx-off-pets .hab-t9::after,
+html.fx-off-pets .hab-t9::before,
+html.fx-off-pets .hab-t10::before,
+html.fx-off-pets .hab-t10::after,
+html.fx-off-pets .hab-t10 span::before,
+html.fx-off-pets .hab-t10 span::after,
+html.fx-off-pets .pxp-go.pxp-explore,
+html.fx-off-pets .pxp-compass,
+html.fx-off-pets .pxp-dots i,
+html.fx-off-pets .pxp-bar-f,
+html.fx-off-pets .pxp-st.win,
+html.fx-off-pets .pxp-trophy,
+html.fx-off-pets .pxp-spk,
+html.fx-off-pets .pxp-lt,
+html.fx-off-pets .pxp-lt.gift .pxp-lt-i,
+html.fx-off-pets .pxp-tent,
+html.fx-off-pets .ps-pop,
+html.fx-off-pets .pq-back,
+html.fx-off-pets .pq-card{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+html.fx-off-mystery .gift-card.gift-sp-item_ticket,
+html.fx-off-mystery.mx-dark .gift-card.gift-sp-item_ticket,
+html.fx-off-mystery .gc-hero .gc-hero-ic,
+html.fx-off-mystery .gc-stars span,
+html.fx-off-mystery .gc-it.gc-s4,
+html.fx-off-mystery .gc-it.gc-s5,
+html.fx-off-mystery .gc-box.shake,
+html.fx-off-mystery .gc-box.float,
+html.fx-off-mystery .gc-flash,
+html.fx-off-mystery .gc-it,
+html.fx-off-mystery .gc-beam,
+html.fx-off-mystery .gc-tw,
+html.fx-off-mystery .gc-rn,
+html.fx-off-mystery .gc-rn svg.gc-coinsvg,
+html.fx-off-mystery .gc-halo,
+html.fx-off-mystery .gc-mt,
+html.fx-off-mystery .gc-stage>div.gc-rays,
+html.fx-off-mystery .gc-burst i,
+html.fx-off-mystery .gc-card,
+html.fx-off-mystery .gc-card::after,
+html.fx-off-mystery .gc-cs span{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+html.fx-off-season #mxSeasonFx span,
+html.fx-off-season #mxSeasonBanner{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+html.fx-off-badges .bk-c.on.r3 .bk-art svg,
+html.fx-off-badges .bk-c.on.r4 .bk-art svg,
+html.fx-off-badges .bk-sp polygon,
+html.fx-off-badges .bk-c.bk-new,
+html.fx-off-badges .bk-t{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+html.fx-off-cards .ct-fx{display:none!important}
+html.fx-off-streak #tfConfCanvas,
+html.fx-off-streak .tf-flash{display:none!important}
+html.fx-off-rank .st-conf,
+html.fx-off-rank .stage-burst,
+html.fx-off-rank .rk-spark,
+html.fx-off-rank .rk-ember{display:none!important}
+html.fx-off-random .rp-confetti{display:none!important}
+html.fx-off-season #mxSeasonFx,
+html.fx-off-season #mxSeasonBanner{display:none!important}
+html.fx-off-bday .xf-bfx{display:none!important}
+html.fx-off-all *,html.fx-off-all *::before,html.fx-off-all *::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
+html.fx-off-all #tfConfCanvas,html.fx-off-all #mxSeasonFx,html.fx-off-all #mxSeasonBanner,html.fx-off-all .ct-fx,html.fx-off-all .st-conf,html.fx-off-all .stage-burst,html.fx-off-all .rk-spark,html.fx-off-all .rk-ember,html.fx-off-all .rp-confetti,html.fx-off-all .xf-bfx,html.fx-off-all .tf-flash{display:none!important}
+html.fx-off-all{scroll-behavior:auto!important}
+/* Modal Cài đặt hiệu ứng */
+#fxSettingsModal .fx-row{display:flex;align-items:center;gap:.75rem;padding:.55rem .7rem;border:1px solid #e2e8f0;border-radius:.85rem;background:#fff;transition:background .15s,border-color .15s,transform .15s,box-shadow .15s}
+#fxSettingsModal .fx-row:hover{background:#fdf4ff;border-color:#f0abfc;transform:translateY(-1px);box-shadow:0 4px 10px rgba(192,38,211,.12)}
+#fxSettingsModal .fx-ico{flex:none;width:2.1rem;height:2.1rem;border-radius:.7rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:#fff;background:linear-gradient(135deg,#e879f9,#c026d3);box-shadow:0 2px 6px rgba(192,38,211,.3)}
+#fxSettingsModal .fx-t{font-size:.8rem;font-weight:800;color:#1e293b;line-height:1.2}
+#fxSettingsModal .fx-d{font-size:.68rem;font-weight:600;color:#64748b;line-height:1.3;margin-top:.1rem}
+#fxSettingsModal .fx-sw{flex:none;position:relative;width:2.5rem;height:1.4rem;border-radius:9999px;border:0;background:#cbd5e1;cursor:pointer;transition:background .2s;padding:0}
+#fxSettingsModal .fx-sw::after{content:"";position:absolute;top:.15rem;left:.15rem;width:1.1rem;height:1.1rem;border-radius:9999px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+#fxSettingsModal .fx-sw.on{background:#c026d3}
+#fxSettingsModal .fx-sw.on::after{transform:translateX(1.1rem)}
+#fxSettingsModal .fx-sw:focus-visible{outline:2px solid #c026d3;outline-offset:2px}
+#fxSettingsModal .fx-master{display:flex;align-items:center;gap:.75rem;padding:.7rem .85rem;border-radius:.95rem;border:1px solid #f0abfc;background:linear-gradient(135deg,#fdf4ff,#fae8ff)}
+#fxSettingsModal .fx-list{overflow-y:auto;display:grid;gap:.45rem;padding:.15rem;transition:opacity .2s,filter .2s}
+#fxSettingsModal .fx-list.fx-dim{opacity:.45;filter:grayscale(.6);pointer-events:none}
+#fxSettingsModal .fx-btn{font-size:.72rem;font-weight:800;padding:.4rem .75rem;border-radius:.7rem;border:1px solid #e9d5ff;background:#fff;color:#86198f;cursor:pointer;transition:background .15s,transform .15s,box-shadow .15s}
+#fxSettingsModal .fx-btn:hover{background:#fae8ff;transform:translateY(-1px);box-shadow:0 4px 10px rgba(192,38,211,.15)}
+html.mx-dark #fxSettingsModal .fx-row{background:#0f172a;border-color:#334155}
+html.mx-dark #fxSettingsModal .fx-row:hover{background:#2e1065;border-color:#a21caf}
+html.mx-dark #fxSettingsModal .fx-t{color:#f1f5f9}
+html.mx-dark #fxSettingsModal .fx-d{color:#94a3b8}
+html.mx-dark #fxSettingsModal .fx-master{background:linear-gradient(135deg,#3b0764,#4a044e);border-color:#a21caf}
+html.mx-dark #fxSettingsModal .fx-btn{background:#0f172a;border-color:#6b21a8;color:#f0abfc}
+html.mx-dark #fxSettingsModal .fx-btn:hover{background:#3b0764}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 
@@ -4046,6 +4567,7 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openEditHistory()"><span class="menu-ico bg-yellow-100 text-yellow-700"><i class="fa-solid fa-clock-rotate-left"></i></span><span data-i18n="menuEditHistory">Lịch sử chỉnh sửa</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openScoreArchive()"><span class="menu-ico bg-pink-100 text-pink-600"><i class="fa-solid fa-box-archive"></i></span><span data-i18n="menuScoreArchive">Lưu Trữ điểm</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openDeletedStudents()"><span class="menu-ico bg-blue-100 text-blue-600"><i class="fa-solid fa-trash-arrow-up"></i></span><span data-i18n="menuRestoreStudents">Khôi phục học sinh đã xóa</span></button>
+                            <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();openFxSettings()"><span class="menu-ico bg-fuchsia-100 text-fuchsia-600"><i class="fa-solid fa-wand-magic-sparkles"></i></span><span data-i18n="menuFxSettings">Cài đặt hiệu ứng</span></button>
                             <button role="menuitem" type="button" class="menu-item" onclick="closeAllMenus();exportData()" data-i18n-title="backupTitle" title="Tải bản sao lưu dữ liệu ra file JSON"><span class="menu-ico bg-red-100 text-red-600"><i class="fa-solid fa-download"></i></span><span data-i18n="btnBackup">Sao lưu dữ liệu</span></button>
                             <label role="menuitem" class="menu-item"><span class="menu-ico bg-gray-200 text-gray-600"><i class="fa-solid fa-cloud-arrow-up"></i></span><span data-i18n="btnRestoreData">Phục hồi dữ liệu</span>
                                 <input type="file" id="importFileInput" class="hidden" accept=".json" onchange="importData(event);closeAllMenus()">
@@ -4599,6 +5121,43 @@ html.mx-dark .pxp-lt{background:rgba(15,23,42,.6);color:#fde68a;border-color:#b4
             <div id="groupResultsContainer" class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-3 p-1">
                 <p class="col-span-full text-center text-slate-400 py-8 text-xs italic" data-i18n="groupPrompt">Vui lòng chọn kích thước nhóm ở trên để tiến hành chia nhóm.</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal: Cài đặt hiệu ứng -->
+    <div id="fxSettingsModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50" onclick="if(event.target===this)closeFxSettings()">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-fuchsia-600"></i> <span data-i18n="menuFxSettings">Cài đặt hiệu ứng</span></h3>
+                <button onclick="closeFxSettings()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="fx-master mb-3">
+                <span class="fx-ico"><i class="fa-solid fa-power-off"></i></span>
+                <div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxMaster">Bật hiệu ứng</div><div class="fx-d" id="fxMasterOnTxt" data-i18n="fxMasterOn">Đang bật: chọn từng nhóm bên dưới</div><div class="fx-d hidden" id="fxMasterOffTxt" data-i18n="fxMasterOff">Đã tắt toàn bộ hiệu ứng (animation, chuyển cảnh, pháo giấy)</div></div>
+                <button type="button" class="fx-sw on" id="fxMasterSw" role="switch" aria-checked="true" onclick="mxFxMaster()"></button>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+                <button type="button" class="fx-btn" onclick="mxFxAll(true)"><i class="fa-solid fa-toggle-on mr-1"></i><span data-i18n="fxAllOn">Bật tất cả nhóm</span></button>
+                <button type="button" class="fx-btn" onclick="mxFxAll(false)"><i class="fa-solid fa-toggle-off mr-1"></i><span data-i18n="fxAllOff">Tắt tất cả nhóm</span></button>
+                <button type="button" class="fx-btn" onclick="mxFxReset()"><i class="fa-solid fa-rotate-left mr-1"></i><span data-i18n="fxReset">Mặc định</span></button>
+                <span id="fxCount" class="ml-auto text-[11px] font-black text-fuchsia-700"></span>
+            </div>
+            <div id="fxList" class="fx-list flex-1">
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-id-card"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_cards"></div><div class="fx-d" data-i18n="fxD_cards"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="cards" onclick="mxFxToggle('cards')"></button></div>
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-fire"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_streak"></div><div class="fx-d" data-i18n="fxD_streak"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="streak" onclick="mxFxToggle('streak')"></button></div>
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-trophy"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_rank"></div><div class="fx-d" data-i18n="fxD_rank"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="rank" onclick="mxFxToggle('rank')"></button></div>
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-table-cells"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_score"></div><div class="fx-d" data-i18n="fxD_score"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="score" onclick="mxFxToggle('score')"></button></div>
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-dice"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_random"></div><div class="fx-d" data-i18n="fxD_random"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="random" onclick="mxFxToggle('random')"></button></div>
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-bullseye"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_wheel"></div><div class="fx-d" data-i18n="fxD_wheel"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="wheel" onclick="mxFxToggle('wheel')"></button></div>
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-gift"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_mystery"></div><div class="fx-d" data-i18n="fxD_mystery"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="mystery" onclick="mxFxToggle('mystery')"></button></div>
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-paw"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_pets"></div><div class="fx-d" data-i18n="fxD_pets"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="pets" onclick="mxFxToggle('pets')"></button></div>
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-cake-candles"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_bday"></div><div class="fx-d" data-i18n="fxD_bday"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="bday" onclick="mxFxToggle('bday')"></button></div>
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-medal"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_badges"></div><div class="fx-d" data-i18n="fxD_badges"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="badges" onclick="mxFxToggle('badges')"></button></div>
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-snowflake"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_season"></div><div class="fx-d" data-i18n="fxD_season"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="season" onclick="mxFxToggle('season')"></button></div>
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-window-restore"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_ui"></div><div class="fx-d" data-i18n="fxD_ui"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="ui" onclick="mxFxToggle('ui')"></button></div>
+                <div class="fx-row"><span class="fx-ico"><i class="fa-solid fa-arrow-up-9-1"></i></span><div class="flex-1 min-w-0"><div class="fx-t" data-i18n="fxG_count"></div><div class="fx-d" data-i18n="fxD_count"></div></div><button type="button" class="fx-sw on" role="switch" aria-checked="true" data-fx="count" onclick="mxFxToggle('count')"></button></div>
+            </div>
+            <p class="mt-3 text-[11px] font-bold text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-floppy-disk text-fuchsia-500"></i><span data-i18n="fxAutoSave">Tự động lưu trên thiết bị này. Tắt bớt hiệu ứng giúp web mượt hơn trên máy yếu.</span></p>
         </div>
     </div>
 
@@ -5457,6 +6016,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
 
         Object.assign(translations.vi, { optTypeDeleteScore: "Xóa điểm đã có trong ô (Xóa điểm, kể cả ô 0 đỏ do vắng)", dsGiftHint: "Xóa ô điểm đang mở (kể cả ô 0 đỏ do vắng)", dsConfirmTitle: "Xác nhận xóa", dsConfirmMsg: "Xóa điểm này? Học sinh: {student} · Ngày: {date} · Ô điểm: {value}. Quà \"{gift}\" sẽ được sử dụng.", dsValueAbsent: "0.0 (vắng)", dsToastSuccess: "Điểm đã được xóa thành công", dsToastEmpty: "Không thể xóa ô trống", dsToastNoValid: "Không có ô điểm hợp lệ để xóa", dsToastNoGift: "Bạn không có quà xóa điểm", dsToastCancel: "Hủy thao tác xóa điểm", dsToastError: "Đã xảy ra lỗi khi lưu dữ liệu" });
         Object.assign(translations.en, { optTypeDeleteScore: "Delete existing score in cell (Delete Score, incl. red 0 for absence)", dsGiftHint: "Deletes the open score cell (including a red 0 for absence)", dsConfirmTitle: "Confirm Deletion", dsConfirmMsg: "Delete this score? Student: {student} · Date: {date} · Cell: {value}. The \"{gift}\" gift will be used.", dsValueAbsent: "0.0 (absent)", dsToastSuccess: "Score deleted successfully", dsToastEmpty: "Cannot delete an empty cell", dsToastNoValid: "No valid score to delete", dsToastNoGift: "You don’t have a Delete Score gift", dsToastCancel: "Cancel score deletion", dsToastError: "An error occurred while saving the data" });
+        Object.assign(translations.vi, { menuFxSettings: "Cài đặt hiệu ứng", fxMaster: "Bật hiệu ứng", fxMasterOn: "Đang bật: chọn từng nhóm bên dưới", fxMasterOff: "Đã tắt toàn bộ hiệu ứng (animation, chuyển cảnh, pháo giấy)", fxAllOn: "Bật tất cả nhóm", fxAllOff: "Tắt tất cả nhóm", fxReset: "Mặc định", fxAutoSave: "Tự động lưu trên thiết bị này. Tắt bớt hiệu ứng giúp web mượt hơn trên máy yếu.", fxCountTxt: "{n}/{m} nhóm đang bật", fxG_cards: "Thẻ học sinh", fxD_cards: "Nền động, hạt sáng và vầng sáng avatar của các mẫu thẻ", fxG_streak: "Chuỗi streak", fxD_streak: "Ngọn lửa, chữ chuỗi, mũi tên xu hướng, pháo giấy chúc mừng mốc", fxG_rank: "Bảng xếp hạng & bục vinh quang", fxD_rank: "Huy chương, ánh sáng, mũi tên lên/xuống hạng, podium cuối kỳ", fxG_score: "Bảng điểm", fxD_score: "Ô điểm nhấp nháy, rung khi nhập sai, tìm kiếm và nhập phát biểu", fxG_random: "Gọi Random", fxD_random: "Hiệu ứng quay, quét sáng, pháo giấy khi chọn xong", fxG_wheel: "Vòng quay may mắn", fxD_wheel: "Viền xoay và nút quay phát sáng", fxG_mystery: "Hộp quà bí ẩn & vé", fxD_mystery: "Cảnh mở hộp, mưa sao, thẻ quà xuất hiện", fxG_pets: "Thú cưng & khu sinh sống", fxD_pets: "Thú cưng cử động, trứng nở, cảnh khu sinh sống và cửa hàng", fxG_bday: "Sinh nhật & quà tặng", fxD_bday: "Bóng bay, pháo giấy, hộp quà bật ra", fxG_badges: "Sổ huy hiệu", fxD_badges: "Huy hiệu lấp lánh và hiệu ứng nhận huy hiệu mới", fxG_season: "Hiệu ứng mùa / chủ đề", fxD_season: "Tuyết, lá, hoa rơi và banner mừng mùa", fxG_ui: "Giao diện chung", fxD_ui: "Cửa sổ, ngăn kéo, thông báo, nhắc sao lưu, chuyển cảnh", fxG_count: "Số chạy lên", fxD_count: "Điểm trung bình và số liệu chạy dần lên khi lưu" });
+        Object.assign(translations.en, { menuFxSettings: "Effects settings", fxMaster: "Enable effects", fxMasterOn: "On: choose each group below", fxMasterOff: "All effects are off (animations, transitions, confetti)", fxAllOn: "Turn all groups on", fxAllOff: "Turn all groups off", fxReset: "Reset", fxAutoSave: "Saved automatically on this device. Fewer effects make the app smoother on slower devices.", fxCountTxt: "{n}/{m} groups on", fxG_cards: "Student cards", fxD_cards: "Animated backgrounds, sparkles and avatar glow on card templates", fxG_streak: "Streak", fxD_streak: "Flames, streak text, trend arrows and milestone confetti", fxG_rank: "Leaderboard & podium", fxD_rank: "Medals, shine, rank up/down arrows and the final-exam podium", fxG_score: "Score Matrix", fxD_score: "Cell flashes, shake on invalid input, search and speaking entry", fxG_random: "Random picker", fxD_random: "Spin effect, scan light and confetti when a student is picked", fxG_wheel: "Lucky Wheel", fxD_wheel: "Rotating frame and glowing spin button", fxG_mystery: "Mystery Box & tickets", fxD_mystery: "Box-opening scene, falling stars and gift card reveal", fxG_pets: "Pets & Habitat", fxD_pets: "Moving pets, hatching eggs, habitat scenes and shop", fxG_bday: "Birthdays & gift pop-ups", fxD_bday: "Balloons, confetti and the gift box pop-up", fxG_badges: "Badge book", fxD_badges: "Sparkling badges and the new-badge effect", fxG_season: "Seasonal effects", fxD_season: "Falling snow, leaves, petals and the season banner", fxG_ui: "General UI", fxD_ui: "Modals, drawers, notifications, backup reminder and transitions", fxG_count: "Count-up numbers", fxD_count: "Averages and figures that count up when saved" });
 
         Object.assign(translations.vi, {"quick_gift_title": "Túi quà", "quick_gift_button": "Quà", "no_gifts_available": "Học sinh này chưa có quà", "select_student_gift": "Chọn quà để sử dụng cho học sinh", "apply_gift_success": "Đã sử dụng quà {giftName} thành công cho {studentName}!", "no_valid_cell_for_gift": "Không tìm thấy ô điểm phù hợp để áp dụng quà này!", "confirm_use_quick_gift": "Bạn có chắc muốn dùng quà này ngay lập tức?", "lowest_score_improved": "Đã cải thiện ô điểm thấp nhất ({score}đ)!", "empty_cell_filled": "Đã điền điểm mới vào ô trống hợp lệ!", "score_deleted_quick": "Đã xóa ô điểm thấp nhất thành công!", "qg_use_btn": "Dùng", "qg_consume_btn": "Tiêu thụ", "qg_close": "Đóng", "qg_type_plus": "Cộng điểm", "qg_type_add": "Tạo điểm mới", "qg_type_change": "Đổi điểm", "qg_type_delete": "Xóa điểm", "qg_type_none": "Quà thông thường", "qg_type_wheel": "Vòng quay may mắn", "qg_wheel_note": "Dùng trong Vòng quay may mắn", "qg_gift_count": "{n} quà", "qg_only_gifts": "Chỉ hiện học sinh có quà", "qg_no_gift_in_class": "Chưa có học sinh nào trong lớp có quà", "qg_no_students": "Lớp chưa có học sinh nào.", "qg_detail_change": "{student} · ô {date}: {before} → {after}", "qg_detail_add": "{student} · điền ô trống {date} = {after}", "qg_detail_delete": "{student} · xóa ô {date} ({before})", "qg_detail_plain": "{student} · {giftName}", "qg_gift_missing": "Không tìm thấy quà này trong túi đồ"});
         Object.assign(translations.en, {"quick_gift_title": "Gift Bag", "quick_gift_button": "Gifts", "no_gifts_available": "No gifts available for this student", "select_student_gift": "Select a gift to use for student", "apply_gift_success": "Successfully applied {giftName} for {studentName}!", "no_valid_cell_for_gift": "No eligible score cell found to apply this gift!", "confirm_use_quick_gift": "Are you sure you want to use this gift immediately?", "lowest_score_improved": "Improved lowest score cell ({score} pts)!", "empty_cell_filled": "New score filled into valid empty cell!", "score_deleted_quick": "Lowest score cell deleted successfully!", "qg_use_btn": "Use", "qg_consume_btn": "Consume", "qg_close": "Close", "qg_type_plus": "Add Points", "qg_type_add": "New Score", "qg_type_change": "Change Score", "qg_type_delete": "Delete Score", "qg_type_none": "Regular Gift", "qg_type_wheel": "Lucky Wheel", "qg_wheel_note": "Use it in the Lucky Wheel", "qg_gift_count": "{n} gifts", "qg_only_gifts": "Only students with gifts", "qg_no_gift_in_class": "No student in this class has any gifts", "qg_no_students": "No students in this class.", "qg_detail_change": "{student} · cell {date}: {before} → {after}", "qg_detail_add": "{student} · fill empty cell {date} = {after}", "qg_detail_delete": "{student} · delete cell {date} ({before})", "qg_detail_plain": "{student} · {giftName}", "qg_gift_missing": "This gift was not found in the inventory"});
@@ -5860,7 +6421,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         function qsCountUp(root, opts) {
             if (!root) return;
             opts = opts || {};
-            const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const reduce = (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || !window.mxFxOn('count');
             root.querySelectorAll('[data-cu]').forEach(el => {
                 const key = el.dataset.cu, to = parseFloat(el.dataset.to), dec = parseInt(el.dataset.dec || '0', 10);
                 if (!isFinite(to)) return;
@@ -9298,6 +9859,33 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         };
         shopFxApply();
 
+        /* --- CÀI ĐẶT HIỆU ỨNG (menu Tiện ích) --- */
+        function mxFxRender() {
+            const F = window.mxFx; if (!F) return;
+            const lang = appData.language || 'vi', T = translations[lang] || translations.vi;
+            const master = !!F.state.m;
+            const ms = document.getElementById('fxMasterSw'); if (ms) { ms.classList.toggle('on', master); ms.setAttribute('aria-checked', master ? 'true' : 'false'); }
+            const a = document.getElementById('fxMasterOnTxt'), b = document.getElementById('fxMasterOffTxt');
+            if (a) a.classList.toggle('hidden', !master); if (b) b.classList.toggle('hidden', master);
+            const list = document.getElementById('fxList'); if (list) list.classList.toggle('fx-dim', !master);
+            let n = 0;
+            document.querySelectorAll('#fxSettingsModal [data-fx]').forEach(sw => { const on = F.groupOn(sw.dataset.fx); if (on) n++; sw.classList.toggle('on', on); sw.setAttribute('aria-checked', on ? 'true' : 'false'); });
+            const c = document.getElementById('fxCount'); if (c) c.textContent = (T.fxCountTxt || '').replace('{n}', n).replace('{m}', F.groups.length);
+        }
+        window.openFxSettings = function () {
+            const m = document.getElementById('fxSettingsModal'); if (!m) return;
+            mxFxRender(); m.classList.remove('hidden'); m.classList.add('flex');
+        };
+        window.closeFxSettings = function () {
+            const m = document.getElementById('fxSettingsModal'); if (!m) return;
+            m.classList.add('hidden'); m.classList.remove('flex');
+        };
+        window.mxFxToggle = function (g) { window.mxFx.set(g, !window.mxFx.groupOn(g)); mxFxRender(); };
+        window.mxFxMaster = function () { window.mxFx.master(!window.mxFx.state.m); mxFxRender(); };
+        window.mxFxAll = function (v) { window.mxFx.all(!!v); mxFxRender(); };
+        window.mxFxReset = function () { window.mxFx.reset(); mxFxRender(); };
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { const m = document.getElementById('fxSettingsModal'); if (m && !m.classList.contains('hidden')) closeFxSettings(); } });
+
         /* --- CHẾ ĐỘ XEM LƯỚI / DANH SÁCH CHO DANH SÁCH LỚP + VI PHẠM --- */
         function rosterViewMode(k) { let m = 'grid'; try { m = localStorage.getItem('rosterView_' + k) === 'list' ? 'list' : 'grid'; } catch (e) {} return m; }
         function rosterViewApply(k) {
@@ -11224,6 +11812,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             else { tfRaf = 0; tfCtx.setTransform(1, 0, 0, 1, 0, 0); tfCtx.clearRect(0, 0, tfCv.width, tfCv.height); }
         }
         function tfBurst(x, y, count, spread, palette) {
+            if (!window.mxFxOn('streak')) return;
             const colors = palette || ['#ef4444', '#f97316', '#facc15', '#22c55e', '#38bdf8', '#a855f7', '#ec4899'];
             if (!tfCv) {
                 tfCv = document.createElement('canvas'); tfCv.id = 'tfConfCanvas';
@@ -11291,7 +11880,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         function tfTierFx(key) {
             const c = TF_TIERS[key]; if (!c) return;
             const cx = innerWidth / 2, cy = innerHeight * 0.32;
-            if (c.flash) {
+            if (c.flash && window.mxFxOn('streak')) {
                 const flash = document.createElement('div'); flash.className = 'tf-flash';
                 flash.style.background = `radial-gradient(circle at 50% 35%, ${c.flash}, rgba(124,58,237,.18) 45%, transparent 70%)`;
                 tfEnsureLayer().appendChild(flash);
@@ -12686,6 +13275,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             arena.style.display = list.length ? '' : 'none';
         }
         function rpConfetti() {
+            if (!window.mxFxOn('random')) return;
             const area = document.getElementById('randomDisplayArea');
             const colors = ['#f59e0b', '#ef4444', '#6366f1', '#10b981', '#ec4899', '#0ea5e9'];
             for (let i = 0; i < 28; i++) {
