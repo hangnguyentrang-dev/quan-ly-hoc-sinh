@@ -4726,6 +4726,74 @@ html.mx-dark #studentProfileContent>section:hover{box-shadow:0 10px 24px rgba(0,
 @media (prefers-reduced-motion:reduce){#studentProfileContent *,.spv-item,.spv-sum>div,.spf-rank{transition:none!important}}
 html.fx-off-ui #studentProfileContent *{transition:none!important}
 </style>
+<style id="patch-2026-11-03-violation-compact">
+/* Cửa sổ chi tiết vi phạm (tab Vi phạm) dùng cùng kiểu với bảng vi phạm trong hồ sơ học sinh */
+.svd-card.sp-side{position:relative;top:auto;right:auto;margin:0;width:min(34rem,100%);max-height:70vh;animation:spIn .28s cubic-bezier(.22,1,.36,1) both}
+.svd-card.sp-side>*{width:100%}
+.svd-add{display:inline-flex;align-items:center;gap:.3rem;font-size:12px!important;font-weight:800;line-height:1.2!important;padding:.35rem .7rem!important;border-radius:.6rem;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.45);color:#fff;transition:background .15s}
+.svd-add:hover{background:rgba(255,255,255,.35)}
+/* Rút ngắn chiều dài bảng vi phạm: tiêu đề, khoảng đệm, ô thống kê và từng dòng gọn hơn */
+.sp-side.viol{max-height:62vh}
+.sp-side.viol .sp-head{padding:.65rem 1rem}
+.sp-side.viol .sp-head h2{font-size:.95rem}
+.sp-side.viol .sp-head p{font-size:11px;margin-top:0}
+.sp-side.viol .sp-body,.svd-card .sp-body{padding:.75rem 1rem}
+.sp-side.viol .spv-sum{margin-bottom:.6rem;gap:.4rem}
+.sp-side.viol .spv-sum>div{padding:.35rem .65rem;flex:1 1 6rem}
+.sp-side.viol .spv-sum small{font-size:10.5px}
+.sp-side.viol .spv-sum b{font-size:1.1rem}
+.sp-side.viol .spv-item{padding:.45rem .65rem;margin-bottom:.35rem;gap:.5rem}
+.sp-side.viol .spv-name{font-size:12.5px}
+.sp-side.viol .spv-dates{margin-top:.25rem}
+.sp-side.viol .spv-dates span{font-size:10px;padding:0 .4rem}
+.sp-side.viol .spv-empty{padding:1.25rem 1rem}
+.sp-side.viol .spv-empty b{font-size:1.8rem;margin-bottom:.2rem}
+html.mx-dark .svd-card.sp-side{background:#1e293b}
+</style>
+<style id="patch-2026-11-03-violation-add">
+.svd-label{font-size:11px;font-weight:900;letter-spacing:.03em;color:#9f1239;margin-bottom:.4rem}
+.svd-presets{display:flex;flex-direction:column;gap:.35rem;max-height:34vh;overflow-y:auto;padding-right:.15rem}
+.svd-preset{display:flex;align-items:center;justify-content:space-between;gap:.6rem;width:100%;text-align:left;border:1px solid #fecdd3;background:#fff1f2;border-radius:.9rem;padding:.45rem .65rem;font-size:12.5px;font-weight:900;color:#881337;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease}
+.svd-preset i{font-size:11px;color:#e11d48;opacity:.7}
+.svd-preset:hover{transform:translateX(4px);box-shadow:0 8px 18px rgba(225,29,72,.16);border-color:#fb7185;background:#ffe4e6}
+.svd-input{width:100%;border:1px solid #fecdd3;background:#fff;border-radius:.9rem;padding:.5rem .75rem;font-size:12.5px;color:#881337;outline:none;transition:box-shadow .15s,border-color .15s}
+.svd-input:focus{border-color:#fb7185;box-shadow:0 0 0 3px rgba(244,63,94,.2)}
+.svd-btn-ghost,.svd-btn-main{border-radius:.8rem;padding:.45rem 1rem;font-size:12px;font-weight:900;transition:transform .18s ease,box-shadow .18s ease,background .15s}
+.svd-btn-ghost{background:#fff1f2;border:1px solid #fecdd3;color:#9f1239}
+.svd-btn-ghost:hover{background:#ffe4e6}
+.svd-btn-main{background:linear-gradient(90deg,#e11d48,#f43f5e);color:#fff;border:1px solid transparent}
+.svd-btn-main:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(225,29,72,.3)}
+html.mx-dark .svd-preset,html.mx-dark .svd-btn-ghost{background:#2a1424;border-color:#9f1239;color:#fecdd3}
+html.mx-dark .svd-label{color:#fecdd3}
+html.mx-dark .svd-input{background:#0f172a;border-color:#9f1239;color:#fecdd3}
+</style>
+<style id="patch-2026-11-03-violation-narrow">
+/* Bảng vi phạm trong Hồ sơ chi tiết: thu hẹp chiều ngang (trước đây 48rem) và hạ chiều cao */
+.sp-side.viol:not(.svd-card){width:min(26rem,calc(100vw - 24px));max-height:52vh}
+.sp-side.viol:not(.svd-card)>*{width:100%;max-width:100%}
+.sp-side.viol:not(.svd-card) .sp-head{padding:.55rem .85rem}
+.sp-side.viol:not(.svd-card) .sp-head h2{font-size:.9rem}
+.sp-side.viol:not(.svd-card) .sp-head p{display:none}
+.sp-side.viol:not(.svd-card) .sp-head button{font-size:1.25rem}
+.sp-side.viol:not(.svd-card) .sp-body{padding:.6rem .8rem}
+.sp-side.viol:not(.svd-card) .spv-empty{padding:.9rem .5rem;font-size:13px}
+.sp-side.viol:not(.svd-card) .spv-empty b{font-size:1.5rem}
+.sp-side.viol:not(.svd-card) .spv-sum{flex-wrap:nowrap}
+.sp-side.viol:not(.svd-card) .spv-sum>div{flex:1 1 0;min-width:0}
+</style>
+<style id="patch-2026-11-03-violation-add-tall">
+/* Cửa sổ Ghi nhận vi phạm: kéo dài xuống, không cuộn cả cửa sổ; chỉ danh sách loại vi phạm tự cuộn */
+#addViolationModal .svd-card.sp-side{max-height:94vh}
+#addViolationModal .sp-body{overflow:visible;flex:0 0 auto;padding:.9rem 1.1rem 1.1rem}
+#addViolationModal .svd-presets{max-height:min(48vh,26rem);overflow-y:auto}
+</style>
+<style id="patch-2026-11-03-violation-add-wide">
+/* Ghi nhận vi phạm: rộng hơn, bỏ hiệu ứng nhích ngang khi rê chuột (gây thanh cuộn ngang) */
+#addViolationModal .svd-card.sp-side{width:min(40rem,100%)}
+#addViolationModal .svd-presets{overflow-x:hidden;overflow-y:auto;padding:.1rem .2rem .1rem .1rem}
+#addViolationModal .svd-preset:hover{transform:none;box-shadow:0 0 0 2px rgba(244,63,94,.28)}
+#addViolationModal .svd-preset:active{background:#fecdd3}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 
@@ -5793,35 +5861,27 @@ html.fx-off-ui #studentProfileContent *{transition:none!important}
     </div>
 
     <!-- Modal: Thêm Vi Phạm Cho Học Sinh -->
-    <div id="addViolationModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
-        <div class="bg-white rounded-2xl shadow-2xl w-96 p-6">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-exclamation text-rose-600"></i> <span data-i18n="modalRecordViolationTitle">Ghi Nhận Vi Phạm</span>
-                </h3>
-                <button onclick="closeAddViolationModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
+    <div id="addViolationModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-[60] p-3" onclick="if(event.target===this)closeAddViolationModal()">
+        <div class="svd-card sp-side viol">
             <input type="hidden" id="addViolationStudentId">
-            <div class="mb-4 bg-rose-50 p-3 rounded-xl border border-rose-100">
-                <p class="text-xs text-rose-600 font-medium" data-i18n="lblStudentRecorded">Học sinh ghi nhận:</p>
-                <p class="text-sm font-bold text-rose-900" id="addViolationStudentName">--</p>
-            </div>
-            
-            <div class="mb-4">
-                <label class="block text-xs font-bold text-slate-700 mb-1.5" data-i18n="lblSelectViolationPreset">Chọn loại vi phạm từ danh mục:</label>
-                <div id="violationTypesSelectList" class="space-y-1.5 max-h-52 overflow-y-auto pr-1">
-                    <!-- Dynamic List of Violation Types -->
+            <div class="sp-head">
+                <div class="min-w-0">
+                    <h2 id="addViolationStudentName">--</h2>
+                    <p data-i18n="modalRecordViolationTitle">Ghi Nhận Vi Phạm</p>
                 </div>
+                <button type="button" onclick="closeAddViolationModal()" aria-label="Đóng">×</button>
             </div>
+            <div class="sp-body">
+                <div class="svd-label" data-i18n="lblSelectViolationPreset">Chọn loại vi phạm từ danh mục:</div>
+                <div id="violationTypesSelectList" class="svd-presets"></div>
 
-            <div class="mb-4">
-                <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblCustomViolationNote">Hoặc nhập vi phạm trực tiếp / Ghi chú thêm:</label>
-                <input type="text" id="customViolationInput" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500" placeholder="...">
-            </div>
+                <div class="svd-label" style="margin-top:.85rem" data-i18n="lblCustomViolationNote">Hoặc nhập vi phạm trực tiếp / Ghi chú thêm:</div>
+                <input type="text" id="customViolationInput" class="svd-input" placeholder="..." onkeydown="if(event.key==='Enter'){event.preventDefault();submitCustomViolation();}">
 
-            <div class="flex justify-end space-x-2">
-                <button type="button" onclick="closeAddViolationModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold" data-i18n="btnCancel">Hủy</button>
-                <button type="button" onclick="submitCustomViolation()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold" data-i18n="btnSaveViolation">Lưu Vi Phạm</button>
+                <div class="flex justify-end gap-2" style="margin-top:.9rem">
+                    <button type="button" onclick="closeAddViolationModal()" class="svd-btn-ghost" data-i18n="btnCancel">Hủy</button>
+                    <button type="button" onclick="submitCustomViolation()" class="svd-btn-main" data-i18n="btnSaveViolation">Lưu Vi Phạm</button>
+                </div>
             </div>
         </div>
     </div>
@@ -5855,33 +5915,19 @@ html.fx-off-ui #studentProfileContent *{transition:none!important}
     </div>
 
     <!-- Modal: Xem Chi Tiết Vi Phạm Của Học Sinh -->
-    <div id="studentViolationDetailsModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-clock-rotate-left text-rose-600"></i> <span data-i18n="modalStudentViolationHistory">Chi Tiết Vi Phạm Học Sinh</span>
-                </h3>
-                <button onclick="closeStudentViolationDetailsModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-
-            <div class="mb-4 bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between">
-                <div>
-                    <span class="text-xs text-slate-500 block" data-i18n="lblStudent">Học sinh:</span>
-                    <span class="text-sm font-bold text-slate-800" id="detailStudentName">--</span>
+    <div id="studentViolationDetailsModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-3" onclick="if(event.target===this)closeStudentViolationDetailsModal()">
+        <div class="svd-card sp-side viol">
+            <div class="sp-head">
+                <div class="min-w-0">
+                    <h2 id="detailStudentName">--</h2>
+                    <p data-i18n="lblViolationHistorySummary">Tổng hợp danh sách vi phạm</p>
                 </div>
-                <button onclick="openAddViolationModalFromDetails()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow">
-                    <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddViolation">Thêm Vi Phạm</span>
-                </button>
+                <div class="flex items-center gap-2 flex-none">
+                    <button type="button" onclick="openAddViolationModalFromDetails()" class="svd-add"><i class="fa-solid fa-plus"></i> <span data-i18n="btnAddViolation">Thêm Vi Phạm</span></button>
+                    <button type="button" onclick="closeStudentViolationDetailsModal()" aria-label="Đóng">×</button>
+                </div>
             </div>
-
-            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2" data-i18n="lblViolationHistorySummary">Tổng hợp danh sách vi phạm</div>
-            <div id="studentViolationHistoryList" class="space-y-2 max-h-72 overflow-y-auto pr-1 mb-4">
-                <!-- Dynamic Student Aggregated Violations -->
-            </div>
-
-            <div class="flex justify-end">
-                <button type="button" onclick="closeStudentViolationDetailsModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold" data-i18n="btnClose">Đóng</button>
-            </div>
+            <div class="sp-body" id="studentViolationHistoryList"></div>
         </div>
     </div>
 
@@ -10911,55 +10957,22 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             document.getElementById('detailStudentName').innerText = `${student.icon || '🎓'} ${getStudentDisplayName(student)}`;
 
             const listContainer = document.getElementById('studentViolationHistoryList');
-            listContainer.innerHTML = '';
-
             const violations = student.violations || [];
-            const lang = appData.language || 'vi';
-            const t = translations[lang];
+            const en = appData.language === 'en';
 
             if (violations.length === 0) {
-                listContainer.innerHTML = `<p class='text-slate-400 text-xs italic p-4 text-center'>${t.lblNoViolationsForStudent}</p>`;
+                listContainer.innerHTML = `<div class="spv-empty"><b>🎉</b>${en ? 'No violations recorded' : 'Học sinh chưa có vi phạm nào'}</div>`;
             } else {
-                const groupedMap = {};
+                const groups = {};
                 violations.forEach(v => {
-                    const name = v.name.trim();
-                    if (!groupedMap[name]) {
-                        groupedMap[name] = {
-                            name: name,
-                            count: 0,
-                            dates: [],
-                            ids: []
-                        };
-                    }
-                    groupedMap[name].count++;
-                    if (v.date) groupedMap[name].dates.push(v.date);
-                    groupedMap[name].ids.push(v.vId);
+                    const n = String((v && (v.name || v.type)) || v || '').trim() || '—';
+                    (groups[n] = groups[n] || { name: n, count: 0, dates: [] }).count++;
+                    if (v && v.date) groups[n].dates.push(v.date);
                 });
-
-                Object.values(groupedMap).forEach(group => {
-                    const div = document.createElement('div');
-                    div.className = 'bg-rose-50 border border-rose-200 rounded-xl p-3 flex justify-between items-center';
-                    
-                    const datesStr = group.dates.length > 0 ? group.dates.join(', ') : '---';
-
-                    div.innerHTML = `
-                        <div class="pr-2">
-                            <div class="text-xs font-bold text-rose-900 flex items-center gap-2">
-                                <span>⚠️ ${group.name}</span>
-                                <span class="bg-rose-200 text-rose-900 text-[10px] font-black px-2 py-0.5 rounded-full border border-rose-300">
-                                    x${group.count}
-                                </span>
-                            </div>
-                            <div class="text-[10px] font-semibold text-rose-600 mt-1">
-                                <b>${t.lblRecordedDates}</b> ${datesStr}
-                            </div>
-                        </div>
-                        <button onclick="deleteAggregatedStudentViolations('${student.id}', '${encodeURIComponent(group.name)}')" class="text-rose-600 hover:text-white hover:bg-rose-600 p-1.5 rounded-lg text-xs transition whitespace-nowrap" title="Xóa toàn bộ vi phạm này">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    `;
-                    listContainer.appendChild(div);
-                });
+                const list = Object.values(groups).sort((x, y) => y.count - x.count);
+                listContainer.innerHTML =
+                    `<div class="spv-sum"><div><small>⚠️ ${en ? 'Total violations' : 'Tổng lần vi phạm'}</small><b>${violations.length}</b></div><div><small>📋 ${en ? 'Violation types' : 'Số loại vi phạm'}</small><b>${list.length}</b></div></div>` +
+                    list.map(g => `<div class="spv-item"><div class="min-w-0"><div class="spv-name">⚠️ ${escapeHtml(g.name)}</div>${g.dates.length ? `<div class="spv-dates">${g.dates.map(d => `<span>${escapeHtml(d)}</span>`).join('')}</div>` : ''}</div><div class="flex items-center gap-1.5 flex-none"><span class="spv-cnt">x${g.count}</span><button onclick="deleteAggregatedStudentViolations('${student.id}', '${encodeURIComponent(g.name)}')" class="text-rose-600 hover:text-white hover:bg-rose-600 p-1 rounded-lg text-xs transition" title="${en ? 'Delete all of this violation' : 'Xóa toàn bộ vi phạm này'}"><i class="fa-solid fa-trash-can"></i></button></div></div>`).join('');
             }
 
             document.getElementById('studentViolationDetailsModal').classList.remove('hidden');
@@ -10994,16 +11007,16 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
 
             const types = appData.globalViolationTypes || [];
             if (types.length === 0) {
-                listContainer.innerHTML = `<p class='text-slate-400 text-xs italic p-2'>${t.lblNoPresetsAvailable}</p>`;
+                listContainer.innerHTML = `<p class='spv-empty' style='padding:.75rem'>${t.lblNoPresetsAvailable}</p>`;
             } else {
                 types.forEach(vt => {
                     const displayName = getViolationTypeName(vt);
                     const btn = document.createElement('button');
                     btn.type = 'button';
-                    btn.className = 'w-full text-left p-2 bg-slate-50 hover:bg-rose-50 border border-slate-200 hover:border-rose-300 rounded-lg text-xs font-semibold text-slate-700 hover:text-rose-900 transition flex items-center justify-between';
+                    btn.className = 'svd-preset';
                     btn.innerHTML = `
                         <span>⚠️ ${displayName}</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                        <i class="fa-solid fa-plus"></i>
                     `;
                     btn.onclick = () => addViolationToStudent(student.id, displayName);
                     listContainer.appendChild(btn);
