@@ -4339,6 +4339,231 @@ html.mx-dark #fxSettingsModal .fx-master{background:linear-gradient(135deg,#3b07
 html.mx-dark #fxSettingsModal .fx-btn{background:#0f172a;border-color:#6b21a8;color:#f0abfc}
 html.mx-dark #fxSettingsModal .fx-btn:hover{background:#3b0764}
 </style>
+<style id="giftTradeStyles">
+/* ===== Trao đổi / tặng quà giữa học sinh: nút icon + 3 cửa sổ rời ===== */
+.gt-namecell{display:inline-flex;align-items:center;flex-wrap:nowrap;gap:.1rem;min-width:0;max-width:100%}
+.gt-namecell>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gt-cellend{display:flex;flex-wrap:nowrap;align-items:flex-end;gap:.5rem}
+.gt-cellend .gt-gifts{flex:1 1 auto;min-width:0}
+.gt-cellend .gt-btn{flex:none;margin-left:auto}
+.gt-btn{flex:none;display:inline-flex;align-items:center;justify-content:center;width:1.65rem;height:1.65rem;margin-left:.45rem;padding:0;border-radius:9999px;border:2px solid #fff;color:#fff;font-size:11px;line-height:1;cursor:pointer;vertical-align:middle;
+  background:linear-gradient(145deg,#ea580c,#f59e0b 55%,#fbbf24);box-shadow:0 2px 0 #b45309,0 4px 8px rgba(234,88,12,.32);transition:transform .16s ease,box-shadow .16s ease,filter .16s ease}
+.gt-btn:hover,.gt-btn:focus-visible{transform:translateY(-2px) scale(1.1);filter:brightness(1.08) saturate(1.1);box-shadow:0 4px 0 #b45309,0 0 0 4px rgba(245,158,11,.22),0 8px 16px rgba(234,88,12,.4)}
+.gt-btn:hover i,.gt-btn:focus-visible i{animation:gtWiggle .5s ease-in-out}
+.gt-btn:active{transform:translateY(0) scale(.96);box-shadow:0 1px 0 #b45309}
+.gt-btn:focus-visible{outline:3px solid #312e81;outline-offset:3px}
+.gt-btn.gt-empty{filter:grayscale(.85) opacity(.55)}
+.gt-btn.gt-empty:hover{filter:grayscale(.6) opacity(.75)}
+@keyframes gtWiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-16deg)}75%{transform:rotate(16deg)}}
+#gtRoot{position:fixed;inset:0;z-index:98;display:none;overflow-x:hidden;overflow-y:auto;padding:16px;background:rgba(15,23,42,.5);backdrop-filter:blur(2px)}
+#gtRoot.open{display:flex;animation:gtFade .22s ease both}
+.gt-wrap{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:1.25rem;max-width:100%;margin:auto}
+.gt-win{--a:#fbbf24;--b:#f97316;display:none;flex-direction:column;width:min(22rem,92vw);min-height:16rem;max-height:min(34rem,84vh);background:#fff;color:#1e293b;border-radius:1.1rem;overflow:hidden;box-shadow:0 25px 60px rgba(15,23,42,.38)}
+.gt-win.show{display:flex}
+.gt-win.gt-in{animation:gtPop .42s cubic-bezier(.22,.85,.3,1) both}
+.gt-w2{--a:#f59e0b;--b:#ea580c}
+.gt-w3{--a:#6366f1;--b:#8b5cf6}
+@keyframes gtFade{from{opacity:0}to{opacity:1}}
+@keyframes gtPop{from{opacity:0;transform:translateX(110px)}to{opacity:1;transform:translateX(0)}}
+.gt-h{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;padding:1rem 1.2rem;color:#fff;background:linear-gradient(135deg,var(--a),var(--b))}
+.gt-eye{font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;opacity:.92;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gt-h h3{margin:.1rem 0 0;font-size:1.05rem;font-weight:900;line-height:1.2}
+.gt-h p{margin:.15rem 0 0;font-size:12px;opacity:.92}
+.gt-x{flex:none;font-size:1.6rem;line-height:1;padding:0 .35rem;border-radius:.5rem;color:#fff;background:transparent;border:0;cursor:pointer;transition:background .15s,transform .15s}
+.gt-x:hover{background:rgba(255,255,255,.22);transform:scale(1.1)}
+.gt-list{flex:1;min-height:0;overflow-y:auto;padding:.75rem;display:flex;flex-direction:column;gap:.4rem}
+.gt-empty-t{margin:1.5rem 0;text-align:center;font-size:12px;font-style:italic;color:#94a3b8}
+.gt-stu{display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;padding:.55rem .7rem;border:1px solid #e2e8f0;border-radius:.8rem;background:#fff;font-size:13px;font-weight:800;color:#1e293b;cursor:pointer;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}
+.gt-stu:hover{transform:translateX(3px);border-color:#fb923c;background:#fffaf5;box-shadow:0 4px 12px rgba(234,88,12,.18)}
+.gt-stu.sel{border-color:#ea580c;background:#ffedd5;box-shadow:0 0 0 3px rgba(234,88,12,.22)}
+.gt-stu .gt-sn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gt-stu .gt-sc{flex:none;font-size:11px;font-weight:900;color:#d97706}
+.gt-stu .gt-chk{display:none;color:#ea580c}
+.gt-stu.sel .gt-chk{display:inline-block}
+.gt-gift{cursor:pointer;margin-top:0;transition:transform .15s ease,box-shadow .15s ease,background .15s ease,outline-color .15s ease}
+.gt-gift:hover{transform:translateX(3px);box-shadow:0 4px 12px rgba(245,158,11,.3)}
+.qg-gift.gt-gift>i.gt-chk{display:none;width:auto;margin-left:auto;color:#ea580c}
+.gt-gift.sel{outline:2px solid #ea580c;outline-offset:1px;box-shadow:0 0 0 4px rgba(234,88,12,.16)}
+.gt-gift.sel>i.gt-chk{display:inline-block}
+.gt-w3 .gt-gift:hover{box-shadow:0 4px 12px rgba(99,102,241,.3)}
+.gt-w3 .gt-gift.sel{outline-color:#6366f1;box-shadow:0 0 0 4px rgba(99,102,241,.18)}
+.gt-w3 .qg-gift.gt-gift>i.gt-chk{color:#6366f1}
+.gt-gift.gt-locked{cursor:not-allowed;opacity:.55;filter:grayscale(.6)}
+.gt-gift.gt-locked:hover{transform:none;box-shadow:none}
+.gt-foot{display:flex;gap:.6rem;padding:.8rem 1rem 1rem;border-top:1px solid #e2e8f0}
+.gt-act{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border:0;border-radius:.8rem;padding:.65rem .8rem;font-size:13px;font-weight:900;color:#fff;cursor:pointer;transition:transform .15s ease,filter .15s ease,box-shadow .15s ease,opacity .15s}
+.gt-act.swap{background:linear-gradient(120deg,#ea580c,#f59e0b);box-shadow:0 3px 0 #b45309}
+.gt-act.give{background:linear-gradient(120deg,#e11d48,#f43f5e);box-shadow:0 3px 0 #9f1239}
+.gt-act.swap.on{outline:3px solid rgba(245,158,11,.4);outline-offset:2px}
+.gt-act:not(:disabled):hover{transform:translateY(-2px);filter:brightness(1.08)}
+.gt-act:not(:disabled):active{transform:translateY(1px)}
+.gt-act:disabled{opacity:.4;cursor:not-allowed}
+.gt-act:focus-visible,.gt-stu:focus-visible,.gt-gift:focus-visible,.gt-x:focus-visible{outline:3px solid #312e81;outline-offset:2px}
+html.mx-dark .gt-win{background:#1e293b;color:#e2e8f0}
+html.mx-dark .gt-stu{background:#0f172a;border-color:#334155;color:#e2e8f0}
+html.mx-dark .gt-stu:hover{background:#431407;border-color:#fb923c}
+html.mx-dark .gt-stu.sel{background:#7c2d12;border-color:#fb923c}
+html.mx-dark .gt-foot{border-color:#334155}
+html.mx-dark .gt-gift:not(.qg-shield):not(.qg-sg){background:#3b2f14;border-color:#92400e}
+html.mx-dark .gt-gift:not(.qg-shield):not(.qg-sg) .qg-gn{color:#fde68a}
+html.mx-dark .gt-gift:not(.qg-shield):not(.qg-sg) .qg-gt{color:#fbbf24}
+@media(max-width:640px){.gt-wrap{flex-direction:column;align-items:center;flex-wrap:nowrap}.gt-win{max-height:60vh}}
+@media(prefers-reduced-motion:reduce){#gtRoot.open,.gt-win.gt-in,.gt-btn:hover i,.gt-btn:focus-visible i{animation:none}.gt-btn,.gt-stu,.gt-gift,.gt-act,.gt-x{transition:none}}
+html.fx-off-ui #gtRoot.open,html.fx-off-ui .gt-win.gt-in,html.fx-off-ui .gt-btn:hover i,html.fx-off-ui .gt-btn:focus-visible i{animation:none!important}
+html.fx-off-ui .gt-btn,html.fx-off-ui .gt-stu,html.fx-off-ui .gt-gift,html.fx-off-ui .gt-act,html.fx-off-ui .gt-x{transition:none!important}
+@media print{#gtRoot,.gt-btn{display:none!important}}
+</style>
+<style id="streak-recovery-css">
+/* ===== Hồi Phục Chuỗi: nút vào + cửa sổ thứ hai trượt ra bên phải Sổ quà Chuỗi ===== */
+.sgb-wrap{gap:0}
+.sr-entry{display:flex;align-items:center;gap:10px;width:100%;margin-top:14px;padding:10px 12px;border-radius:14px;border:1.5px solid var(--sg-bd);background:linear-gradient(180deg,#fff,var(--sg-bg));text-align:left;cursor:pointer;transition:transform .15s ease,box-shadow .2s ease,border-color .2s ease}
+.sr-entry:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(15,23,42,.14);border-color:var(--sg-a)}
+.sr-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;background:var(--sg-a);font-size:15px;flex:none;box-shadow:0 2px 8px rgba(15,23,42,.2)}
+.sr-et{display:flex;flex-direction:column;min-width:0;flex:1}.sr-et b{font-size:13px;font-weight:900;color:#1e293b;line-height:1.2}.sr-et small{font-size:11px;font-weight:700;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-entry em{font-style:normal;font-weight:900;font-size:12px;color:var(--sg-tx);background:#fff;border:1.5px solid var(--sg-bd);border-radius:9999px;padding:2px 9px}
+.sr-arr{color:#94a3b8;font-size:11px;transition:transform .2s ease}.sr-entry:hover .sr-arr{transform:translateX(3px);color:var(--sg-a)}
+.sr-entry.ready{border-color:#10b981;background:linear-gradient(180deg,#fff,#ecfdf5);animation:srPulse 1.8s ease-in-out infinite}.sr-entry.ready .sr-ic{background:#10b981}
+.sr-entry.noticket{border-color:#f59e0b}.sr-entry.noticket .sr-ic{background:#f59e0b}
+@keyframes srPulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.35)}50%{box-shadow:0 0 0 6px rgba(16,185,129,0)}}
+.srp{position:relative;flex:none;width:24rem;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;background:#fff;border-radius:18px;box-shadow:0 25px 60px rgba(15,23,42,.35);margin-left:14px;animation:srIn .42s cubic-bezier(.22,1,.36,1) both}
+.srp>.sgb-body{width:24rem;max-width:100vw}
+.srp.out{animation:srOut .24s ease-in both}
+@keyframes srIn{from{max-width:0;margin-left:0;opacity:0;transform:translateX(-26px) scale(.97)}to{max-width:24rem;margin-left:14px;opacity:1;transform:none}}
+@keyframes srOut{from{max-width:24rem;margin-left:14px;opacity:1}to{max-width:0;margin-left:0;opacity:0;transform:translateX(-26px) scale(.97)}}
+@media (max-width:920px){.srp{position:fixed;top:0;right:0;bottom:0;max-height:none;width:min(92vw,24rem);margin:0;border-radius:18px 0 0 18px;z-index:2;animation:srInM .36s cubic-bezier(.22,1,.36,1) both}.srp>.sgb-body{width:100%}.srp.out{animation:srOutM .24s ease-in both}
+@keyframes srInM{from{transform:translateX(100%)}to{transform:none}}@keyframes srOutM{to{transform:translateX(100%)}}}
+.sr-hico{width:42px;height:42px;border-radius:12px;background:var(--sg-a);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex:none;box-shadow:0 3px 10px rgba(15,23,42,.25)}
+.sr-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px}.sr-stats .sgb-stat b{font-size:1.1rem}
+.sr-st{margin-top:12px;padding:12px;border-radius:14px;border:1.5px solid var(--sg-bd);background:#fff}
+.sr-st-t{display:flex;align-items:center;gap:8px;font-weight:900;color:#334155}.sr-st-t i{color:var(--sg-a)}.sr-st-t b{font-size:1.05rem}
+.sr-st-s{margin-top:6px;font-size:11.5px;font-weight:700;color:#64748b;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sr-st.ready{border-color:#10b981;background:#ecfdf5}.sr-st.ready .sr-st-t i{color:#10b981}.sr-st.noticket{border-color:#f59e0b;background:#fffbeb}.sr-st.noticket .sr-st-t i{color:#f59e0b}
+.sr-pips{display:inline-flex;gap:4px}.sr-pip{width:11px;height:11px;border-radius:9999px;border:2px solid #cbd5e1;background:#fff}.sr-pip.on{background:#f97316;border-color:#f97316;box-shadow:0 0 6px rgba(249,115,22,.7)}
+.sr-use{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;padding:11px;border-radius:12px;font-weight:900;font-size:13px;color:#fff;background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 12px rgba(16,185,129,.4);transition:transform .15s ease,filter .15s ease}
+.sr-use:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.06)}.sr-use:disabled{background:#e2e8f0;color:#94a3b8;box-shadow:none;cursor:not-allowed}
+.sr-hint{margin-top:6px;font-size:11px;font-weight:700;color:#94a3b8;text-align:center}
+.sr-ev.used i{color:#10b981}.sr-ev.expired i,.sr-ev.void i{color:#94a3b8}
+.sr-lg{display:flex;justify-content:space-between;gap:8px;padding:5px 2px;font-size:12px;font-weight:700;color:#475569;border-bottom:1px dashed #e2e8f0}.sr-lg small{color:#94a3b8}
+.sr-map{display:flex;flex-wrap:wrap;gap:5px}.sr-m{font-size:11px;font-weight:800;color:#64748b;background:#f1f5f9;border-radius:9999px;padding:3px 8px}.sr-m.on{background:var(--sg-a);color:#fff}
+.sr-note{margin-top:12px;font-size:11px;line-height:1.5;color:#64748b}
+.sr-brk{display:inline-flex;align-items:center;gap:3px;height:1.55rem;padding:0 .5rem;margin-left:.45rem;border-radius:9999px;font-size:.8rem;font-weight:900;color:#be123c;background:linear-gradient(180deg,#fff1f2,#ffe4e6);border:1.5px solid #fb7185;box-shadow:0 0 8px rgba(244,63,94,.4);cursor:pointer}
+html.mx-dark .srp,html.mx-dark .sr-st,html.mx-dark .sr-entry,html.mx-dark .sr-entry em{background:#1e293b;border-color:#334155}
+html.mx-dark .sr-et b,html.mx-dark .sr-st-t{color:#f1f5f9}html.mx-dark .sr-m{background:#334155;color:#cbd5e1}html.mx-dark .sr-st.ready{background:#064e3b}html.mx-dark .sr-st.noticket{background:#422006}
+html.fx-off-ui .srp,html.fx-off-all .srp,html.fx-off-ui .sr-entry.ready,html.fx-off-all .sr-entry.ready{animation:none}
+@media (prefers-reduced-motion:reduce){.srp,.sr-entry.ready{animation:none!important}}
+/* Biểu tượng vé hồi chuỗi: huy hiệu tròn ngọn lửa + vòng mũi tên (không dùng icon vé) */
+.sr-svg{width:1.15em;height:1.15em;display:block;flex:none}
+.sr-ic,.sr-hico{border-radius:9999px!important;background:radial-gradient(circle at 30% 25%,#fff3 0,#0000 45%),linear-gradient(145deg,var(--sg-a),#f97316)!important;border:2px solid #fff;box-shadow:0 0 0 2px var(--sg-a),0 4px 12px rgba(15,23,42,.28)!important}
+.sr-ic .sr-svg{width:19px;height:19px}.sr-hico .sr-svg{width:25px;height:25px}
+.sr-entry.ready .sr-ic,.sr-entry.ready~.x{background:linear-gradient(145deg,#10b981,#059669)!important;box-shadow:0 0 0 2px #10b981,0 4px 12px rgba(16,185,129,.4)!important}
+.sr-entry.noticket .sr-ic{background:linear-gradient(145deg,#f59e0b,#d97706)!important;box-shadow:0 0 0 2px #f59e0b,0 4px 12px rgba(245,158,11,.4)!important}
+.sr-rowic{width:26px;height:26px;border-radius:9999px;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(145deg,var(--sg-a),#f97316);flex:none}.sr-rowic .sr-svg{width:16px;height:16px}
+.sr-hic{display:inline-flex;color:var(--sg-a)}.sr-hic .sr-svg{width:14px;height:14px}
+.sr-use .sr-svg{width:18px;height:18px}
+</style>
+<style id="patch-streak-recover-gift">
+/* ===== Vé hồi chuỗi: icon (ngọn lửa trong vòng mũi tên) dùng chung ở thẻ quà, túi quà, vòng quay, hộp quà bí ẩn ===== */
+.sr-fa{--sr-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.1a2.9 2.9 0 0 0 0 5.8V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.1a2.9 2.9 0 0 0 0-5.8z' fill='none' stroke='black' stroke-width='1.9' stroke-linejoin='round'/%3E%3Cpath transform='translate(0 1.3)' d='M12.3 6.6c.5 2.1-2.3 3.2-2.3 5.6a2.4 2.4 0 0 0 4.8 0c0-1.3-.6-2-1.1-2.9-.4.7-.8 1-1.2 1 .2-1.4-.1-2.6-.2-3.7z' fill='black'/%3E%3C/svg%3E");display:inline-block;width:1em;height:1em;vertical-align:-.15em;background:currentColor;-webkit-mask:var(--sr-mask) center/contain no-repeat;mask:var(--sr-mask) center/contain no-repeat;font-style:normal}
+.sr-fa::before,.sr-fa::after{content:none!important}
+/* Màu riêng của quà (xanh chanh), khác mọi màu quà khác */
+.gift-sp-streak_recover{--g1:#f7fee7;--g2:#ecfccb;--g3:#d9f99d;--gb:#a3e635;--wm:#65a30d}
+.gift-sp-streak_recover .gift-note{color:#4d7c0f}
+html.mx-dark .gift-sp-streak_recover .gift-note{color:#bef264}
+.qg-gift.qg-recover{background:linear-gradient(135deg,#f7fee7,#d9f99d)!important;border-color:#84cc16!important}
+.qg-gift.qg-recover>i{color:#4d7c0f}
+html.mx-dark .qg-gift.qg-recover{background:linear-gradient(135deg,#365314,#1a2e05)!important;border-color:#65a30d!important}
+html.mx-dark .qg-gift.qg-recover>i{color:#bef264}
+.inv-recover{background:#ecfccb!important;border-color:#84cc16!important;color:#3f6212!important}
+html.mx-dark .inv-recover{background:#365314!important;border-color:#65a30d!important;color:#d9f99d!important}
+/* Icon Hồi Phục Chuỗi cùng màu với chuỗi (màu mốc chuỗi), không còn xanh/cam riêng theo trạng thái */
+.sr-ic,.sr-hico,.sr-rowic,.sr-entry.ready .sr-ic,.sr-entry.noticket .sr-ic,.sr-entry.streaking .sr-ic{background:var(--sg-a)!important;box-shadow:0 0 0 2px var(--sg-a),0 4px 12px rgba(15,23,42,.28)!important}
+.sg-t100 .sr-ic,.sg-t100 .sr-hico,.sg-t100 .sr-rowic,.sg-t100.sr-entry .sr-ic,.sg-t100.srp .sr-hico{background:linear-gradient(135deg,#ef4444,#f59e0b,#22c55e,#06b6d4,#6366f1,#d946ef)!important}
+.sr-entry.ready,.sr-entry.noticket,.sr-entry.streaking{border-color:var(--sg-a)}
+.sr-entry.noticket{animation:none}
+.sr-st.streaking{border-color:#94a3b8;background:#f8fafc}.sr-st.streaking .sr-st-t i{color:#64748b}
+html.mx-dark .sr-st.streaking{background:#1e293b}
+/* Khối mua vé */
+.sr-buy{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border-radius:14px;border:1.5px dashed #84cc16;background:#f7fee7}
+.sr-buy-i{display:flex;flex-direction:column;min-width:0;flex:1}.sr-buy-i b{font-size:13px;font-weight:900;color:#3f6212}.sr-buy-i small{font-size:11px;font-weight:700;color:#65a30d}
+.sr-buy-b{flex:none;padding:8px 16px;border-radius:9999px;font-weight:900;font-size:12px;color:#fff;background:#65a30d;box-shadow:0 3px 10px rgba(101,163,13,.4);transition:transform .15s ease,filter .15s ease}
+.sr-buy-b:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.06)}
+.sr-buy-b:disabled{background:#e2e8f0;color:#94a3b8;box-shadow:none;cursor:not-allowed}
+html.mx-dark .sr-buy{background:#1a2e05;border-color:#65a30d}html.mx-dark .sr-buy-i b{color:#d9f99d}html.mx-dark .sr-buy-i small{color:#a3e635}
+</style>
+
+<style id="patch-2026-11-03-streak-off">
+/* Lửa tắt: chưa có chuỗi. Nhỏ, xám, tĩnh (không cháy, không tia lửa, không phát sáng) */
+.tf-streak.tf-off{cursor:pointer;animation:none!important;filter:none}
+.tf-streak.tf-off::after{display:none!important}
+.tf-streak.tf-off .tf-flame{transform:scale(.8);margin:0;opacity:.9}
+.tf-streak.tf-off .tf-flame .tf-l{animation:none!important;transform:rotate(-45deg);box-shadow:none}
+.tf-streak.tf-off .tf-flame .tf-l1{background:linear-gradient(135deg,#94a3b8,#cbd5e1)}
+.tf-streak.tf-off .tf-flame .tf-l2{background:linear-gradient(135deg,#cbd5e1,#e2e8f0)}
+.tf-streak.tf-off .tf-flame .tf-l3{background:#f1f5f9}
+.tf-streak.tf-off .tf-flame .tf-sp{display:none!important}
+.sg-open:hover .tf-streak.tf-off .tf-flame .tf-l1{background:linear-gradient(135deg,#7c8ba1,#b6c2d1)}
+html.mx-dark .tf-streak.tf-off .tf-flame .tf-l1{background:linear-gradient(135deg,#64748b,#94a3b8)}
+html.mx-dark .tf-streak.tf-off .tf-flame .tf-l2{background:linear-gradient(135deg,#94a3b8,#cbd5e1)}
+html.mx-dark .tf-streak.tf-off .tf-flame .tf-l3{background:#e2e8f0}
+</style>
+<style id="patch-2026-11-03-recovery-ui">
+/* Ô "Vé hồi chuỗi" (cạnh Vừa mất, Cao nhất): nền đặc theo màu chuỗi đang có */
+.srp .sr-stats .sgb-stat:last-child{background:var(--sg-a)!important;border-color:var(--sg-a)!important;box-shadow:0 3px 10px rgba(15,23,42,.22)}
+.srp .sr-stats .sgb-stat:last-child b,.srp .sr-stats .sgb-stat:last-child span{color:#fff!important}
+.sg-t100.srp .sr-stats .sgb-stat:last-child{background:linear-gradient(135deg,#ef4444,#f59e0b,#22c55e,#06b6d4,#6366f1,#d946ef)!important;border-color:#fff!important}
+</style>
+<style id="patch-2026-11-03-gt-slide">
+/* Trao đổi quà: cửa sổ lướt ra / thu lại giống giao diện Hồi Phục Chuỗi */
+.gt-wrap{gap:1.25rem 0}
+.gt-win{flex:none}
+.gt-win>.gt-h,.gt-win>.gt-list,.gt-win>.gt-foot{width:min(22rem,92vw);flex-shrink:0}
+.gt-win.show:not(.gt-w1){margin-left:1.25rem}
+.gt-win.gt-in{animation:gtIn .42s cubic-bezier(.22,1,.36,1) both}
+.gt-win.gt-out{animation:gtOut .24s ease-in both}
+@keyframes gtIn{from{max-width:0;margin-left:0;opacity:0;transform:translateX(-26px) scale(.97)}to{max-width:22rem;margin-left:1.25rem;opacity:1;transform:none}}
+@keyframes gtOut{from{max-width:22rem;margin-left:1.25rem;opacity:1}to{max-width:0;margin-left:0;opacity:0;transform:translateX(-26px) scale(.97)}}
+@media(max-width:640px){
+.gt-win.show:not(.gt-w1){margin-left:0}
+.gt-win.gt-in{animation:gtInM .36s cubic-bezier(.22,1,.36,1) both}
+.gt-win.gt-out{animation:gtOutM .24s ease-in both}
+@keyframes gtInM{from{max-height:0;min-height:0;opacity:0;transform:translateY(-14px)}to{max-height:60vh;min-height:16rem;opacity:1;transform:none}}
+@keyframes gtOutM{from{max-height:60vh;min-height:16rem;opacity:1}to{max-height:0;min-height:0;opacity:0;transform:translateY(-14px)}}
+}
+@media(prefers-reduced-motion:reduce){.gt-win.gt-in,.gt-win.gt-out{animation:none!important}}
+html.fx-off-ui .gt-win.gt-in,html.fx-off-ui .gt-win.gt-out,html.fx-off-all .gt-win.gt-in,html.fx-off-all .gt-win.gt-out{animation:none!important}
+/* Icon tiêu đề giống nút bấm Trao đổi */
+.gt-tic{display:inline-flex;align-items:center;justify-content:center;width:1.7rem;height:1.7rem;margin-right:.5rem;vertical-align:middle;border-radius:9999px;border:2px solid #fff;color:#fff;font-size:12px;line-height:1;background:linear-gradient(145deg,#ea580c,#f59e0b 55%,#fbbf24);box-shadow:0 2px 0 #b45309,0 4px 8px rgba(234,88,12,.32)}
+</style>
+<style id="patch-2026-11-03-roster-add">
+/* Thẻ thêm học sinh: khung nét đứt, dấu cộng, nằm cuối danh sách lớp */
+.roster-add-card{display:flex;align-items:center;justify-content:center;width:100%;min-height:7.5rem;padding:.75rem;border:2px dashed #cbd5e1;border-radius:.75rem;background:transparent;color:#94a3b8;cursor:pointer;transition:transform .16s ease,border-color .16s ease,background-color .16s ease,color .16s ease,box-shadow .16s ease}
+.roster-add-card .rac-plus{width:2.7rem;height:2.7rem;border:2px dashed currentColor;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;transition:transform .2s ease}
+.roster-add-card:hover,.roster-add-card:focus-visible{border-color:#6366f1;color:#4f46e5;background:#eef2ff;transform:translateY(-2px);box-shadow:0 6px 14px rgba(99,102,241,.16)}
+.roster-add-card:hover .rac-plus,.roster-add-card:focus-visible .rac-plus{transform:rotate(90deg) scale(1.08)}
+.roster-add-card:focus-visible{outline:3px solid #312e81;outline-offset:2px}
+.roster-add-card:active{transform:translateY(0) scale(.99)}
+.roster-list .roster-add-card{min-height:4.6rem}
+html.mx-dark .roster-add-card{border-color:#475569;color:#94a3b8}
+html.mx-dark .roster-add-card:hover,html.mx-dark .roster-add-card:focus-visible{border-color:#818cf8;color:#c7d2fe;background:#1e1b4b}
+@media (prefers-reduced-motion:reduce){.roster-add-card,.roster-add-card .rac-plus{transition:none}}
+</style>
+<style id="patch-2026-11-03-pxp-event">
+/* Tình trạng thú cưng khi thám hiểm: nằm ở ô bên phải, chữ to, hiệu ứng nhẹ */
+.pxp-evx{position:relative;display:flex;align-items:flex-start;gap:.7rem;margin-top:1rem;padding:.9rem 1.05rem;border-radius:1rem;border:1px solid #ddd6fe;background:linear-gradient(135deg,#faf5ff,#eef2ff);overflow:hidden;animation:pxpEvIn .6s cubic-bezier(.22,1,.36,1) both,pxpEvGlow 3.6s ease-in-out .6s infinite}
+.pxp-evx::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-120%);animation:pxpEvShine 5s ease-in-out 1.2s infinite;pointer-events:none}
+.pxp-evx-i{flex:none;font-size:1.6rem;line-height:1;display:inline-block;transform-origin:50% 90%;animation:pxpEvBob 2.6s ease-in-out infinite}
+.pxp-evx-t{margin:0;font-size:1.05rem;font-weight:800;font-style:italic;line-height:1.5;color:#6d28d9;position:relative}
+@keyframes pxpEvIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes pxpEvBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-4px) rotate(4deg)}}
+@keyframes pxpEvGlow{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)}50%{box-shadow:0 0 0 3px rgba(139,92,246,.12),0 6px 18px rgba(139,92,246,.18)}}
+@keyframes pxpEvShine{0%,55%{transform:translateX(-120%)}85%,100%{transform:translateX(120%)}}
+html.mx-dark .pxp-evx{background:linear-gradient(135deg,#2e1065,#1e1b4b);border-color:#5b21b6}
+html.mx-dark .pxp-evx-t{color:#ddd6fe}
+html.mx-dark .pxp-evx::before{background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.12) 50%,transparent 70%)}
+@media (prefers-reduced-motion:reduce){.pxp-evx,.pxp-evx::before,.pxp-evx-i{animation:none!important}}
+html.fx-off-ui .pxp-evx,html.fx-off-ui .pxp-evx::before,html.fx-off-ui .pxp-evx-i,html.fx-off-all .pxp-evx,html.fx-off-all .pxp-evx::before,html.fx-off-all .pxp-evx-i{animation:none!important}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 
@@ -5572,6 +5797,44 @@ html.mx-dark #randomPickerModal #randomStudentName{color:#fde68a}
 .pq-cnt i{display:block;height:5px;border-radius:99px;background:#e9e5ff;margin-top:4px;overflow:hidden}
 .pq-cnt u{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#8b5cf6,#6366f1);text-decoration:none;transition:width .4s}
 html.mx-dark .pq-cnt{background:#2e1065;border-color:#4c1d95;color:#ddd6fe}html.mx-dark .pq-cnt i{background:#4c1d95}
+
+/* ===== Bộ đếm nội tại v2 (chỉ theo dõi/hiển thị) ===== */
+.pcv{margin-top:8px;border:1px solid #ddd6fe;border-radius:12px;background:#faf5ff;overflow:hidden}
+.pcv>summary{list-style:none;cursor:pointer;padding:7px 9px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:11px;font-weight:800;color:#5b21b6}
+.pcv>summary::-webkit-details-marker{display:none}
+.pcv-t{flex:1;min-width:120px}
+.pcv-n{font-weight:900}
+.pcv-ty{font-size:9px;font-weight:800;padding:1px 6px;border-radius:99px;background:#ede9fe;color:#6d28d9}
+.pcv-st{font-size:10px;font-weight:900;padding:2px 7px;border-radius:99px;border:1px solid transparent}
+.pcv-st.locked{background:#f1f5f9;color:#64748b;border-color:#e2e8f0}
+.pcv-st.progress{background:#e0f2fe;color:#0369a1;border-color:#bae6fd}
+.pcv-st.eligible{background:#fef9c3;color:#a16207;border-color:#fde68a}
+.pcv-st.triggered{background:#ffedd5;color:#c2410c;border-color:#fed7aa}
+.pcv-st.claimed{background:#dcfce7;color:#15803d;border-color:#bbf7d0}
+.pcv-st.exhausted{background:#fee2e2;color:#b91c1c;border-color:#fecaca}
+.pcv-st.refreshed{background:#ede9fe;color:#6d28d9;border-color:#ddd6fe}
+.pcv-bar{display:block;height:5px;border-radius:99px;background:#e9e5ff;margin:0 9px 7px;overflow:hidden}
+.pcv-bar u{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#8b5cf6,#6366f1);text-decoration:none;transition:width .4s}
+.pcv-seg{display:flex;gap:4px;margin:0 9px 8px}
+.pcv-seg span{flex:1;height:9px;border-radius:99px;background:#e9e5ff;transition:background .3s,transform .3s}
+.pcv-seg span.on{background:linear-gradient(90deg,#8b5cf6,#6366f1)}
+.pcv-seg.eligible span.on,.pcv-seg.triggered span.on{background:linear-gradient(90deg,#f59e0b,#f97316)}
+.pcv-seg.claimed span.on{background:linear-gradient(90deg,#22c55e,#16a34a)}
+html.mx-dark .pcv-seg span{background:#4c1d95}
+.pcv-bd{padding:2px 9px 9px;font-size:11px;color:#334155;font-weight:600;border-top:1px dashed #ddd6fe}
+.pcv-row{display:flex;gap:6px;margin-top:4px;line-height:1.35}
+.pcv-row>b{min-width:92px;color:#6d28d9;font-weight:800}
+.pcv-lh{margin-top:8px;font-weight:900;color:#4c1d95}
+.pcv-log{max-height:190px;overflow:auto;margin-top:4px;display:grid;gap:4px}
+.pcv-e{padding:4px 6px;border-radius:8px;background:#fff;border:1px solid #ede9fe;font-size:10.5px;line-height:1.35}
+.pcv-e .tm{color:#94a3b8;font-weight:800}
+.pcv-e .pg{font-weight:900;color:#4338ca}
+.pcv-empty{font-size:10.5px;color:#94a3b8;margin-top:4px}
+html.mx-dark .pcv{background:#2e1065;border-color:#4c1d95}
+html.mx-dark .pcv>summary,html.mx-dark .pcv-row>b,html.mx-dark .pcv-lh{color:#ddd6fe}
+html.mx-dark .pcv-bd{color:#e2e8f0;border-color:#4c1d95}
+html.mx-dark .pcv-e{background:#1e1b4b;border-color:#4c1d95}
+html.mx-dark .pcv-ty{background:#4c1d95;color:#ddd6fe}
 html.mx-dark .ps-card,html.mx-dark .pq-card,html.mx-dark .pq-row{background:#1e1b4b;border-color:#4c1d95;color:#e2e8f0}
 html.mx-dark .ps-nm,html.mx-dark .pq-slot .t{color:#f1f5f9}html.mx-dark .ps-ds,html.mx-dark .pq-stat{color:#cbd5e1}
 html.mx-dark .pq-in{background:#0f172a;color:#f1f5f9;border-color:#4c1d95}html.mx-dark .ps-chip{background:#1e1b4b;color:#c7d2fe;border-color:#4c1d95}
@@ -6026,6 +6289,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         Object.assign(translations.en, {"qg_type_streak": "Streak reward", "sg_name": "Streak {tier} Gift", "sg_type_desc": "Adds {n} scores of 10 · gift cells are neutral and never count for streak", "sg_confirm": "add {used} scores of 10 for {student}: {fills} empty cells before today, {ups} cells scored 9 or lower (test scores excluded) become 10.", "sg_confirm_rest": " {left} score(s) of 10 stay in the gift.", "sg_done": "Added {used} scores of 10 for {student}.", "sg_done_rest": " {left} score(s) of 10 stay in the gift.", "sg_no_cell": "No empty cell before today or cell scored 9 or lower left to use this gift on.", "sg_award": "🎁 {student} hit a {tier} streak: earned a gift of {n} tens!", "sg_award_many": "🎁 Streak reward gifts given to {n} students.", "sg_cell_tag": "Streak {tier} gift (locked)"});
         Object.assign(translations.vi, { qg_type_shield: 'Khiên giữ chuỗi', qg_shield_note: 'Tự dùng khi bị điểm dưới 9', shield_lost: '{student} bị mất 1 {gift} (còn {n}).', shield_refund: 'Đã hoàn lại 1 {gift} cho {student}.', shield_card_note: 'Tự chặn trừ chuỗi khi bị điểm dưới 9' });
         Object.assign(translations.en, { qg_type_shield: 'Streak Shield', qg_shield_note: 'Used automatically on a score below 9', shield_lost: '{student} lost 1 {gift} ({n} left).', shield_refund: 'Returned 1 {gift} to {student}.', shield_card_note: 'Auto-blocks the streak loss on a score below 9' });
+        Object.assign(translations.vi, { qg_type_recover: 'Vé hồi chuỗi', recover_card_note: 'Dùng khi chuỗi đã về 0 · hồi lại 100% chuỗi cao nhất đã đạt' });
+        Object.assign(translations.en, { qg_type_recover: 'Streak Recovery Ticket', recover_card_note: 'Use once the streak is back at 0 · restores 100% of the highest streak' });
         Object.assign(translations.vi, { menuEditHistory: 'Lịch sử chỉnh sửa' }); Object.assign(translations.en, { menuEditHistory: 'Edit history' });
         Object.assign(translations.vi, { menuScoreArchive: 'Lưu Trữ điểm' }); Object.assign(translations.en, { menuScoreArchive: 'Score Archive' });
         Object.assign(translations.vi, {"optTypePlusMatch": "Cộng điểm vào ô có điểm quy định (VD: +1 cho ô từ 7 trở xuống)", "lblMatchCond": "Ô điểm quy định được cộng (điều kiện & mức điểm):", "optMatchLte": "Từ mức này trở xuống (≤)", "optMatchEq": "Bằng đúng mức này (=)", "optMatchGte": "Từ mức này trở lên (≥)", "phMatchScore": "VD: 7", "qg_type_plus_match": "Cộng điểm theo ô quy định", "pm_desc": "Ô có điểm {op} {score} → +{delta}", "qg_plus_match_done": "Đã cộng {delta} điểm vào ô {date} ({before}đ → {after}đ)!"});
@@ -6063,6 +6328,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             fix_change_8:  { vi: 'Đổi một điểm có sẵn thành 8',  en: 'Change existing score to 8' },
             fix_lucky_spin: { vi: '1 lượt quay may mắn', en: '1 Lucky Wheel spin' },
             fix_streak_shield: { vi: 'Khiên giữ chuỗi', en: 'Streak Shield' },
+            fix_streak_recover: { vi: 'Vé hồi chuỗi', en: 'Streak Recovery Ticket' },
             fix_item_ticket_1: { vi: '1 Phiếu Vật Phẩm', en: '1 Item Ticket' }
         };
 
@@ -6076,6 +6342,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             { id: 'fix_lucky_spin', name: '1 lượt quay may mắn', cost: 0, isFixed: true, type: 'lucky_spin' },
             { id: 'fix_plus_exam_1', name: 'Cộng 1 điểm vào bài kiểm tra', nameEn: '+1 point to Test score', cost: 10, isFixed: true, type: 'plus_exam', deltaScore: 1 },
             { id: 'fix_streak_shield', name: 'Khiên giữ chuỗi', nameEn: 'Streak Shield', cost: 10, isFixed: true, type: 'streak_shield' },
+            { id: 'fix_streak_recover', name: 'Vé hồi chuỗi', nameEn: 'Streak Recovery Ticket', cost: 15, isFixed: true, type: 'streak_recover' },
             { id: 'fix_item_ticket_1', name: '1 Phiếu Vật Phẩm', nameEn: '1 Item Ticket', cost: 10, isFixed: true, type: 'item_ticket', ticketQty: 1 }
         ];
         // Quà cố định cộng 1 điểm Test score: cho phép sửa tên (theo từng ngôn ngữ) và giá; luôn +1, luôn quét ô Test score thấp nhất
@@ -6085,6 +6352,9 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         const SHIELD_ID = 'fix_streak_shield';
         const SHIELD_DEFAULT = { vi: 'Khiên giữ chuỗi', en: 'Streak Shield' };
         const SHOP_TICKET_GIFT_ID = 'fix_item_ticket_1';
+        // Quà cố định Vé hồi chuỗi: sửa được tên (theo ngôn ngữ) và giá, không xóa khỏi cửa hàng; dùng trong mục Hồi Phục Chuỗi
+        const RECOVER_ID = 'fix_streak_recover';
+        const RECOVER_DEFAULT = { vi: 'Vé hồi chuỗi', en: 'Streak Recovery Ticket' };
 
         const FIXED_VIOLATION_NAMES = {
             vt_1: { vi: 'Không làm bài tập về nhà', en: 'Did not complete homework' },
@@ -6154,6 +6424,10 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         function getRewardName(item) {
             if (item && item.type === 'streak_ten') return sgGiftName(item);
             const lang = appData.language || 'vi';
+            if (String(item.itemId || item.id || '') === RECOVER_ID) {
+                const live = (appData.globalShopItems || []).find(i => i.id === RECOVER_ID) || item;
+                return lang === 'en' ? (live.nameEn || RECOVER_DEFAULT.en) : (live.name || RECOVER_DEFAULT.vi);
+            }
             if (String(item.itemId || item.id || '') === SHIELD_ID) {
                 const live = (appData.globalShopItems || []).find(i => i.id === SHIELD_ID) || item;
                 return lang === 'en' ? (live.nameEn || SHIELD_DEFAULT.en) : (live.name || SHIELD_DEFAULT.vi);
@@ -7644,12 +7918,13 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         function qgKind(g) {
             const t = String(g.type || '').toLowerCase();
             if (t === 'item_ticket' || String(g.itemId || g.id || '') === 'fix_item_ticket_1') return 'item_ticket';
+            if (t === 'streak_recover' || String(g.itemId || g.id || '') === RECOVER_ID) return 'streak_recover';
             if (t === 'lucky_spin' || String(g.itemId || g.id || '') === 'fix_lucky_spin') return 'lucky';
-            if (t === 'plus' || t === 'add' || t === 'change' || t === 'delete_score' || t === 'plus_match' || t === 'plus_exam' || t === 'streak_ten' || t === 'streak_shield') return t;
+            if (t === 'plus' || t === 'add' || t === 'change' || t === 'delete_score' || t === 'plus_match' || t === 'plus_exam' || t === 'streak_ten' || t === 'streak_shield' || t === 'streak_recover') return t;
             return 'none';
         }
-        const QG_ICON = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', streak_shield: 'fa-shield-halved', none: 'fa-gift', lucky: 'fa-dice', item_ticket: 'fa-ticket' };
-        const QG_TYPE_KEY = { plus: 'qg_type_plus', add: 'qg_type_add', change: 'qg_type_change', delete_score: 'qg_type_delete', plus_match: 'qg_type_plus_match', plus_exam: 'qg_type_plus_exam', streak_ten: 'qg_type_streak', streak_shield: 'qg_type_shield', none: 'qg_type_none', lucky: 'qg_type_wheel', item_ticket: 'qg_type_ticket' };
+        const QG_ICON = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', streak_shield: 'fa-shield-halved', streak_recover: 'sr-fa', none: 'fa-gift', lucky: 'fa-dice', item_ticket: 'fa-ticket' };
+        const QG_TYPE_KEY = { plus: 'qg_type_plus', add: 'qg_type_add', change: 'qg_type_change', delete_score: 'qg_type_delete', plus_match: 'qg_type_plus_match', plus_exam: 'qg_type_plus_exam', streak_ten: 'qg_type_streak', streak_shield: 'qg_type_shield', streak_recover: 'qg_type_recover', none: 'qg_type_none', lucky: 'qg_type_wheel', item_ticket: 'qg_type_ticket' };
         Object.assign(translations.vi,{qg_type_ticket:'Phiếu Vật Phẩm'});
         Object.assign(translations.en,{qg_type_ticket:'Item Ticket'});
         const PM_OPS = { lte: '≤', eq: '=', gte: '≥' };
@@ -7665,7 +7940,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         // Tìm ô áp dụng quà. Thứ tự "gần nhất" = ngày muộn hơn trên thanh lịch của Matrix Score.
         function qgPlan(studentId, gift) {
             const kind = qgKind(gift);
-            if (kind === 'none' || kind === 'lucky' || kind === 'streak_ten' || kind === 'streak_shield') return null;
+            if (kind === 'none' || kind === 'lucky' || kind === 'streak_ten' || kind === 'streak_shield' || kind === 'streak_recover') return null;
             const dates = qsDateOptions().map(o => o.key), sc = appData.scores || {};
             const lowest = includeAbsent => {
                 let best = null;
@@ -7773,6 +8048,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const kind = qgKind(gift);
             if (kind === 'lucky') { qsToast(qgT('qg_wheel_note'), 'info'); return; }
             if (kind === 'streak_shield') { qsToast(qgT('qg_shield_note'), 'info'); return; }
+            if (kind === 'streak_recover') { return window.srUseFromBag(studentId); }
             if (kind === 'streak_ten') { return sgUseGift(studentId, invId); }
             const sName = getStudentDisplayName(student), gName = getRewardName(gift);
             let plan = null;
@@ -7865,12 +8141,13 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     const kind = qgKind(g);
                     if (kind === 'streak_ten') { gifts += sgGiftCardHtml(st.id, g); return; }
                     const action = kind === 'lucky' ? `<span class="qg-note">${qgT('qg_wheel_note')}</span>`
+                        : kind === 'streak_recover' ? `<button type="button" class="qg-use" onclick="srUseFromBag('${st.id}')">${qgT('qg_use_btn')}</button>`
                         : kind === 'streak_shield' ? `<span class="qg-note">${qgT('qg_shield_note')}</span>`
                         : `<button type="button" class="qg-use" onclick="qgUse('${st.id}','${g.invId}')">${kind === 'none' ? qgT('qg_consume_btn') : qgT('qg_use_btn')}</button>`;
-                    gifts += `<div class="qg-gift${kind === 'streak_shield' ? ' qg-shield' : ''}"><i class="fa-solid ${QG_ICON[kind]}"></i><div class="min-w-0"><div class="qg-gn">${escapeHtml(getRewardName(g))}</div><div class="qg-gt">${qgT(QG_TYPE_KEY[kind])}${kind === 'plus_match' ? ' · ' + pmDesc(g) : (kind === 'plus_exam' ? ' · +' + g.deltaScore : '')}</div></div><div class="qg-acts">${action}<button type="button" class="qg-del" onclick="qgDelete('${st.id}','${g.invId}')" title="${appData.language === 'en' ? 'Delete gift' : 'Xóa quà'}" aria-label="${appData.language === 'en' ? 'Delete gift' : 'Xóa quà'}"><i class="fa-solid fa-trash-can"></i></button></div></div>`;
+                    gifts += `<div class="qg-gift${kind === 'streak_shield' ? ' qg-shield' : ''}${kind === 'streak_recover' ? ' qg-recover' : ''}"><i class="fa-solid ${QG_ICON[kind]}"></i><div class="min-w-0"><div class="qg-gn">${escapeHtml(getRewardName(g))}</div><div class="qg-gt">${qgT(QG_TYPE_KEY[kind])}${kind === 'plus_match' ? ' · ' + pmDesc(g) : (kind === 'plus_exam' ? ' · +' + g.deltaScore : '')}</div></div><div class="qg-acts">${action}<button type="button" class="qg-del" onclick="qgDelete('${st.id}','${g.invId}')" title="${appData.language === 'en' ? 'Delete gift' : 'Xóa quà'}" aria-label="${appData.language === 'en' ? 'Delete gift' : 'Xóa quà'}"><i class="fa-solid fa-trash-can"></i></button></div></div>`;
                 });
                 if (!inv.length) gifts = `<p class="text-xs italic text-slate-400">${qgT('no_gifts_available')}</p>`;
-                rows += `<div class="qg-stu"><div class="qg-stu-h"><span>${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}</span><span class="qg-pts">${inv.length ? qgT('qg_gift_count', { n: inv.length }) : ''}</span></div>${gifts}</div>`;
+                rows += `<div class="qg-stu"><div class="qg-stu-h"><span class="gt-namecell"><span>${st.icon || '🎓'} ${escapeHtml(getStudentDisplayName(st))}</span>${gtBtnHtml(st.id)}</span><span class="qg-pts">${inv.length ? qgT('qg_gift_count', { n: inv.length }) : ''}</span></div>${gifts}</div>`;
             });
             if (!students.length) rows = `<p class="text-center text-xs italic text-slate-400 py-8">${qgT('qg_no_students')}</p>`;
             else if (!shown) rows = `<p class="text-center text-xs italic text-slate-400 py-8">${qgT('qg_no_gift_in_class')}</p>`;
@@ -7890,6 +8167,219 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const d = qsEl('qgDrawer'), c = document.getElementById('appConfirmModal');
             if (d && d.classList.contains('open') && !(c && !c.classList.contains('hidden'))) qgClose();
         });
+
+        /* ===== GT: Trao đổi / tặng quà giữa học sinh cùng lớp =====
+           Nút icon cạnh tên học sinh (kho quà trong tab Cửa hàng + thẻ học sinh trong Túi quà) mở tối đa 3 cửa sổ rời nhau:
+           (1) chọn bạn cùng lớp, (2) quà của học sinh đang mở + nút Trao đổi / Tặng, (3) quà của bạn đã chọn (chỉ khi bấm Trao đổi).
+           Quà giữ nguyên invId khi chuyển nên mọi cơ chế dùng quà theo mã vẫn đúng. Quà Streak gắn với sổ chuỗi của từng học sinh nên bị khóa. */
+        Object.assign(translations.vi, {
+            gt_btn_title: 'Trao đổi / tặng quà cho bạn cùng lớp', gt_title: 'Trao đổi quà',
+            gt_pick_student: '{name} muốn trao đổi hoặc tặng quà cho bạn nào?',
+            gt_no_classmates: 'Lớp chưa có bạn nào khác.',
+            gt_gifts_of: 'Quà của {name}', gt_pick_gift: 'Chọn món quà muốn trao', gt_pick_their_gift: 'Chọn món quà muốn nhận lại',
+            gt_btn_swap: 'Trao đổi', gt_btn_give: 'Tặng',
+            gt_empty_self: 'Học sinh này chưa có quà nào để trao đổi hoặc tặng.', gt_empty_mate: 'Bạn này chưa có quà nào để trao đổi.',
+            gt_locked: 'Quà Streak gắn với chuỗi của từng học sinh nên không thể trao đổi hay tặng.',
+            gt_confirm_give: 'Tặng quà “{gift}” của {from} cho {to}? {from} sẽ không còn món quà này.',
+            gt_confirm_swap: 'Trao đổi quà: {from} đưa “{giftA}” cho {to}, {to} đưa “{giftB}” cho {from}. Xác nhận trao đổi?',
+            gt_done_give: '{from} đã tặng quà “{gift}” cho {to}.', gt_done_swap: '{from} và {to} đã trao đổi quà: “{giftA}” ⇄ “{giftB}”.',
+            gt_missing: 'Món quà không còn trong túi. Danh sách đã được làm mới.', gt_save_error: 'Không lưu được thay đổi. Quà được giữ nguyên.',
+            gt_archived: 'Khóa đã lưu trữ chỉ được xem.', gt_close: 'Đóng'
+        });
+        Object.assign(translations.en, {
+            gt_btn_title: 'Trade or give a gift to a classmate', gt_title: 'Gift Exchange',
+            gt_pick_student: 'Which classmate does {name} want to trade or give a gift to?',
+            gt_no_classmates: 'There are no other students in this class.',
+            gt_gifts_of: '{name}’s gifts', gt_pick_gift: 'Choose the gift to hand over', gt_pick_their_gift: 'Choose the gift you want in return',
+            gt_btn_swap: 'Swap', gt_btn_give: 'Give',
+            gt_empty_self: 'This student has no gifts to trade or give yet.', gt_empty_mate: 'This classmate has no gifts to trade yet.',
+            gt_locked: 'Streak gifts are tied to each student’s streak and can’t be traded or given.',
+            gt_confirm_give: 'Give “{gift}” from {from} to {to}? {from} will no longer have this gift.',
+            gt_confirm_swap: 'Swap gifts: {from} hands “{giftA}” to {to} and {to} hands “{giftB}” to {from}. Confirm the swap?',
+            gt_done_give: '{from} gave “{gift}” to {to}.', gt_done_swap: '{from} and {to} swapped gifts: “{giftA}” ⇄ “{giftB}”.',
+            gt_missing: 'That gift is no longer in the bag. The list was refreshed.', gt_save_error: 'Could not save. Gifts were left unchanged.',
+            gt_archived: 'Archived course is read-only.', gt_close: 'Close'
+        });
+        const GT = { from: null, to: null, giftA: null, giftB: null, swap: false, busy: false };
+        const gtStu = id => (appData.students || []).find(x => String(x.id) === String(id));
+        const gtFind = (st, invId) => (st && Array.isArray(st.inventory)) ? st.inventory.find(i => i && i.invId === invId) : null;
+        const gtLocked = g => qgKind(g) === 'streak_ten';
+        const gtTradeable = st => (st && Array.isArray(st.inventory) ? st.inventory : []).filter(g => g && !gtLocked(g));
+        function gtBtnHtml(sid) {
+            if (window.MX_STUDENT) return '';
+            const st = gtStu(sid), none = !st || !gtTradeable(st).length, tt = escapeHtml(qgT('gt_btn_title'));
+            return `<button type="button" class="gt-btn${none ? ' gt-empty' : ''}" onclick="event.stopPropagation();gtOpen('${sid}')" title="${tt}" aria-label="${tt}"><i class="fa-solid fa-people-arrows"></i></button>`;
+        }
+        function gtRootEl() {
+            let r = document.getElementById('gtRoot');
+            if (!r) {
+                r = document.createElement('div');
+                r.id = 'gtRoot';
+                r.innerHTML = '<div class="gt-wrap"><section class="gt-win gt-w1" id="gtW1" role="dialog" aria-modal="true"></section><section class="gt-win gt-w2" id="gtW2" role="dialog"></section><section class="gt-win gt-w3" id="gtW3" role="dialog"></section></div>';
+                const bg = t => t === r || (t.classList && t.classList.contains('gt-wrap'));
+                r.addEventListener('mousedown', e => { r._down = bg(e.target); });
+                r.addEventListener('click', e => { if (r._down && bg(e.target)) gtClose(); r._down = false; });
+                document.body.appendChild(r);
+            }
+            return r;
+        }
+        function gtSlot(id, show, html, now) {
+            const el = document.getElementById(id); if (!el) return;
+            const shown = el.classList.contains('show'), outing = el.classList.contains('gt-out');
+            if (show) {
+                const was = shown && !outing, old = el.querySelector('.gt-list'), top = old ? old.scrollTop : 0;
+                clearTimeout(el._t); clearTimeout(el._o);
+                el.classList.remove('gt-out');
+                el.innerHTML = html; const nl = el.querySelector('.gt-list'); if (nl) nl.scrollTop = top;
+                el.classList.add('show');
+                if (!was && id !== 'gtW1') { el.classList.remove('gt-in'); void el.offsetWidth; el.classList.add('gt-in'); el._t = setTimeout(() => el.classList.remove('gt-in'), 440); }
+                return;
+            }
+            if (!shown) return;
+            if (now || id === 'gtW1') { clearTimeout(el._t); clearTimeout(el._o); el.classList.remove('show', 'gt-in', 'gt-out'); el.innerHTML = ''; return; }
+            if (outing) return;
+            clearTimeout(el._t); el.classList.remove('gt-in'); el.classList.add('gt-out'); // thu lại rồi mới gỡ nội dung
+            el._o = setTimeout(() => { el.classList.remove('show', 'gt-out'); el.innerHTML = ''; }, 250);
+        }
+        function gtHead(n, eyebrow, title, sub) {
+            return `<div class="gt-h"><div class="min-w-0"><div class="gt-eye">${eyebrow}</div><h3>${title}</h3><p>${sub}</p></div><button type="button" class="gt-x" onclick="gtCloseWin(${n})" aria-label="${escapeHtml(qgT('gt_close'))}">×</button></div>`;
+        }
+        function gtGiftRow(g, selId, fn) {
+            const kind = qgKind(g), locked = gtLocked(g), sel = selId === g.invId;
+            const typeTxt = locked ? qgT('qg_type_streak') : qgT(QG_TYPE_KEY[kind]) + (kind === 'plus_match' ? ' · ' + pmDesc(g) : (kind === 'plus_exam' ? ' · +' + g.deltaScore : ''));
+            const ic = locked ? 'fa-lock' : QG_ICON[kind];
+            return `<div class="qg-gift gt-gift${kind === 'streak_shield' ? ' qg-shield' : ''}${kind === 'streak_recover' ? ' qg-recover' : ''}${locked ? ' gt-locked' : ''}${sel ? ' sel' : ''}" role="button" tabindex="0" aria-pressed="${sel ? 'true' : 'false'}" onclick="${fn}('${g.invId}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${fn}('${g.invId}')}"><i class="fa-solid ${ic}"></i><div class="min-w-0"><div class="qg-gn">${escapeHtml(getRewardName(g))}</div><div class="qg-gt">${typeTxt}</div></div><i class="fa-solid fa-circle-check gt-chk"></i></div>`;
+        }
+        function gtRender() {
+            const root = document.getElementById('gtRoot'); if (!root || !root.classList.contains('open')) return;
+            const A = gtStu(GT.from); if (!A) { gtClose(); return; }
+            let B = GT.to ? gtStu(GT.to) : null;
+            if (B && String(B.classId) !== String(A.classId)) B = null;
+            if (!B) { GT.to = null; GT.giftB = null; GT.swap = false; }
+            if (GT.giftA && !gtFind(A, GT.giftA)) GT.giftA = null;
+            if (GT.giftB && !gtFind(B, GT.giftB)) GT.giftB = null;
+            const nameA = getStudentDisplayName(A, true), nameB = B ? getStudentDisplayName(B, true) : '';
+            const cls = (appData.classes || []).find(c => String(c.id) === String(A.classId));
+            const mates = (appData.students || []).filter(x => String(x.classId) === String(A.classId) && String(x.id) !== String(A.id));
+            // Cửa sổ 1: chọn bạn cùng lớp
+            const rows = mates.map(m => {
+                const n = gtTradeable(m).length;
+                return `<button type="button" class="gt-stu${B && String(B.id) === String(m.id) ? ' sel' : ''}" onclick="gtPickStudent('${m.id}')"><span class="gt-sn">${m.icon || '🎓'} ${escapeHtml(getStudentDisplayName(m))}</span><span class="gt-sc">${n ? qgT('qg_gift_count', { n }) : ''}</span><i class="fa-solid fa-circle-check gt-chk"></i></button>`;
+            }).join('');
+            gtSlot('gtW1', true, gtHead(1, escapeHtml(cls ? cls.name : ''), '<span class="gt-tic"><i class="fa-solid fa-people-arrows"></i></span>' + qgT('gt_title'), escapeHtml(qgT('gt_pick_student', { name: nameA }))) +
+                `<div class="gt-list">${rows || `<p class="gt-empty-t">${qgT('gt_no_classmates')}</p>`}</div>`);
+            // Cửa sổ 2: quà của học sinh đang mở + Trao đổi / Tặng
+            if (B) {
+                const invA = Array.isArray(A.inventory) ? A.inventory.filter(Boolean) : [], can = !!GT.giftA;
+                gtSlot('gtW2', true, gtHead(2, `${escapeHtml(A.icon || '🎓')} ${escapeHtml(nameA)} → ${escapeHtml(B.icon || '🎓')} ${escapeHtml(nameB)}`, escapeHtml(qgT('gt_gifts_of', { name: nameA })), qgT('gt_pick_gift')) +
+                    `<div class="gt-list">${gtTradeable(A).length ? invA.map(g => gtGiftRow(g, GT.giftA, 'gtPickA')).join('') : `<p class="gt-empty-t">${qgT('gt_empty_self')}</p>`}</div>` +
+                    `<div class="gt-foot"><button type="button" class="gt-act swap${GT.swap ? ' on' : ''}" ${can ? '' : 'disabled'} onclick="gtShowSwap()"><i class="fa-solid fa-right-left"></i>${qgT('gt_btn_swap')}</button><button type="button" class="gt-act give" ${can ? '' : 'disabled'} onclick="gtCommit('give')"><i class="fa-solid fa-hand-holding-heart"></i>${qgT('gt_btn_give')}</button></div>`);
+            } else gtSlot('gtW2', false, '');
+            // Cửa sổ 3: quà của bạn đã chọn (chỉ khi bấm Trao đổi)
+            if (B && GT.swap) {
+                const invB = Array.isArray(B.inventory) ? B.inventory.filter(Boolean) : [], can = !!(GT.giftA && GT.giftB);
+                gtSlot('gtW3', true, gtHead(3, `${escapeHtml(B.icon || '🎓')} ${escapeHtml(nameB)} → ${escapeHtml(A.icon || '🎓')} ${escapeHtml(nameA)}`, escapeHtml(qgT('gt_gifts_of', { name: nameB })), qgT('gt_pick_their_gift')) +
+                    `<div class="gt-list">${gtTradeable(B).length ? invB.map(g => gtGiftRow(g, GT.giftB, 'gtPickB')).join('') : `<p class="gt-empty-t">${qgT('gt_empty_mate')}</p>`}</div>` +
+                    `<div class="gt-foot"><button type="button" class="gt-act swap" ${can ? '' : 'disabled'} onclick="gtCommit('swap')"><i class="fa-solid fa-right-left"></i>${qgT('gt_btn_swap')}</button></div>`);
+            } else gtSlot('gtW3', false, '');
+        }
+        window.gtOpen = function (sid) {
+            if (window.MX_STUDENT) return;
+            if (qsArchived()) { qsToast(qgT('gt_archived'), 'warning'); return; }
+            const st = gtStu(sid); if (!st) return;
+            if (!gtTradeable(st).length) { qsToast(qgT('gt_empty_self'), 'warning'); return; }
+            Object.assign(GT, { from: st.id, to: null, giftA: null, giftB: null, swap: false, busy: false });
+            gtRootEl().classList.add('open');
+            gtRender();
+        };
+        window.gtClose = function () {
+            const r = document.getElementById('gtRoot'); if (!r) return;
+            r.classList.remove('open');
+            ['gtW1', 'gtW2', 'gtW3'].forEach(id => gtSlot(id, false, '', true));
+            Object.assign(GT, { from: null, to: null, giftA: null, giftB: null, swap: false });
+        };
+        window.gtCloseWin = function (n) {
+            if (n === 1) { gtClose(); return; }
+            if (n === 2) Object.assign(GT, { to: null, giftA: null, giftB: null, swap: false });
+            else Object.assign(GT, { giftB: null, swap: false });
+            gtRender();
+        };
+        window.gtPickStudent = function (id) {
+            if (GT.busy) return;
+            if (String(GT.to) === String(id)) Object.assign(GT, { to: null, giftA: null, giftB: null, swap: false }); // bấm lại: bỏ chọn, thu cửa sổ
+            else Object.assign(GT, { to: id, giftB: null, swap: false });
+            gtRender();
+        };
+        window.gtPickA = function (invId) {
+            if (GT.busy) return;
+            const g = gtFind(gtStu(GT.from), invId);
+            if (!g) { qsToast(qgT('gt_missing'), 'warning'); gtRender(); return; }
+            if (gtLocked(g)) { qsToast(qgT('gt_locked'), 'info'); return; }
+            GT.giftA = GT.giftA === invId ? null : invId;
+            if (!GT.giftA) { GT.swap = false; GT.giftB = null; }
+            gtRender();
+        };
+        window.gtPickB = function (invId) {
+            if (GT.busy) return;
+            const g = gtFind(gtStu(GT.to), invId);
+            if (!g) { qsToast(qgT('gt_missing'), 'warning'); gtRender(); return; }
+            if (gtLocked(g)) { qsToast(qgT('gt_locked'), 'info'); return; }
+            GT.giftB = GT.giftB === invId ? null : invId;
+            gtRender();
+        };
+        window.gtShowSwap = function () {
+            if (GT.busy || !GT.giftA) return;
+            GT.swap = !GT.swap; GT.giftB = null;
+            gtRender();
+        };
+        window.gtCommit = async function (mode) {
+            if (GT.busy) return;
+            const swap = mode === 'swap';
+            let A = gtStu(GT.from), B = gtStu(GT.to), ga = gtFind(A, GT.giftA), gb = swap ? gtFind(B, GT.giftB) : null;
+            if (!A || !B || !ga || (swap && !gb)) { qsToast(qgT('gt_missing'), 'warning'); gtRender(); return; }
+            if (gtLocked(ga) || (gb && gtLocked(gb))) { qsToast(qgT('gt_locked'), 'info'); return; }
+            const aId = A.id, bId = B.id, gaId = ga.invId, gbId = gb ? gb.invId : null;
+            const vars = { from: getStudentDisplayName(A, true), to: getStudentDisplayName(B, true), gift: getRewardName(ga), giftA: getRewardName(ga), giftB: gb ? getRewardName(gb) : '' };
+            GT.busy = true;
+            try {
+                const ok = await showAppConfirm(qgT(swap ? 'gt_confirm_swap' : 'gt_confirm_give', vars), qgT('gt_title'));
+                if (!ok) return;
+                // Kiểm tra lại sau xác nhận rồi mới ghi dữ liệu
+                A = gtStu(aId); B = gtStu(bId); ga = gtFind(A, gaId); gb = swap ? gtFind(B, gbId) : null;
+                if (!A || !B || !ga || (swap && !gb)) { qsToast(qgT('gt_missing'), 'warning'); gtRender(); return; }
+                const prevA = deepCopy(A.inventory || []), prevB = deepCopy(B.inventory || []), t = Date.now();
+                A.inventory = A.inventory.filter(i => i && i.invId !== gaId);
+                if (!Array.isArray(B.inventory)) B.inventory = [];
+                if (swap) B.inventory = B.inventory.filter(i => i && i.invId !== gbId);
+                B.inventory.push(ga);
+                if (swap) A.inventory.push(gb);
+                // Gợi ý cho Lịch sử chỉnh sửa: ghi là chuyển quà, không phải "dùng hoặc xóa"
+                window.__gtHints = (window.__gtHints || []).concat([{ from: aId, to: bId, invId: gaId, t }], swap ? [{ from: bId, to: aId, invId: gbId, t }] : []);
+                const saved = await saveData();
+                if (!saved) {
+                    const A2 = gtStu(aId), B2 = gtStu(bId);
+                    if (A2) A2.inventory = prevA;
+                    if (B2) B2.inventory = prevB;
+                    window.__gtHints = (window.__gtHints || []).filter(h => h.t !== t);
+                    qsToast(qgT('gt_save_error'), 'error');
+                    try { renderCurrentView(); } catch (e) {}
+                    gtRender();
+                    return;
+                }
+                qsToast(qgT(swap ? 'gt_done_swap' : 'gt_done_give', vars), 'success');
+                gtClose();
+                try { qgRender(); } catch (e) {}
+                try { renderCurrentView(); } catch (e) {}
+            } finally { GT.busy = false; }
+        };
+        // Esc đóng cửa sổ trên cùng (chặn các trình xử lý Esc khác, ví dụ ngăn kéo Túi quà bên dưới)
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Escape') return;
+            const r = document.getElementById('gtRoot'); if (!r || !r.classList.contains('open')) return;
+            const c = document.getElementById('appConfirmModal'); if (c && !c.classList.contains('hidden')) return;
+            e.preventDefault(); e.stopImmediatePropagation();
+            gtCloseWin(GT.swap ? 3 : (GT.to ? 2 : 1));
+        }, true);
 
         /* ---- DOM bootstrap + after-render hook ---- */
         function qsInitDom() {
@@ -8035,7 +8525,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                                 if (fix.targetScore !== undefined) exists.targetScore = fix.targetScore;
                                 else delete exists.targetScore;
                                 if (fix.id === EXAM_PLUS_ID) { exists.deltaScore = fix.deltaScore; if (exists.nameEn === undefined) exists.nameEn = fix.nameEn; if (!exists.name) exists.name = fix.name; }
-                                if (fix.id === SHIELD_ID || fix.id === SHOP_TICKET_GIFT_ID) { if (exists.nameEn === undefined) exists.nameEn = fix.nameEn; if (!exists.name) exists.name = fix.name; }
+                                if (fix.id === SHIELD_ID || fix.id === SHOP_TICKET_GIFT_ID || fix.id === RECOVER_ID) { if (exists.nameEn === undefined) exists.nameEn = fix.nameEn; if (!exists.name) exists.name = fix.name; }
                                 if (fix.id === SHOP_TICKET_GIFT_ID) exists.ticketQty = 1;
                                 exists.type = fix.type;
                             }
@@ -8365,7 +8855,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 alert(appData.language === 'en' ? 'Archived course is read-only. Return to the active course to make changes.' : 'Khóa đã lưu trữ chỉ được xem. Hãy quay lại khóa hiện tại để chỉnh sửa.');
                 return Promise.resolve(false);
             }
-            try { sgEnforce(); stampScoreTimes(); updateTenRecords(); sgSync(); } catch (e) { console.warn('stampScoreTimes skipped:', e); }
+            try { sgEnforce(); stampScoreTimes(); updateTenRecords(); try { srSync(); } catch (e) { console.warn('srSync skipped:', e); } sgSync(); } catch (e) { console.warn('stampScoreTimes skipped:', e); }
             try { ehRecord(); } catch (e) { console.warn('ehRecord skipped:', e); }
             // Ghi lại trạng thái đã lưu gần nhất trước khi thay đổi, để có thể hoàn tác.
             if (!suppressUndoCapture && lastPersistedSnapshot && JSON.stringify(lastPersistedSnapshot) !== JSON.stringify(appData)) {
@@ -8476,6 +8966,12 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 const adds = [], outs = [];
                 ni.forEach((it, iid) => { const p = oi.get(iid); if (!p) adds.push({ it, n: cnt(it) }); else if (cnt(it) < cnt(p)) outs.push({ it, n: cnt(p) - cnt(it) }); else if (cnt(it) > cnt(p)) adds.push({ it, n: cnt(it) - cnt(p) }); });
                 oi.forEach((it, iid) => { if (!ni.has(iid)) outs.push({ it, n: cnt(it) }); });
+                // Trao đổi / tặng quà giữa học sinh: ghi đúng nội dung thay vì "nhận quà" / "dùng hoặc xóa quà"
+                const gth = (window.__gtHints || []).filter(h => now - h.t < 600000);
+                if (gth.length) {
+                    for (let k = adds.length - 1; k >= 0; k--) { const h = gth.find(h => String(h.to) === id && h.invId === adds[k].it.invId); if (h) { push({ c: 'gift', k: 'gift_tin', sid: id, sn: s.name, cn: cName(s.classId), x: ehGiftName(adds[k].it), a: sName(h.from) }); adds.splice(k, 1); } }
+                    for (let k = outs.length - 1; k >= 0; k--) { const h = gth.find(h => String(h.from) === id && h.invId === outs[k].it.invId); if (h) { push({ c: 'gift', k: 'gift_tout', sid: id, sn: s.name, cn: cName(s.classId), x: ehGiftName(outs[k].it), a: sName(h.to) }); outs.splice(k, 1); } }
+                }
                 let explained = 0; const groups = {};
                 adds.forEach(({ it, n }) => { const key = (it.itemId || it.name || '') + '|' + (it.type || ''); const g = groups[key] = groups[key] || { it, n: 0, q: 0 }; g.n += n; g.q += 1; });
                 Object.keys(groups).forEach(key => {
@@ -8552,7 +9048,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return false;
             if (!ehBase) { if (!lastPersistedSnapshot) { ehBase = ehSnap(appData); return false; } ehBase = ehSnap(lastPersistedSnapshot); }
             const cur = ehSnap(appData), ents = ehDiff(ehBase, cur);
-            ehBase = cur; window.__ehHints = [];
+            ehBase = cur; window.__ehHints = []; window.__gtHints = [];
             if (window.__ehTag) { ents.forEach(e => { e.u = 1; }); window.__ehTag = null; }
             return ehAppend(ents);
         }
@@ -8569,7 +9065,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         let ehFilter = 'all', ehQuery = '', ehLimit = 120;
         const EH_ICON = {
             score_add: ['fa-circle-plus', 'score'], score_edit: ['fa-pen', 'score'], score_del: ['fa-eraser', 'del'], score_abs: ['fa-user-slash', 'del'], fe_edit: ['fa-file-pen', 'score'],
-            gift_buy: ['fa-bag-shopping', 'gift'], gift_get: ['fa-gift', 'gift'], gift_streak: ['fa-fire-flame-curved', 'fire'], gift_spin: ['fa-dice', 'gift'], gift_out: ['fa-box-open', 'gift'], pts: ['fa-coins', 'gift'],
+            gift_buy: ['fa-bag-shopping', 'gift'], gift_get: ['fa-gift', 'gift'], gift_streak: ['fa-fire-flame-curved', 'fire'], gift_spin: ['fa-dice', 'gift'], gift_out: ['fa-box-open', 'gift'], gift_tin: ['fa-people-arrows', 'gift'], gift_tout: ['fa-people-arrows', 'gift'], pts: ['fa-coins', 'gift'],
             wheel_spin: ['fa-dice', 'gift'], shop_add: ['fa-store', 'gift'], shop_edit: ['fa-store', 'gift'], shop_del: ['fa-store-slash', 'del'],
             viol_add: ['fa-triangle-exclamation', 'del'], viol_del: ['fa-circle-check', 'stu'], stu_add: ['fa-user-plus', 'stu'], stu_del: ['fa-user-minus', 'del'], stu_rename: ['fa-signature', 'stu'], stu_move: ['fa-right-left', 'stu'], stu_edit: ['fa-user-pen', 'stu'],
             cls_add: ['fa-folder-plus', 'stu'], cls_del: ['fa-folder-minus', 'del'], cls_rename: ['fa-folder-open', 'stu'],
@@ -8596,6 +9092,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 case 'gift_get': t = T(`${who} nhận quà ${q(e.x)}${times(e.n)}`, `${who} received gift ${q(e.x)}${times(e.n)}`); break;
                 case 'gift_streak': t = T(`${who} nhận ${q(e.x)} (${e.n} điểm 10)`, `${who} received ${q(e.x)} (${e.n} scores of 10)`); break;
                 case 'gift_spin': t = T(`${who} dùng lượt quay may mắn`, `${who} used a Lucky Wheel turn`); break;
+                case 'gift_tin': t = T(`${who} nhận quà ${q(e.x)} từ ${e.a}`, `${who} received gift ${q(e.x)} from ${e.a}`); break;
+                case 'gift_tout': t = T(`${who} chuyển quà ${q(e.x)} cho ${e.a}`, `${who} passed gift ${q(e.x)} to ${e.a}`); break;
                 case 'gift_out': t = T(`${who} dùng hoặc xóa quà ${q(e.x)}${times(e.n)}`, `${who} used or deleted gift ${q(e.x)}${times(e.n)}`); break;
                 case 'pts': t = T(`Điểm thưởng của ${who}: ${e.a} → ${e.b} (${e.n > 0 ? '+' : ''}${e.n})`, `Reward points of ${who}: ${e.a} → ${e.b} (${e.n > 0 ? '+' : ''}${e.n})`); break;
                 case 'wheel_spin': t = T(`Quay may mắn${e.sn ? ' · ' + e.sn : ''}: trúng ${q(e.x || '')}`, `Lucky Wheel${e.sn ? ' · ' + e.sn : ''}: won ${q(e.x || '')}`); break;
@@ -9758,7 +10256,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     const _wmIco = _gk === 'lucky' ? 'fa-dharmachakra' : _gIco;
                     card.className = "gift-card border border-slate-200 rounded-xl p-4 bg-white text-center shadow-sm flex flex-col justify-between relative group" + (asList ? " as-list" : "") + " gift-special gift-sp-" + _gk;
                     const _wmHtml = `<span class="gift-wm" aria-hidden="true"><i class="fa-solid ${_wmIco}"></i></span>`;
-                    const _noteHtml = _gk === 'item_ticket' ? `<div class="gift-note">${en?'Adds 1 ticket directly to the student wallet':'Cộng trực tiếp 1 phiếu vào ví học sinh'}</div>` : _isExam ? `<div class="gift-note">${en ? 'Only for regular tests' : 'Chỉ dùng cho bài kiểm tra thường xuyên'}</div>` : (_gk === 'streak_shield' ? `<div class="gift-note">${qgT('shield_card_note')}</div>` : '');
+                    const _noteHtml = _gk === 'item_ticket' ? `<div class="gift-note">${en?'Adds 1 ticket directly to the student wallet':'Cộng trực tiếp 1 phiếu vào ví học sinh'}</div>` : _isExam ? `<div class="gift-note">${en ? 'Only for regular tests' : 'Chỉ dùng cho bài kiểm tra thường xuyên'}</div>` : (_gk === 'streak_shield' ? `<div class="gift-note">${qgT('shield_card_note')}</div>` : (_gk === 'streak_recover' ? `<div class="gift-note">${qgT('recover_card_note')}</div>` : ''));
                     card.dataset.id = item.id;
 
                     let deleteBtnHtml = "";
@@ -9824,7 +10322,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                             const itemName = getRewardName(invItem);
                             if (invItem.type === 'streak_ten') { giftsHtml += sgGiftChipHtml(student.id, invItem); return; }
                             giftsHtml += `
-                                <span class="inline-flex items-center bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-semibold px-2.5 py-1 rounded-full mr-1.5 mb-1${invItem.type === 'streak_shield' ? ' inv-shield' : ''}">
+                                <span class="inline-flex items-center bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-semibold px-2.5 py-1 rounded-full mr-1.5 mb-1${invItem.type === 'streak_shield' ? ' inv-shield' : ''}${invItem.type === 'streak_recover' ? ' inv-recover' : ''}">
                                     <i class="fa-solid ${(typeof QG_ICON !== 'undefined' && typeof qgKind === 'function' && QG_ICON[qgKind(invItem)]) || 'fa-gift'} gift-type-ico mr-1.5"></i>${itemName}
                                     <button title="Đã dùng / Xóa quà" onclick="deleteStudentGift('${student.id}', '${invItem.invId}')" class="ml-1.5 w-4 h-4 bg-rose-500 hover:bg-rose-600 text-white rounded-full flex items-center justify-center text-[10px] leading-none transition">✕</button>
                                 </span>
@@ -9837,7 +10335,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     row.innerHTML = `
                         <td class="py-3 px-4 font-bold text-slate-800">${student.icon || '🎓'} ${getStudentDisplayName(student)}</td>
                         <td class="py-3 px-4 text-center font-black text-amber-600 text-base">${student.rewardPoints || 0} Pts</td>
-                        <td class="py-3 px-4">${giftsHtml}</td>
+                        <td class="py-3 px-4"><div class="gt-cellend"><div class="gt-gifts">${giftsHtml}</div>${gtBtnHtml(student.id)}</div></td>
                     `;
                     tableBody.appendChild(row);
                 });
@@ -9973,12 +10471,13 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         }
         /* Icon theo loại quà: dùng chung bộ icon với Túi quà ở Matrix Score (QG_ICON) */
         function giftTypeIconHtml(item) {
-            const MAP = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', streak_shield: 'fa-shield-halved', none: 'fa-gift', lucky: 'fa-dice', item_ticket: 'fa-ticket' };
+            const MAP = { plus: 'fa-circle-plus', add: 'fa-square-plus', change: 'fa-right-left', delete_score: 'fa-eraser', plus_match: 'fa-bullseye', plus_exam: 'fa-file-pen', streak_ten: 'fa-fire-flame-curved', streak_shield: 'fa-shield-halved', streak_recover: 'sr-fa', none: 'fa-gift', lucky: 'fa-dice', item_ticket: 'fa-ticket' };
             const t = String((item && item.type) || '').toLowerCase();
             let k = 'none';
             if (t === 'item_ticket' || String((item && (item.itemId || item.id)) || '') === 'fix_item_ticket_1') k = 'item_ticket';
             else if (t === 'lucky_spin' || String((item && (item.itemId || item.id)) || '') === 'fix_lucky_spin') k = 'lucky';
-            else if (['plus', 'add', 'change', 'delete_score', 'plus_match', 'plus_exam', 'streak_ten', 'streak_shield'].includes(t)) k = t;
+            else if (['plus', 'add', 'change', 'delete_score', 'plus_match', 'plus_exam', 'streak_ten', 'streak_shield', 'streak_recover'].includes(t)) k = t;
+            if (String((item && (item.itemId || item.id)) || '') === RECOVER_ID) k = 'streak_recover';
             return `<i class="fa-solid ${MAP[k]}"></i>`;
         }
 
@@ -10629,7 +11128,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const typeSelect = document.getElementById('editItemType');
             const itemType = item.type || 'none';
             const isLuckySpinSpecial = String(item.id || '') === 'fix_lucky_spin' || String(item.type || '').toLowerCase() === 'lucky_spin';
-            const isExamPlusSpecial = String(item.id || '') === EXAM_PLUS_ID || String(item.id || '') === SHIELD_ID || String(item.id || '') === SHOP_TICKET_GIFT_ID;
+            const isExamPlusSpecial = String(item.id || '') === EXAM_PLUS_ID || String(item.id || '') === SHIELD_ID || String(item.id || '') === SHOP_TICKET_GIFT_ID || String(item.id || '') === RECOVER_ID;
             const editTypeRow = document.getElementById('editGiftTypeRow');
             const editValueRow = document.getElementById('editGiftValueInputContainer');
             if (editTypeRow) editTypeRow.classList.toggle('hidden', isLuckySpinSpecial || isExamPlusSpecial);
@@ -10738,6 +11237,15 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     if (name) { if (appData.language === 'en') item.nameEn=name; else item.name=name; }
                     item.cost=Math.max(1,cost);item.type='item_ticket';item.ticketQty=1;
                     saveData();closeEditItemModal();return;
+                }
+                if (String(item.id || '') === RECOVER_ID) {
+                    // Chỉ sửa tên (theo ngôn ngữ đang dùng) và giá; loại quà luôn là Vé hồi chuỗi
+                    if (name) { if (appData.language === 'en') item.nameEn = name; else item.name = name; }
+                    item.cost = Math.max(1, cost);
+                    item.type = 'streak_recover';
+                    saveData();
+                    closeEditItemModal();
+                    return;
                 }
                 if (String(item.id || '') === SHIELD_ID) {
                     // Chỉ sửa tên (theo ngôn ngữ đang dùng) và giá; loại quà luôn là Khiên giữ chuỗi
@@ -11266,16 +11774,22 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         function tenStreakInfo(studentId, scores) {
             let run = 0, best = 0, miss = 0, tier = 0, peak = 0, live = [], prot = false, startTs = null, chain = [];
             const all = [], floorTs = tenFloorOf(studentId);
+            const stX = (appData.students || []).find(x => x.id === studentId), srEv = (stX && stX.sr && stX.sr.ev) || {}, recMap = {}, breaks = [], earns = {};
+            Object.keys(srEv).forEach(k => { const v = srEv[k]; if (v && v.status === 'used') recMap[v.id] = v; });
+            let epoch = 'init', recId = null, skipTs = 0;
             // Đổi mốc (lên hay xuống) thì đếm lại số lần bị trừ từ đầu theo mốc mới, bỏ qua các lần trừ trước đó.
             // Chuỗi đã từng đạt >= 10 (prot): khi tụt xuống dưới 10 vẫn giữ mốc 10 và số lần đã bị trừ, không đếm lại.
             const retier = () => { const t = tenMissTier(run); if (t !== tier && !(prot && t === 0)) { tier = t; miss = 0; } };
             tenSeries(studentId, scores).forEach(e => {
                 if (floorTs && e.ts < floorTs) return; // trước mốc chốt: không tính vào chuỗi
                 if (e.sg) return; // Điểm từ quà Streak: trung lập, không cộng cũng không làm đứt/trừ streak
+                if (skipTs && e.ts <= skipTs) return; // Vé hồi chuỗi 100%: các điểm nhập giữa lúc đứt chuỗi và lúc dùng vé không làm giảm chuỗi đã hồi
+                const prevRun = run;
                 // Quà thường nâng ô lên 10: tính là điểm 10 thật (như sửa tay), kể cả dữ liệu cũ từng gắn cờ giftNeutral.
                 if (e.v >= 10) {
                     if (run === 0) startTs = e.ts;
                     run++; chain.push(e.key); if (run > best) best = run; if (run > peak) peak = run;
+                    if (run === 7 || run === 8 || run === 9) { const tid = srSafe('first|t' + run); if (!earns[tid]) earns[tid] = { id: tid, tier: run, key: e.key, ts: e.ts, epoch, once: true }; } // vé chỉ cấp LẦN ĐẦU TIÊN đạt mốc 7/8/9 (một lần duy nhất cho mỗi học sinh)
                     retier(); if (run >= TEN_PROTECT_MIN) prot = true;
                     if (SG_REWARDS[run]) { const h = { tier: run, key: e.key }; all.push(h); live.push(h); }
                 }
@@ -11289,10 +11803,16 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                         else { run = Math.max(0, run - 1); chain.pop(); retier(); }
                     }
                 } else if (e.v < 9) { run = 0; miss = 0; tier = 0; } /* dưới streak 10: cũng chỉ điểm dưới 9 mới đứt; 9 đến dưới 10 giữ nguyên như từ streak 10 */
+                if (prevRun > 0 && run === 0) { // chuỗi vừa bị đứt: ghi nhận sự kiện; nếu đã dùng vé Hồi Phục Chuỗi cho đúng sự kiện này thì nối lại tại mốc quy đổi (không tạo điểm 10 giả)
+                    const bid = srSafe('b|' + e.key + '|' + prevRun), rc = recMap[bid];
+                    breaks.push({ id: bid, key: e.key, ts: e.ts, v: e.v, lost: prevRun, peak: Math.max(peak, prevRun) });
+                    if (rc && rc.to > 0) { run = rc.to; recId = bid; tier = 0; miss = 0; prot = run >= TEN_PROTECT_MIN; retier(); chain = chain.slice(-run); peak = Math.max(peak, run); if (rc.full && rc.usedAt) skipTs = rc.usedAt; }
+                    else epoch = bid;
+                }
                 if (run === 0) { live = []; peak = 0; prot = false; tier = 0; miss = 0; startTs = null; chain = []; }
             });
             const st = appData.students.find(x => x.id === studentId);
-            return { cur: run, chain, startTs, peak, hist: best, best: Math.max(best, (st && st.bestTenStreak) || 0), hits: all, liveHits: live.filter(h => h.tier <= run) };
+            return { breaks, earns: Object.keys(earns).map(k => earns[k]), recId, epoch, cur: run, chain, startTs, peak, hist: best, best: Math.max(best, (st && st.bestTenStreak) || 0), hits: all, liveHits: live.filter(h => h.tier <= run) };
         }
         // ===== Quà thưởng Streak: đạt mốc streak -> nhận quà điểm 10 (số lượng theo mốc) =====
         function sgTierKey(n) { return tfStepOf(n) || 5; }
@@ -11431,7 +11951,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 }
                 if (!Array.isArray(ch.tiers)) ch.tiers = [];
                 if (cur === 0) { if (ch.on || ch.tiers.length) { ch.on = false; ch.tiers = []; ch.gifts = {}; changed = true; } return; }
-                if (!ch.on) { ch.on = true; ch.tiers = []; ch.gifts = {}; changed = true; }
+                if (!ch.on) { ch.on = true; ch.tiers = []; ch.gifts = {}; changed = true; try { srRestoreChain(st, ch, inf); } catch (e) { console.warn('srRestoreChain skipped:', e); } }
                 if (!Array.isArray(st.inventory)) st.inventory = [];
                 tiers.forEach(t => {
                     if (t > cur || ch.tiers.indexOf(t) >= 0) return;
@@ -11612,10 +12132,10 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             w.innerHTML = `<div class="sgb sg-t${k}"><div class="sgb-bar"></div>
                 <button type="button" class="sgb-x" onclick="sgCloseBook()" aria-label="${T('Đóng', 'Close')}"><i class="fa-solid fa-xmark"></i></button>
                 <div class="sgb-body">
-                    <div class="sgb-head"><div class="sgb-ico">${st.icon || '🎓'}</div><div class="min-w-0"><div class="sgb-name">${esc(getStudentDisplayName(st))}</div><div class="sgb-sub">${esc(cls ? cls.name : '')} · ${T('Sổ quà Chuỗi', 'Streak Gift Book')}</div></div><div style="margin-left:auto">${tenStreakHtml(st.id)}</div></div>
+                    <div class="sgb-head"><div class="sgb-ico">${st.icon || '🎓'}</div><div class="min-w-0"><div class="sgb-name">${esc(getStudentDisplayName(st))}</div><div class="sgb-sub">${esc(cls ? cls.name : '')} · ${T('Sổ quà Chuỗi', 'Streak Gift Book')}</div></div><div style="margin-left:auto">${tenStreakHtml(st.id) || tenOffFlameHtml()}</div></div>
                     <div class="sgb-stats"><div class="sgb-stat"><b>${cur}</b><span>${T('Chuỗi hiện tại', 'Current streak')}</span></div><div class="sgb-stat"><b>${inf.best}</b><span>${T('Kỷ lục', 'Record')}</span></div><div class="sgb-stat"><b>${leftTens}</b><span>${T('Điểm 10 còn lại', 'Tens left')}</span></div></div>
                     <div class="sgb-h"><i class="fa-solid fa-flag-checkered"></i>${T('Mốc của chuỗi hiện tại', 'Current chain milestones')}</div>
-                    ${ms}${prog}${revHtml}
+                    ${ms}${prog}${revHtml}${srEntryHtml(st)}
                     <div class="sgb-h"><i class="fa-solid fa-gift"></i>${T('Quà trong túi', 'Gifts in the bag')}</div>${bagHtml}
                     <div class="sgb-h"><i class="fa-solid fa-book"></i>${T('Lịch sử nhận quà', 'Gift history')}<em>${T(`${gifts.length} quà · ${totalTens} điểm 10`, `${gifts.length} gifts · ${totalTens} tens`)}</em></div><div class="sgb-scroll">${histHtml}</div>
                     <div class="sgb-h"><i class="fa-solid fa-table-cells"></i>${T('Ô điểm từ quà', 'Cells from gifts')}<em>${cellKeys.length}</em></div><div class="sgb-scroll">${cellHtml}</div>
@@ -11774,6 +12294,227 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 try { sgOpenBook(st.id); } catch (e) {}
             } finally { sgRevokeBusy = false; }
         };
+
+        // ===== HỒI PHỤC CHUỖI (Streak Recovery) =====
+        // Dùng CHUNG nguồn với tenStreakInfo: sự kiện đứt chuỗi + vé + lớp phủ hồi phục đều suy ra từ lịch sử điểm; st.sr chỉ lưu sổ sự kiện/vé/nhật ký (theo từng học sinh trong khóa hiện tại).
+        // Không bao giờ ghi vào Score Matrix. Chỉ app giáo viên (saveData / hàng đợi cổng học sinh) mới thay đổi st.sr.
+        const SR_MAX = 2, SR_WIN = 3, SR_TEACHER_CAN_USE = true;
+        const srSafe = s => String(s).replace(/[.#$\[\]\/]/g, '~');
+        const srArr = v => Array.isArray(v) ? v : (v && typeof v === 'object' ? Object.keys(v).sort((a, b) => a - b).map(k => v[k]) : []);
+        function srTarget(n) { return n >= 100 ? 50 : n >= 50 ? 30 : n >= 30 ? 20 : n >= 20 ? 15 : n >= 15 ? 10 : n >= 11 ? 9 : n === 10 ? 8 : n === 9 ? 7 : n === 8 ? 6 : n >= 5 ? 5 : 0; }
+        function srOf(st) { const s = (st.sr && typeof st.sr === 'object') ? st.sr : (st.sr = {}); s.tk = srArr(s.tk); s.hist = srArr(s.hist); if (!s.ev || typeof s.ev !== 'object') s.ev = {}; if (!s.earned || typeof s.earned !== 'object') s.earned = {}; return s; }
+        function srGet(st) { const s = st.sr || {}; return { tk: srArr(s.tk), hist: srArr(s.hist), ev: s.ev || {}, earned: s.earned || {} }; }
+        const srDate = key => { const m = String(key).match(/_(\d{4})-(\d{1,2})-(\d{1,2})$/); return m ? m[1] + '-' + m[2].padStart(2, '0') + '-' + m[3].padStart(2, '0') : ''; };
+        // Chỉ ô điểm hợp lệ của chính học sinh (không vắng, không phải ô quà) mới tính là buổi học
+        function srIndex() { const ix = {}, sc = appData.scores || {}; Object.keys(sc).forEach(k => { const c = sc[k]; if (!c || c.absent || c.sg || c.score === null || c.score === undefined || c.score === '' || isNaN(parseFloat(c.score))) return; const m = k.match(/^(.*)_(\d{4}-\d{1,2}-\d{1,2})$/); if (m) (ix[m[1]] || (ix[m[1]] = new Set())).add(srDate('_' + m[2])); }); return ix; }
+        // Số buổi học hợp lệ SAU ngày đứt chuỗi: đúng lịch lớp, trừ ngày lớp nghỉ; lớp chưa có lịch thì tính ngày có điểm hợp lệ
+        function srSessions(st, d0, ix) {
+            const sc = ((appData.classSchedules || {})[st.classId]) || {}, has = Object.keys(sc).some(k => sc[k]); let rest; try { rest = window.mxRestDates ? window.mxRestDates(st.classId) : new Set(); } catch (e) { rest = new Set(); }
+            let n = 0; (ix[st.id] || []).forEach(d => { if (d <= d0 || rest.has(d)) return; if (has && !sc[new Date(d + 'T12:00:00Z').getUTCDay()]) return; n++; }); return n;
+        }
+        function srInvTk(st) { return (st && Array.isArray(st.inventory)) ? st.inventory.filter(g => g && g.type === 'streak_recover') : []; }
+        function srCount(st) { return srGet(st).tk.length + srInvTk(st).length; }
+        function srItem() { return (appData.globalShopItems || []).find(i => i && i.id === RECOVER_ID) || null; }
+        function srCost(it) { return Math.max(1, Math.floor(Number(it && it.cost) || 0) || 1); }
+        function srSync() {
+            if (window.MX_STUDENT || (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId)) return false;
+            const ix = srIndex(), cm = appData.courseManager || {}, now = Date.now(), today = new Date().toISOString().slice(0, 10);
+            (appData.students || []).forEach(st => {
+                const s = srOf(st), inf = tenStreakInfo(st.id), init = !s.init; if (init) s.init = now;
+                const ids = new Set(inf.breaks.map(b => b.id)), qb = inf.breaks.filter(b => b.peak >= 5), last = qb[qb.length - 1];
+                // 1) Sự kiện đứt chuỗi: chuỗi từng đạt từ 5 trở lên rồi về 0. Hồi phục 100% = chuỗi cao nhất của chuỗi đó (không giảm, không giới hạn số buổi)
+                inf.breaks.forEach(b => {
+                    if (s.ev[b.id] || !(b.peak >= 5) || !last || last.id !== b.id) return; // chỉ ghi sự kiện mới nhất (đủ điều kiện)
+                    const date = srDate(b.key);
+                    const c = (sgLedger().chains || {})[st.id];
+                    const ev = { id: b.id, sid: String(st.id), tid: String(currentTeacherId || ''), cid: String(st.classId || ''), course: String(cm.activeCourseId || ''), key: b.key, date, lost: b.peak, to: b.peak, full: true, score: b.v, at: now, status: 'open' };
+                    if (c && c.on && Array.isArray(c.tiers)) ev.chain = { tiers: c.tiers.slice(), gifts: Object.assign({}, c.gifts || {}) };
+                    s.ev[b.id] = ev; s.hist.push({ t: 'break', ev: b.id, lost: b.peak, at: now, date, score: b.v });
+                });
+                // 2) Trạng thái sự kiện (chỉ sự kiện mới nhất mới hồi phục được; không còn hạn theo số buổi học)
+                Object.keys(s.ev).forEach(k => {
+                    const e = s.ev[k]; if (!e) return;
+                    if (e.status === 'used') { e.orphan = !ids.has(e.id); return; }
+                    if (e.status === 'expired' && !(e.why === 'time' && last && last.id === e.id)) return; // sự kiện cũ hết hạn theo buổi học nay được mở lại nếu là lần đứt mới nhất
+                    const bk = inf.breaks.find(b => b.id === e.id);
+                    if (!bk) { e.status = 'void'; return; }
+                    if (String(e.cid) !== String(st.classId)) { e.status = 'expired'; e.why = 'moved'; }
+                    else if (!last || last.id !== e.id) { e.status = 'expired'; e.why = 'superseded'; }
+                    else { e.status = 'open'; delete e.why; if (bk.peak > 0) { e.lost = bk.peak; e.to = bk.peak; e.full = true; } }
+                });
+                // 3) Vé: cấp 1 vé cho mỗi mốc 7 / 8 / 9 khi LẦN ĐẦU TIÊN hệ thống ghi nhận đạt mốc (một lần duy nhất, hồi chuỗi rồi đạt lại cũng không nhận thêm); không giới hạn số vé
+                inf.earns.forEach(x => {
+                    const ek = Object.keys(s.earned).find(k => k === x.id || (s.earned[k] && s.earned[k].tier === x.tier && s.earned[k].key === x.key));
+                    if (ek && !s.earned[ek].revoked) return; if (ek) delete s.earned[ek]; // mốc từng bị thu hồi do sửa điểm nay đạt lại (sửa lại đúng) -> cấp lại 1 lần
+                    const e = { tier: x.tier, key: x.key, at: now, once: true };
+                    if (init && x.epoch !== inf.epoch) e.legacy = true;
+                    else { const tid = 'tk_' + now.toString(36) + Math.random().toString(36).slice(2, 6); s.tk.push({ id: tid, tier: x.tier, at: now, date: today }); e.tk = tid; s.hist.push({ t: 'earn', tier: x.tier, tk: tid, at: now }); }
+                    s.earned[x.id] = e;
+                });
+                // 4) Đối soát khi sửa/xóa điểm: mốc (kiểu mới) không còn đạt -> thu hồi vé CHƯA dùng; vé đã dùng giữ nguyên và gắn cờ cần đối soát
+                Object.keys(s.earned).forEach(k => {
+                    const e = s.earned[k]; if (!e || !e.once || !e.tk || e.revoked || e.review) return; // vé cấp theo luật cũ không bị thu hồi
+                    if (inf.earns.some(x => x.id === k || (x.tier === e.tier && x.key === e.key))) return;
+                    const i = s.tk.findIndex(t => t.id === e.tk);
+                    if (i >= 0) { s.tk.splice(i, 1); e.revoked = true; s.hist.push({ t: 'revoke', tier: e.tier, at: now }); } else { e.review = true; s.hist.push({ t: 'review', tier: e.tier, at: now }); }
+                });
+                if (s.hist.length > 80) s.hist = s.hist.slice(-80);
+            });
+            return true;
+        }
+        // Chuỗi đã hồi phục vẫn là CÙNG MỘT chuỗi: các mốc quà đã nhận trước khi đứt không bị cấp lại
+        function srRestoreChain(st, ch, inf) {
+            if (!inf.recId) return; const ev = srGet(st).ev[inf.recId]; if (!ev) return;
+            ch.tiers = ev.chain ? srArr(ev.chain.tiers).map(Number) : Object.keys(SG_REWARDS).map(Number).filter(t => t <= ev.lost);
+            ch.gifts = (ev.chain && ev.chain.gifts) ? Object.assign({}, ev.chain.gifts) : {};
+        }
+        // Lõi sử dụng vé (chưa lưu): đúng 1 vé, đúng 1 sự kiện, chỉ khi chuỗi đã về 0; hồi phục 100% (không giảm)
+        function srUseCore(st, evId) {
+            const no = m => ({ ok: false, msg: m }), s = srOf(st), e = s.ev[evId];
+            if (!e) return no(L2('Không tìm thấy sự kiện đứt chuỗi.', 'Streak-break event not found.'));
+            if (e.status === 'used') return no(L2('Sự kiện này đã được hồi phục rồi.', 'This break was already recovered.'));
+            if (e.status !== 'open') return no(L2('Sự kiện này không còn hồi phục được (chuỗi đã thay đổi).', 'This break can no longer be recovered (the streak changed).'));
+            const inf = tenStreakInfo(st.id);
+            if (inf.cur > 0) return no(L2('Đang có chuỗi nên chưa dùng được vé. Vé chỉ dùng khi chuỗi đã về 0.', 'You have a streak running, so the ticket cannot be used. Tickets only work when the streak is back at 0.'));
+            const bk = inf.breaks.find(b => b.id === e.id); if (bk && bk.peak > 0) { e.lost = bk.peak; e.to = bk.peak; }
+            if (!(e.to > 0)) return no(L2('Mốc hồi phục không hợp lệ.', 'Invalid recovery target.'));
+            const inv = srInvTk(st);
+            if (!s.tk.length && !inv.length) return no(L2('Bạn không có vé hồi chuỗi.', 'You have no recovery tickets.'));
+            let tkId;
+            if (s.tk.length) tkId = s.tk.shift().id; else { const g = inv[0]; st.inventory.splice(st.inventory.indexOf(g), 1); tkId = g.invId || 'inv'; }
+            e.status = 'used'; e.usedAt = Date.now(); e.tkId = tkId; e.full = true;
+            s.hist.push({ t: 'use', ev: e.id, tk: tkId, lost: e.lost, to: e.to, at: e.usedAt });
+            return { ok: true, msg: L2(`Đã dùng 1 vé: chuỗi hồi phục 100% về ${tenStreakInfo(st.id).cur}.`, `1 ticket used: streak fully restored to ${tenStreakInfo(st.id).cur}.`) };
+        }
+        async function srUseLocal(st, evId) {
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return { ok: false, msg: L2('Khóa đã lưu trữ chỉ được xem.', 'Archived course is read-only.') };
+            const bak = st.sr === undefined ? undefined : deepCopy(st.sr), ibak = st.inventory === undefined ? undefined : deepCopy(st.inventory);
+            const rv = () => { if (bak === undefined) delete st.sr; else st.sr = bak; if (ibak === undefined) delete st.inventory; else st.inventory = ibak; };
+            try { srSync(); } catch (e) {}
+            const r = srUseCore(st, evId); if (!r.ok) { rv(); return r; }
+            if ((await saveData()) !== true) { rv(); return { ok: false, msg: L2('Không lưu được; đã hoàn nguyên.', 'Could not save; reverted.') }; }
+            return r;
+        }
+        // Mua Vé hồi chuỗi bằng điểm dư (học sinh tự mua trong mục Hồi Phục Chuỗi); giá lấy từ quà trong cửa hàng (giáo viên chỉnh được)
+        function srBuyCore(st) {
+            const no = m => ({ ok: false, msg: m }), item = srItem();
+            if (!item) return no(L2('Không tìm thấy Vé hồi chuỗi trong cửa hàng.', 'Recovery ticket not found in the shop.'));
+            const cost = srCost(item), pts = Math.floor(Number(st.rewardPoints) || 0);
+            if (pts < cost) return no(L2(`Không đủ điểm: cần ${cost}, bạn có ${pts}.`, `Not enough points: need ${cost}, you have ${pts}.`));
+            giveGiftToStudent(st, item, 1, giftLocalToday());
+            return { ok: true, msg: L2(`Đã mua 1 ${getRewardName(item)} (−${cost} điểm).`, `Bought 1 ${getRewardName(item)} (−${cost} pts).`) };
+        }
+        async function srBuyLocal(st) {
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return { ok: false, msg: L2('Khóa đã lưu trữ chỉ được xem.', 'Archived course is read-only.') };
+            const snap = deepCopy(st), rv = () => { Object.keys(st).forEach(k => delete st[k]); Object.assign(st, snap); };
+            const r = srBuyCore(st); if (!r.ok) return r;
+            if ((await saveData()) !== true) { rv(); return { ok: false, msg: L2('Không lưu được; đã hoàn nguyên.', 'Could not save; reverted.') }; }
+            return r;
+        }
+        // Console: srReport() -> sổ vé/sự kiện; srRefund('Khánh') -> hoàn 1 vé cho sự kiện đã dùng nhưng điểm đã bị sửa làm mất sự kiện (đối soát thủ công)
+        window.srReport = function () { const rows = []; (appData.students || []).forEach(st => { const s = srGet(st); Object.keys(s.ev).forEach(k => { const e = s.ev[k]; rows.push({ hocSinh: st.name, ngay: e.date, mat: e.lost, hoiPhucVe: e.to, trangThai: e.status + (e.why ? '/' + e.why : '') + (e.orphan ? ' ⚠orphan' : ''), buoiCon: e.left, ve: s.tk.length }); }); }); console.table(rows); return rows; };
+        window.srRefund = function (kw) { const k = String(kw || '').toLowerCase(); let n = 0; (appData.students || []).forEach(st => { if (!k || String(st.name || '').toLowerCase().indexOf(k) < 0) return; const s = srOf(st); Object.keys(s.ev).forEach(id => { const e = s.ev[id]; if (e && e.status === 'used' && e.orphan && !e.refunded && s.tk.length < SR_MAX) { e.refunded = true; e.status = 'expired'; e.why = 'refunded'; s.tk.push({ id: 'tk_rf_' + Date.now().toString(36), tier: 0, at: Date.now() }); s.hist.push({ t: 'refund', ev: e.id, at: Date.now() }); n++; } }); }); if (n) saveData(); console.log('Đã hoàn vé cho', n, 'sự kiện'); return n; };
+
+        // ----- Giao diện Hồi Phục Chuỗi: cửa sổ thứ hai trượt ra bên phải Sổ quà Chuỗi -----
+        // Biểu tượng riêng: ngọn lửa trong vòng mũi tên "hồi phục" (khác hẳn Phiếu Vật Phẩm)
+        const srIco = () => '<svg class="sr-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.1a2.9 2.9 0 0 0 0 5.8V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.1a2.9 2.9 0 0 0 0-5.8z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path transform="translate(0 1.3)" d="M12.3 6.6c.5 2.1-2.3 3.2-2.3 5.6a2.4 2.4 0 0 0 4.8 0c0-1.3-.6-2-1.1-2.9-.4.7-.8 1-1.2 1 .2-1.4-.1-2.6-.2-3.7z" fill="currentColor"/></svg>';
+        let srTimer = null, srBusy = false;
+        function srView(st) {
+            const inf = tenStreakInfo(st.id), s = srGet(st), evs = Object.keys(s.ev).map(k => s.ev[k]).filter(Boolean).sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.at || 0) - (a.at || 0));
+            const open = evs.find(e => e.status === 'open'), lastE = evs.find(e => e.status !== 'void');
+            const mine = window.MX_STUDENT ? String(window.MX_STUDENT.sid) === String(st.id) : SR_TEACHER_CAN_USE;
+            const cnt = s.tk.length + srInvTk(st).length;
+            // Vé chỉ có hiệu lực khi đã có lịch sử chuỗi cao nhất (từ 5) và chuỗi hiện tại đã về 0
+            const state = open ? (inf.cur > 0 ? 'streaking' : (cnt ? 'ready' : 'noticket')) : (lastE ? (lastE.status === 'used' ? 'used' : 'expired') : 'none');
+            return { inf, s, evs, open, lastE, mine, state, cnt };
+        }
+        // Màu icon/khung Hồi Phục Chuỗi = màu của chuỗi (chuỗi hiện tại, hoặc chuỗi sẽ được hồi phục khi đang ở 0)
+        function srRefN(v) { return (v.inf.cur > 0 ? v.inf.cur : (v.open ? v.open.to : (v.lastE ? (v.lastE.to || v.lastE.lost) : v.inf.best))) || 0; }
+        function srTierCls(v) { const n = srRefN(v); return 'sg-t' + (n >= 5 ? sgTierKey(n) : 1); }
+        function srStateText(v) {
+            const T = L2;
+            return v.state === 'ready' ? T(`Có thể hồi phục về ${v.open.to}`, `Can restore to ${v.open.to}`)
+                : v.state === 'noticket' ? T('Chuỗi đã về 0 · chưa có vé', 'Streak is at 0 · no ticket')
+                : v.state === 'streaking' ? T('Đang có chuỗi · chưa dùng được vé', 'Streak running · ticket not usable')
+                : v.state === 'used' ? T(`Đã hồi phục về ${v.lastE.to}`, `Restored to ${v.lastE.to}`)
+                : v.state === 'expired' ? T('Quyền hồi phục đã hết', 'Recovery no longer available') : T('Chưa có chuỗi nào về 0', 'No streak lost yet');
+        }
+        function srEntryHtml(st) {
+            const v = srView(st);
+            return `<button type="button" class="sr-entry ${v.state} ${srTierCls(v)}" onclick="srOpenPanel('${escapeHtml(String(st.id))}')"><span class="sr-ic">${srIco()}</span><span class="sr-et"><b>${L2('Hồi Phục Chuỗi', 'Streak Recovery')}</b><small>${escapeHtml(srStateText(v))}</small></span><em>${v.cnt}</em><i class="fa-solid fa-chevron-right sr-arr"></i></button>`;
+        }
+        function srBrokenHtml(sid) {
+            const st = (appData.students || []).find(x => String(x.id) === String(sid)); if (!st || !st.sr) return '';
+            const v = srView(st); if (!v.open || v.inf.cur > 0) return '';
+            return `<span class="sr-brk" title="${escapeHtml(L2('Chuỗi đã về 0 · có thể hồi phục', 'Streak at 0 · recoverable'))}"><i class="fa-solid fa-heart-crack"></i>${v.open.to}</span>`;
+        }
+        window.srClosePanel = function (now) {
+            const p = document.getElementById('srPanel'), w = document.getElementById('sgBook'); if (!p) return;
+            const done = () => { p.remove(); if (w) w.classList.remove('sr-on'); };
+            if (now === true) done(); else { p.classList.add('out'); setTimeout(done, 240); }
+        };
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('srPanel')) { e.stopImmediatePropagation(); srClosePanel(); } }, true);
+        window.srOpenPanel = function (sid) {
+            const w = document.getElementById('sgBook'); if (!w) return;
+            const ex = document.getElementById('srPanel');
+            if (ex && String(ex.dataset.sid) === String(sid) && !ex.classList.contains('out')) { clearInterval(srTimer); srClosePanel(); return; } // bấm lần nữa: đóng
+            srClosePanel(true);
+            const p = document.createElement('aside'); p.id = 'srPanel'; p.className = 'srp'; p.dataset.sid = sid; w.appendChild(p); w.classList.add('sr-on');
+            srRender(); clearInterval(srTimer); srTimer = setInterval(() => srRender(true), 1500);
+        };
+        window.srClickUse = async function (sid, evId) {
+            if (srBusy) return; const st = (appData.students || []).find(x => String(x.id) === String(sid)), e = st && srGet(st).ev[evId]; if (!st || !e) return;
+            const ok = await showAppConfirm(L2(`Dùng 1 vé để hồi phục 100% chuỗi về ${e.to}? Mỗi lần mất chuỗi chỉ hồi phục một lần.`, `Use 1 ticket to fully restore the streak to ${e.to}? Each lost streak can be restored only once.`), L2('Hồi Phục Chuỗi', 'Streak Recovery'));
+            if (!ok) return; srBusy = true; srRender();
+            try { if (window.MX_STUDENT) await mxSend('srUse', { ev: evId }); else { const r = await srUseLocal(st, evId); qsToast(r.msg, r.ok ? 'success' : 'warning'); } }
+            finally { srBusy = false; srRender(); }
+        };
+        window.srClickBuy = async function (sid) {
+            if (srBusy) return; const st = (appData.students || []).find(x => String(x.id) === String(sid)), item = srItem(); if (!st || !item) return;
+            const ok = await showAppConfirm(L2(`Mua 1 ${getRewardName(item)} với ${srCost(item)} điểm?`, `Buy 1 ${getRewardName(item)} for ${srCost(item)} pts?`), L2('Mua vé hồi chuỗi', 'Buy recovery ticket'));
+            if (!ok) return; srBusy = true; srRender();
+            try { if (window.MX_STUDENT) await mxSend('srBuy', {}); else { const r = await srBuyLocal(st); qsToast(r.msg, r.ok ? 'success' : 'warning'); } }
+            finally { srBusy = false; srRender(); try { if (typeof qgRender === 'function') qgRender(); } catch (e) {} }
+        };
+        // Nút "Dùng" trên Vé hồi chuỗi trong túi quà: dùng cho đúng lần mất chuỗi mới nhất nếu đủ điều kiện
+        window.srUseFromBag = async function (sid) {
+            const st = (appData.students || []).find(x => String(x.id) === String(sid)); if (!st) return;
+            try { srSync(); } catch (e) {}
+            const v = srView(st);
+            if (!v.open) { qsToast(L2('Chưa có chuỗi nào để hồi phục (cần từng đạt chuỗi từ 5 trở lên và đã về 0).', 'No streak to restore (it must have reached 5 or more and be back at 0).'), 'warning'); return; }
+            if (v.inf.cur > 0) { qsToast(L2('Đang có chuỗi nên chưa dùng được vé. Vé chỉ dùng khi chuỗi đã về 0.', 'A streak is running, so the ticket cannot be used. Tickets only work when the streak is back at 0.'), 'warning'); return; }
+            await srClickUse(sid, v.open.id);
+            try { if (typeof qgRender === 'function') qgRender(); } catch (e) {}
+        };
+        function srRender(soft) {
+            const p = document.getElementById('srPanel'); if (!p) { clearInterval(srTimer); return; }
+            const st = (appData.students || []).find(x => String(x.id) === p.dataset.sid); if (!st) return;
+            const v = srView(st), T = L2, esc = escapeHtml, pend = window.MX_STUDENT ? [...window.MX_STUDENT.pend].join() : '';
+            const item = srItem(), cost = srCost(item), pts = Math.max(0, Math.floor(Number(st.rewardPoints) || 0));
+            const sig = JSON.stringify([st.sr || 0, v.inf.cur, v.inf.best, v.cnt, pts, cost, item ? item.name : '', pend, srBusy, appData.language]); if (soft && p.dataset.sig === sig) return; p.dataset.sig = sig;
+            p.className = p.className.replace(/\bsg-t\d+\b/g, '').trim() + ' ' + srTierCls(v);
+            const stT = { open: T('Có thể hồi phục', 'Recoverable'), used: T('Đã hồi phục', 'Restored'), void: T('Không còn đứt', 'No longer broken'), expired: T('Hết hiệu lực', 'No longer valid') };
+            const why = { time: T('hết hạn cũ', 'old expiry'), moved: T('đã chuyển lớp', 'moved class'), superseded: T('đã có lần mất chuỗi mới hơn', 'newer break exists'), refunded: T('đã hoàn vé', 'refunded') };
+            const e0 = v.open;
+            const can = v.state === 'ready' && v.mine && !srBusy && !pend;
+            const hint = !e0 ? '' : (!v.mine ? T('Chỉ học sinh mới được dùng vé (qua cổng học sinh).', 'Only the student can use tickets (via the student portal).') : (v.state === 'streaking' ? '' : (v.state === 'noticket' ? T('Cần ít nhất 1 vé hồi chuỗi. Hãy vào Cửa hàng để mua vé.', 'You need at least 1 recovery ticket. Buy one in the Shop.') : (pend || srBusy ? T('Đang chờ giáo viên xác nhận…', 'Waiting for your teacher…') : ''))));
+            const status = e0 ? `<div class="sr-st ${v.state}"><div class="sr-st-t"><i class="fa-solid fa-heart-crack"></i><b>${T('Hồi phục về chuỗi', 'Restore streak to')} ${e0.to}</b></div><div class="sr-st-s">${v.state === 'streaking' ? T('Đang có chuỗi nên chưa dùng được vé. Vé chỉ dùng khi chuỗi đã về 0.', 'A streak is running, so tickets cannot be used. Tickets only work once the streak is back at 0.') : T('Hồi lại 100% chuỗi cao nhất đã đạt, không bị giảm.', 'Restores 100% of the highest streak reached, no reduction.')}</div></div>`
+                : `<div class="sr-st ${v.state}"><div class="sr-st-t"><i class="fa-solid fa-shield-heart"></i><b>${esc(srStateText(v))}</b></div></div>`;
+            const tkE = v.s.tk.map(t => `<div class="sgb-row sr-tk"><span class="sr-rowic">${srIco()}</span><div><b>${T('Vé hồi chuỗi', 'Recovery ticket')}</b><small>${t.tier ? T('Đạt chuỗi ', 'Reached streak ') + t.tier + ' ' + T('lần đầu', 'for the first time') : T('Hoàn vé', 'Refund')} · ${esc(sgFmtDate(t.date || ''))}</small></div></div>`);
+            const tkI = srInvTk(st).map(g => `<div class="sgb-row sr-tk"><span class="sr-rowic">${srIco()}</span><div><b>${esc(getRewardName(g))}</b><small>${T('Mua / trúng thưởng', 'Bought / won')} · ${esc(sgFmtDate(g.date || ''))}</small></div></div>`);
+            const tks = (tkE.length + tkI.length) ? tkE.concat(tkI).join('') : `<p class="sgb-empty">${T('Chưa có vé. Nhận khi lần đầu đạt chuỗi 7, 8, 9, hoặc mua / trúng từ vòng quay, hộp quà bí ẩn.', 'No tickets. Earn them the first time you reach streak 7, 8 or 9, or buy / win them from the wheel or mystery box.')}</p>`;
+            const evs = v.evs.length ? v.evs.slice(0, 12).map(e => `<div class="sgb-row sr-ev ${e.status}"><i class="fa-solid fa-heart-crack"></i><div><b>${esc(sgFmtDate(e.date))} · ${e.full ? T('chuỗi ', 'streak ') + e.to : e.lost + ' → ' + e.to}</b><small>${T('Điểm khi đứt', 'Score at break')}: ${esc(String(e.score))}${e.usedAt ? ' · ' + T('dùng vé ', 'used ') + esc(new Date(e.usedAt).toLocaleString(T('vi-VN', 'en-GB'))) : ''}${e.orphan ? ' · ⚠ ' + T('cần đối soát', 'needs review') : ''}</small></div><div class="sgb-r">${stT[e.status] || ''}<small>${e.why ? why[e.why] || '' : ''}</small></div></div>`).join('') : `<p class="sgb-empty">${T('Chưa có chuỗi nào bị mất.', 'No streak lost yet.')}</p>`;
+            const lg = { break: T('Mất chuỗi', 'Streak lost'), earn: T('Nhận vé', 'Ticket earned'), use: T('Dùng vé', 'Ticket used'), cap: T('Không cấp', 'Not granted'), revoke: T('Thu hồi vé (điểm đổi)', 'Ticket revoked (score edit)'), review: T('Vé đã dùng · cần đối soát', 'Used ticket · review'), refund: T('Hoàn vé', 'Refunded') };
+            const log = v.s.hist.length ? v.s.hist.slice(-10).reverse().map(h => `<div class="sr-lg"><span>${esc(lg[h.t] || h.t)}${h.lost ? ' · ' + h.lost + (h.to && h.to !== h.lost ? ' → ' + h.to : '') : (h.tier ? ' · ' + h.tier : '')}</span><small>${esc(new Date(h.at).toLocaleDateString(T('vi-VN', 'en-GB')))}</small></div>`).join('') : `<p class="sgb-empty">${T('Chưa có nhật ký.', 'No log yet.')}</p>`;
+            p.innerHTML = `<div class="sgb-bar"></div><button type="button" class="sgb-x" onclick="srClosePanel()" aria-label="${T('Đóng', 'Close')}"><i class="fa-solid fa-xmark"></i></button>
+                <div class="sgb-body"><div class="sgb-head"><div class="sr-hico">${srIco()}</div><div class="min-w-0"><div class="sgb-name">${T('Hồi Phục Chuỗi', 'Streak Recovery')}</div><div class="sgb-sub">${esc(getStudentDisplayName(st))}</div></div></div>
+                <div class="sr-stats"><div class="sgb-stat"><b>${v.inf.cur}</b><span>${T('Hiện tại', 'Current')}</span></div><div class="sgb-stat"><b>${v.inf.best}</b><span>${T('Cao nhất', 'Highest')}</span></div><div class="sgb-stat"><b>${v.lastE ? (v.lastE.full ? v.lastE.to : v.lastE.lost) : '—'}</b><span>${T('Vừa mất', 'Last lost')}</span></div><div class="sgb-stat"><b>${v.cnt}</b><span>${T('Vé hồi chuỗi', 'Tickets')}</span></div></div>
+                ${status}<button type="button" class="sr-use" ${can ? '' : 'disabled'} onclick="srClickUse('${esc(String(st.id))}','${e0 ? esc(e0.id) : ''}')">${srIco()} ${T('Sử Dụng Vé Hồi Chuỗi', 'Use Recovery Ticket')}</button>${hint ? `<p class="sr-hint">${hint}</p>` : ''}
+                <div class="sgb-h"><span class="sr-hic">${srIco()}</span>${T('Vé hiện có', 'Your tickets')}<em>${v.cnt}</em></div>${tks}
+                <div class="sgb-h"><i class="fa-solid fa-heart-crack"></i>${T('Lịch sử mất chuỗi', 'Streak losses')}<em>${v.evs.length}</em></div><div class="sgb-scroll">${evs}</div>
+                <div class="sgb-h"><i class="fa-solid fa-clock-rotate-left"></i>${T('Lịch sử cấp & dùng vé', 'Ticket history')}</div><div class="sgb-scroll">${log}</div>
+                <p class="sr-note">${T('Nhận 1 vé khi lần đầu đạt chuỗi 7, 8 và 9 (mỗi mốc chỉ một lần duy nhất; hồi chuỗi rồi đạt lại cũng không nhận thêm). Vé còn mua được bằng điểm hoặc trúng từ vòng quay / hộp quà bí ẩn, không giới hạn số lượng. Vé chỉ dùng được khi chuỗi đã về 0 (từng đạt chuỗi từ 5 trở lên) và hồi lại 100% chuỗi cao nhất đã đạt. Không thay đổi điểm trong Bảng Điểm.', 'Earn 1 ticket the first time you reach streak 7, 8 and 9 (once per milestone ever; recovering and reaching it again gives nothing). Tickets can also be bought with points or won from the wheel / mystery box, with no limit. A ticket only works when the streak is back at 0 (it must have reached 5 or more) and restores 100% of the highest streak. Scores in the Score Matrix are never changed.')}</p></div>`;
+        }
         function getTenStreak(studentId) { return tenStreakInfo(studentId).cur; }
         // Lưu kỷ lục vào dữ liệu học sinh mỗi lần lưu (chỉ tăng, không giảm).
         function updateTenRecords() {
@@ -12085,6 +12826,11 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             if (n < 1 || !inf.chain || !inf.chain.length) return null;
             return { keys: new Set(inf.chain), tier: n < 5 ? 1 : (n < 10 ? 5 : tfStepOf(n)), n };
         }
+        // Lửa TẮT cho học sinh chưa có chuỗi: nhỏ, xám, không hiệu ứng; vẫn bấm được để mở Sổ quà Chuỗi / Hồi phục chuỗi
+        function tenOffFlameHtml() {
+            const tip = (appData.language || 'vi') === 'en' ? 'No streak yet' : 'Chưa có chuỗi';
+            return `<span class="tf-streak tf-mini tf-off" title="${tip}" aria-label="${tip}"><span class="tf-flame" aria-hidden="true"><i class="tf-l tf-l1"></i><i class="tf-l tf-l2"></i><i class="tf-l tf-l3"></i></span></span>`;
+        }
         function tenStreakHtml(studentId) {
             const inf = tenStreakInfo(studentId), n = inf.cur;
             if (n < TEN_STREAK_MIN) return '';
@@ -12183,7 +12929,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                         <tr class="hl-row ${rank===1?'hl-r1':rank===2?'hl-r2':rank===3?'hl-r3':''} ${qsRowFlash('rk', activeClass.id, s.id, st.hasData)}">
                             <td class="py-3.5 px-4 text-center">${rankBadge}</td>
                             <td class="py-3.5 px-4 font-bold text-slate-800"><div class="rk-namerow">
-                                <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> <span class="tf-name-link${tfNameFx(s.id).nm}" onclick="tfOpenProfile('${s.id}')" title="${lang === 'en' ? 'View profile' : 'Xem hồ sơ'}">${getStudentDisplayName(s)}</span>${levelPillHtml(s.id)}${(() => { const f = tenStreakHtml(s.id); return f ? `<span class="sg-open" role="button" tabindex="0" onclick="sgOpenBook('${s.id}')" onkeydown="if(event.key==='Enter')sgOpenBook('${s.id}')" title="${lang === 'en' ? 'Open Streak Gift Book' : 'Mở Sổ quà Chuỗi'}">${f}</span>` : ''; })()} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span></div>
+                                <span class="mr-2 hl-ico">${s.icon || '🎓'}</span> <span class="tf-name-link${tfNameFx(s.id).nm}" onclick="tfOpenProfile('${s.id}')" title="${lang === 'en' ? 'View profile' : 'Xem hồ sơ'}">${getStudentDisplayName(s)}</span>${levelPillHtml(s.id)}${(() => { const f = tenStreakHtml(s.id) || srBrokenHtml(s.id) || tenOffFlameHtml(); return f ? `<span class="sg-open" role="button" tabindex="0" onclick="sgOpenBook('${s.id}')" onkeydown="if(event.key==='Enter')sgOpenBook('${s.id}')" title="${lang === 'en' ? 'Open Streak Gift Book' : 'Mở Sổ quà Chuỗi'}">${f}</span>` : ''; })()} <span class="ml-1.5 align-middle">${qsDeltaHtml('rk', activeClass.id, s.id, st.hasData)}</span></div>
                             </td>
                             <td class="py-2 px-2 text-center">${window.petLbCell ? window.petLbCell(s.id) : ''}</td>
                             <td class="py-3.5 px-2 text-center font-bold text-amber-600"><span data-cu="rkt:${s.id}:sp" data-to="${st.speakTotal}" data-dec="0">${st.speakTotal}</span></td>
@@ -13988,7 +14734,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             appData.scores={};appData.finalExams={};appData.teachingPlans=appData.teachingPlans||{};appData.teachingPlans[c.id]=[];appData.studentNotes={};
             appData.students=(appData.students||[]).map(st=>{const n={...st,rewardPoints:0,inventory:[],violations:[],courseNotes:'',sgAwarded:[]};
               /* Khóa mới: thú cưng, kỷ lục streak, mốc chốt streak và phiếu vật phẩm đều bắt đầu lại từ đầu (chỉ giữ danh sách lớp/học sinh). */
-              ['petSp','petNick','petName','petHatch','petPeak','petItems','petEquip','petBg','petSpent','petSpentD','petBuys','petStreakSeen','petStreakLossCount','petShown','petLvSeen','petAvgSeen','petCnt','bestTenStreak','streakFloor','itemTickets','itemTicketHistory','itemTicketWeekly'].forEach(k=>{delete n[k]});
+              ['petSp','petNick','petName','petHatch','petPeak','petItems','petEquip','petBg','petSpent','petSpentD','petBuys','petStreakSeen','petStreakLossCount','petShown','petLvSeen','petAvgSeen','petCnt','bestTenStreak','streakFloor','itemTickets','itemTicketHistory','itemTicketWeekly','sr'].forEach(k=>{delete n[k]});
               return n;});
             appData.petBless={led:{},log:[],recv:{},pend:{}};appData.petExp={runs:{},hist:[],col:{}};appData.petHab={};
             if(appData.gacha&&typeof appData.gacha==='object'){appData.gacha.st={};appData.gacha.history=[];}
@@ -14012,7 +14758,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
           if(lbl)lbl.textContent=appData.language==='en'?'Students':'Tỉ Số';
           if(num&&num.textContent!==String(n)){num.textContent=String(n);num.classList.remove('scb-pop');void num.offsetWidth;num.classList.add('scb-pop');}
         }
-        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);scbUpdate(arr.length);box.className=rosterViewMode('students')==='list'?'roster-list grid grid-cols-1 gap-2 content-start':'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start';rosterViewApply('students');box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':ctCls(st)}">${xfBdayFx(st)}${xfBdayToday(st)?'':ctFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar"><span class="ra-ico" style="animation-delay:${raDelay(st.id)}">${escapeHtml(st.icon||'🎓')}</span></div><div class="min-w-0 flex-1 rs-body"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3 rs-acts"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="ctOpenPicker('${st.id}')" aria-label="${appData.language==='en'?'Card template':'Mẫu thẻ'}" title="${appData.language==='en'?'Choose card template':'Chọn template thẻ'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 text-xs"><i class="fa-solid fa-palette"></i></button><button onclick="bkOpen('${st.id}')" aria-label="${appData.language==='en'?'Badge book':'Sổ huy hiệu'}" title="${appData.language==='en'?'Badge collection book':'Sổ sưu tầm huy hiệu'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs" style="position:relative"><i class="fa-solid fa-medal"></i>${window.bkNewBadgeHtml?window.bkNewBadgeHtml(st):''}</button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;}
+        function renderStudentRoster(){const box=document.getElementById('studentRosterGrid');if(!box)return;const cls=appData.classes.find(c=>c.id===appData.activeClassId);const arr=appData.students.filter(st=>st.classId===appData.activeClassId);scbUpdate(arr.length);box.className=rosterViewMode('students')==='list'?'roster-list grid grid-cols-1 gap-2 content-start':'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start';rosterViewApply('students');box.innerHTML=arr.map(st=>{return `<article class="roster-card border rounded-xl p-4 shadow-sm ${xfBdayToday(st)?'xf-bday':ctCls(st)}">${xfBdayFx(st)}${xfBdayToday(st)?'':ctFx(st)}<div class="flex items-start gap-3"><div class="roster-avatar"><span class="ra-ico" style="animation-delay:${raDelay(st.id)}">${escapeHtml(st.icon||'🎓')}</span></div><div class="min-w-0 flex-1 rs-body"><div class="font-black text-slate-800 break-words">${escapeHtml(getStudentDisplayName(st))}</div><div class="text-xs text-slate-500">${moduleText('classLabel')}: ${escapeHtml(cls?.name||'—')}</div>${xfBdayRow(st)}<div class="flex items-center justify-between gap-2 mt-3 rs-acts"><div class="flex flex-wrap items-center gap-1.5"><button onclick="openStudentProfile('${st.id}')" aria-label="${moduleText('profileDetails')}" title="${moduleText('profileDetails')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs"><i class="fa-solid fa-eye"></i></button><button onclick="openStudentProgress('${st.id}')" aria-label="${appData.language==='en'?'Progress profile':'Hồ sơ tiến độ'}" title="${appData.language==='en'?'Progress across courses':'Hồ sơ tiến độ qua các khóa học'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs"><i class="fa-solid fa-chart-line"></i></button><button onclick="openMoveStudent('${st.id}')" aria-label="${moduleText('moveClassBtn')}" title="${moduleText('moveClassBtn')}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button onclick="openEditStudentModal('${st.id}')" aria-label="${appData.language==='en'?'Edit name':'Sửa tên'}" title="${appData.language==='en'?'Edit name':'Sửa tên'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="ctOpenPicker('${st.id}')" aria-label="${appData.language==='en'?'Card template':'Mẫu thẻ'}" title="${appData.language==='en'?'Choose card template':'Chọn template thẻ'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 text-xs"><i class="fa-solid fa-palette"></i></button><button onclick="bkOpen('${st.id}')" aria-label="${appData.language==='en'?'Badge book':'Sổ huy hiệu'}" title="${appData.language==='en'?'Badge collection book':'Sổ sưu tầm huy hiệu'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs" style="position:relative"><i class="fa-solid fa-medal"></i>${window.bkNewBadgeHtml?window.bkNewBadgeHtml(st):''}</button></div><div class="pl-2 ml-1 border-l border-slate-200"><button onclick="deleteStudent('${st.id}')" aria-label="${appData.language==='en'?'Delete student':'Xóa học sinh'}" title="${appData.language==='en'?'Move to recoverable trash':'Xóa học sinh (có thể khôi phục)'}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button></div></div></div></div></article>`}).join('')||`<p class="text-sm text-slate-500">${moduleText('noStudents')}</p>`;
+            { const en=appData.language==='en', tt=en?'Add student':'Thêm học sinh'; box.insertAdjacentHTML('beforeend',`<button type="button" class="roster-add-card" onclick="openStudentModal()" title="${tt}" aria-label="${tt}"><span class="rac-plus"><i class="fa-solid fa-plus"></i></span></button>`); }}
         window.openStudentProgress=function(studentId){ensureNewModules();const st=appData.students.find(x=>String(x.id)===String(studentId));if(!st)return;window.studentProgressViewingId=String(studentId);document.getElementById('studentProgressTitle').innerText=(st.icon||'🎓')+' '+getStudentDisplayName(st)+' · '+(appData.language==='en'?'Progress profile':'Hồ sơ tiến độ');window.renderStudentProgress();showModuleModal('studentProgressModal');};
 window.closeStudentProgress=function(){hideModuleModal('studentProgressModal');};
 window.renderStudentProgress=function(){
@@ -14327,6 +15074,21 @@ window.openStudentProfile=function(studentId){
           if(!appData.luckyWheel.transactions || typeof appData.luckyWheel.transactions!=='object')appData.luckyWheel.transactions={};
           wheelMigratePrizes();
           wheelSeedShield();
+          wheelSeedRecover();
+        }
+        // Quà cố định Vé hồi chuỗi: tự thêm 1 lần vào vòng quay (màu riêng, trọng số mặc định 1, chỉnh lại trong Quản lý phần thưởng); xóa đi thì không tự thêm lại
+        function wheelSeedRecover(){
+          if(window.MX_STUDENT)return;
+          if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId)return;
+          const W=appData.luckyWheel;let item=(appData.globalShopItems||[]).find(x=>x&&x.id===RECOVER_ID);
+          if(!item){const d=DEFAULT_FIXED_ITEMS.find(x=>x.id===RECOVER_ID);if(d){item=deepCopy(d);appData.globalShopItems.push(item);}}
+          if(!item)return;
+          if(!W.recoverSeeded){
+            if(!W.prizes.some(x=>x&&x.itemId===RECOVER_ID))W.prizes.push({id:'prize_'+Date.now()+'_recover',name:getRewardName(item),weight:1,color:'#65a30d',enabled:true,order:W.prizes.length,itemId:RECOVER_ID,qty:1});
+            W.recoverSeeded=true;
+            if(!window.__recoverSeedSaving){window.__recoverSeedSaving=true;setTimeout(()=>{window.__recoverSeedSaving=false;try{saveData();}catch(e){}},600);}
+          }
+          W.prizes.forEach(x=>{if(x&&x.itemId===RECOVER_ID)x.name=getRewardName(item);});
         }
         // Quà cố định Khiên giữ chuỗi: tự thêm 1 lần vào vòng quay (trọng số mặc định 1, chỉnh lại trong Quản lý phần thưởng); xóa đi thì không tự thêm lại
         function wheelSeedShield(){
@@ -16311,7 +17073,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             pqSet(m.querySelector('#pqDef'), `${L2('Tên mặc định', 'Default name')}: ${escapeHtml(pshDef(st))}` + (pshNickRaw(st) ? `<div class="text-[11px] font-bold text-slate-500">${L2('Đang hiển thị', 'Shown as')}: ${escapeHtml(pshDisp(st))}</div>` : ''));
             pqSet(m.querySelector('#pqChips'), `<div class="pxp-m pq-m"><div class="pxp-lvbox">${L2('Cấp của pet', 'Pet level')}<strong>${lv >= 0 ? (lv + 1) + '/7' : '—'}</strong></div><div>${L2('Streak hiện tại', 'Current streak')}<strong>🔥 ${cur}</strong></div></div><div class="mt-1"><span class="pet-chip">★ ${pk}</span> <span class="pet-chip">${escapeHtml(petFormLevelName(f))}</span></div>`);
             pqSet(m.querySelector('#pqInn'), `${b.ic} ${escapeHtml(b.n[w])} ${lv >= 0 ? petLvTag(lv + 1) : '· ' + L2('Nở ở streak 5 để mở nội tại', 'Hatch at streak 5 to unlock')}`);
-            pqSet(m.querySelector('#pqStats'), stats + cntH);
+            pqSet(m.querySelector('#pqStats'), stats + (pcvPanel(st, lv) || cntH));
             pqPatch(m.querySelector('#pqSlots'), [0, 1, 2].map(i => ({ k: 's' + i, h: slotH(i) })), pqPop);
             Array.from(m.querySelectorAll('#pqSlots .pq-slot')).forEach((el, i) => el.classList.toggle('on', pqSlot === i));
             pqSet(m.querySelector('#pqRT'), `${L2('Vật phẩm đã mua', 'Purchased items')} (${owned.length})${pqSlot >= 0 ? ' · ' + L2('đang chọn ô', 'slot') + ' ' + (pqSlot + 1) : ''}`);
@@ -16591,7 +17353,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
         const petAdd = (ds, n) => { const t = new Date(ds + 'T12:00:00Z'); t.setUTCDate(t.getUTCDate() + n); return t.toISOString().slice(0, 10); };
         const petDow = ds => new Date(ds + 'T12:00:00Z').getUTCDay();
         let _petChanged = false;
-        const petP = () => { const P = appData.petBless = (appData.petBless && typeof appData.petBless === 'object') ? appData.petBless : {}; P.led = P.led || {}; P.log = P.log || []; P.recv = P.recv || {}; P.pend = (P.pend && typeof P.pend === 'object') ? P.pend : {}; return P; };
+        const petP = () => { const P = appData.petBless = (appData.petBless && typeof appData.petBless === 'object') ? appData.petBless : {}; P.led = P.led || {}; P.log = P.log || []; P.recv = P.recv || {}; P.pend = (P.pend && typeof P.pend === 'object') ? P.pend : {}; if (!P.ilog || typeof P.ilog !== 'object' || Array.isArray(P.ilog)) P.ilog = {}; return P; };
         const PET_GIFT = {
             spin: { itemId: 'fix_lucky_spin', type: 'lucky_spin', isFixed: true, vi: '1 lượt quay may mắn', en: '1 Lucky Wheel spin' },
             plus2: { itemId: 'pet_plus_2', type: 'plus', deltaScore: 2, isFixed: false, vi: 'Cộng 2 điểm', en: '+2 points' },
@@ -16611,12 +17373,152 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             pm5: { itemId: 'pet_hidden_match_le5_p1', type: 'plus_match', deltaScore: 1, matchScore: 5, matchOp: 'lte', isFixed: false, vi: 'Cộng 1 điểm vào ô từ 5 trở xuống', en: '+1 to a cell of 5 or lower' },
             pm7: { itemId: 'pet_hidden_match_le7_p1', type: 'plus_match', deltaScore: 1, matchScore: 7, matchOp: 'lte', isFixed: false, vi: 'Cộng 1 điểm vào ô từ 7 trở xuống', en: '+1 to a cell of 7 or lower' }
         });
-        const petLog = (P, st, vi, en) => { P.log.push({ d: petPd(new Date()), sid: st.id, vi: `${st.petName || getStudentDisplayName(st)} · ${PET_SP[st.petSp][0]}: ${vi}`, en: `${getStudentDisplayName(st)} · ${PET_SP[st.petSp][1]}: ${en}` }); if (P.log.length > 200) P.log.splice(0, P.log.length - 200); };
+        const petLog = (P, st, vi, en) => { try { pcvOnClaimOk(st); } catch (e) {} P.log.push({ d: petPd(new Date()), sid: st.id, vi: `${st.petName || getStudentDisplayName(st)} · ${PET_SP[st.petSp][0]}: ${vi}`, en: `${getStudentDisplayName(st)} · ${PET_SP[st.petSp][1]}: ${en}` }); if (P.log.length > 200) P.log.splice(0, P.log.length - 200); };
         const petToast = (vi, en) => { try { if (window.showAppToast) window.showAppToast(L2(vi, en), 'success'); } catch (e) {} };
         // Chúc phúc KHÔNG cộng ngay và KHÔNG báo ra màn hình: xếp hàng chờ ở thẻ thú cưng, học sinh bấm vào thẻ mới nhận quà
+
+        /* ===================== BỘ ĐẾM NỘI TẠI v2 — chỉ THEO DÕI / HIỂN THỊ =====================
+           Không đổi công thức, xác suất, phần thưởng hay điều kiện kích hoạt.
+           - Nhật ký lưu ở appData.petBless.ilog[sid] (đi cùng petBless: đã tách theo khóa học và đồng bộ như dữ liệu cũ).
+           - Chỉ ghi khi có sự kiện thật; học sinh (MX_STUDENT) và khóa lưu trữ không bao giờ ghi.
+           - Dùng đúng petCnt/sổ ghi nhận P.led/hàng chờ P.pend có sẵn làm nguồn sự thật. */
+        let _pcvPass = {}, _pcvTrig = {}, _pcvRun = false, _petClaimCur = null;
+        const _pcvOpen = {};
+        window.pcvTog = (sid, o) => { _pcvOpen[sid] = !!o; };
+        // [loại, chu kỳ(w tuần · m tháng · d ngày · '' theo sự kiện), khóa sổ ghi nhận khi kích hoạt thành công]
+        const PCV_META = [
+            ['usage', 'w', (w) => 'n:cat:' + w], ['accum', 'w', (w) => 'n:cl:' + w], ['daily', 'd'], ['daily', 'd'],
+            ['usage', ''], ['usage', ''], ['usage', 'w', (w) => 'n:moon:' + w], ['accum', 'w', (w) => 'n:ho:' + w],
+            ['usage', 'w', (w) => 'n:fx:' + w], ['usage', 'w'], ['usage', 'w', (w) => 'n:frog:' + w], ['progress', 'm'],
+            ['usage', 'w', (w) => 'n:dk:' + w], ['progress', ''], ['usage', 'w', (w) => 'n:wo:' + w], ['usage', 'w', (w) => 'n:pa:' + w],
+            ['progress', ''], ['usage', ''], ['usage', ''], ['usage', 'w', (w) => 'n:sq:' + w],
+            ['usage', ''], ['usage', ''], ['usage', ''], ['usage', ''], ['usage', ''], ['usage', ''], ['usage', ''], ['usage', ''],
+            ['progress', ''], ['daily', 'd', (w, d) => 'n:cv:' + d]
+        ];
+        const PCV_TY = { progress: ['Bộ đếm tiến độ', 'Progress'], usage: ['Bộ đếm lượt dùng', 'Usage'], accum: ['Bộ đếm tích lũy', 'Accumulation'], daily: ['Bộ đếm theo ngày', 'Daily'] };
+        const PCV_ST = { locked: ['Chưa kích hoạt', 'Not activated'], progress: ['Đang tiến triển', 'In progress'], eligible: ['Đã đủ điều kiện', 'Eligible'], triggered: ['Đã kích hoạt', 'Triggered'], claimed: ['Đã nhận thưởng', 'Reward received'], exhausted: ['Đã hết lượt', 'No uses left'], refreshed: ['Đã làm mới', 'Refreshed'] };
+        const PCV_EK = { miss: ['Không trúng', 'Not triggered'], trigger: ['Đã kích hoạt — chờ nhận', 'Triggered — waiting to be claimed'], claimed: ['Đã nhận thưởng', 'Reward received'], claim_failed: ['Trao thưởng chưa thành công', 'Reward not delivered'], progress: ['Tiến độ tăng', 'Progress up'], reset: ['Đã làm mới / đặt lại', 'Refreshed / reset'] };
+        const pcvReward = o => {
+            if (!o) return ['', ''];
+            if (o.k === 'pts') return ['+' + o.pts + ' pts' + (o.to ? ' (tặng bạn cùng lớp)' : ''), '+' + o.pts + ' pts' + (o.to ? ' (gifted to a classmate)' : '')];
+            if (o.k === 'accum') return ['Quà +' + o.amount + ' điểm tích lũy', '+' + o.amount + ' accumulated-point gift'];
+            if (o.k === 'inv') { const g = PET_GIFT[o.kind]; return g ? [o.n + ' × ' + g.vi, o.n + ' × ' + g.en] : ['Quà', 'Gift']; }
+            if (o.k === 'copy') { const nm = (o.item && o.item.name) || 'Quà'; return [o.n + ' × ' + nm, o.n + ' × ' + nm]; }
+            return ['', ''];
+        };
+        const petIlogAdd = (st, e) => {
+            try {
+                if (window.MX_STUDENT || !st || st.id === undefined || st.petSp === undefined) return null;
+                if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return null;
+                const P = petP(), a = P.ilog[st.id] = Array.isArray(P.ilog[st.id]) ? P.ilog[st.id] : [];
+                const id = e.id || ((e.k === 'miss' || e.k === 'trigger' || e.k === 'claimed' || e.k === 'claim_failed') ? e.k + '|' + (e.pid || e.key || '') : '');
+                if (id && a.some(x => x.id === id)) return null;
+                const rec = Object.assign({ t: Date.now(), d: petPd(new Date()), sp: st.petSp }, e); if (id) rec.id = id;
+                a.push(rec);
+                const MAXN = 30;
+                while (a.length > MAXN) { let k = a.findIndex(x => x.k === 'miss'); if (k < 0) k = 0; a.splice(k, 1); }
+                if (_pcvRun) (_pcvPass[st.id] = _pcvPass[st.id] || []).push(rec);
+                return rec;
+            } catch (err) { return null; }
+        };
+        const pcvOnQueue = (st, o) => {
+            if (!o) return; const rw = pcvReward(o);
+            _pcvTrig[st.id] = 1;
+            petIlogAdd(st, { k: 'trigger', pid: o.id, vi: o.vi || '', en: o.en || '', rv: rw[0], re: rw[1], b: null, a: null });
+        };
+        // Chỉ đánh dấu "đã nhận" ở đúng chỗ petLog được gọi = sau khi đã cộng pts / bỏ quà vào túi thành công.
+        const pcvOnClaimOk = st => {
+            const it = _petClaimCur; if (!it) return; it._ok = 1; const rw = pcvReward(it);
+            petIlogAdd(st, { k: 'claimed', pid: it.id, vi: it.vi || '', en: it.en || '', rv: rw[0], re: rw[1] });
+        };
+        const pcvOnClaimEnd = (st, list) => {
+            _petClaimCur = null;
+            list.forEach(it => { if (!it._ok) { const rw = pcvReward(it); petIlogAdd(st, { k: 'claim_failed', pid: it.id, vi: it.vi || '', en: it.en || '', rv: rw[0], re: rw[1] }); } });
+        };
+        // Gọi trong cntNow: ghi thay đổi tiến độ có thật và điền "trước → sau" cho các bản ghi kích hoạt của lượt chạy này.
+        const pcvOnCnt = (st, oldC, newC) => {
+            const same = oldC && newC && oldC.vi === newC.vi && Number.isFinite(+oldC.n) && Number.isFinite(+newC.n);
+            (_pcvPass[st.id] || []).forEach(r => { if (r.k === 'trigger' && r.b === null) { r.b = same ? +oldC.n : null; r.a = same ? +newC.n : null; } });
+            if (!same || +oldC.n === +newC.n) return;       // lần đầu có bộ đếm / dữ liệu cũ: chỉ lấy mốc, không tạo bản ghi giả
+            const meta = PCV_META[st.petSp] || ['usage', ''], up = +newC.n > +oldC.n; let vi, en;
+            if (up) {
+                vi = { progress: 'Ghi nhận thêm một sự kiện hợp lệ cho chuỗi', accum: 'Dữ liệu trong chu kỳ làm giá trị tích lũy tăng', daily: 'Đã dùng lượt trong ngày', usage: 'Đã dùng một lượt trong chu kỳ' }[meta[0]];
+                en = { progress: 'A valid event was recorded for the streak', accum: 'Cycle data raised the accumulated value', daily: 'Today’s use was spent', usage: 'One use was spent this cycle' }[meta[0]];
+            } else if (meta[0] === 'progress') {
+                if (_pcvTrig[st.id]) { vi = 'Đủ mốc và đã kích hoạt, bộ đếm quay về đầu'; en = 'Target reached and triggered; counter went back to the start'; }
+                else { vi = 'Chuỗi bị đứt hoặc dữ liệu đầu vào thay đổi, bộ đếm giảm'; en = 'The run was broken or input data changed; counter dropped'; }
+            } else if (meta[1]) { vi = { w: 'Sang tuần mới, bộ đếm được làm mới', m: 'Sang tháng mới, bộ đếm được làm mới', d: 'Sang ngày mới, bộ đếm được làm mới' }[meta[1]]; en = { w: 'New week: counter refreshed', m: 'New month: counter refreshed', d: 'New day: counter refreshed' }[meta[1]]; }
+            else { vi = 'Dữ liệu đầu vào thay đổi, bộ đếm giảm'; en = 'Input data changed; counter dropped'; }
+            petIlogAdd(st, { k: up ? 'progress' : 'reset', vi, en, b: +oldC.n, a: +newC.n });
+        };
+        const pcvFmtD = ds => { const m = String(ds).match(/^\d{4}-(\d{2})-(\d{2})/); return m ? m[2] + '/' + m[1] : ds; };
+        const pcvFmtT = t => { try { const d = new Date(t), p = n => String(n).padStart(2, '0'); return p(d.getDate()) + '/' + p(d.getMonth() + 1) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); } catch (e) { return ''; } };
+        const pcvModel = st => {
+            const sp = st.petSp; if (sp === undefined || !PET_SP[sp]) return null;
+            const meta = PCV_META[sp] || ['usage', ''], lv = petLv(petPeakOf(st)), cn = st.petCnt;
+            const today = petPd(new Date()), thisW = petMon(today), P = appData.petBless || {}, pend = (P.pend && P.pend[st.id]) || [];
+            const list = (P.ilog && Array.isArray(P.ilog[st.id])) ? P.ilog[st.id] : [], led = (P.led && P.led[st.id]) || {};
+            const cs = meta[1] === 'w' ? thisW : meta[1] === 'm' ? today.slice(0, 7) + '-01' : meta[1] === 'd' ? today : '';
+            const cyc = list.filter(e => !cs || e.d >= cs);
+            const hasCnt = lv >= 0 && !!cn && Number.isFinite(+cn.n) && +cn.t > 0, n = hasCnt ? +cn.n : 0, t = hasCnt ? +cn.t : 0;
+            const gk = meta[2] ? meta[2](thisW, today) : '';
+            const trig = cyc.some(e => e.k === 'trigger' || e.k === 'claimed') || !!(gk && led[gk]);
+            const failed = cyc.some(e => e.k === 'claim_failed') && !cyc.some(e => e.k === 'claimed');
+            let key;
+            if (lv < 0) key = 'locked';
+            else if (pend.length || failed) key = 'triggered';
+            else if (hasCnt && n >= t) key = trig ? 'claimed' : (meta[0] === 'usage' || meta[0] === 'daily') ? 'exhausted' : 'eligible';
+            else if (hasCnt && n > 0) key = 'progress';
+            else if (cyc.some(e => e.k === 'claimed') || (trig && !pend.length)) key = 'claimed';
+            else if (cyc.length && cyc[cyc.length - 1].k === 'reset') key = 'refreshed';
+            else key = 'locked';
+            const trigCount = list.filter(e => e.k === 'trigger').length;
+            const lastT = list.filter(e => e.k === 'trigger').slice(-1)[0];
+            return { sp, meta, lv, hasCnt, n, t, key, cs, thisW, today, list, pend, trigCount, lastT };
+        };
+        const pcvRefresh = M => {
+            const m = M.meta[1];
+            if (m === 'w') return [pcvFmtD(petAdd(M.thisW, 7)) + ' (00:00, Thứ Hai)', pcvFmtD(petAdd(M.thisW, 7)) + ' (00:00, Monday)'];
+            if (m === 'd') return [pcvFmtD(petAdd(M.today, 1)) + ' (00:00)', pcvFmtD(petAdd(M.today, 1)) + ' (00:00)'];
+            if (m === 'm') { const d = new Date(M.today + 'T12:00:00Z'); d.setUTCMonth(d.getUTCMonth() + 1, 1); return ['01/' + String(d.getUTCMonth() + 1).padStart(2, '0') + ' (00:00)', '01/' + String(d.getUTCMonth() + 1).padStart(2, '0') + ' (00:00)']; }
+            return M.meta[0] === 'progress' ? ['Không theo lịch — về đầu khi đủ mốc hoặc đứt chuỗi', 'Not scheduled — restarts at the target or when the run breaks'] : ['Không đặt lại: tính theo từng sự kiện', 'No reset: evaluated per event'];
+        };
+        const pcvPanel = (st, lv) => {
+            try {
+                const M = pcvModel(st); if (!M) return '';
+                const sp = M.sp, en = (appData.language || 'vi') === 'en', w = en ? 1 : 0, ty = PCV_TY[M.meta[0]], stt = PCV_ST[M.key];
+                const bi = lv >= 0 ? petBInfo(sp, lv, st) : null, cn = st.petCnt;
+                const name = M.hasCnt ? L2(cn.vi, cn.en) : L2('Số lần kích hoạt đã ghi nhận', 'Triggers recorded');
+                const val = M.hasCnt ? M.n + '/' + M.t : String(M.trigCount);
+                const seg = M.hasCnt && M.meta[0] !== 'accum' && Number.isInteger(M.t) && M.t >= 2 && M.t <= 8;
+                const bar = seg ? `<div class="pcv-seg ${M.key}" role="progressbar" aria-valuemin="0" aria-valuemax="${M.t}" aria-valuenow="${Math.min(M.n, M.t)}">${Array.from({ length: M.t }, (_, i) => `<span class="${i < M.n ? 'on' : ''}"></span>`).join('')}</div>`
+                    : (M.hasCnt && M.t > 1 ? `<i class="pcv-bar"><u style="width:${Math.max(0, Math.min(100, M.n / M.t * 100))}%"></u></i>` : '');
+                const cyc = { w: ['Theo tuần (Thứ Hai → Chủ nhật)', 'Weekly (Mon → Sun)'], m: ['Theo tháng', 'Monthly'], d: ['Theo ngày', 'Daily'] }[M.meta[1]] || (M.meta[0] === 'progress' ? ['Liên tục theo chuỗi', 'Running streak'] : ['Theo từng sự kiện', 'Per event']);
+                const rf = pcvRefresh(M);
+                const last = M.lastT ? L2(M.lastT.rv, M.lastT.re) + ' · ' + pcvFmtT(M.lastT.t) : L2('Chưa có (từ khi có nhật ký)', 'None yet (since the log began)');
+                const logs = M.list.slice().reverse().slice(0, 10).map(e => {
+                    const bf = (Number.isFinite(+e.b) && e.b !== null && Number.isFinite(+e.a) && e.a !== null) ? ` · <span class="pg">${L2('Tiến độ', 'Progress')} ${e.b} → ${e.a}</span>` : '';
+                    const rw = e.rv ? ` · 🎁 ${escapeHtml(L2(e.rv, e.re))}` : '';
+                    const ek = PCV_EK[e.k] || ['', ''];
+                    return `<div class="pcv-e"><span class="tm">${pcvFmtT(e.t)}</span> · <b>${escapeHtml(PET_B[e.sp] ? PET_B[e.sp].n[w] : '')}</b> — ${escapeHtml(L2(e.vi, e.en))}${bf} · <b>${escapeHtml(L2(ek[0], ek[1]))}</b>${rw}</div>`;
+                }).join('');
+                const open = _pcvOpen[st.id] ? ' open' : '';
+                return `<details class="pcv"${open} ontoggle="window.pcvTog('${String(st.id).replace(/'/g, '')}',this.open)"><summary><span class="pcv-t">${escapeHtml(name)} <b class="pcv-n">${val}</b></span><span class="pcv-ty">${L2(ty[0], ty[1])}</span><span class="pcv-st ${M.key}">${L2(stt[0], stt[1])}</span></summary>${bar}<div class="pcv-bd">` +
+                    `<div class="pcv-row"><b>${L2('Điều kiện · thưởng', 'Condition · reward')}</b><span>${bi ? bi.html : L2('Nội tại chưa mở khóa. Đạt mốc chuỗi 5 để kích hoạt.', 'Innate locked. Reach streak 5 to unlock.')}</span></div>` +
+                    `<div class="pcv-row"><b>${L2('Chu kỳ xét', 'Cycle')}</b><span>${L2(cyc[0], cyc[1])}</span></div>` +
+                    `<div class="pcv-row"><b>${L2('Làm mới', 'Refresh')}</b><span>${escapeHtml(L2(rf[0], rf[1]))}</span></div>` +
+                    `<div class="pcv-row"><b>${L2('Thưởng gần nhất', 'Latest reward')}</b><span>${escapeHtml(last)}</span></div>` +
+                    (M.pend.length ? `<div class="pcv-row"><b>${L2('Chờ nhận', 'Waiting')}</b><span>${M.pend.length} ${L2('phần thưởng — bấm vào thẻ thú cưng để nhận', 'reward(s) — tap the pet card to claim')}</span></div>` : '') +
+                    `<div class="pcv-lh">${L2('Nhật ký nội tại', 'Innate log')}</div>` +
+                    (logs ? `<div class="pcv-log">${logs}</div>` : `<div class="pcv-empty">${L2('Chưa có sự kiện nào được ghi nhận.', 'No events recorded yet.')}</div>`) +
+                    `</div></details>`;
+            } catch (e) { console.warn('pcvPanel', e); return ''; }
+        };
+
         let _petUiT = 0;
         const petQueue = (st, o) => {
             const P = petP(); (P.pend[st.id] = P.pend[st.id] || []).push(Object.assign({ id: 'pb_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), d: petPd(new Date()) }, o));
+            try { pcvOnQueue(st, P.pend[st.id][P.pend[st.id].length - 1]); } catch (e) {}
             _petChanged = true;
             clearTimeout(_petUiT);
             _petUiT = setTimeout(() => { try { if (window.petUpdateBadge) window.petUpdateBadge(); if (appData && appData.activeViewMode === 'pet' && window.renderPetView) window.renderPetView(); } catch (e) {} }, 60);
@@ -16655,7 +17557,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                 const st = (appData.students || []).find(x => x.id === sid); delete P.pend[sid];
                 if (!st || st.petSp === undefined || !PET_SP[st.petSp]) { Promise.resolve(saveData()).catch(() => {}); window.petUpdateBadge && window.petUpdateBadge(); window.renderPetView && window.renderPetView(); return; }
                 const en = (appData.language || 'vi') === 'en', parts = [];
-                list.forEach(it => {
+                list.forEach(it => { _petClaimCur = it;
                     if (it.k === 'pts') {
                         const tg = it.to ? (appData.students || []).find(x => x.id === it.to) : st; if (!tg) return;
                         tg.rewardPoints = (tg.rewardPoints || 0) + it.pts;
@@ -16690,6 +17592,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                         parts.push(`${it.n} × ${nm}`);
                     }
                 });
+                try { pcvOnClaimEnd(st, list); } catch (e) { _petClaimCur = null; }
                 try { const el = document.querySelector('#viewPetContainer .pet-card[data-sid="' + sid + '"]'); if (el && !xfRM()) { const r = el.getBoundingClientRect(); tfBurst(r.left + r.width / 2, r.top + 70, 50, 260); [659, 784, 988, 1319].forEach((f, k) => tfBeep(f, .12, .18, k * .09)); } } catch (e) {}
                 petToast(`${PET_SP[st.petSp][0]} của ${getStudentDisplayName(st)}: ${parts.join(', ')}`, `${getStudentDisplayName(st)}'s ${PET_SP[st.petSp][1]}: ${parts.join(', ')}`);
                 Promise.resolve(saveData()).catch(() => {});
@@ -16785,7 +17688,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
             if (_petBusy || !appData || !Array.isArray(appData.students)) return; _petBusy = true;
             try {
                 if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) return;
-                petApplyCfg(); const today = petPd(new Date()), thisW = petMon(today), P = petP(); _petChanged = false;
+                petApplyCfg(); const today = petPd(new Date()), thisW = petMon(today), P = petP(); _petChanged = false; _pcvPass = {}; _pcvTrig = {}; _pcvRun = true;
                 if (!P.heFrom) { P.heFrom = today; _petChanged = true; }
                 const stuC = {}, N = {}, R = {}, cnt = {}, XI = {};
                 appData.students.forEach(s => { stuC[s.id] = s.classId; N[s.classId] = (N[s.classId] || 0) + 1; });
@@ -16850,11 +17753,11 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                     return end !== null && Date.now() >= end - 5 * 60000;
                 };
                 const lastDone = (cid, w, wi) => petLastWeekReady(cid, wi.last) && dayDone(cid, wi.last);
-                const chance = (st, key, pct, fn, ok) => { const led = P.led[st.id] = P.led[st.id] || {}, rk = 'r:' + key; if (led[rk]) return; led[rk] = 1; _petChanged = true; if (ok !== false && Math.random() * 100 < pct) fn(); };
+                const chance = (st, key, pct, fn, ok) => { const led = P.led[st.id] = P.led[st.id] || {}, rk = 'r:' + key; if (led[rk]) return; led[rk] = 1; _petChanged = true; if (ok !== false && Math.random() * 100 < pct) fn(); else { try { petIlogAdd(st, { k: 'miss', key, vi: ok === false ? 'Đến lúc xét nhưng chưa đủ điều kiện' : 'Xét xác suất ' + Math.round(pct * 100) / 100 + '% — không trúng', en: ok === false ? 'Checked, but the condition was not met' : 'Rolled ' + Math.round(pct * 100) / 100 + '% — no trigger' }); } catch (e) {} } };
                 const statsOf = id => { try { const s = calculateStudentStats(id); return s && s.hasData ? s : null; } catch (e) { return null; } };
                 // Bộ đếm tiêu chí nội tại: lưu trên thẻ học sinh (st.petCnt) để cổng học sinh cũng xem được.
                 // Cổng học sinh không có Lịch học nên chỉ đọc, không tự ghi đè.
-                const cntNow = (st, o) => { if (window.MX_STUDENT) return; const a = st.petCnt ? JSON.stringify(st.petCnt) : '', b = o ? JSON.stringify(o) : ''; if (a === b) return; if (o) st.petCnt = o; else delete st.petCnt; _petChanged = true; };
+                const cntNow = (st, o) => { if (window.MX_STUDENT) return; try { pcvOnCnt(st, st.petCnt, o); } catch (e) {} const a = st.petCnt ? JSON.stringify(st.petCnt) : '', b = o ? JSON.stringify(o) : ''; if (a === b) return; if (o) st.petCnt = o; else delete st.petCnt; _petChanged = true; };
                 appData.students.forEach(st => {
                     if (st.petSp === undefined || !PET_SP[st.petSp]) { if (st.petCnt) cntNow(st, null); return; }
                     const lv = petLv(petPeakOf(st));
@@ -17002,7 +17905,7 @@ function pxGradDefs() { return pxFilt() + Object.keys(PXG.used).map(k => { const
                     cntNow(st, CN);
                 });
                 if (_petChanged) { Promise.resolve(saveData()).catch(() => {}); try { if (document.getElementById('pqModal')) pqRender(); } catch (e) {} }
-            } catch (e) { console.warn('petBlessRun', e); } finally { _petBusy = false; }
+            } catch (e) { console.warn('petBlessRun', e); } finally { _petBusy = false; _pcvRun = false; }
         };
         // Chạy lần đầu khi dữ liệu sẵn sàng; bộ hẹn giờ chỉ là lớp dự phòng.
         setTimeout(() => window.petBlessRun(), 4000);
@@ -17412,7 +18315,7 @@ html.mx-dark .gc-bar{background:#334155}
     box.innerHTML=ownHtml+`<div class="font-black text-sm">${T('Quà của từng hạng sao','Prizes per rarity')}</div>
 <div class="flex flex-wrap gap-3 items-end"><label data-no-hover class="gc-fx gc-5card text-sm font-semibold">⭐5 ${T('Trúng (LIMITED)','Win (LIMITED)')} <span class="font-normal text-slate-500">× <input id="gcLimN" type="number" min="1" max="99" step="1" value="${c.limitedN}" class="gc-qty"></span><select id="gcG5w" class="block border rounded-lg px-3 py-2 mt-1 min-w-[14rem]">${opts(w)}</select></label>
 <label data-no-hover class="gc-fx gc-5card text-sm font-semibold">⭐5 ${T('Lệch','Lose 50/50')} <span class="font-normal text-slate-500">× <input id="gcStdN" type="number" min="1" max="99" step="1" value="${c.standardN}" class="gc-qty"></span><select id="gcG5l" class="block border rounded-lg px-3 py-2 mt-1 min-w-[14rem]">${opts(l)}</select></label></div>
-<div><div class="text-sm font-semibold mb-1.5">⭐4 — ${T('chọn tối đa 5 quà (trúng ngẫu nhiên 1 trong số đã chọn)','pick up to 5 gifts (one is drawn at random)')} <span id="gcCnt4" class="gc-chip gc-c4">${i4.length}/5</span></div>${chk('p4',i4,5)}</div>
+<div><div class="text-sm font-semibold mb-1.5">⭐4 — ${T('chọn tối đa 10 quà (trúng ngẫu nhiên 1 trong số đã chọn)','pick up to 10 gifts (one is drawn at random)')} <span id="gcCnt4" class="gc-chip gc-c4">${i4.length}/10</span></div>${chk('p4',i4,10)}</div>
 <div><div class="text-sm font-semibold mb-1.5">⭐3 — ${T('chọn tối đa 10 quà (trúng ngẫu nhiên 1 trong số đã chọn)','pick up to 10 gifts (one is drawn at random)')} <span id="gcCnt3" class="gc-chip gc-c3">${i3.length}/10</span></div>${chk('p3',i3,10)}</div>`;}
   window.gcRefresh=function(){const box=$('gcGiftCfg');let keep=null;
     if(box&&box.children.length&&$('gcG5w')){keep={p4:picked('p4'),p3:picked('p3'),w:$('gcG5w').value,l:$('gcG5l').value,ln:$('gcLimN').value,sn:$('gcStdN').value};}
@@ -17422,7 +18325,7 @@ html.mx-dark .gc-bar{background:#334155}
       if($('gcG5w')&&Array.from($('gcG5w').options).some(o=>o.value===keep.w))$('gcG5w').value=keep.w;
       if($('gcG5l')&&Array.from($('gcG5l').options).some(o=>o.value===keep.l))$('gcG5l').value=keep.l;
       if($('gcLimN')&&keep.ln)$('gcLimN').value=keep.ln;if($('gcStdN')&&keep.sn)$('gcStdN').value=keep.sn;
-      if($('gcCnt4'))$('gcCnt4').textContent=picked('p4').length+'/5';if($('gcCnt3'))$('gcCnt3').textContent=picked('p3').length+'/10';}
+      if($('gcCnt4'))$('gcCnt4').textContent=picked('p4').length+'/10';if($('gcCnt3'))$('gcCnt3').textContent=picked('p3').length+'/10';}
     renderGachaView();};
   const picked=n=>Array.from(document.querySelectorAll('#gcGiftCfg input[data-g="'+n+'"]:checked')).map(x=>x.value);
   window.clearGachaHistory=async function(){if(busy)return;const st=cur();if(!st)return;
@@ -17434,7 +18337,7 @@ html.mx-dark .gc-bar{background:#334155}
   window.saveGachaCfg=function(){const c=G().cfg;
     if($('gcGiftCfg')&&$('gcGiftCfg').children.length){const p4=picked('p4'),p3=picked('p3');
       if(!p4.length||!p3.length){toast(T('Mỗi hạng 4★ và 3★ cần chọn ít nhất 1 quà.','Pick at least 1 gift for both 4★ and 3★.'),'error');return;}
-      c.p4=p4.slice(0,5);c.p3=p3.slice(0,10);c.g5w=$('gcG5w').value;c.g5l=$('gcG5l').value;
+      c.p4=p4.slice(0,10);c.p3=p3.slice(0,10);c.g5w=$('gcG5w').value;c.g5l=$('gcG5l').value;
       const cl=(v,d)=>Math.min(99,Math.max(1,parseInt(v)||d));c.limitedN=cl($('gcLimN').value,GD.limitedN);c.standardN=cl($('gcStdN').value,GD.standardN);}
     c.cost=Math.max(1,parseInt($('gcCost').value)||GD.cost);c.hard5=Math.min(200,Math.max(10,parseInt($('gcHard').value)||GD.hard5));saveData();renderGachaView();renderGiftCfg();toast(T('Đã lưu cấu hình hộp quà.','Mystery box settings saved.'),'success');};
 
@@ -17568,7 +18471,7 @@ html.mx-dark .gc-bar{background:#334155}
   function wire(){const sel=$('gcSel');if(!sel||sel.dataset.w)return;sel.dataset.w=1;
     sel.onchange=e=>{selId=e.target.value;selSig='';stageIdle();renderGachaView();};
     $('gcGiftCfg').addEventListener('change',e=>{const t=e.target;if(!t||!t.matches||!t.matches('input[data-g]'))return;
-      const g=t.dataset.g,max=g==='p4'?5:10,n=picked(g).length;
+      const g=t.dataset.g,max=10,n=picked(g).length;
       if(n>max){t.checked=false;toast(T('Tối đa '+max+' quà cho hạng này.','Maximum '+max+' gifts for this rarity.'),'error');}
       const k=g==='p4'?'gcCnt4':'gcCnt3';$(k).textContent=picked(g).length+'/'+max;});
     $('gcInfoToggle').onclick=()=>{infoOpen=!infoOpen;applyInfo();};
@@ -17744,6 +18647,16 @@ html.mx-dark .gc-bar{background:#334155}
                 if (!appData.petHab || typeof appData.petHab !== 'object') appData.petHab = {};
                 { const prev = appData.petHab[st.id]; if (prev && prev.s) r.h.s = prev.s; } appData.petHab[st.id] = r.h;
                 okMsg = L2('Đã lưu khu sinh sống mới.', 'Habitat saved.');
+            } else if (a.type === 'srUse') {
+                const oldSr = st.sr === undefined ? undefined : deepCopy(st.sr), oldInv = st.inventory === undefined ? undefined : deepCopy(st.inventory);
+                const rvSr = () => { if (oldSr === undefined) delete st.sr; else st.sr = oldSr; if (oldInv === undefined) delete st.inventory; else st.inventory = oldInv; };
+                try { srSync(); } catch (e) {}
+                const r = srUseCore(st, String(p.ev || '')); if (!r.ok) { rvSr(); return no(r.msg); }
+                undo = rvSr; okMsg = r.msg;
+            } else if (a.type === 'srBuy') {
+                const snapSt = deepCopy(st);
+                const r = srBuyCore(st); if (!r.ok) return no(r.msg);
+                undo = () => { Object.keys(st).forEach(k => delete st[k]); Object.assign(st, snapSt); }; okMsg = r.msg;
             } else {
                 return no(L2('Yêu cầu không được hỗ trợ.', 'Unsupported request.'));
             }
@@ -18080,7 +18993,7 @@ html.mx-dark .gc-bar{background:#334155}
                     '<section class="mxh-card"><div class="mxh-h"><span><i class="fa-solid fa-paw"></i>' + L2('Thú cưng của tôi', 'My pet') + '</span><span class="mxh-chip gold">' + L2('Cấp ', 'Level ') + (f - 1) + '</span></div>' +
                     '<div class="mxh-stage' + petBgCls(st) + '" onclick="mxStuTab(\'mypet\')" title="' + L2('Mở cửa hàng thú cưng', 'Open the pet shop') + '">' + art + '</div>' +
                     '<div class="mt-3 flex items-center justify-between gap-2"><div class="min-w-0"><div class="font-black text-slate-800 break-words">' + E(pname) + '</div><div class="text-xs text-slate-500 mt-0.5">' + L2('Chuỗi hiện tại: ', 'Current streak: ') + inf.cur + ' 🔥 · ' + L2('Kỷ lục: ', 'Record: ') + inf.best + '</div></div><span class="mxh-chip ' + (inf.cur > 0 ? 'ok' : 'off') + '">' + (inf.cur > 0 ? L2('Đang hoạt động', 'Active') : L2('Chưa hoạt động', 'Inactive')) + '</span></div>' +
-                    '<div class="mxh-bar mt-3"><i style="width:' + pct + '%"></i></div><div class="text-[11px] text-slate-500 mt-1">' + (nxt ? L2('Mốc tiến hóa tiếp theo: ', 'Next milestone: ') + nxt : L2('Đã đạt dạng cuối!', 'Final form reached!')) + '</div>' + passive +
+                    '<div class="mxh-bar mt-3"><i style="width:' + pct + '%"></i></div><div class="text-[11px] text-slate-500 mt-1">' + (nxt ? L2('Mốc tiến hóa tiếp theo: ', 'Next milestone: ') + nxt : L2('Đã đạt dạng cuối!', 'Final form reached!')) + '</div>' + passive + (function () { try { return has ? pcvPanel(st, petLv(pk)) : ''; } catch (e) { return ''; } })() +
                     '<div class="flex flex-wrap gap-1.5 mt-2">' + equip + '</div><button type="button" class="mxh-btn" onclick="mxStuTab(\'mypet\')"><i class="fa-solid fa-store mr-1"></i>' + L2('Cửa hàng thú cưng', 'Pet shop') + '</button></section>' +
                     '<section class="mxh-card"><div class="mxh-h"><span><i class="fa-solid fa-file-pen"></i>' + L2('Kiểm tra cuối kỳ', 'Final exam') + '</span><button type="button" class="mxh-chip" onclick="mxStuTab(\'finalExam\')">' + L2('Hạng ', 'Rank ') + exRank + '</button></div><div class="mxh-ex">' + exCells + '</div></section>' +
                   '</div>' +
@@ -18811,12 +19724,11 @@ html.mx-dark .gc-bar{background:#334155}
         // Vị trí giữa bảng mô tả: đang thám hiểm / đã thám hiểm thành công + thu hoạch (có hiệu ứng)
         function pxpStatus(st, z, run, here, pr, last) {
             if (here) {
-                const pct = Math.round(Math.min(1, pr.done / run.need) * 100), ready = pr.done >= run.need, ev = pr.done > 0 ? z.ev[(pr.done - 1 + run.id.charCodeAt(run.id.length - 1)) % z.ev.length] : null;
+                const pct = Math.round(Math.min(1, pr.done / run.need) * 100), ready = pr.done >= run.need;
                 return `<div class="pxp-st run"><div class="pxp-st-h"><span class="pxp-compass">🧭</span><b>${L2('Đang thám hiểm', 'Exploring')}</b><span class="pxp-dots"><i></i><i></i><i></i></span></div>
                     <div class="pxp-bar"><div class="pxp-bar-f" style="width:${pct}%"></div></div>
                     <div class="pxp-st-n"><b>${pr.done}</b>/${run.need} <span>${L2('buổi học hợp lệ', 'valid lessons')}</span></div>
-                    <ul class="pxp-facts"><li>🕒 ${L2('Bắt đầu', 'Started')}: <b>${pxpTime(run.t0)}</b></li>${run.f ? `<li>📍 ${L2('Buổi đầu được tính', 'First counted lesson')}: <b>${pxpFmt(run.f)}</b></li>` : ''}<li>${ready ? L2('✅ Đã đủ buổi — đang chờ chốt kết quả…', '✅ All lessons done — awaiting the result…') : pr.next ? '📅 ' + L2('Buổi kế tiếp', 'Next lesson') + ': <b>' + pxpFmt(pr.next) + '</b>' : '📅 ' + L2('Đang chờ buổi học kế tiếp', 'Waiting for the next lesson')}</li></ul>
-                    ${ev ? `<div class="pxp-ev">💬 ${pxpEsc(L2(ev[0], ev[1]))}</div>` : ''}</div>`;
+                    <ul class="pxp-facts"><li>🕒 ${L2('Bắt đầu', 'Started')}: <b>${pxpTime(run.t0)}</b></li>${run.f ? `<li>📍 ${L2('Buổi đầu được tính', 'First counted lesson')}: <b>${pxpFmt(run.f)}</b></li>` : ''}<li>${ready ? L2('✅ Đã đủ buổi — đang chờ chốt kết quả…', '✅ All lessons done — awaiting the result…') : pr.next ? '📅 ' + L2('Buổi kế tiếp', 'Next lesson') + ': <b>' + pxpFmt(pr.next) + '</b>' : '📅 ' + L2('Đang chờ buổi học kế tiếp', 'Waiting for the next lesson')}</li></ul></div>`;
             }
             if (run) return '';
             if (last) {
@@ -18843,7 +19755,9 @@ html.mx-dark .gc-bar{background:#334155}
             const pr = here ? pxpProgress(st, run) : null, last = !run ? pxpLast(st, z.id) : null;
             let act;
             if (here) {
-                act = `<button class="pxp-ghost" onclick="pxpRecall()">↩ ${L2('Gọi thú về', 'Recall pet')}</button><div class="pxp-fine">${L2('Chỉ tính buổi học theo Lịch học và Timeline (đã kết thúc, không tính ngày nghỉ).', 'Only lessons from the schedule and Timeline count (ended, rest days excluded).')}</div>`;
+                const ev = pr && pr.done > 0 ? z.ev[(pr.done - 1 + run.id.charCodeAt(run.id.length - 1)) % z.ev.length] : null;
+                act = `<button class="pxp-ghost" onclick="pxpRecall()">↩ ${L2('Gọi thú về', 'Recall pet')}</button><div class="pxp-fine">${L2('Chỉ tính buổi học theo Lịch học và Timeline (đã kết thúc, không tính ngày nghỉ).', 'Only lessons from the schedule and Timeline count (ended, rest days excluded).')}</div>`
+                    + (ev ? `<div class="pxp-evx"><span class="pxp-evx-i" aria-hidden="true">💬</span><p class="pxp-evx-t">${pxpEsc(L2(ev[0], ev[1]))}</p></div>` : '');
             } else if (run) {
                 const oz = pxpZ(run.z);
                 act = `<div class="pxp-note">${L2('Học sinh đang thám hiểm tại ', 'This student is exploring ')}<b>${oz.ic} ${pxpEsc(pxpNm(oz))}</b>.</div><button class="pxp-go wide" onclick="pxpOpen('${oz.id}')">${L2('Xem chuyến đi', 'View the trip')}</button>`;
@@ -20295,8 +21209,13 @@ html.mx-dark #scoreMatrix .score-row:hover > td.grid-cell.cell-rest,html.mx-dark
 .ctl-clock{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:800;font-size:.78rem;color:#475569;background:#f1f5f9;border-radius:999px;padding:.15rem .6rem}
 .ctl-toggle{border:1px solid #cbd5e1;background:#fff;color:#475569;border-radius:999px;width:1.7rem;height:1.7rem;font-size:.7rem;cursor:pointer;transition:.15s}
 .ctl-toggle:hover{background:#eef2ff;color:#4338ca;border-color:#a5b4fc}
-.ctl-body{margin-top:.55rem;display:flex;flex-direction:column;gap:.55rem}
-.ctl-panel.collapsed .ctl-body{display:none}
+/* Thu gọn / mở rộng: y hệt tốc độ của "Cài đặt quà thám hiểm" và "Danh mục vật phẩm" (0.4s ease) */
+.ctl-bw{display:grid;grid-template-rows:1fr;opacity:1;margin-top:.55rem;transition:grid-template-rows .4s ease,opacity .3s ease,margin-top .4s ease}
+.ctl-body{min-height:0;overflow:hidden;padding:.1rem;display:flex;flex-direction:column;gap:.55rem}
+.ctl-panel.collapsed .ctl-bw{grid-template-rows:0fr;opacity:0;margin-top:0}
+.ctl-panel.collapsed .ctl-body{visibility:hidden;transition:visibility 0s .4s}
+@media (prefers-reduced-motion:reduce){.ctl-bw{transition:none}}
+html.fx-off-ui .ctl-bw,html.fx-off-all .ctl-bw{transition:none!important}
 .ctl-card{--c:#6366f1;position:relative;border-radius:.8rem;padding:.6rem .8rem .5rem;background:color-mix(in srgb,var(--c) 7%,#fff);border:1px solid color-mix(in srgb,var(--c) 35%,#fff);border-left:5px solid var(--c)}
 .ctl-card-top{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem}
 .ctl-name{font-weight:900;font-size:.95rem;color:var(--c);filter:brightness(.82)}
@@ -20359,7 +21278,7 @@ html.mx-dark .ctl-chips .ctl-chip.live{color:#fff;background:var(--c)}
  var WARN_LEFT=10;                // còn <= 10 phút: cảnh báo "sắp hết giờ"
  var SOON_BEFORE=15;              // <= 15 phút trước giờ học: cảnh báo "sắp vào lớp"
  var LOOKAHEAD_DAYS=7;
- var panel=null,matrixBox=null,collapsed=false,lastHtml='';
+ var panel=null,matrixBox=null,collapsed=false,lastHtml='',anim=null;
  try{collapsed=localStorage.getItem('mxTimelineCollapsed')==='1';}catch(e){}
 
  var T={
@@ -20502,9 +21421,9 @@ html.mx-dark .ctl-chips .ctl-chip.live{color:#fff;background:var(--c)}
   }
   var clock=t.wd[now.getDay()]+' · '+hm(now)+':'+pad(now.getSeconds());
   return '<div class="ctl-head"><span class="ctl-title"><i class="fa-solid fa-hourglass-half"></i>'+t.title+'</span>'+
-   '<span class="ctl-clock">'+clock+'</span>'+
-   '<button type="button" class="ctl-toggle" title="'+t.collapse+'" aria-label="'+t.collapse+'" onclick="window.__ctlToggle()"><i class="fa-solid fa-chevron-'+(collapsed?'up':'down')+'"></i></button></div>'+
-   '<div class="ctl-body">'+body+'</div>';
+   '<button type="button" class="ctl-toggle" title="'+t.collapse+'" aria-label="'+t.collapse+'" onclick="window.__ctlToggle()"><i class="fa-solid fa-chevron-'+(collapsed?'up':'down')+'"></i></button>'+
+   '<span class="ctl-clock">'+clock+'</span></div>'+
+   '<div class="ctl-bw"><div class="ctl-body">'+body+'</div></div>';
  }
  function syncVisibility(){
   if(!panel||!matrixBox)return false;
@@ -20522,14 +21441,50 @@ html.mx-dark .ctl-chips .ctl-chip.live{color:#fff;background:var(--c)}
  function tick(){
   if(!panel)return;
   if(!syncVisibility()||document.hidden)return;
+  if(anim)return;
   panel.classList.toggle('collapsed',collapsed);
   var html;try{html=build();}catch(e){console.warn('class timeline',e);return;}
   if(html!==lastHtml){lastHtml=html;panel.innerHTML=html;}
  }
+ /* ---- Mở rộng: body trượt xuống mượt + trang tự cuộn theo; thu gọn: trượt lên mượt (không còn giật) ---- */
+ function scrollerOf(){
+  var el=panel.parentElement;
+  while(el&&el!==document.body&&el!==document.documentElement){
+   var oy=getComputedStyle(el).overflowY;
+   if((oy==='auto'||oy==='scroll')&&el.scrollHeight>el.clientHeight+1)return el;
+   el=el.parentElement;
+  }
+  return null;
+ }
+ function revealPanel(){
+  // cuộn (tức thời, mỗi khung hình) vừa đủ để mép dưới timeline luôn nằm trong màn hình
+  var sc=scrollerOf(),r=panel.getBoundingClientRect(),pad=16;
+  var vb=sc?sc.getBoundingClientRect().bottom:window.innerHeight;
+  var d=r.bottom-(vb-pad);
+  if(d<=0)return;
+  d=Math.min(d,r.top-8);            // không cuộn quá làm mất mép trên của timeline
+  if(d<=0)return;
+  if(sc)sc.scrollTop+=d;else window.scrollBy({top:d,left:0,behavior:'instant'});
+ }
+ function startFollow(expand){
+  if(anim)cancelAnimationFrame(anim.raf);
+  panel.style.overflow='hidden';                    // tránh thanh cuộn nháy trong lúc trượt
+  var t0=performance.now();anim={raf:0};
+  function f(t){
+   if(!anim)return;
+   if(expand)revealPanel();                         // mở: trang tự trượt xuống theo mép dưới timeline
+   if(t-t0<480){anim.raf=requestAnimationFrame(f);}
+   else{panel.style.overflow='';anim=null;}
+  }
+  anim.raf=requestAnimationFrame(f);
+ }
  window.__ctlToggle=function(){
   collapsed=!collapsed;
   try{localStorage.setItem('mxTimelineCollapsed',collapsed?'1':'0');}catch(e){}
-  lastHtml='';tick();
+  var ic=panel.querySelector('.ctl-toggle i');
+  if(ic)ic.className='fa-solid fa-chevron-'+(collapsed?'up':'down');
+  panel.classList.toggle('collapsed',collapsed);    // CSS transition lo phần trượt (cùng tốc độ các mục mở rộng khác)
+  startFollow(!collapsed);
  };
  function init(){
   panel=document.getElementById('classTimelinePanel');
