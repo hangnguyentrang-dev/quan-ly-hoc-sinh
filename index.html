@@ -4794,6 +4794,16 @@ html.mx-dark .svd-input{background:#0f172a;border-color:#9f1239;color:#fecdd3}
 #addViolationModal .svd-preset:hover{transform:none;box-shadow:0 0 0 2px rgba(244,63,94,.28)}
 #addViolationModal .svd-preset:active{background:#fecdd3}
 </style>
+<style id="patch-2026-11-03-gt-scroll">
+/* Trao đổi quà: danh sách quà tự cuộn, hai nút Trao đổi / Tặng luôn nằm cố định ở đáy cửa sổ */
+.gt-win>.gt-list{flex:1 1 auto;flex-shrink:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.gt-win>.gt-h,.gt-win>.gt-foot{flex:0 0 auto}
+.gt-win>.gt-foot{background:inherit;box-shadow:0 -6px 12px -8px rgba(15,23,42,.18)}
+.gt-list::-webkit-scrollbar{width:8px}
+.gt-list::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:9999px}
+.gt-list::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+html.mx-dark .gt-list::-webkit-scrollbar-thumb{background:#475569}
+</style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
 
