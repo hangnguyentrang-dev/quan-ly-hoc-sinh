@@ -5078,7 +5078,7 @@ html.mx-dark .gt-list::-webkit-scrollbar-thumb{background:#475569}
                     <i class="fa-solid fa-users"></i> <span class="hdr-label" data-i18n="btnGroup">Ghép Nhóm</span>
                 </button>
                 <span class="hidden md:block h-6 w-px bg-indigo-400/50 mx-1"></span>
-                <button onclick="undoLastAction()" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5" title="Hoàn tác thao tác gần nhất trong phiên hiện tại" data-i18n-title="undoTitle">
+                <button onclick="openUndoPicker()" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center gap-1.5" title="Hoàn tác hệ thống về một mốc trong lịch sử chỉnh sửa" data-i18n-title="undoTitle">
                     <i class="fa-solid fa-rotate-left"></i> <span class="hdr-label" data-i18n="btnUndo">Hoàn tác</span>
                 </button>
                 <!-- Utilities dropdown -->
@@ -6202,7 +6202,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 btnResetScores: "Xóa Điểm Lớp Này",
                 btnImport: "Nhập Dữ Liệu",
                 darkTitle: "Chế độ tối / sáng", btnUndo: "Hoàn tác", btnRestoreStudents: "Khôi Phục", btnBackup: "Sao lưu dữ liệu", btnRestoreData: "Phục hồi dữ liệu",
-                undoTitle: "Hoàn tác thao tác gần nhất trong phiên hiện tại", restoreStudentsTitle: "Khôi phục học sinh đã xóa", backupTitle: "Tải bản sao lưu dữ liệu ra file JSON",
+                undoTitle: "Hoàn tác hệ thống về một mốc trong lịch sử chỉnh sửa", restoreStudentsTitle: "Khôi phục học sinh đã xóa", backupTitle: "Tải bản sao lưu dữ liệu ra file JSON",
                 lblCourse: "Khóa Học:",
                 lblStartMonth: "Tháng Bắt Đầu:",
                 lblSpeakingLimit: "Hệ số phát biểu (Mốc M):",
@@ -6381,7 +6381,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 btnResetScores: "Reset Class Scores",
                 btnImport: "Import Data",
                 darkTitle: "Dark / light mode", btnUndo: "Undo", btnRestoreStudents: "Restore", btnBackup: "Back Up Data", btnRestoreData: "Restore Data",
-                undoTitle: "Undo the most recent action in this session", restoreStudentsTitle: "Restore deleted students", backupTitle: "Download a JSON data backup",
+                undoTitle: "Roll the whole system back to a point in the edit history", restoreStudentsTitle: "Restore deleted students", backupTitle: "Download a JSON data backup",
                 lblCourse: "Course Length:",
                 lblStartMonth: "Start Month:",
                 lblSpeakingLimit: "Speaking Ratio (Limit M):",
@@ -6702,7 +6702,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         let lastPersistedSnapshot = null;
         let ehBase = null; // mốc dữ liệu đã ghi vào Lịch sử chỉnh sửa
         let suppressUndoCapture = false;
-        const MAX_UNDO_HISTORY = 20;
+        const MAX_UNDO_HISTORY = 40;
 
         // Hàm dịch động Tên Quà Tặng
         function getRewardName(item) {
@@ -6943,6 +6943,20 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const after = parseFloat(afterScore);
             if (Number.isFinite(before) && Number.isFinite(after) && before < 10 && after < 10) {
                 flag.giftStreakOrig = { v: before, ts: cell.ts || null, keep: !!cell.keep };
+            } else if (Number.isFinite(before) && Number.isFinite(after) && before < 10 && after >= 10 && cell && !cell.sg) {
+                // FIX: quà nâng ô CŨ (<10) lên 10 phải để lại điểm cũ ở ĐÚNG CHỖ CŨ trong chuỗi (editOrig = ghost) ngay lúc áp quà,
+                // không phụ thuộc vào việc so sánh với ảnh chụp lần lưu trước (nếu lệch thì mất ghost -> điểm đứt chuỗi biến mất -> chuỗi nhảy vọt, vd 2 -> 15).
+                const go = cell.giftStreakOrig && typeof cell.giftStreakOrig === 'object' && !isNaN(parseFloat(cell.giftStreakOrig.v)) ? cell.giftStreakOrig : null;
+                const bv = go ? parseFloat(go.v) : before;
+                if (bv < 10) {
+                    // ts cũ: ưu tiên mốc gốc đã lưu (sau khi hoàn tác cell.ts có thể là ts của lần áp quà trước, không phải ts gốc)
+                    const oldTs = (go && go.ts) || (cell.editOrig && cell.editOrig.ts) || cell.ts || null;
+                    flag.editOrig = { v: bv, ts: oldTs, keep: go ? !!go.keep : !!cell.keep };
+                    // Khi đã chuyển điểm gốc sang editOrig, không giữ giftStreakOrig nữa.
+                    // Nếu giữ cả hai, tenSeries có thể ưu tiên giftStreakOrig và bỏ qua điểm 10 mới.
+                    flag.giftStreakOrig = null;
+                    flag.ts = Date.now(); // điểm 10 mới nằm ở CUỐI chuỗi (+1), điểm cũ ở lại chỗ cũ nhờ editOrig
+                }
             }
             return flag;
         }
@@ -9142,7 +9156,9 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             try { sgEnforce(); stampScoreTimes(); updateTenRecords(); try { srSync(); } catch (e) { console.warn('srSync skipped:', e); } sgSync(); } catch (e) { console.warn('stampScoreTimes skipped:', e); }
             try { ehRecord(); } catch (e) { console.warn('ehRecord skipped:', e); }
             // Ghi lại trạng thái đã lưu gần nhất trước khi thay đổi, để có thể hoàn tác.
-            if (!suppressUndoCapture && lastPersistedSnapshot && JSON.stringify(lastPersistedSnapshot) !== JSON.stringify(appData)) {
+            // Lượt quay may mắn ghi thẳng lên Firebase và đã tự lưu bản chụp TRƯỚC lượt quay: lần lưu kế tiếp (ghi nhận lịch sử / thú cưng) gộp chung vào bước hoàn tác đó
+            const _mergeSpin = window.__undoMergeUntil && Date.now() < window.__undoMergeUntil; window.__undoMergeUntil = 0;
+            if (!suppressUndoCapture && !_mergeSpin && lastPersistedSnapshot && JSON.stringify(lastPersistedSnapshot) !== JSON.stringify(appData)) {
                 undoHistory.push(deepCopy(lastPersistedSnapshot));
                 if (undoHistory.length > MAX_UNDO_HISTORY) undoHistory.shift();
             }
@@ -9307,23 +9323,25 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             Object.keys(c.gen).forEach(k => { if (b.gen[k] !== c.gen[k]) push({ c: 'other', k: 'gen', x: k }); });
             return out;
         }
+        function ehNextSv() { const n = Math.max(Date.now(), (window.__ehSvLast || 0) + 1); window.__ehSvLast = n; return n; }
         function ehAppend(list) {
             if (!list.length) return false;
             if (!Array.isArray(appData.editHistory)) appData.editHistory = [];
             const H = appData.editHistory;
+            const sv = ehNextSv(); // mã lần lưu: dùng để hoàn tác về đúng mốc này
             const ents = list.length > 60 ? [{ ts: Date.now(), c: 'other', k: 'bulk', n: list.length }] : list;
             ents.forEach(e => {
                 if (EH_MERGE.has(e.k)) {
                     for (let i = H.length - 1; i >= 0 && i >= H.length - 6; i--) {
                         const p = H[i];
                         if (p.k === e.k && p.sid === e.sid && (p.x || '') === (e.x || '') && e.ts - p.ts < 120000) {
-                            if (e.b !== undefined) p.b = e.b; p.ts = e.ts;
+                            if (e.b !== undefined) p.b = e.b; p.ts = e.ts; p.sv = sv;
                             if (p.a !== undefined && p.a === p.b && p.k !== 'cls_rename') H.splice(i, 1);
                             return;
                         }
                     }
                 }
-                H.push(e);
+                e.sv = sv; H.push(e);
             });
             if (H.length > EH_MAX) H.splice(0, H.length - EH_MAX);
             return true;
@@ -9730,24 +9748,283 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const msg = appData.language === 'en' ? 'Undo the most recent saved change?' : 'Hoàn tác thay đổi đã lưu gần nhất?';
             if (!await showAppConfirm(msg)) return;
             const previous = undoHistory.pop();
-            // Spin transactions are audit records and must never be rolled back by generic Undo.
-            const protectedWheel = deepCopy(appData.luckyWheel || {prizes:[],history:[],transactions:{}});
-            const protectedEh = deepCopy(appData.editHistory || []); // Lịch sử chỉnh sửa không bị hoàn tác
+            // Chỉ Lịch sử chỉnh sửa được giữ nguyên (nhật ký). Vòng quay may mắn, quà chuỗi, ô điểm 10 chuỗi đã dùng và thú cưng
+            // đều lùi cùng bản chụp trước đó nên hoàn tác được trọn vẹn, không bị lệch với điểm / túi quà.
+            const protectedEh = deepCopy(appData.editHistory || []);
             window.__ehTag = 'undo';
-            const protectedSg = appData.sgLedger ? deepCopy(appData.sgLedger) : null;
-            let sgBeforeAll = null; try { sgBeforeAll = sgSnap(); } catch (e) {}
             suppressUndoCapture = true;
             appData = deepCopy(previous);
-            appData.luckyWheel = protectedWheel;
             appData.editHistory = protectedEh;
-            // Quà Streak (quà, ô điểm quà, trạng thái chuỗi) không bị hoàn tác
-            if (protectedSg) appData.sgLedger = protectedSg;
-            try { sgTrimChains(null, sgBeforeAll); sgEnforce(); } catch (e) { console.warn('sgEnforce skipped:', e); }
+            try { sgEnforce(); } catch (e) { console.warn('sgEnforce skipped:', e); }
             if (sessionViewMode) appData.activeViewMode = sessionViewMode;
             renderClassTabs(); renderCurrentView();
             saveData().then(ok => {
                 if (ok) { renderClassTabs(); renderCurrentView(); alert(appData.language === 'en' ? 'Last change undone.' : 'Đã hoàn tác thao tác gần nhất.'); }
             });
+        };
+
+        /* ===== Hoàn tác hệ thống về một mốc trong Lịch sử chỉnh sửa =====
+           Mỗi lần lưu, các dòng lịch sử được gắn "sv" (mã lần lưu). undoHistory giữ bản chụp trước mỗi lần lưu (chỉ trong phiên hiện tại).
+           Trạng thái "ngay sau dòng có sv = S" = bản chụp ĐẦU TIÊN có dòng lịch sử mới nhất mang sv = S.
+           Hoàn tác được: điểm, quà, vòng quay may mắn, quà Streak + ô điểm 10 chuỗi đã dùng, thú cưng. Không hoàn tác: chính Lịch sử chỉnh sửa. */
+        let upSel = null, upSelText = '', upLimit = 120, upRolled = null, upBusy = false;
+        function upMaxSv(d) { const H = d && d.editHistory; let m = null; if (Array.isArray(H)) for (const e of H) if (e && typeof e.sv === 'number' && (m === null || e.sv > m)) m = e.sv; return m; }
+        function upTargets() { const map = new Map(); undoHistory.forEach((sn, i) => { const m = upMaxSv(sn); if (m !== null && !map.has(m)) map.set(m, i); }); return map; }
+        /* --- Hoàn tác bằng cách ĐẢO NGƯỢC lịch sử chỉnh sửa (dùng khi mốc không còn bản chụp, ví dụ sau khi tải lại trang) ---
+           Lịch sử chỉnh sửa được lưu cùng dữ liệu nên mốc vẫn chọn được ở phiên sau. Hệ thống đi ngược từ thao tác mới nhất về mốc đã chọn,
+           trả lại điểm, quà và điểm thưởng. Chỉ khả dụng khi MỌI thao tác sau mốc đó đều đảo ngược được. */
+        const UP_REV_OK = new Set(['score_add', 'score_edit', 'score_del', 'score_abs', 'pts', 'gift_tin', 'gift_tout', 'gift_get', 'gift_buy', 'gift_out', 'gift_spin', 'gift_streak', 'wheel_spin']);
+        let upRevSet = new Set();
+        function upRevOne(e) {
+            if (!e || !UP_REV_OK.has(e.k)) return false;
+            if (e.k.indexOf('score_') === 0 && (!e.sid || !e.d)) return false;
+            if (e.k === 'pts' && (e.sid === undefined || e.a === undefined)) return false;
+            return true;
+        }
+        function upRevTargets() {
+            const H = Array.isArray(appData.editHistory) ? appData.editHistory : [], by = new Map();
+            H.forEach(e => { if (e && typeof e.sv === 'number') { if (!by.has(e.sv)) by.set(e.sv, []); by.get(e.sv).push(e); } });
+            const svs = Array.from(by.keys()).sort((a, b) => b - a), set = new Set();
+            let ok = true;
+            for (const sv of svs) { if (ok) set.add(sv); ok = ok && by.get(sv).every(upRevOne); if (!ok) break; }
+            return set;
+        }
+        // Sau khi đảo ngược từ lịch sử: đặt lại các mốc "đã thấy" của thú cưng theo dữ liệu hiện tại, để việc lùi chuỗi / cấp / điểm TB
+        // không bị thú cưng tính nhầm thành sự kiện mới (Phượng Hoàng tái sinh, Linh Hầu lên cấp, Cá Voi...).
+        function upPetResync() {
+            try {
+                (appData.students || []).forEach(st => {
+                    if (st.petSp === undefined) return;
+                    try { if (st.petStreakSeen !== undefined) st.petStreakSeen = tenStreakInfo(st.id).cur; } catch (e) {}
+                    try { if (st.petLvSeen !== undefined) st.petLvSeen = lvFromXp(xpOf(st.id)); } catch (e) {}
+                    try { if (st.petAvgSeen !== undefined) { const sx = calculateStudentStats(st.id); if (sx && sx.hasData && Number.isFinite(Number(sx.avg))) st.petAvgSeen = Number(sx.avg); } } catch (e) {}
+                });
+            } catch (e) {}
+        }
+        function upRevert(data, S) {
+            const stat = { done: 0, skipped: 0 };
+            if (!data.scores) data.scores = {};
+            const stu = id => (data.students || []).find(x => String(x.id) === String(id));
+            const defs = () => (data.globalShopItems || []).concat(typeof DEFAULT_FIXED_ITEMS !== 'undefined' ? DEFAULT_FIXED_ITEMS : []);
+            const giftName = it => { try { return ehGiftName(it); } catch (er) { return (it && (it.name || it.itemName)) || ''; } };
+            const addGift = (st, name, n) => {
+                if (!st || !name) { stat.skipped++; return; }
+                if (!Array.isArray(st.inventory)) st.inventory = [];
+                const def = defs().find(d => d && (d.name === name || giftName(d) === name)) || { id: null, name: name, type: null };
+                for (let i = 0; i < (n || 1); i++) {
+                    const g = { invId: 'inv_' + Date.now() + '_rev' + i + '_' + Math.random().toString(36).slice(2, 8), itemId: def.id, name: def.name, itemName: def.name, isFixed: !!def.isFixed, type: def.type || null, date: new Date().toISOString().split('T')[0] };
+                    ['targetScore', 'deltaScore', 'matchScore', 'matchOp'].forEach(f => { if (def[f] !== undefined) g[f] = def[f]; });
+                    st.inventory.push(g);
+                }
+            };
+            const takeGift = (st, name, n) => {
+                if (!st || !Array.isArray(st.inventory)) { stat.skipped++; return; }
+                for (let i = 0; i < (n || 1); i++) {
+                    let idx = -1;
+                    for (let j = st.inventory.length - 1; j >= 0; j--) { const it = st.inventory[j]; if (it && it.type !== 'streak_ten' && giftName(it) === name) { idx = j; break; } }
+                    if (idx < 0) { stat.skipped++; continue; }
+                    const it = st.inventory[idx], c = parseInt(it.count);
+                    if (Number.isFinite(c) && c > 1) it.count = c - 1; else st.inventory.splice(idx, 1);
+                }
+            };
+            const num = v => v === 'A' ? 0 : (v === '' || v === undefined || v === null ? '' : parseFloat(v));
+            // --- Quà Streak / ô điểm 10 chuỗi đã dùng / vòng quay: đảo ngược bằng sổ quà Streak (sgLedger) và lịch sử vòng quay ---
+            const SGL = () => { if (!data.sgLedger || typeof data.sgLedger !== 'object') data.sgLedger = {}; const Lg = data.sgLedger; if (!Lg.cells) Lg.cells = {}; if (!Lg.gifts) Lg.gifts = {}; if (!Lg.chains) Lg.chains = {}; if (!Lg.claim5 || typeof Lg.claim5 !== 'object') Lg.claim5 = {}; return Lg; };
+            const sgCellBack = (st, key) => { // trả 1 điểm 10 về quà Streak, khôi phục ô điểm gốc
+                const cell = data.scores[key]; if (!cell || !cell.sg) { stat.skipped++; return; }
+                const Lg = SGL(), invId = cell.sgInv;
+                if (cell.sgPrev) data.scores[key] = deepCopy(cell.sgPrev);
+                else if (cell.sgOrig && !isNaN(parseFloat(cell.sgOrig.v))) data.scores[key] = { score: parseFloat(cell.sgOrig.v), absent: false, speakingCount: 0, ts: cell.sgOrig.ts || undefined, keep: !!cell.sgOrig.keep || undefined };
+                else delete data.scores[key];
+                delete Lg.cells[key];
+                const ge = invId ? Lg.gifts[invId] : null;
+                if (st && ge && ge.gift) {
+                    ge.left = (parseInt(ge.left) || 0) + 1;
+                    if (!Array.isArray(st.inventory)) st.inventory = [];
+                    let it = st.inventory.find(i => i && i.invId === invId);
+                    if (it) it.count = ge.left; else { it = deepCopy(ge.gift); it.count = ge.left; st.inventory.push(it); }
+                } else stat.skipped++;
+            };
+            const sgGiftBack = (st, e) => { // thu hồi quà Streak vừa nhận (và mốc của nó)
+                if (!st) { stat.skipped++; return; }
+                const Lg = SGL(), dig = String(e.x || '').match(/\d+/); let found = null;
+                Object.keys(Lg.gifts).forEach(id => {
+                    const g = Lg.gifts[id]; if (!g || !g.gift || String(g.sid) !== String(st.id)) return;
+                    let nm = ''; try { nm = ehGiftName(g.gift); } catch (er) { nm = g.gift.name || ''; }
+                    if (nm === e.x || (dig && String(g.gift.tier) === dig[0])) found = id;
+                });
+                if (!found) { stat.skipped++; return; }
+                const tier = Lg.gifts[found].gift.tier;
+                if (Array.isArray(st.inventory)) st.inventory = st.inventory.filter(i => !i || i.invId !== found);
+                delete Lg.gifts[found];
+                const ch = Lg.chains[st.id];
+                if (ch) { if (Array.isArray(ch.tiers)) ch.tiers = ch.tiers.filter(t => t !== tier); if (ch.gifts && typeof ch.gifts === 'object') delete ch.gifts[tier]; }
+                if (Lg.claim5[st.id] && Lg.claim5[st.id].invId === found) delete Lg.claim5[st.id];
+            };
+            const wheelBack = e => { // xóa lượt quay khỏi lịch sử vòng quay (quà trúng / lượt quay đã dùng được hoàn qua các mục quà)
+                const lw = data.luckyWheel; if (!lw || !Array.isArray(lw.history)) { stat.skipped++; return; }
+                for (let j = lw.history.length - 1; j >= 0; j--) {
+                    const h = lw.history[j]; if (!h) continue;
+                    const pn = (h.prizeName || '') + (Number(h.qty) > 1 ? ' ×' + Number(h.qty) : '');
+                    if ((h.studentName || '') === (e.sn || '') && pn === (e.x || '')) {
+                        lw.history.splice(j, 1); if (lw.transactions && h.spinId) delete lw.transactions[h.spinId];
+                        const hs = h.studentId !== null && h.studentId !== undefined ? stu(h.studentId) : null;
+                        if (hs && h.awardedTickets) { hs.itemTickets = Math.max(0, (Math.floor(Number(hs.itemTickets)) || 0) - h.awardedTickets); if (Array.isArray(hs.itemTicketHistory)) hs.itemTicketHistory = hs.itemTicketHistory.filter(x => !x || x.id !== h.spinId); }
+                        return;
+                    }
+                }
+                stat.skipped++;
+            };
+            const H = Array.isArray(data.editHistory) ? data.editHistory : [];
+            for (let i = H.length - 1; i >= 0; i--) {
+                const e = H[i]; if (!e || typeof e.sv !== 'number' || e.sv <= S) continue;
+                const st = e.sid !== undefined ? stu(e.sid) : null, key = e.sid + '_' + e.d;
+                const usedGift = e.g && e.g !== 'sg' ? e.g : null;
+                if (e.k.indexOf('score_') === 0 && e.g === 'sg') { if (e.k === 'score_add' || e.k === 'score_edit') sgCellBack(st, key); else stat.skipped++; stat.done++; continue; } // ô điểm quà Streak: trả điểm 10 về quà, khôi phục ô gốc
+                switch (e.k) {
+                    case 'score_add': delete data.scores[key]; if (usedGift) addGift(st, usedGift, 1); break;
+                    case 'score_del': data.scores[key] = { score: num(e.a), absent: e.a === 'A', speakingCount: 0, isExam: !!e.ex }; break;
+                    case 'score_abs': if (e.a === undefined) delete data.scores[key]; else { const c = data.scores[key] || {}; c.score = num(e.a); c.absent = false; data.scores[key] = c; } break;
+                    case 'score_edit': {
+                        const c = data.scores[key] || { speakingCount: 0, isExam: !!e.ex };
+                        c.score = num(e.a); c.absent = e.a === 'A';
+                        // FIX: hoàn tác về điểm <10 thì trả ts gốc và xoá ghost (editOrig) của lần nâng điểm bị hoàn tác, tránh để lại ts/ghost cũ làm lệch chuỗi
+                        if (c.editOrig && !(Number.isFinite(c.score) && c.score >= 10)) { if (c.editOrig.ts) c.ts = c.editOrig.ts; delete c.editOrig; }
+                        if (usedGift) { delete c.giftKeep; delete c.keepTs; delete c.giftStreakOrig; addGift(st, usedGift, 1); }
+                        data.scores[key] = c; break;
+                    }
+                    case 'pts': if (st) st.rewardPoints = parseFloat(e.a) || 0; else stat.skipped++; break;
+                    case 'gift_tin': case 'gift_get': takeGift(st, e.x, e.n || 1); break;
+                    case 'gift_buy': takeGift(st, e.x, e.n || 1); if (st) st.rewardPoints = (parseFloat(st.rewardPoints) || 0) + (parseFloat(e.p) || 0); break;
+                    case 'gift_tout': case 'gift_out': case 'gift_spin': addGift(st, e.k === 'gift_spin' ? '1 lượt quay may mắn' : e.x, e.n || 1); break;
+                    case 'gift_streak': sgGiftBack(st, e); break;
+                    case 'wheel_spin': wheelBack(e); break;
+                }
+                stat.done++;
+            }
+            return stat;
+        }
+        function upStatus(e, map, cur) {
+            if (typeof e.sv !== 'number') return 'old';
+            if (e.sv === cur || (upRolled && upRolled.sv === e.sv && upRolled.at === cur)) return 'now';
+            if (map.has(e.sv)) return 'ok';
+            return upRevSet.has(e.sv) ? 'rev' : 'old';
+        }
+        const UP_COL = { score: ['#e0e7ff', '#4f46e5'], gift: ['#fce7f3', '#db2777'], fire: ['#ffedd5', '#ea580c'], stu: ['#dcfce7', '#16a34a'], del: ['#fee2e2', '#dc2626'], oth: ['#f1f5f9', '#475569'] };
+        function upFooter() {
+            const en = (appData.language || 'vi') === 'en', T = (v, n) => en ? n : v;
+            const sum = document.getElementById('undoPickerSummary'), btn = document.getElementById('undoPickerGo');
+            if (!sum || !btn) return;
+            btn.querySelector('span').textContent = T('Hoàn tác', 'Undo');
+            document.getElementById('undoPickerCancel').textContent = T('Hủy', 'Cancel');
+            if (upSel === null) { sum.textContent = T('Chọn một mốc trong danh sách để đưa toàn bộ hệ thống về lại lúc đó.', 'Select a point in the list to roll the whole system back to that moment.'); btn.disabled = true; return; }
+            const newer = (appData.editHistory || []).filter(x => typeof x.sv === 'number' && x.sv > upSel).length;
+            sum.textContent = T(`Hệ thống sẽ về lại đúng trạng thái ngay sau: “${upSelText}”. ${newer} thao tác xảy ra sau đó (đang gạch đỏ) sẽ bị hoàn tác.`, `The system will return to exactly how it was right after: “${upSelText}”. ${newer} later action(s) (struck through in red) will be undone.`);
+            btn.disabled = upBusy;
+        }
+        function upRender() {
+            const el = document.getElementById('undoPickerList'); if (!el) return;
+            const en = (appData.language || 'vi') === 'en', T = (v, n) => en ? n : v;
+            const all = (Array.isArray(appData.editHistory) ? appData.editHistory : []).slice().reverse();
+            const map = upTargets(), cur = upMaxSv(appData);
+            upRevSet = upRevTargets();
+            const avail = all.filter(e => { const x = upStatus(e, map, cur); return x === 'ok' || x === 'rev'; }).length;
+            document.getElementById('undoPickerCount').textContent = T(`${avail} mốc có thể hoàn tác · ${all.length} thao tác`, `${avail} restorable points · ${all.length} actions`);
+            if (!all.length) { el.innerHTML = `<div class="up-empty"><i class="fa-solid fa-clock-rotate-left"></i><p>${T('Chưa có thao tác nào được ghi lại.', 'No actions recorded yet.')}</p></div>`; return; }
+            const today = new Date(), dk = d => d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+            const tk = dk(today), yk = dk(new Date(today.getTime() - 86400000));
+            let html = '', lastDay = '';
+            all.slice(0, upLimit).forEach(e => {
+                const d = new Date(e.ts), day = dk(d), st = upStatus(e, map, cur);
+                if (day !== lastDay) { lastDay = day; const lbl = day === tk ? T('Hôm nay', 'Today') : day === yk ? T('Hôm qua', 'Yesterday') : `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; html += `<div class="up-day">${lbl}</div>`; }
+                const ic = EH_ICON[e.k] || ['fa-pen', 'oth'], col = UP_COL[ic[1]] || UP_COL.oth, tm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+                const badge0 = st === 'rev' ? `<span class="up-badge" style="background:#dbeafe;color:#1d4ed8" title="${escapeHtml(T('Khôi phục bằng cách đảo ngược lịch sử chỉnh sửa đã lưu.', 'Restored by reversing the saved edit history.'))}">${T('Từ lịch sử', 'From history')}</span>` : '';
+                const picked = upSel !== null && e.sv === upSel, undone = upSel !== null && typeof e.sv === 'number' && e.sv > upSel;
+                const badge = st === 'rev' ? badge0 : st === 'now' ? `<span class="up-badge up-now">${T('Hiện tại', 'Current')}</span>` : st === 'old' ? `<span class="up-badge" title="${escapeHtml(T('Mốc này không còn bản chụp (thuộc phiên trước hoặc đã quá giới hạn).', 'No snapshot is kept for this point (earlier session or over the limit).'))}">${T('Không khả dụng', 'Unavailable')}</span>` : '';
+                html += `<div class="up-row${st === 'ok' || st === 'rev' ? ' up-ok' : ''}${st === 'old' ? ' up-off' : ''}${picked ? ' up-picked' : ''}${undone ? ' up-undone' : ''}"${st === 'ok' || st === 'rev' ? ` data-sv="${e.sv}" onclick="upPick(${e.sv}, this)"` : ''}><span class="up-radio"></span><span class="up-ico" style="background:${col[0]};color:${col[1]}"><i class="fa-solid ${ic[0]}"></i></span><div class="up-txt">${escapeHtml(ehText(e))}</div>${badge}<span class="up-time">${tm}</span></div>`;
+            });
+            if (all.length > upLimit) html += `<button type="button" class="up-more" onclick="upMore()">${T('Xem thêm', 'Show more')} (${all.length - upLimit})</button>`;
+            el.innerHTML = html;
+        }
+        window.upMore = function () { upLimit += 120; upRender(); };
+        window.upPick = function (sv, row) {
+            upSel = sv;
+            upSelText = row && row.querySelector('.up-txt') ? row.querySelector('.up-txt').textContent : '';
+            const sc = document.getElementById('undoPickerList'), top = sc ? sc.scrollTop : 0;
+            upRender(); upFooter(); if (sc) sc.scrollTop = top;
+        };
+        window.closeUndoPicker = function () { const m = document.getElementById('undoPickerModal'); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); } };
+        window.openUndoPicker = function () {
+            const en = (appData.language || 'vi') === 'en', T = (v, n) => en ? n : v;
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) { alert(T('Khóa đã lưu trữ chỉ được xem.', 'Archived courses are read-only.')); return; }
+            let m = document.getElementById('undoPickerModal');
+            if (!m) {
+                const st = document.createElement('style'); st.id = 'undoPickerCss';
+                st.textContent = `.up-row{display:flex;align-items:center;gap:.6rem;padding:.5rem .6rem;border-radius:.85rem;border:2px solid transparent;transition:background .15s,opacity .15s}
+.up-ok{cursor:pointer}.up-ok:hover{background:#fff7ed}
+.up-radio{flex:0 0 auto;width:1.1rem;height:1.1rem;border-radius:9999px;border:2px solid #cbd5e1;background:#fff}
+.up-ok .up-radio{border-color:#f97316}
+.up-picked,.up-picked:hover{background:#ffedd5;border-color:#f97316}.up-picked .up-radio{background:radial-gradient(circle,#ea580c 45%,#fff 50%)}
+.up-undone,.up-undone:hover{background:#fef2f2}.up-undone .up-txt{text-decoration:line-through;color:#b91c1c}
+.up-off{opacity:.5}
+.up-ico{display:flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:.7rem;font-size:.85rem;flex:0 0 auto}
+.up-txt{flex:1;min-width:0;font-size:.78rem;font-weight:700;color:#334155;line-height:1.35;word-break:break-word}
+.up-time{flex:0 0 auto;font-size:.68rem;font-weight:800;color:#94a3b8;font-variant-numeric:tabular-nums}
+.up-badge{flex:0 0 auto;font-size:.62rem;font-weight:900;padding:.1rem .5rem;border-radius:9999px;background:#e2e8f0;color:#475569;white-space:nowrap}.up-now{background:#dcfce7;color:#166534}
+.up-day{position:sticky;top:0;z-index:1;padding:.35rem .6rem;margin:.5rem 0 .25rem;border-radius:.6rem;font-size:.68rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#9a3412;background:#ffedd5}
+.up-empty{display:flex;flex-direction:column;align-items:center;gap:.6rem;padding:2.5rem 1rem;color:#94a3b8;font-size:.8rem;font-weight:700}.up-empty i{font-size:2rem}
+.up-more{display:block;margin:.6rem auto 0;padding:.45rem 1rem;border-radius:9999px;font-size:.75rem;font-weight:800;background:#ffedd5;color:#9a3412}
+.up-go{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;border-radius:.75rem;font-size:.8rem;font-weight:900;color:#fff;background:#ea580c}.up-go:hover:not(:disabled){background:#c2410c}.up-go:disabled{opacity:.45;cursor:not-allowed}
+.mx-dark #undoPickerModal .up-txt{color:#e2e8f0}.mx-dark #undoPickerModal .up-undone{background:#3b1d1d}.mx-dark #undoPickerModal .up-undone .up-txt{color:#fca5a5}.mx-dark #undoPickerModal .up-picked{background:#431407}.mx-dark #undoPickerModal .up-day{background:#431407;color:#fdba74}.mx-dark #undoPickerModal .up-radio{background:#1e293b;border-color:#475569}`;
+                document.head.appendChild(st);
+                m = document.createElement('div'); m.id = 'undoPickerModal';
+                m.className = 'fixed inset-0 z-[110] hidden items-center justify-center bg-slate-900/60 p-3';
+                m.addEventListener('click', ev => { if (ev.target === m) closeUndoPicker(); });
+                m.innerHTML = `<div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden"><div class="px-5 py-3 bg-gradient-to-r from-orange-600 to-amber-500 text-white flex items-center gap-3"><i class="fa-solid fa-rotate-left text-xl leading-none shrink-0"></i><div class="flex-1 min-w-0"><h2 class="font-black text-base leading-tight" data-up-title></h2><p class="text-[11px] opacity-90 font-bold" id="undoPickerCount"></p></div><button type="button" onclick="closeUndoPicker()" class="text-xl px-2 opacity-90 hover:opacity-100" aria-label="Close">×</button></div><div id="undoPickerList" class="flex-1 overflow-y-auto px-3 py-2"></div><div class="px-4 py-3 border-t border-slate-100 bg-slate-50 space-y-2"><p id="undoPickerSummary" class="text-xs font-bold text-slate-600"></p><div class="flex justify-end gap-2"><button type="button" id="undoPickerCancel" onclick="closeUndoPicker()" class="px-4 py-2 rounded-xl text-xs font-black bg-slate-200 text-slate-700 hover:bg-slate-300"></button><button type="button" id="undoPickerGo" onclick="upConfirm()" class="up-go"><i class="fa-solid fa-rotate-left"></i><span></span></button></div></div></div>`;
+                document.body.appendChild(m);
+                document.addEventListener('keydown', ev => { if (ev.key === 'Escape') { const c = document.getElementById('appConfirmModal'); if (!c || c.classList.contains('hidden')) closeUndoPicker(); } });
+            }
+            m.querySelector('[data-up-title]').textContent = T('Hoàn tác về một mốc lịch sử', 'Roll back to a history point');
+            upSel = null; upSelText = ''; upLimit = 120; upBusy = false;
+            upRender(); upFooter();
+            m.classList.remove('hidden'); m.classList.add('flex');
+        };
+        window.upConfirm = async function () {
+            const en = (appData.language || 'vi') === 'en', T = (v, n) => en ? n : v;
+            if (upSel === null || upBusy) return;
+            if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) { alert(T('Khóa đã lưu trữ chỉ được xem.', 'Archived courses are read-only.')); return; }
+            const sv = upSel, label = upSelText;
+            if (!upTargets().has(sv) && !upRevTargets().has(sv)) { alert(T('Mốc này không còn khả dụng.', 'This point is no longer available.')); upSel = null; upRender(); upFooter(); return; }
+            const newer = (appData.editHistory || []).filter(x => typeof x.sv === 'number' && x.sv > sv).length;
+            const okAsk = await showAppConfirm(T(`Đưa toàn bộ hệ thống về lại ngay sau: “${label}”? ${newer} thao tác sau đó sẽ bị hoàn tác (bạn vẫn có thể chọn lại một mốc mới hơn để quay lại).`, `Return the whole system to right after: “${label}”? ${newer} later action(s) will be undone (you can still pick a newer point to go back).`));
+            if (!okAsk) return;
+            const idx = upTargets().get(sv);
+            if (idx === undefined && !upRevTargets().has(sv)) { alert(T('Mốc này không còn khả dụng.', 'This point is no longer available.')); return; }
+            upBusy = true; upFooter();
+            let revStat = null, target;
+            if (idx !== undefined) target = undoHistory[idx];
+            else { target = deepCopy(appData); revStat = upRevert(target, sv); }
+            const backupApp = appData, lenBefore = undoHistory.length, prevAllow = window.__allowEmptySave;
+            const protectedEh = deepCopy(appData.editHistory || []);
+            window.__ehTag = 'undo'; suppressUndoCapture = false; window.__allowEmptySave = true;
+            appData = deepCopy(target);
+            appData.editHistory = protectedEh; // chỉ nhật ký được giữ; vòng quay, quà chuỗi, ô điểm 10 chuỗi, thú cưng đều lùi theo mốc
+            try { sgEnforce(); } catch (e) { console.warn('sgEnforce skipped:', e); }
+            if (idx === undefined) upPetResync(); // mốc đảo ngược từ lịch sử: đặt lại các mốc "đã thấy" của thú để không bị tính nhầm là mất chuỗi / lên cấp
+            if (sessionViewMode) appData.activeViewMode = sessionViewMode;
+            renderClassTabs(); renderCurrentView();
+            let saved = false;
+            try { saved = await saveData(); } catch (e) { saved = false; }
+            window.__allowEmptySave = prevAllow; window.__ehTag = null; upBusy = false;
+            if (!saved) {
+                appData = backupApp; undoHistory.length = Math.min(undoHistory.length, lenBefore);
+                try { ehBase = ehSnap(appData); } catch (e) { ehBase = null; }
+                renderClassTabs(); renderCurrentView(); upRender(); upFooter();
+                return;
+            }
+            upRolled = { sv, at: upMaxSv(appData) };
+            closeUndoPicker(); renderClassTabs(); renderCurrentView();
+            qsToast(T('Đã hoàn tác hệ thống về mốc đã chọn.', 'System rolled back to the selected point.') + (revStat && revStat.skipped ? T(` (${revStat.skipped} mục không khớp dữ liệu hiện tại nên được bỏ qua)`, ` (${revStat.skipped} item(s) did not match current data and were skipped)`) : ''), 'success');
         };
 
         window.changeMaxSpeakingLimit = function(val) {
@@ -11914,7 +12191,9 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 const changed = !prev || sig(prev) !== sig(cur);
                 if (changed) {
                     // Ô được khôi phục (Ctrl+Z / Ctrl+Y) mang theo ts cũ: giữ nguyên cờ miễn trừ của chính ô đó
-                    const restored = !!(cur.ts && (!prev || cur.ts !== prev.ts));
+                    // FIX: ô vừa áp quà (gk) KHÔNG BAO GIỜ là ô "khôi phục". Trước đây nếu ts của ô lệch ảnh chụp lần lưu trước (sau hoàn tác / đồng bộ),
+                    // ô bị coi là khôi phục -> bỏ qua xử lý quà -> điểm 10 mới nằm lại chỗ cũ, mất điểm cũ và chuỗi tự nối lại (vd. 2 -> 15).
+                    const restored = !gk && !!(cur.ts && (!prev || cur.ts !== prev.ts));
                     // Khi sửa điểm ở một ô đã tồn tại, giữ thời điểm nhập ban đầu.
                     // Nếu gán lại Date.now() mỗi lần sửa, ô lịch sử sẽ nhảy lên cuối chuỗi
                     // và có thể làm streak tăng vọt (ví dụ 22 -> 30) chỉ vì sửa 8.3 thành 9.0.
@@ -11939,6 +12218,16 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     if (!restored && cur.keepTs && gk && cur.ts && !cur.absent) {
                         const fl2 = tenFloorOf(String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, '')), gv = parseFloat(cur.score);
                         if (fl2 && cur.ts < fl2 && !isNaN(gv) && gv >= 10) cur.ts = now;
+                        // FIX: quà đổi điểm / cộng điểm nâng ô CŨ (dưới 10) lên 10 phải chạy GIỐNG HỆT sửa tay:
+                        // điểm cũ ở lại đúng chỗ cũ (editOrig, ghost), điểm 10 mới tính +1 ở CUỐI chuỗi (ts = bây giờ).
+                        // Trước đây ô giữ ts cũ nên 10 mới nằm giữa lịch sử, nối lại các đoạn chuỗi đã đứt (hồi cả chuỗi cao nhất) và làm đổi sự kiện đứt chuỗi.
+                        if (!isNaN(gv) && gv >= 10 && !cur.sg && cur.editOrig && typeof cur.editOrig === 'object' && !isNaN(parseFloat(cur.editOrig.v)) && parseFloat(cur.editOrig.v) < 10) {
+                            cur.ts = now; // ghost đã được ghi sẵn lúc áp quà: giữ nguyên, điểm 10 mới tính +1 ở cuối chuỗi
+                        } else if (!isNaN(gv) && gv >= 10 && prev && !prev.sg && !prev.absent && !cur.sg && prev.score !== undefined && prev.score !== null && prev.score !== '') {
+                            const go2 = prev.giftStreakOrig && typeof prev.giftStreakOrig === 'object' && !isNaN(parseFloat(prev.giftStreakOrig.v)) ? prev.giftStreakOrig : null;
+                            const base2 = go2 ? { v: parseFloat(go2.v), ts: go2.ts || prev.ts || null, keep: !!go2.keep } : { v: parseFloat(prev.score), ts: prev.ts || null, keep: !!prev.keep };
+                            if (!isNaN(base2.v) && base2.v < 10) { cur.editOrig = base2; cur.ts = now; }
+                        }
                     }
                     delete cur.keepTs; // cờ một lần: ô áp quà giữ ts gốc
                     // Nếu người dùng sửa điểm thủ công sau khi áp quà, bỏ mốc điểm gốc của quà;
@@ -12001,9 +12290,18 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 const dms = scoreKeyDateMs(key);
                 // Quà tăng điểm nhưng vẫn dưới 10 không được thay đổi streak: dùng điểm gốc
                 // trong phép tính để ví dụ 8.3 -> 9.3 không nối lại streak cũ hoặc phát quà mốc.
+                // Nếu ô đã được nâng lên 10, giftStreakOrig chỉ là dữ liệu lịch sử cũ:
+                // chuyển nó thành ghost (nếu chưa có editOrig), rồi vẫn phải ghi nhận điểm 10 hiện tại.
                 if (it.giftStreakOrig && typeof it.giftStreakOrig === 'object') {
                     const ov = parseFloat(it.giftStreakOrig.v);
-                    if (!isNaN(ov)) { list.push({ v: ov, ts: it.giftStreakOrig.ts || it.ts || Math.min(dms || now, now), dms, keep: !!it.giftStreakOrig.keep, sg: false, key }); return; }
+                    if (!isNaN(ov)) {
+                        if (v < 10) {
+                            list.push({ v: ov, ts: it.giftStreakOrig.ts || it.ts || Math.min(dms || now, now), dms, keep: !!it.giftStreakOrig.keep, sg: false, key });
+                            return;
+                        } else if (!it.editOrig) {
+                            list.push({ v: ov, ts: it.giftStreakOrig.ts || it.ts || Math.min(dms || now, now), dms, keep: !!it.giftStreakOrig.keep, sg: false, ghost: true, key });
+                        }
+                    }
                 }
                 // Ô quà Streak (cả ô trống được điền lẫn ô điểm <=9 được nâng lên 10) LUÔN gắn cờ trung lập (sg: true):
                 // không cộng streak, không làm đứt/trừ streak. Điểm cũ (sgOrig) bị bỏ qua hoàn toàn trong chuỗi.
@@ -12065,7 +12363,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     const bid = srSafe('b|' + e.key + '|' + prevRun), rc = recMap[bid];
                     breaks.push({ id: bid, key: e.key, ts: e.ts, v: e.v, lost: prevRun, peak: Math.max(peak, prevRun) });
                     log.push({ t: 'lost', ts: e.ts, key: e.key, from: prevRun, to: 0, v: e.v, why: why || 'low' });
-                    if (rc && rc.to > 0) { run = rc.to + Math.max(0, Math.floor(Number(rc.add) || 0)); recId = bid; tier = 0; miss = 0; prot = run >= TEN_PROTECT_MIN; retier(); chain = chain.slice(-run); peak = Math.max(peak, run); if (rc.full && rc.usedAt) skipTs = rc.usedAt;
+                    if (rc && rc.to > 0) { run = rc.to + Math.max(0, Math.floor(Number(rc.add) || 0)); recId = bid; tier = 0; miss = 0; prot = run >= TEN_PROTECT_MIN; retier(); chain = chain.slice(-run); peak = Math.max(peak, run); if (run > best) best = run; /* FIX: chuỗi đã hồi phục (gồm phần cộng dồn) phải được tính vào kỷ lục, tránh kỷ lục < chuỗi hiện tại */ if (rc.full && rc.usedAt) skipTs = rc.usedAt;
                         log.push({ t: 'rec', ts: rc.usedAt || e.ts, at: rc.usedAt || 0, from: 0, to: run, base: rc.to, add: Math.max(0, Math.floor(Number(rc.add) || 0)) });
                         if (run > logBest) { if (run >= 5) log.push({ t: 'record', ts: rc.usedAt || e.ts, at: rc.usedAt || 0, from: logBest, to: run }); logBest = run; } }
                     else epoch = bid;
@@ -12721,7 +13019,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const T = L2;
             return v.state === 'ready' ? (v.inf.cur > 0 ? T(`Có thể hồi phục: ${v.open.to} + ${v.inf.cur} = ${v.open.to + v.inf.cur}`, `Can restore: ${v.open.to} + ${v.inf.cur} = ${v.open.to + v.inf.cur}`) : T(`Có thể hồi phục về ${v.open.to}`, `Can restore to ${v.open.to}`))
                 : v.state === 'noticket' ? (v.inf.cur > 0 ? T('Đang có chuỗi mới · chưa có vé', 'New streak running · no ticket') : T('Chuỗi đã về 0 · chưa có vé', 'Streak is at 0 · no ticket'))
-                : v.state === 'used' ? T(`Đã hồi phục về ${v.lastE.to}`, `Restored to ${v.lastE.to}`)
+                : v.state === 'used' ? T(`Đã hồi phục về ${v.lastE.to + Math.max(0, Math.floor(Number(v.lastE.add) || 0))}`, `Restored to ${v.lastE.to + Math.max(0, Math.floor(Number(v.lastE.add) || 0))}`)
                 : v.state === 'expired' ? T('Quyền hồi phục đã hết', 'Recovery no longer available') : v.state === 'small' ? T(`Chuỗi vừa mất chỉ ${v.lb.lost} (không đạt chuỗi 1) · không hồi phục`, `Last lost streak was only ${v.lb.lost} (below streak 1) · not recoverable`) : T('Chưa có chuỗi nào về 0', 'No streak lost yet');
         }
         function srEntryHtml(st) {
@@ -15831,7 +16129,7 @@ window.openStudentProfile=function(studentId){
         };
         function selectWeightedPrize(){const ps=wheelEnabled(),total=ps.reduce((n,p)=>n+Number(p.weight),0);if(!ps.length||!Number.isFinite(total)||total<=0)return null;if(ps.length===1)return ps[0];let n=Math.random()*total;for(const p of ps){n-=Number(p.weight);if(n<0)return p;}return ps[ps.length-1];}
         function animateWheelToPrize(prize){return new Promise(resolve=>{const ps=wheelPrizes().filter(p=>p.enabled!==false),index=ps.findIndex(p=>p.id===prize.id);if(index<0){resolve(false);return;}const step=Math.PI*2/ps.length;const desired=(-(index*step+step/2))%(Math.PI*2);const start=wheelAngle;const end=desired+Math.PI*2*6;const t0=performance.now(),duration=4200,token=++wheelAnimationToken;const frame=now=>{if(token!==wheelAnimationToken){resolve(false);return;}const t=Math.min(1,(now-t0)/duration),ease=1-Math.pow(1-t,4);wheelAngle=start+(end-start)*ease;drawWheel();if(t<1)requestAnimationFrame(frame);else{wheelAngle=((desired%(Math.PI*2))+Math.PI*2)%(Math.PI*2);drawWheel();resolve(true);}};requestAnimationFrame(frame);});}
-        window.spinLuckyWheel=async function(){if(wheelBusy)return;if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(wheelText('Khóa đã lưu trữ chỉ được xem.','Archived course is read-only.'));return;}ensureWheelData();const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';const studentId=document.getElementById('wheelStudentPicker').value;const student=(appData.students||[]).find(x=>String(x.id)===String(studentId));if(mode==='student'&&(!student||!wheelInventory(student).length)){alert(wheelText('Học sinh này không có quà lượt quay may mắn.','This student has no Lucky Wheel turn gift.'));return;}const prize=selectWeightedPrize();if(!prize){alert(wheelText('Không có phần thưởng đang bật với trọng số hợp lệ.','No enabled prize has a valid weight.'));return;}const giftItem=wheelItemOf(prize),giftSnap=giftItem?deepCopy(giftItem):null,qty=wheelQty(prize),awardInvId='inv_'+Date.now()+'_wheel_'+Math.random().toString(36).slice(2,8);const teacherAtStart=currentTeacherId||LEGACY_TEACHER_ID,courseId=appData.courseManager?.activeCourseId||null,spinId='spin_'+Date.now()+'_'+Math.random().toString(36).slice(2,10),studentName=student?.name||'',className=(appData.classes||[]).find(c=>String(c.id)===String(student?.classId))?.name||'';const record={spinId,teacherId:teacherAtStart,courseId,studentId:mode==='student'?student.id:null,studentName:mode==='student'?studentName:null,className:mode==='student'?className:null,mode,prizeId:prize.id,prizeName:prize.name,prizeColor:prize.color,prizeWeight:Number(prize.weight),qty,prizeSnapshot:deepCopy(prize),status:'completed',at:new Date().toISOString()};wheelBusy=true;document.getElementById('wheelSpinBtn').disabled=true;try{const path=`appDataMultiTeacher/teacherData/${teacherAtStart}`;const result=await runTransaction(ref(db,path),current=>{if(!current||typeof current!=='object')return;current.luckyWheel=current.luckyWheel&&typeof current.luckyWheel==='object'?current.luckyWheel:{prizes:[],history:[],transactions:{}};current.luckyWheel.history=Array.isArray(current.luckyWheel.history)?current.luckyWheel.history:[];current.luckyWheel.transactions=current.luckyWheel.transactions||{};if(current.luckyWheel.transactions[spinId])return current;if(mode==='student'){const st=(current.students||[]).find(x=>String(x.id)===String(student.id));if(!st||!Array.isArray(st.inventory))return;const inv=st.inventory.findIndex(i=>isLuckyWheelGift(i));if(inv<0)return;const consumed=st.inventory.splice(inv,1)[0];record.giftInventoryId=consumed.invId||consumed.id||null;record.consumedGiftItemId=consumed.itemId||consumed.id||LUCKY_GIFT_ID;record.turnsBefore=st.inventory.length+1;record.turnsAfter=st.inventory.length;if(prize.ticketPrize||prize.itemId==='mx_item_ticket'){st.itemTickets=Math.max(0,Math.floor(Number(st.itemTickets)||0))+qty;st.itemTicketHistory=Array.isArray(st.itemTicketHistory)?st.itemTicketHistory:[];st.itemTicketHistory.push({id:spinId,type:'wheel_reward',amount:qty,after:st.itemTickets,source:'wheel',ref:spinId,at:record.at});record.awardedTickets=qty;}const itm=(current.globalShopItems||[]).find(x=>x&&x.id===prize.itemId)||giftSnap;if(itm&&itm.type){const awardedIds=[];for(let q=0;q<qty;q++){const invId=q===0?awardInvId:awardInvId+'_'+q;const inv={invId,itemId:itm.id,name:itm.name,itemName:itm.name,isFixed:!!itm.isFixed,type:itm.type,date:new Date().toISOString().split('T')[0],fromWheel:true};['targetScore','deltaScore','matchScore','matchOp'].forEach(k=>{if(itm[k]!==undefined)inv[k]=itm[k];});st.inventory.push(inv);awardedIds.push(invId);}record.awardedInvId=awardInvId;record.awardedInvIds=awardedIds;record.awardedQty=qty;record.awardedItemName=itm.name;}}current.luckyWheel.transactions[spinId]={spinId,status:'completed',at:record.at,studentId:record.studentId,giftInventoryId:record.giftInventoryId||null,prizeId:record.prizeId};current.luckyWheel.history.push(record);return current;},{applyLocally:false});if(!result.committed){throw new Error('transaction_not_committed');}const committed=result.snapshot.val();if(!committed?.luckyWheel?.transactions?.[spinId]){throw new Error('transaction_not_confirmed');}if(currentTeacherId!==teacherAtStart){return;}appData=committed;if(sessionViewMode)appData.activeViewMode=sessionViewMode;else appData.activeViewMode='wheel';ensureWheelData();lastPersistedSnapshot=deepCopy(appData);try{if(mode==='student'&&student)window.petOnWheel&&window.petOnWheel(student.id,prize);}catch(e){}renderClassTabs();renderCurrentView();const shownName=prize.name+(qty>1?' ×'+qty:'');const animated=await animateWheelToPrize(prize);document.getElementById('wheelResult').textContent=shownName;wheelApplyPrizeColor(prize);document.getElementById('wheelStatus').textContent=wheelText('Sẵn sàng','Ready');showWheelResultModal(shownName,mode==='student'?studentName:'');if(window.showAppToast){if(mode==='student'&&record.awardedInvId)window.showAppToast(wheelText(`Đã cộng “${prize.name}”${qty>1?' ×'+qty:''} vào túi quà của ${studentName}.`,`Added “${prize.name}”${qty>1?' ×'+qty:''} to ${studentName}'s gift bag.`),'success');else if(mode!=='student'&&giftItem&&giftItem.type)window.showAppToast(wheelText('Quay tự do nên quà này không được cộng vào túi học sinh nào.','Free spin: this gift was not added to any student\'s bag.'),'info');}wheelApplyPrizeColor(prize);renderWheelView();}catch(err){console.error('Lucky Wheel transaction failed or uncertain:',err);document.getElementById('wheelStatus').textContent=wheelText('Chưa xác nhận được lượt quay. Hãy tải lại dữ liệu/kiểm tra Firebase trước khi thử lại.','Spin status could not be confirmed. Refresh/check Firebase before retrying.');alert(wheelText('Không thể xác nhận giao dịch. Không tự động thử lại để tránh dùng lượt hai lần. Hãy kiểm tra lịch sử sau khi kết nối ổn định.','Could not confirm the transaction. It will not retry automatically to avoid using a turn twice. Check history when the connection is stable.'));}finally{wheelBusy=false;const b=document.getElementById('wheelSpinBtn');if(b)b.disabled=false;renderWheelView();}};
+        window.spinLuckyWheel=async function(){if(wheelBusy)return;if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId){alert(wheelText('Khóa đã lưu trữ chỉ được xem.','Archived course is read-only.'));return;}ensureWheelData();const mode=document.querySelector('input[name="wheelMode"]:checked')?.value||'free';const studentId=document.getElementById('wheelStudentPicker').value;const student=(appData.students||[]).find(x=>String(x.id)===String(studentId));if(mode==='student'&&(!student||!wheelInventory(student).length)){alert(wheelText('Học sinh này không có quà lượt quay may mắn.','This student has no Lucky Wheel turn gift.'));return;}const prize=selectWeightedPrize();if(!prize){alert(wheelText('Không có phần thưởng đang bật với trọng số hợp lệ.','No enabled prize has a valid weight.'));return;}const giftItem=wheelItemOf(prize),giftSnap=giftItem?deepCopy(giftItem):null,qty=wheelQty(prize),awardInvId='inv_'+Date.now()+'_wheel_'+Math.random().toString(36).slice(2,8);const teacherAtStart=currentTeacherId||LEGACY_TEACHER_ID,courseId=appData.courseManager?.activeCourseId||null,spinId='spin_'+Date.now()+'_'+Math.random().toString(36).slice(2,10),studentName=student?.name||'',className=(appData.classes||[]).find(c=>String(c.id)===String(student?.classId))?.name||'';const record={spinId,teacherId:teacherAtStart,courseId,studentId:mode==='student'?student.id:null,studentName:mode==='student'?studentName:null,className:mode==='student'?className:null,mode,prizeId:prize.id,prizeName:prize.name,prizeColor:prize.color,prizeWeight:Number(prize.weight),qty,prizeSnapshot:deepCopy(prize),status:'completed',at:new Date().toISOString()};wheelBusy=true;document.getElementById('wheelSpinBtn').disabled=true;try{const path=`appDataMultiTeacher/teacherData/${teacherAtStart}`;const result=await runTransaction(ref(db,path),current=>{if(!current||typeof current!=='object')return;current.luckyWheel=current.luckyWheel&&typeof current.luckyWheel==='object'?current.luckyWheel:{prizes:[],history:[],transactions:{}};current.luckyWheel.history=Array.isArray(current.luckyWheel.history)?current.luckyWheel.history:[];current.luckyWheel.transactions=current.luckyWheel.transactions||{};if(current.luckyWheel.transactions[spinId])return current;if(mode==='student'){const st=(current.students||[]).find(x=>String(x.id)===String(student.id));if(!st||!Array.isArray(st.inventory))return;const inv=st.inventory.findIndex(i=>isLuckyWheelGift(i));if(inv<0)return;const consumed=st.inventory.splice(inv,1)[0];record.giftInventoryId=consumed.invId||consumed.id||null;record.consumedGiftItemId=consumed.itemId||consumed.id||LUCKY_GIFT_ID;record.turnsBefore=st.inventory.length+1;record.turnsAfter=st.inventory.length;if(prize.ticketPrize||prize.itemId==='mx_item_ticket'){st.itemTickets=Math.max(0,Math.floor(Number(st.itemTickets)||0))+qty;st.itemTicketHistory=Array.isArray(st.itemTicketHistory)?st.itemTicketHistory:[];st.itemTicketHistory.push({id:spinId,type:'wheel_reward',amount:qty,after:st.itemTickets,source:'wheel',ref:spinId,at:record.at});record.awardedTickets=qty;}const itm=(current.globalShopItems||[]).find(x=>x&&x.id===prize.itemId)||giftSnap;if(itm&&itm.type){const awardedIds=[];for(let q=0;q<qty;q++){const invId=q===0?awardInvId:awardInvId+'_'+q;const inv={invId,itemId:itm.id,name:itm.name,itemName:itm.name,isFixed:!!itm.isFixed,type:itm.type,date:new Date().toISOString().split('T')[0],fromWheel:true};['targetScore','deltaScore','matchScore','matchOp'].forEach(k=>{if(itm[k]!==undefined)inv[k]=itm[k];});st.inventory.push(inv);awardedIds.push(invId);}record.awardedInvId=awardInvId;record.awardedInvIds=awardedIds;record.awardedQty=qty;record.awardedItemName=itm.name;}}current.luckyWheel.transactions[spinId]={spinId,status:'completed',at:record.at,studentId:record.studentId,giftInventoryId:record.giftInventoryId||null,prizeId:record.prizeId};current.luckyWheel.history.push(record);return current;},{applyLocally:false});if(!result.committed){throw new Error('transaction_not_committed');}const committed=result.snapshot.val();if(!committed?.luckyWheel?.transactions?.[spinId]){throw new Error('transaction_not_confirmed');}if(currentTeacherId!==teacherAtStart){return;}try{if(lastPersistedSnapshot){undoHistory.push(deepCopy(lastPersistedSnapshot));if(undoHistory.length>MAX_UNDO_HISTORY)undoHistory.shift();window.__undoMergeUntil=Date.now()+15000;}}catch(e){}appData=committed;if(sessionViewMode)appData.activeViewMode=sessionViewMode;else appData.activeViewMode='wheel';ensureWheelData();lastPersistedSnapshot=deepCopy(appData);try{if(mode==='student'&&student)window.petOnWheel&&window.petOnWheel(student.id,prize);}catch(e){}renderClassTabs();renderCurrentView();const shownName=prize.name+(qty>1?' ×'+qty:'');const animated=await animateWheelToPrize(prize);document.getElementById('wheelResult').textContent=shownName;wheelApplyPrizeColor(prize);document.getElementById('wheelStatus').textContent=wheelText('Sẵn sàng','Ready');showWheelResultModal(shownName,mode==='student'?studentName:'');if(window.showAppToast){if(mode==='student'&&record.awardedInvId)window.showAppToast(wheelText(`Đã cộng “${prize.name}”${qty>1?' ×'+qty:''} vào túi quà của ${studentName}.`,`Added “${prize.name}”${qty>1?' ×'+qty:''} to ${studentName}'s gift bag.`),'success');else if(mode!=='student'&&giftItem&&giftItem.type)window.showAppToast(wheelText('Quay tự do nên quà này không được cộng vào túi học sinh nào.','Free spin: this gift was not added to any student\'s bag.'),'info');}wheelApplyPrizeColor(prize);renderWheelView();}catch(err){console.error('Lucky Wheel transaction failed or uncertain:',err);document.getElementById('wheelStatus').textContent=wheelText('Chưa xác nhận được lượt quay. Hãy tải lại dữ liệu/kiểm tra Firebase trước khi thử lại.','Spin status could not be confirmed. Refresh/check Firebase before retrying.');alert(wheelText('Không thể xác nhận giao dịch. Không tự động thử lại để tránh dùng lượt hai lần. Hãy kiểm tra lịch sử sau khi kết nối ổn định.','Could not confirm the transaction. It will not retry automatically to avoid using a turn twice. Check history when the connection is stable.'));}finally{wheelBusy=false;const b=document.getElementById('wheelSpinBtn');if(b)b.disabled=false;renderWheelView();}};
         window.clearWheelHistoryView=async function(){if(wheelBusy)return;const en=appData.language==='en';const message=wheelText('Xóa lịch sử quay đang hiển thị? Các bản ghi giao dịch vẫn được giữ lại để ngăn sử dụng một lượt quay nhiều lần.','Clear the visible spin history? Transaction records will be retained to prevent the same turn from being used more than once.');if(!await showAppConfirm(message,wheelText('Xóa lịch sử hiển thị','Clear visible history')))return;const old=deepCopy(appData.luckyWheel.history);appData.luckyWheel.history=[];const ok=await saveData();if(!ok){appData.luckyWheel.history=old;await showAppNotice(wheelText('Không thể xóa lịch sử.','Could not clear history.'),wheelText('Lỗi lưu dữ liệu','Save error'));}renderWheelView();};
 
         // Multi-teacher routing on the existing Firebase Realtime Database.
