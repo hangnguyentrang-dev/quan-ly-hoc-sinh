@@ -12400,7 +12400,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             tenSeries(studentId, scores).forEach(e => {
                 if (floorTs && e.ts < floorTs) return; // trước mốc chốt: không tính vào chuỗi
                 if (e.sg) return; // Điểm từ quà Streak: trung lập, không cộng cũng không làm đứt/trừ streak
-                if (skipTs && e.ts <= skipTs) return; // Vé hồi chuỗi 100%: các điểm nhập giữa lúc đứt chuỗi và lúc dùng vé không làm giảm chuỗi đã hồi
+                if (skipTs && e.ts <= skipTs) { if (e.v >= 10 && !e.ghost) chain.push(e.key); return; } // Vé hồi chuỗi 100%: các điểm nhập giữa lúc đứt chuỗi và lúc dùng vé không làm giảm chuỗi đã hồi
                 const prevRun = run; let why = '';
                 // Quà thường nâng ô lên 10: tính là điểm 10 thật (như sửa tay), kể cả dữ liệu cũ từng gắn cờ giftNeutral.
                 if (e.v >= 10) {
