@@ -6942,7 +6942,10 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const before = cell && !cell.absent && cell.score !== undefined && cell.score !== null && cell.score !== '' ? parseFloat(cell.score) : NaN;
             const after = parseFloat(afterScore);
             if (Number.isFinite(before) && Number.isFinite(after) && before < 10 && after < 10) {
-                flag.giftStreakOrig = { v: before, ts: cell.ts || null, keep: !!cell.keep };
+                // FIX: quà thứ 2 trở đi lên CÙNG một ô (vẫn <10) phải giữ nguyên điểm gốc của lần đầu.
+                // Trước đây lấy điểm hiện tại + cờ keep do quà trước vừa đặt -> điểm gốc <9 (đứt chuỗi) biến thành ô miễn trừ -> chuỗi tự nối lại.
+                const go0 = cell.giftStreakOrig && typeof cell.giftStreakOrig === 'object' && Number.isFinite(parseFloat(cell.giftStreakOrig.v)) ? cell.giftStreakOrig : null;
+                flag.giftStreakOrig = go0 ? { v: parseFloat(go0.v), ts: go0.ts || cell.ts || null, keep: !!go0.keep } : { v: before, ts: cell.ts || null, keep: !!cell.keep };
             } else if (Number.isFinite(before) && Number.isFinite(after) && before < 10 && after >= 10 && cell && !cell.sg) {
                 // FIX: quà nâng ô CŨ (<10) lên 10 phải để lại điểm cũ ở ĐÚNG CHỖ CŨ trong chuỗi (editOrig = ghost) ngay lúc áp quà,
                 // không phụ thuộc vào việc so sánh với ảnh chụp lần lưu trước (nếu lệch thì mất ghost -> điểm đứt chuỗi biến mất -> chuỗi nhảy vọt, vd 2 -> 15).
@@ -6952,11 +6955,14 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     // ts cũ: ưu tiên mốc gốc đã lưu (sau khi hoàn tác cell.ts có thể là ts của lần áp quà trước, không phải ts gốc)
                     const oldTs = (go && go.ts) || (cell.editOrig && cell.editOrig.ts) || cell.ts || null;
                     flag.editOrig = { v: bv, ts: oldTs, keep: go ? !!go.keep : !!cell.keep };
-                    // Khi đã chuyển điểm gốc sang editOrig, không giữ giftStreakOrig nữa.
-                    // Nếu giữ cả hai, tenSeries có thể ưu tiên giftStreakOrig và bỏ qua điểm 10 mới.
-                    flag.giftStreakOrig = null;
                     flag.ts = Date.now(); // điểm 10 mới nằm ở CUỐI chuỗi (+1), điểm cũ ở lại chỗ cũ nhờ editOrig
                 }
+            }
+            // FIX: ô ĐÃ >=10 (vd. ô vừa được quà nâng lên 10) mà bị áp thêm quà: giữ nguyên ghost (editOrig) và ts.
+            // Trước đây ô mới được dựng lại không còn editOrig -> điểm cũ làm đứt chuỗi biến mất -> chuỗi tự nối lại (vd. 4 -> 9).
+            if (Number.isFinite(before) && Number.isFinite(after) && before >= 10 && after >= 10 && cell && cell.editOrig && typeof cell.editOrig === 'object') {
+                flag.editOrig = cell.editOrig;
+                if (cell.ts) flag.ts = cell.ts;
             }
             return flag;
         }
@@ -7277,7 +7283,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const last = items[items.length - 1];
             qsSelCell = { sid: last.sid, d: last.d }; qsBuf = ''; qsFlashCell = { sid: last.sid, d: last.d };
             renderCurrentView();
-            saveData().then(ok => { if (ok) qsStatus(); });
+            window.__tenUndo = true; let _mxP; try { _mxP = saveData(); } finally { window.__tenUndo = false; }
+            _mxP.then(ok => { if (ok) qsStatus(); });
             qsToast(qsT(redo ? 'redoDone' : 'undoDone'), 'info');
         }
         document.addEventListener('keydown', e => {
@@ -9148,12 +9155,17 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         }
         window.bkRecheck=()=>{if(typeof viewingArchivedCourseId!=='undefined'&&viewingArchivedCourseId)return 0;bkEnsureActiveCourseBadges();const n=bkEvaluateAll();for(const st of (appData.students||[]))bkSaveStudentCourse(st,appData.courseManager?.activeCourseId);if(n)saveData();return n};
         function saveData() {
+            // Hoàn tác hệ thống = khôi phục NGUYÊN bản chụp cũ (điểm, chuỗi, kỷ lục, sổ túi quà, vé hồi chuỗi...): không tính lại chuỗi, không cộng/trừ, không ghi sự kiện mới
+            const _undoRestore = !!window.__undoRestore; window.__undoRestore = false;
             if (window.MX_STUDENT) return Promise.resolve(false); // chế độ học sinh: tuyệt đối không ghi dữ liệu giáo viên
             if (typeof viewingArchivedCourseId !== 'undefined' && viewingArchivedCourseId) {
                 alert(appData.language === 'en' ? 'Archived course is read-only. Return to the active course to make changes.' : 'Khóa đã lưu trữ chỉ được xem. Hãy quay lại khóa hiện tại để chỉnh sửa.');
                 return Promise.resolve(false);
             }
-            try { sgEnforce(); stampScoreTimes(); updateTenRecords(); try { srSync(); } catch (e) { console.warn('srSync skipped:', e); } sgSync(); } catch (e) { console.warn('stampScoreTimes skipped:', e); }
+            try {
+                sgEnforce();
+                if (!_undoRestore) { stampScoreTimes(); updateTenRecords(); try { srSync(); } catch (e) { console.warn('srSync skipped:', e); } sgSync(); }
+            } catch (e) { console.warn('stampScoreTimes skipped:', e); }
             try { ehRecord(); } catch (e) { console.warn('ehRecord skipped:', e); }
             // Ghi lại trạng thái đã lưu gần nhất trước khi thay đổi, để có thể hoàn tác.
             // Lượt quay may mắn ghi thẳng lên Firebase và đã tự lưu bản chụp TRƯỚC lượt quay: lần lưu kế tiếp (ghi nhận lịch sử / thú cưng) gộp chung vào bước hoàn tác đó
@@ -9758,6 +9770,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             try { sgEnforce(); } catch (e) { console.warn('sgEnforce skipped:', e); }
             if (sessionViewMode) appData.activeViewMode = sessionViewMode;
             renderClassTabs(); renderCurrentView();
+            window.__undoRestore = true;
             saveData().then(ok => {
                 if (ok) { renderClassTabs(); renderCurrentView(); alert(appData.language === 'en' ? 'Last change undone.' : 'Đã hoàn tác thao tác gần nhất.'); }
             });
@@ -10014,7 +10027,9 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             if (sessionViewMode) appData.activeViewMode = sessionViewMode;
             renderClassTabs(); renderCurrentView();
             let saved = false;
+            if (idx !== undefined) window.__undoRestore = true; // mốc có bản chụp: lùi nguyên trạng, không tính lại chuỗi
             try { saved = await saveData(); } catch (e) { saved = false; }
+            window.__undoRestore = false;
             window.__allowEmptySave = prevAllow; window.__ehTag = null; upBusy = false;
             if (!saved) {
                 appData = backupApp; undoHistory.length = Math.min(undoHistory.length, lenBefore);
@@ -12119,6 +12134,34 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         // Mốc được đặt MỘT LẦN khi mở web sau bản cập nhật, bằng đúng đầu chuỗi đang hiển thị (nên không đổi chuỗi hiện tại);
         // học sinh chuỗi 0 thì chốt sau ô nhập cuối. Học sinh thêm sau đó: mốc 0 (không chốt). XP/điểm trung bình vẫn tính mọi điểm.
         let tenFloorBooted = false;
+        // ===== ĐIỂM CẮT CHUỖI (st.tenCuts) =====
+        // Điểm dưới 9 đã làm đứt/trừ chuỗi thì ĐỨT VĨNH VIỄN tại đúng vị trí đó: sửa thành 10, sửa thành 9.x, xóa điểm hay đánh vắng ô đó
+        // đều KHÔNG nối lại đoạn chuỗi cũ. Ô còn giữ điểm cắt thì chính ô đó làm đứt; khi ô không còn thì điểm cắt lưu ở st.tenCuts.
+        function tenBreakerOf(c, key) {
+            if (!c || typeof c !== 'object' || c.sg || c.absent) return null;
+            const fb = Math.min(scoreKeyDateMs(key) || Date.now(), Date.now());
+            if (c.editOrig && typeof c.editOrig === 'object') {
+                const ev = parseFloat(c.editOrig.v);
+                if (!isNaN(ev) && ev < 9 && !c.editOrig.keep) return { v: ev, ts: c.editOrig.ts || fb };
+            }
+            const go = (c.giftStreakOrig && typeof c.giftStreakOrig === 'object' && !isNaN(parseFloat(c.giftStreakOrig.v))) ? c.giftStreakOrig : null;
+            const v = go ? parseFloat(go.v) : parseFloat(c.score), keep = go ? !!go.keep : !!c.keep;
+            if (c.score === null || c.score === undefined || c.score === '' || isNaN(v) || v >= 9 || keep) return null;
+            return { v, ts: (go && go.ts) || c.ts || fb };
+        }
+        function tenCutAdd(key, pb) {
+            const sid = String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, '');
+            const st = (appData.students || []).find(x => String(x.id) === sid); if (!st) return;
+            if (!Array.isArray(st.tenCuts)) st.tenCuts = [];
+            if (st.tenCuts.some(c => c && c.key === key && c.ts === pb.ts)) return;
+            st.tenCuts.push({ key, ts: pb.ts, v: pb.v });
+        }
+        function tenCutDrop(key) {
+            const sid = String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, '');
+            const st = (appData.students || []).find(x => String(x.id) === sid);
+            if (st && Array.isArray(st.tenCuts)) { const n = st.tenCuts.length; st.tenCuts = st.tenCuts.filter(c => !(c && c.key === key)); if (!st.tenCuts.length) delete st.tenCuts; return n !== (st.tenCuts || []).length; }
+            return false;
+        }
         function tenFloorOf(studentId) {
             const st = (appData.students || []).find(x => String(x.id) === String(studentId));
             const f = st ? parseFloat(st.streakFloor) : 0;
@@ -12183,6 +12226,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const now = Date.now(), prevScores = (lastPersistedSnapshot && lastPersistedSnapshot.scores) || {};
             if (tenFloorBooted) (appData.students || []).forEach(st => { if (st.streakFloor === undefined) st.streakFloor = 0; });
             const sig = c => c ? (c.absent ? 'A' : String(c.score)) : '';
+            const undoing = !!(suppressUndoCapture || window.__ehTag === 'undo' || window.__tenUndo), noCut = !!window.__tenNoCut;
             const tenEvents = [], changedSids = new Set(); let changedCount = 0;
             Object.keys(appData.scores || {}).forEach(key => {
                 const cur = appData.scores[key]; if (!cur || typeof cur !== 'object') return;
@@ -12212,6 +12256,11 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                             const base = go ? { v: parseFloat(go.v), ts: go.ts || prev.ts || null, keep: !!go.keep } : { v: parseFloat(prev.score), ts: prev.ts || null, keep: !!prev.keep };
                             if (nv >= 10 && !isNaN(base.v) && base.v < 10) { cur.editOrig = base; cur.ts = now; }
                             else if (nv < 10 && prev.editOrig && prev.editOrig.ts) cur.ts = prev.editOrig.ts; // sửa lại thành điểm dưới 10: về đúng chỗ cũ trong chuỗi
+                        }
+                        // Ô cũ (đang trống / vắng / chưa có điểm) được sửa tay thành 10: cũng chỉ +1 ở CUỐI chuỗi, không chen vào lịch sử cũ để nối lại chuỗi
+                        if (!gk && !cur.sg && !cur.absent && !isNaN(nv) && nv >= 10 && prev && !prev.sg && !cur.editOrig) {
+                            const pv = prev.absent ? NaN : parseFloat(prev.score);
+                            if (!(pv >= 10)) cur.ts = now;
                         }
                     }
                     // Quà nâng ô CŨ (trước mốc chốt) lên 10: tính +1 ở cuối chuỗi như sửa tay, không nối lại đoạn cũ
@@ -12258,12 +12307,34 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                             if (_used2) cur.shield = _used2; // không thấy khiên trong túi = đã tiêu rồi (lưu liên tiếp): giữ nguyên
                         }
                     }
+                    // Ô vừa làm đứt chuỗi (điểm dưới 9) bị sửa thành điểm không còn làm đứt (10, 9.x), hoặc đánh vắng/để trống: ghi điểm cắt, không nối lại chuỗi
+                    if (!undoing && !noCut && !gk && !restored && !cur.sg && prev) {
+                        const pb = tenBreakerOf(prev, key);
+                        if (pb) {
+                            const cv = cur.absent ? NaN : parseFloat(cur.score);
+                            if (!(cv < 9)) { const cb = tenBreakerOf(cur, key); if (!(cb && cb.ts === pb.ts)) tenCutAdd(key, pb); }
+                        }
+                    }
                     changedCount++; changedSids.add(String(key).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, ''));
                     if (!cur.absent && !cur.sg && parseFloat(cur.score) >= 10) tenEvents.push(key);
-                } else if (!cur.ts) {
-                    cur.ts = (prev && prev.ts) || Math.min(scoreKeyDateMs(key) || now, now);
+                } else {
+                    // FIX (chuỗi nối lại sai): ô đã được sửa tay từ <10 lên 10 (có editOrig = điểm cũ làm đứt chuỗi) mà bị ghi lại CÙNG điểm 10
+                    // (nhập lại 10, Enter lần nữa, cộng điểm hàng loạt...) thì ô được dựng mới, mất editOrig -> điểm cũ biến mất -> chuỗi tự nối lại các đoạn đã đứt.
+                    // Giữ nguyên điểm cũ (ghost) và thời điểm nhập của lần sửa đó.
+                    if (prev && !cur.sg && !cur.absent && !cur.editOrig && prev.editOrig && typeof prev.editOrig === 'object' && !prev.sg && !prev.absent
+                        && !isNaN(parseFloat(prev.editOrig.v)) && parseFloat(prev.editOrig.v) < 10 && parseFloat(cur.score) >= 10) {
+                        cur.editOrig = prev.editOrig;
+                        if (prev.ts) cur.ts = prev.ts;
+                    }
+                    if (!cur.ts) cur.ts = (prev && prev.ts) || Math.min(scoreKeyDateMs(key) || now, now);
                 }
             });
+            // Ô điểm bị XÓA hẳn: nếu đó là điểm dưới 9 đã làm đứt chuỗi thì giữ điểm cắt (không nối lại). Hoàn tác (Ctrl+Z) thì gỡ điểm cắt của ô bị bỏ.
+            try {
+                const gone = Object.keys(prevScores).filter(k => !(appData.scores && Object.prototype.hasOwnProperty.call(appData.scores, k)));
+                if (undoing) gone.forEach(k => tenCutDrop(k));
+                else if (!noCut && gone.length && gone.length <= 20) gone.forEach(k => { const pb = tenBreakerOf(prevScores[k], k); if (pb) tenCutAdd(k, pb); });
+            } catch (e) { console.warn('tenCuts skipped:', e); }
             if (shieldFx.length) setTimeout(() => shieldNotify(shieldFx), 250);
             // Pháo giấy: chỉ khi nhập tay vài ô (không bắn khi tải/nhập dữ liệu hàng loạt hoặc hoàn tác)
             if (tenEvents.length && changedCount <= 3 && lastPersistedSnapshot && !suppressUndoCapture) setTimeout(() => tfCelebrate(tenEvents), 150);
@@ -12290,18 +12361,9 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 const dms = scoreKeyDateMs(key);
                 // Quà tăng điểm nhưng vẫn dưới 10 không được thay đổi streak: dùng điểm gốc
                 // trong phép tính để ví dụ 8.3 -> 9.3 không nối lại streak cũ hoặc phát quà mốc.
-                // Nếu ô đã được nâng lên 10, giftStreakOrig chỉ là dữ liệu lịch sử cũ:
-                // chuyển nó thành ghost (nếu chưa có editOrig), rồi vẫn phải ghi nhận điểm 10 hiện tại.
                 if (it.giftStreakOrig && typeof it.giftStreakOrig === 'object') {
                     const ov = parseFloat(it.giftStreakOrig.v);
-                    if (!isNaN(ov)) {
-                        if (v < 10) {
-                            list.push({ v: ov, ts: it.giftStreakOrig.ts || it.ts || Math.min(dms || now, now), dms, keep: !!it.giftStreakOrig.keep, sg: false, key });
-                            return;
-                        } else if (!it.editOrig) {
-                            list.push({ v: ov, ts: it.giftStreakOrig.ts || it.ts || Math.min(dms || now, now), dms, keep: !!it.giftStreakOrig.keep, sg: false, ghost: true, key });
-                        }
-                    }
+                    if (!isNaN(ov)) { list.push({ v: ov, ts: it.giftStreakOrig.ts || it.ts || Math.min(dms || now, now), dms, keep: !!it.giftStreakOrig.keep, sg: false, key }); return; }
                 }
                 // Ô quà Streak (cả ô trống được điền lẫn ô điểm <=9 được nâng lên 10) LUÔN gắn cờ trung lập (sg: true):
                 // không cộng streak, không làm đứt/trừ streak. Điểm cũ (sgOrig) bị bỏ qua hoàn toàn trong chuỗi.
@@ -12312,6 +12374,13 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     if (!isNaN(eo)) list.push({ v: eo, ts: it.editOrig.ts || Math.min(dms || now, now), dms, keep: !!it.editOrig.keep, sg: false, ghost: true, key });
                 }
                 list.push({ v, ts: it.ts || Math.min(dms || now, now), dms, keep: !!it.keep, shield: !!it.shield, sg: !!it.sg, gn: !!it.giftNeutral, key });
+            });
+            // Điểm cắt (ô điểm dưới 9 đã bị sửa/xóa/đánh vắng): vẫn làm đứt chuỗi tại đúng chỗ cũ, trừ khi chính ô đó còn giữ điểm cắt
+            const stCut = (appData.students || []).find(x => String(x.id) === String(studentId));
+            if (stCut && Array.isArray(stCut.tenCuts)) stCut.tenCuts.forEach(ct => {
+                if (!ct || !isFinite(ct.ts) || isNaN(parseFloat(ct.v))) return;
+                const c = src[ct.key]; if (c) { const b = tenBreakerOf(c, ct.key); if (b && b.ts === ct.ts) return; }
+                list.push({ v: parseFloat(ct.v), ts: ct.ts, dms: 0, keep: false, sg: false, ghost: true, cut: true, key: ct.key });
             });
             list.sort((a, b) => (a.ts - b.ts) || (a.dms - b.dms));
             return list;
@@ -14271,7 +14340,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 // Tiêu thụ đúng món quà theo invId
                 st.inventory = st.inventory.filter(i => i.invId !== invId);
 
-                const saved = await saveData();
+                const saved = await saveData(); // quà Xóa điểm: điểm dưới 9 bị xóa vẫn để lại điểm cắt, không nối lại chuỗi
                 if (!saved) {
                     // Hoàn nguyên nếu dữ liệu chưa được khôi phục (bản ghi/quà không còn nguyên vẹn)
                     const st2 = appData.students.find(x => x.id === studentId);
@@ -14414,10 +14483,12 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 if (invItem.type === 'plus' && invItem.deltaScore !== undefined) {
                     const cur = hasScore ? parseFloat(existing.score) : 0;
                     const nw = Math.min(10, cur + parseFloat(invItem.deltaScore));
+                    if (hasScore && !(nw > cur + 1e-9)) { uiToast('no_valid_cell_for_gift', 'warning'); return null; } // ô đã 10: quà không có tác dụng, không được làm mất điểm gốc của chuỗi
                     return { kind: 'plus', before: hasScore ? mxFmt(cur) : '—', after: mxFmt(nw), build: c => ({ ...mfl(c), ...giftKeepTs(c, key), ...giftNeutralFlag(c, 'plus', nw), score: nw, absent: false, speakingCount: c ? c.speakingCount : 0, isExam: !!(c && c.isExam) }) };
                 }
                 if (invItem.targetScore !== null && invItem.targetScore !== undefined) {
                     const nw = parseFloat(invItem.targetScore);
+                    if (hasScore && !isNaN(parseFloat(existing.score)) && !(nw > parseFloat(existing.score) + 1e-9)) { uiToast('no_valid_cell_for_gift', 'warning'); return null; } // quà Đổi chỉ NÂNG điểm; ô đã bằng/cao hơn đích thì từ chối
                     return { kind: hasScore ? 'change' : 'add', before: hasScore ? mxFmt(existing.score) : '—', after: mxFmt(nw), build: c => ({ ...mfl(c), ...(c && c.ts ? giftKeepTs(c, key) : {}), ...giftNeutralFlag(c, invItem.type, nw), score: nw, absent: false, speakingCount: c ? c.speakingCount : 0, isExam: !!(c && c.isExam) }) };
                 }
                 return { kind: 'plain', before: '', after: '', build: null };
