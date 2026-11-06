@@ -796,7 +796,7 @@ tr.rk-row-up{animation:qsRowUp 2.2s ease-out}tr.rk-row-down{animation:qsRowDown 
 .ch-t60{--ch-a:#00A9C7;--ch-bg:#cffafe;--ch-tx:#064559}
 .ch-t70{--ch-a:#5C9E16;--ch-bg:#ecfccb;--ch-tx:#2a4a0d}
 .ch-t80{--ch-a:#D62986;--ch-bg:#ffe0f0;--ch-tx:#6a1148}
-.ch-t90{--ch-a:#7B3828;--ch-bg:#fbe3ce;--ch-tx:#4B241C}
+.ch-t90{--ch-a:#8f9cf0;--ch-bg:linear-gradient(135deg,#dfe9fc,#e7defb 40%,#d6f4fa 72%,#f9e6f4);--ch-tx:#4f58c8}
 .ch-t100{--ch-a:#6366f1;--ch-bg:linear-gradient(135deg,#fee2e2,#fef9c3,#dcfce7,#cffafe,#e0e7ff,#fae8ff);--ch-tx:#1e1b4b}
 .qs-toggle.qs-toggle-ten.on{background:#0891b2;border-color:#0891b2;box-shadow:0 2px 8px rgba(8,145,178,.45)}
 /* Chế độ Hiện điểm 10: điểm dưới 10 mờ đi, điểm 10 nhô nhẹ lên */
@@ -2089,14 +2089,22 @@ html.mx-dark tbody tr:not(.score-row):not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>
 .tf-nm-t80{background-image:linear-gradient(90deg,#9B1560,#D62986 50%,#FF6EB4)!important;filter:drop-shadow(0 0 4px rgba(214,41,134,.85))!important}
 .tf-banner.fuchsia,.tf-banner.tf-t80{font-size:1.65rem;padding:.85rem 2.1rem;color:#fff;background:linear-gradient(135deg,#3a0a25,#A81C6B 60%,#D62986);border:3px solid #FF9BCB;box-shadow:0 0 0 4px rgba(255,110,180,.5),0 12px 40px rgba(214,41,134,.65),0 0 60px rgba(214,41,134,.65)}
 .sg-t80{--sg-a:#D62986;--sg-bg:#FCE0EE;--sg-tx:#7E0F4A;--sg-bd:#F08CC0}
-.tf-streak.tf-t90{--h:2.76rem;--fs:2.25;--ns:1.78rem;--spin:1.1s;--bg:linear-gradient(135deg,#2E130E,#4B241C);--ring:#7B3828,#F3C7A5,#FFE9D6,#7B3828;--g1:rgba(123,56,40,.95);--g2:rgba(243,199,165,.5);--g3:rgba(243,199,165,.95);--g4:rgba(123,56,40,.9);--f1:linear-gradient(135deg,#4B241C,#7B3828 55%,#D98E62);--f2:linear-gradient(135deg,#B5603F,#F3C7A5);--f3:linear-gradient(135deg,#fff,#FBE3CE);--fglow:rgba(243,199,165,.9);--spk:#F3C7A5;--tg1:rgba(243,199,165,.9);--tg2:rgba(123,56,40,.9);--x:#F3C7A5;--n:#F3C7A5}
+.tf-streak.tf-t90{--h:2.76rem;--fs:2.25;--ns:1.78rem;--spin:3.2s;--hm:1.45;--bg:linear-gradient(115deg,#a9c3f3,#b7aaf0);--ring:#ffffff,#a5f3fc,#fde68a,#f9a8d4,#c4b5fd,#99f6e4,#ffffff;--g1:rgba(255,255,255,.95);--g2:rgba(165,243,252,.6);--g3:rgba(249,168,212,.8);--g4:rgba(196,181,253,.9);--f1:linear-gradient(135deg,#a78bfa,#67e8f9 38%,#fbcfe8 68%,#fde68a);--f2:linear-gradient(135deg,#ffffff,#ccfbf1 45%,#fbcfe8);--f3:linear-gradient(135deg,#fff,#fff);--fglow:rgba(255,255,255,.95);--spk:#fff;--tg1:rgba(255,255,255,.95);--tg2:rgba(139,92,246,.55);--x:#e8fbff;--n:#fff}
 .tf-streak.tf-hi.tf-t90:not(.tf-mini) .tf-txt{font-size:1.3rem}
-.tf-streak.tf-hi.tf-t90 .tf-txt,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-n{color:#F3C7A5!important;-webkit-text-fill-color:#F3C7A5!important;text-shadow:0 0 5px rgba(123,56,40,.95),0 0 12px rgba(75,36,28,.85)!important}
-.tf-nm-t90{background-image:linear-gradient(90deg,#4B241C,#7B3828 55%,#A8573A)!important;filter:drop-shadow(0 0 4px rgba(123,56,40,.7))!important}
-.tf-banner.choco,.tf-banner.teal,.tf-banner.tf-t90{font-size:1.65rem;padding:.85rem 2.1rem;color:#F3C7A5;background:linear-gradient(135deg,#2E130E,#7B3828 60%,#4B241C);border:3px solid #F3C7A5;box-shadow:0 0 0 4px rgba(243,199,165,.45),0 12px 40px rgba(75,36,28,.75),0 0 60px rgba(123,56,40,.7)}
-.sg-t90{--sg-a:#7B3828;--sg-bg:#F6E2D2;--sg-tx:#4B241C;--sg-bd:#D9A57F}
-.tf-streak.tf-t100{--h:2.8rem;--fs:2.3;--ns:1.8rem;--spin:1s}
-.tf-streak.tf-hi.tf-t100:not(.tf-mini) .tf-txt{font-size:1.32rem}
+.tf-streak.tf-hi.tf-t90:not(.tf-mini){background:radial-gradient(circle at 22% 30%,#fff 0 1px,transparent 1.7px) padding-box,radial-gradient(circle at 64% 72%,#fff 0 1px,transparent 1.7px) padding-box,radial-gradient(circle at 88% 28%,#fff 0 1px,transparent 1.7px) padding-box,radial-gradient(ellipse at 14% 20%,rgba(255,255,255,.8),transparent 42%) padding-box,radial-gradient(ellipse at 90% 88%,rgba(255,255,255,.5),transparent 46%) padding-box,linear-gradient(115deg,#aac6f4 0%,#9fb7ee 28%,#b2a9ef 60%,#a6b6ee 82%,#bcd0f6 100%) padding-box,conic-gradient(from var(--tf-a),#fff,#a5f3fc,#fde68a,#f9a8d4,#c4b5fd,#99f6e4,#fff) border-box;isolation:isolate}
+.tf-streak.tf-hi.tf-t90:not(.tf-mini)::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.95) 50%,transparent 62%) 0 0/250% 100%;mix-blend-mode:overlay;animation:tf90Sheen 3.6s linear infinite}
+@keyframes tf90Sheen{from{background-position:120% 0}to{background-position:-120% 0}}
+.tf-streak.tf-hi.tf-t90 .tf-txt{color:#fdfdff!important;-webkit-text-fill-color:#fdfdff!important}
+.tf-streak.tf-hi.tf-t90 .tf-txt .tf-x{color:#e6fbff!important;-webkit-text-fill-color:#e6fbff!important}
+.tf-streak.tf-hi.tf-t90 .tf-txt .tf-n{color:#ffffff!important;-webkit-text-fill-color:#ffffff!important}
+/* bản mini nằm trên nền sáng: chữ lavender ngọc trai để vẫn đọc được */
+.tf-streak.tf-hi.tf-t90.tf-mini .tf-txt,.tf-streak.tf-hi.tf-t90.tf-mini .tf-txt .tf-x,.tf-streak.tf-hi.tf-t90.tf-mini .tf-txt .tf-n{color:#7d86e6!important;-webkit-text-fill-color:#7d86e6!important;text-shadow:0 1px 0 #fff,0 0 6px rgba(167,139,250,.65)!important}
+.tf-nm-t90{background-image:linear-gradient(90deg,#8f86f0,#5bb4ee 35%,#d98ae6 65%,#6ad6c1)!important;filter:drop-shadow(0 0 3px rgba(167,139,250,.6))!important}
+.tf-banner.pearl,.tf-banner.choco,.tf-banner.teal,.tf-banner.tf-t90{font-size:1.65rem;padding:.85rem 2.1rem;color:#fdfdff;text-shadow:0 1px 0 #6a72c2,0 0 8px rgba(124,108,240,.8);background:radial-gradient(ellipse at 14% 20%,rgba(255,255,255,.75),transparent 42%),radial-gradient(ellipse at 90% 88%,rgba(255,255,255,.45),transparent 46%),linear-gradient(115deg,#aac6f4 0%,#9fb7ee 28%,#b2a9ef 60%,#a6b6ee 82%,#bcd0f6 100%);border:3px solid #fff;box-shadow:0 0 0 4px rgba(165,243,252,.55),0 0 0 8px rgba(249,168,212,.3),0 12px 40px rgba(139,120,240,.5),0 0 60px rgba(255,255,255,.85)}
+.sg-t90{--sg-a:#7c83e0;--sg-bg:linear-gradient(135deg,#dfe9fc,#e7defb 40%,#d6f4fa 72%,#f9e6f4);--sg-tx:#4a52bf;--sg-bd:#b4c0f5}
+.tf-streak.tf-t100{--h:2.96rem;--fs:2.4;--ns:1.9rem;--spin:1s;--hm:1.65}
+.tf-streak.tf-hi.tf-t100:not(.tf-mini) .tf-txt{font-size:1.44rem}
+.tf-streak.tf-hi.tf-t100:not(.tf-mini){padding:0 1rem 0 .65rem}
 .tf-banner.tf-t100{font-size:1.8rem}
 .sgb{max-width:44rem}
 .sgb-xs{overflow-x:auto;overflow-y:hidden;padding-bottom:4px}
@@ -2312,7 +2320,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
 .tf-streak.tf-hi.tf-t60{--tx-st:#ECFEFF}
 .tf-streak.tf-hi.tf-t70{--tx-st:#F7FEE7}
 .tf-streak.tf-hi.tf-t80{--tx-st:#FFF1F8}
-.tf-streak.tf-hi.tf-t90{--tx-st:#FFF3E6}
+.tf-streak.tf-hi.tf-t90{--tx-st:#fff}
 .tf-streak.tf-hi.tf-t20 .tf-txt,.tf-streak.tf-hi.tf-t20 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t20 .tf-txt .tf-n{text-shadow:0 1px 0 #1e1b4b,0 0 8px rgba(56,189,248,.95)!important}
 .tf-streak.tf-hi.tf-t30 .tf-txt,.tf-streak.tf-hi.tf-t30 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t30 .tf-txt .tf-n{text-shadow:0 1px 0 #450a0a,0 0 8px rgba(239,68,68,.95)!important}
 .tf-streak.tf-hi.tf-t40 .tf-txt,.tf-streak.tf-hi.tf-t40 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t40 .tf-txt .tf-n{text-shadow:0 1px 0 #3b0764,0 0 8px rgba(217,70,239,.95)!important}
@@ -2320,7 +2328,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
 .tf-streak.tf-hi.tf-t60 .tf-txt,.tf-streak.tf-hi.tf-t60 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t60 .tf-txt .tf-n{text-shadow:0 1px 0 #03222b,0 0 8px rgba(0,169,199,.95)!important}
 .tf-streak.tf-hi.tf-t70 .tf-txt,.tf-streak.tf-hi.tf-t70 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t70 .tf-txt .tf-n{text-shadow:0 1px 0 #112207,0 0 8px rgba(132,204,22,.95)!important}
 .tf-streak.tf-hi.tf-t80 .tf-txt,.tf-streak.tf-hi.tf-t80 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t80 .tf-txt .tf-n{text-shadow:0 1px 0 #3a0a25,0 0 8px rgba(255,64,160,.95)!important}
-.tf-streak.tf-hi.tf-t90 .tf-txt,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-n{text-shadow:0 1px 0 #2E130E,0 0 8px rgba(123,56,40,.95)!important}
+.tf-streak.tf-hi.tf-t90 .tf-txt,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-n{text-shadow:0 1px 0 #6a72c2,0 0 4px rgba(124,108,240,.8)!important}
 /* mốc 100: chữ cầu vồng, không viền để không lộ khung */
 .tf-streak.tf-hi.tf-t100 .tf-txt{-webkit-text-stroke:0;text-shadow:none!important;animation:tfShine50 1.6s linear infinite,tfText 1.3s ease-in-out infinite!important}
 .tf-streak.tf-hi.tf-t100 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t100 .tf-txt .tf-n{-webkit-text-stroke:0;text-shadow:none!important;animation:tfShine50 1.6s linear infinite!important}
@@ -2336,7 +2344,7 @@ html.mx-dark .qg-del:hover{background:#e11d48;color:#fff}
 .rank-card .tf-flame,.hl-row .tf-flame{transition:transform .25s cubic-bezier(.2,.9,.3,1.4),filter .25s}
 .rank-card:hover .tf-flame,.hl-row:hover .tf-flame{transform-origin:50% 85%}
 .rank-card:hover .tf-streak:not(.tf-hi) .tf-flame,.hl-row:hover .tf-streak:not(.tf-hi) .tf-flame{transform:scale(1.28)}
-.rank-card:hover .tf-streak.tf-hi .tf-flame,.hl-row:hover .tf-streak.tf-hi .tf-flame{transform:scale(calc(var(--fs,1.5) * 1.2))}
+.rank-card:hover .tf-streak.tf-hi .tf-flame,.hl-row:hover .tf-streak.tf-hi .tf-flame{transform:scale(calc(var(--fs,1.5) * var(--hm,1.2)))}
 .rank-card:hover .tf-streak.tf-mini .tf-flame,.hl-row:hover .tf-streak.tf-mini .tf-flame{transform:scale(1.3)}
 .rank-card:hover .tf-streak:not(.tf-t100) .tf-flame,.hl-row:hover .tf-streak:not(.tf-t100) .tf-flame{filter:drop-shadow(0 0 5px var(--fglow,rgba(249,115,22,.95))) drop-shadow(0 0 11px var(--fglow,rgba(249,115,22,.95))) brightness(1.18) saturate(1.25)}
 .rank-card:hover .tf-flame .tf-l1,.hl-row:hover .tf-flame .tf-l1{animation:tfFlickHot .4s ease-in-out infinite}
@@ -2374,7 +2382,7 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
 /* Score Matrix: rê chuột vào hàng học sinh -> lửa cạnh tên cháy mạnh hơn */
 #scoreMatrix tbody tr .tf-flame{transition:transform .25s cubic-bezier(.2,.9,.3,1.4),filter .25s;transform-origin:50% 85%}
 #scoreMatrix tbody tr:hover .tf-streak .tf-flame{transform:scale(1.3)}
-#scoreMatrix tbody tr:hover .tf-streak.tf-hi .tf-flame{transform:scale(calc(var(--fs,1.5) * 1.2))}
+#scoreMatrix tbody tr:hover .tf-streak.tf-hi .tf-flame{transform:scale(calc(var(--fs,1.5) * var(--hm,1.2)))}
 #scoreMatrix tbody tr:hover .tf-streak:not(.tf-t100) .tf-flame{filter:drop-shadow(0 0 5px var(--fglow,rgba(249,115,22,.95))) drop-shadow(0 0 11px var(--fglow,rgba(249,115,22,.95))) brightness(1.18) saturate(1.25)}
 #scoreMatrix tbody tr:hover .tf-flame .tf-l1{animation:tfFlickHot .4s ease-in-out infinite}
 #scoreMatrix tbody tr:hover .tf-flame .tf-l2{animation:tfFlickHot .32s ease-in-out infinite -.1s}
@@ -2390,7 +2398,7 @@ html.mx-dark tbody tr.hl-row:not(.hl-r1):not(.hl-r2):not(.hl-r3):hover>td{box-sh
 .tf-streak.tf-hi.tf-t60 .tf-txt,.tf-streak.tf-hi.tf-t60 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t60 .tf-txt .tf-n{text-shadow:0 1px 0 #03222b,0 0 4px rgba(0,169,199,.8)!important}
 .tf-streak.tf-hi.tf-t70 .tf-txt,.tf-streak.tf-hi.tf-t70 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t70 .tf-txt .tf-n{text-shadow:0 1px 0 #112207,0 0 4px rgba(132,204,22,.8)!important}
 .tf-streak.tf-hi.tf-t80 .tf-txt,.tf-streak.tf-hi.tf-t80 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t80 .tf-txt .tf-n{text-shadow:0 1px 0 #3a0a25,0 0 4px rgba(255,64,160,.8)!important}
-.tf-streak.tf-hi.tf-t90 .tf-txt,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-n{text-shadow:0 1px 0 #2E130E,0 0 4px rgba(123,56,40,.8)!important}
+.tf-streak.tf-hi.tf-t90 .tf-txt,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t90 .tf-txt .tf-n{text-shadow:0 1px 0 #6a72c2,0 0 4px rgba(124,108,240,.8)!important}
 </style>
 <style id="patch-2026-10-21-ui2">
 /* ===== Thẻ quà đặc biệt: +1 điểm bài kiểm tra / lượt quay may mắn ===== */
@@ -2487,7 +2495,7 @@ html.mx-dark .score-row:hover>td.grid-cell.cell-scored[class*="cell-gt-"]:not(.c
 .gr-flm .tf-flame{transition:transform .25s cubic-bezier(.2,.9,.3,1.4),filter .25s}
 .gr-flm:hover .tf-flame{transform-origin:50% 85%}
 .gr-flm:hover .tf-streak:not(.tf-hi) .tf-flame{transform:scale(1.28)}
-.gr-flm:hover .tf-streak.tf-hi .tf-flame{transform:scale(calc(var(--fs,1.5) * 1.2))}
+.gr-flm:hover .tf-streak.tf-hi .tf-flame{transform:scale(calc(var(--fs,1.5) * var(--hm,1.2)))}
 .gr-flm:hover .tf-streak.tf-mini .tf-flame{transform:scale(1.3)}
 .gr-flm:hover .tf-streak:not(.tf-t100) .tf-flame{filter:drop-shadow(0 0 5px var(--fglow,rgba(249,115,22,.95))) drop-shadow(0 0 11px var(--fglow,rgba(249,115,22,.95))) brightness(1.18) saturate(1.25)}
 .gr-flm:hover .tf-flame .tf-l1{animation:tfFlickHot .4s ease-in-out infinite}
@@ -3396,7 +3404,7 @@ html.mx-dark .pq-pane.pq-class,html.mx-dark .pq-inl .pq-pane{border-color:#4c1d9
 #mxStuHome .mxh-hero:hover .tf-streak .tf-flame{animation:none}
 #mxStuHome .mxh-hero:hover .tf-streak.tf-t100 .tf-flame{animation:tfHue50 3s linear infinite}
 #mxStuHome .mxh-hero:hover .tf-streak:not(.tf-hi) .tf-flame{transform:scale(1.28)}
-#mxStuHome .mxh-hero:hover .tf-streak.tf-hi .tf-flame{transform:scale(calc(var(--fs,1.5) * 1.2))}
+#mxStuHome .mxh-hero:hover .tf-streak.tf-hi .tf-flame{transform:scale(calc(var(--fs,1.5) * var(--hm,1.2)))}
 #mxStuHome .mxh-hero:hover .tf-streak:not(.tf-t100) .tf-flame{filter:drop-shadow(0 0 5px var(--fglow,rgba(249,115,22,.95))) drop-shadow(0 0 11px var(--fglow,rgba(249,115,22,.95))) brightness(1.18) saturate(1.25)}
 #mxStuHome .mxh-hero:hover .tf-flame .tf-l1{animation:tfFlickHot .4s ease-in-out infinite}
 #mxStuHome .mxh-hero:hover .tf-flame .tf-l2{animation:tfFlickHot .32s ease-in-out infinite -.1s}
@@ -4474,7 +4482,11 @@ html.fx-off-ui .gt-btn,html.fx-off-ui .gt-stu,html.fx-off-ui .gt-gift,html.fx-of
 .sgb-ins-tiers span{font-size:10px;font-weight:800;color:var(--sg-tx);opacity:.68;border:1px dashed var(--sg-bd);border-radius:9999px;padding:1px 7px;background:rgba(255,255,255,.55)}
 .sgb-ins-tiers span b{margin-left:2px;font-weight:900}
 .sgb-ins-tiers span.on{color:#fff;opacity:1;background:var(--sg-a);border:1px solid var(--sg-a)}
-.sg-t100 .sgb-ins-h em,.sg-t100 .sgb-ins-bars i.on,.sg-t100 .sgb-ins-tiers span.on{background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e,#06b6d4,#6366f1,#d946ef);color:#fff;border-color:transparent}
+/* Mốc 100: màu đại diện duy nhất = chàm #6366f1 (chữ 45/45, nhãn Mốc, chip mốc hiện tại); các thanh là một dải cầu vồng pastel liền mạch chạy qua toàn bộ thanh */
+.sg-t100 .sgb-ins{--sg-a:#6366f1}
+.sg-t100 .sgb-ins-h em{background:none;color:#6366f1}
+.sg-t100 .sgb-ins-tiers span.on{background:#6366f1;color:#fff;border-color:#6366f1}
+.sg-t100 .sgb-ins-bars i.on{background-image:linear-gradient(90deg,#fda4af,#fdba74,#fde68a,#86efac,#7dd3fc,#a5b4fc,#d8b4fe,#f9a8d4);background-size:calc(var(--n,1) * 100%) 100%;background-position:calc(var(--i,0) / max(var(--n,1) - 1,1) * 100%) 0;background-repeat:no-repeat;box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
 html.mx-dark .sgb-ins,html.mx-dark .sgb-ins.warn,html.mx-dark .sgb-ins.danger,html.mx-dark .sgb-ins.off{background:color-mix(in srgb,var(--sg-a) 15%,#0f172a);border-color:var(--sg-a)}
 html.mx-dark .sgb-ins-h,html.mx-dark .sgb-ins p{color:color-mix(in srgb,var(--sg-a) 38%,#fff)}
 html.mx-dark .sgb-ins-t,html.mx-dark .sgb-ins-tiers span{background:#0f172a}
@@ -4925,6 +4937,81 @@ html.mx-dark .svd-input{background:#0f172a;border-color:#9f1239;color:#fecdd3}
 .gt-list::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:9999px}
 .gt-list::-webkit-scrollbar-thumb:hover{background:#94a3b8}
 html.mx-dark .gt-list::-webkit-scrollbar-thumb{background:#475569}
+</style>
+
+<style id="patch-2026-11-05-streak90-100-colors">
+/* ===== Chuỗi 90: holographic pastel (tham khảo ảnh 10x60) — định nghĩa chính nằm ở khối tf-streak-50-100 ===== */
+
+/* ===== Chuỗi 100: nền bìa vũ trụ, sao lấp lánh; vòng + chữ cầu vồng giữ nguyên tông, chuyển động mềm hơn ===== */
+@keyframes tf100Twinkle{0%{opacity:.25;background-position:0 0}35%{opacity:1}65%{opacity:.5}100%{opacity:.95;background-position:-14px 6px}}
+@keyframes tf100Twinkle2{0%,100%{opacity:.95}50%{opacity:.2}}
+.tf-streak.tf-t100{--spin:4.5s;--g1:rgba(167,139,250,.6);--g2:rgba(34,211,238,.38);--g3:rgba(244,114,182,.75);--g4:rgba(251,191,36,.6)}
+.tf-streak.tf-hi.tf-t100:not(.tf-mini){isolation:isolate;background:radial-gradient(ellipse at 18% 25%,rgba(99,102,241,.55),transparent 55%) padding-box,radial-gradient(ellipse at 85% 80%,rgba(217,70,239,.38),transparent 55%) padding-box,radial-gradient(ellipse at 60% 12%,rgba(34,211,238,.24),transparent 50%) padding-box,radial-gradient(circle at 62% 40%,#fff 0 .8px,rgba(255,255,255,.3) 1.3px,transparent 2.6px) padding-box,radial-gradient(circle at 20% 82%,#c7d2fe 0 .8px,transparent 2.2px) padding-box,radial-gradient(circle at 84% 44%,#a5f3fc 0 .7px,transparent 2px) padding-box,radial-gradient(circle at 52% 14%,#fff 0 .7px,transparent 2px) padding-box,linear-gradient(135deg,#04061a,#13113a 55%,#1e1b4b) padding-box,conic-gradient(from var(--tf-a),#f87171,#fbbf24,#4ade80,#22d3ee,#a78bfa,#f472b6,#f87171) border-box}
+.tf-streak.tf-hi.tf-t100:not(.tf-mini)::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at 12% 28%,#fff 0 .9px,rgba(255,255,255,.35) 1.4px,transparent 2.8px),radial-gradient(circle at 78% 18%,#bfdbfe 0 .8px,rgba(191,219,254,.3) 1.3px,transparent 2.6px),radial-gradient(circle at 45% 78%,#fbcfe8 0 .9px,rgba(251,207,232,.3) 1.4px,transparent 2.8px),radial-gradient(circle at 90% 70%,#fff 0 .7px,transparent 2px),radial-gradient(circle at 30% 55%,#fde68a 0 .7px,transparent 2px);background-size:41px 37px,53px 43px,47px 39px,59px 31px,37px 47px;animation:tf100Twinkle 2.6s ease-in-out infinite alternate}
+.tf-streak.tf-hi.tf-t100 .tf-txt .tf-n,.tf-streak.tf-hi.tf-t100 .tf-txt .tf-x{animation-duration:3.2s!important}
+.tf-streak.tf-hi.tf-t100 .tf-txt{animation:tfShine50 3.2s linear infinite,tfText 1.3s ease-in-out infinite!important;text-shadow:0 0 7px rgba(255,255,255,.4)!important}
+.tf-streak.tf-hi.tf-t100 .tf-txt .tf-x,.tf-streak.tf-hi.tf-t100 .tf-txt .tf-n{animation:tfShine50 3.2s linear infinite!important}
+.tf-streak.tf-t100 .tf-flame{animation-duration:6s}
+/* Banner chúc mừng mốc 100 */
+.tf-banner.divine,.tf-banner.tf-t100{isolation:isolate;border:3px solid transparent;color:#fff;text-shadow:0 0 10px rgba(167,139,250,.85),0 1px 3px rgba(0,0,0,.6);background:radial-gradient(ellipse at 15% 30%,rgba(99,102,241,.5),transparent 50%) padding-box,radial-gradient(ellipse at 88% 75%,rgba(217,70,239,.38),transparent 50%) padding-box,linear-gradient(135deg,#04061a,#13113a 55%,#1e1b4b) padding-box,linear-gradient(120deg,#f87171,#fbbf24,#4ade80,#22d3ee,#a78bfa,#f472b6,#f87171) border-box;box-shadow:0 0 0 4px rgba(255,255,255,.16),0 12px 46px rgba(99,102,241,.6),0 0 90px rgba(34,211,238,.4)}
+.tf-banner.divine::before,.tf-banner.tf-t100::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at 12% 28%,#fff 0 .9px,rgba(255,255,255,.35) 1.4px,transparent 2.8px),radial-gradient(circle at 78% 18%,#bfdbfe 0 .8px,rgba(191,219,254,.3) 1.3px,transparent 2.6px),radial-gradient(circle at 45% 78%,#fbcfe8 0 .9px,rgba(251,207,232,.3) 1.4px,transparent 2.8px),radial-gradient(circle at 90% 70%,#fff 0 .7px,transparent 2px),radial-gradient(circle at 30% 55%,#fde68a 0 .7px,transparent 2px);background-size:71px 53px,83px 61px,67px 57px,97px 47px,59px 71px;animation:tf100Twinkle 2.6s ease-in-out infinite alternate}
+/* Giảm hiệu ứng khi tắt FX / reduced-motion */
+html.fx-off-streak .tf-streak.tf-t100::before,html.fx-off-all .tf-streak.tf-t100::before,html.fx-off-streak .tf-streak.tf-t90::before,html.fx-off-all .tf-streak.tf-t90::before{animation:none!important}
+@media (prefers-reduced-motion:reduce){.tf-streak.tf-t100::before,.tf-streak.tf-t90::before,.tf-banner.divine::before,.tf-banner.tf-t100::before{animation:none!important}}
+</style>
+<style id="patch-streak-hover-90-100">
+/* Rê chuột: lửa cháy to dần theo mốc, 90 và 100 to hơn hẳn 80 (hệ số --hm: 80 = 1.2, 90 = 1.45, 100 = 1.65) */
+.rank-card:hover .tf-streak.tf-mini.tf-t90 .tf-flame,.hl-row:hover .tf-streak.tf-mini.tf-t90 .tf-flame,.gr-flm:hover .tf-streak.tf-mini.tf-t90 .tf-flame{transform:scale(1.55)}
+.rank-card:hover .tf-streak.tf-mini.tf-t100 .tf-flame,.hl-row:hover .tf-streak.tf-mini.tf-t100 .tf-flame,.gr-flm:hover .tf-streak.tf-mini.tf-t100 .tf-flame{transform:scale(1.8)}
+/* Score Matrix: lửa chuỗi cháy mạnh khi rê chuột được tràn ra ngoài khung ô tên học sinh (không bị cắt, không bị ô bên cạnh đè) */
+#scoreMatrix .score-row:hover>td.sticky-col-2,
+#scoreMatrix .score-row:hover>td.sticky-col-2.ct,
+#scoreMatrix .score-row:hover>td.sticky-col-2.mx-bday{overflow:visible!important;z-index:25}
+#scoreMatrix td.sticky-col-2 .tf-flame{pointer-events:none}
+/* ===== Trang trí nền huy hiệu + banner theo mốc 20-100: chỉ vẽ trong ::before (inset:0, bo góc theo viền) nên KHÔNG tràn ra ngoài ===== */
+.tf-streak.tf-hi.tf-t90:not(.tf-mini),.tf-banner.tf-t90{isolation:isolate}
+.tf-streak.tf-hi.tf-t90:not(.tf-mini)::before,.tf-banner.tf-t90::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background-image:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.85) 46%,rgba(165,243,252,.55) 50%,rgba(249,168,212,.55) 54%,transparent 62%),radial-gradient(ellipse at center,rgba(249,168,212,.40),transparent 66%),radial-gradient(ellipse at center,rgba(153,246,228,.42),transparent 66%),radial-gradient(circle at 70% 80%,rgba(255,255,255,.95) 0 1.1px,rgba(255,255,255,.35) 2px,transparent 2.8px);background-size:280% 100%,70% 170%,75% 180%,48px 36px;background-repeat:no-repeat,no-repeat,no-repeat,repeat;animation:tfDec90 9s linear infinite;mix-blend-mode:normal}
+@keyframes tfDec90{0%{background-position:120% 0,0% 50%,100% 50%,0 0}50%{background-position:0% 0,100% 50%,0% 50%,0 -18px}100%{background-position:-120% 0,0% 50%,100% 50%,0 -36px}}
+.tf-streak.tf-hi.tf-t100:not(.tf-mini),.tf-banner.tf-t100{isolation:isolate}
+.tf-streak.tf-hi.tf-t100:not(.tf-mini)::before,.tf-banner.tf-t100::before{background-image:linear-gradient(118deg,transparent 47%,rgba(255,255,255,1) 50%,rgba(165,243,252,.7) 51.5%,transparent 54%),linear-gradient(120deg,transparent 30%,rgba(167,139,250,.30) 45%,rgba(244,114,182,.26) 55%,rgba(34,211,238,.24) 65%,transparent 80%),radial-gradient(circle at 12% 28%,#fff 0 .9px,rgba(255,255,255,.35) 1.4px,transparent 2.8px),radial-gradient(circle at 78% 18%,#bfdbfe 0 .8px,rgba(191,219,254,.3) 1.3px,transparent 2.6px),radial-gradient(circle at 45% 78%,#fbcfe8 0 .9px,rgba(251,207,232,.3) 1.4px,transparent 2.8px),radial-gradient(circle at 90% 70%,#fff 0 .7px,transparent 2px),radial-gradient(circle at 30% 55%,#fde68a 0 .7px,transparent 2px)!important;background-size:340% 100%,220% 100%,41px 37px,53px 43px,47px 39px,59px 31px,37px 47px!important;background-repeat:no-repeat,no-repeat,repeat,repeat,repeat,repeat,repeat!important;animation:tfDec100 8s linear infinite,tf100Twinkle2 3.2s ease-in-out infinite!important}
+@keyframes tfDec100{0%{background-position:100% 0,0% 0,0 0,0 0,0 0,0 0,0 0}20%{background-position:0% 0,10% 0,-3px 1px,-3px 1px,-3px 1px,-3px 1px,-3px 1px}50%{background-position:0% 0,100% 0,-14px 6px,-14px 6px,-14px 6px,-14px 6px,-14px 6px}100%{background-position:0% 0,0% 0,0 0,0 0,0 0,0 0,0 0}}
+.tf-banner.tf-t100::before{background-size:340% 100%,220% 100%,71px 53px,83px 61px,67px 57px,97px 47px,59px 71px!important}
+@keyframes tf100Twinkle2{0%,100%{opacity:1}50%{opacity:.6}}
+html.fx-off-streak .tf-streak.tf-hi.tf-t90:not(.tf-mini)::before,html.fx-off-all .tf-streak.tf-hi.tf-t90:not(.tf-mini)::before,html.fx-off-streak .tf-banner.tf-t90::before,html.fx-off-all .tf-banner.tf-t90::before,html.fx-off-streak .tf-streak.tf-hi.tf-t100:not(.tf-mini)::before,html.fx-off-all .tf-streak.tf-hi.tf-t100:not(.tf-mini)::before,html.fx-off-streak .tf-banner.tf-t100::before,html.fx-off-all .tf-banner.tf-t100::before{animation:none!important}
+@media (prefers-reduced-motion:reduce){.tf-streak.tf-hi.tf-t90:not(.tf-mini)::before,.tf-banner.tf-t90::before,.tf-streak.tf-hi.tf-t100:not(.tf-mini)::before,.tf-banner.tf-t100::before{animation:none!important}}
+/* Tên học sinh mốc 20-80: một màu đặc đúng màu của chuỗi, không gradient sang trắng */
+.tf-nm-t20{background-image:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:#2563eb!important;-webkit-text-fill-color:#2563eb!important;filter:drop-shadow(0 0 2px rgba(37,99,235,.45))!important}
+.tf-nm-t30{background-image:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:#dc2626!important;-webkit-text-fill-color:#dc2626!important;filter:drop-shadow(0 0 2px rgba(220,38,38,.45))!important}
+.tf-nm-t40{background-image:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:#c026d3!important;-webkit-text-fill-color:#c026d3!important;filter:drop-shadow(0 0 2px rgba(192,38,211,.45))!important}
+.tf-nm-t50{background-image:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:#64748b!important;-webkit-text-fill-color:#64748b!important;filter:drop-shadow(0 0 2px rgba(100,116,139,.45))!important}
+.tf-nm-t60{background-image:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:#0891b2!important;-webkit-text-fill-color:#0891b2!important;filter:drop-shadow(0 0 2px rgba(8,145,178,.45))!important}
+.tf-nm-t70{background-image:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:#5c9e16!important;-webkit-text-fill-color:#5c9e16!important;filter:drop-shadow(0 0 2px rgba(92,158,22,.45))!important}
+.tf-nm-t80{background-image:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:#d62986!important;-webkit-text-fill-color:#d62986!important;filter:drop-shadow(0 0 2px rgba(214,41,134,.45))!important}
+/* ===== Lửa chuỗi sống động hơn: (1) lắc lư + lõi thở + lệch nhịp từng học sinh, (2) vòng sáng toả ra khi hover, (3) bùng lên khi đạt mốc mới ===== */
+@keyframes tfFlick{0%,100%{transform:rotate(-45deg) scale(1,1)}18%{transform:rotate(-38deg) scale(.92,1.12)}42%{transform:rotate(-52deg) scale(1.09,.91)}66%{transform:rotate(-41deg) scale(.94,1.08)}84%{transform:rotate(-48deg) scale(1.04,.97)}}
+@keyframes tfCore{0%,100%{filter:brightness(.92)}50%{filter:brightness(1.28)}}
+.tf-flame .tf-l1{animation-delay:var(--fd,0s)}
+.tf-flame .tf-l2{animation-delay:calc(-.2s + var(--fd,0s))}
+.tf-flame .tf-l3{animation:tfFlick .55s ease-in-out infinite calc(-.35s + var(--fd,0s)),tfCore 1.7s ease-in-out infinite var(--fd,0s)}
+.tf-streak.tf-off .tf-flame .tf-l{animation:none!important}
+/* vòng sáng toả ra phía sau ngọn lửa */
+.tf-flame::after{content:"";position:absolute;left:50%;bottom:3px;width:14px;height:14px;margin-left:-7px;border-radius:50%;border:1px solid var(--fglow,rgba(251,191,36,.95));box-shadow:0 0 3px var(--fglow,rgba(251,191,36,.9));opacity:0;transform:scale(.35);pointer-events:none}
+.tf-streak.tf-t90 .tf-flame::after{border-color:#c4b5fd;box-shadow:0 0 3px #c4b5fd}
+.tf-streak.tf-t100 .tf-flame::after{border-color:#a5f3fc;box-shadow:0 0 3px #a5f3fc}
+@keyframes tfRing{0%{opacity:.9;transform:scale(.35)}100%{opacity:0;transform:scale(2.6)}}
+.rank-card:hover .tf-flame::after,.hl-row:hover .tf-flame::after,.gr-flm:hover .tf-flame::after,#scoreMatrix tbody tr:hover .tf-flame::after,#mxStuHome .mxh-hero:hover .tf-flame::after{animation:tfRing .9s ease-out infinite}
+.tf-streak.tf-off .tf-flame::after{display:none}
+/* bùng lên khi đạt mốc mới (ngọn lửa trong banner chúc mừng) */
+@keyframes tfBloom{0%{transform:scale(1.25);filter:brightness(1)}30%{transform:scale(2.6);filter:brightness(1.6) drop-shadow(0 0 10px var(--fglow,#fbbf24))}100%{transform:scale(1.25);filter:brightness(1)}}
+.tf-banner .tf-streak .tf-flame{animation:tfBloom 1.2s cubic-bezier(.2,.9,.3,1.2) .15s 2;transform-origin:50% 85%}
+.tf-banner .tf-flame::after{animation:tfRing .9s ease-out .15s 3}
+html.fx-off-streak .tf-flame::after,html.fx-off-all .tf-flame::after,html.fx-off-streak .tf-banner .tf-streak .tf-flame,html.fx-off-all .tf-banner .tf-streak .tf-flame{animation:none!important}
+@media (prefers-reduced-motion:reduce){.tf-flame::after,.tf-banner .tf-streak .tf-flame{animation:none!important}}
+/* Nút Hồi Phục Chuỗi mốc 90 và 100: nền gradient không lồng được vào var(--sg-bg) nên khai báo riêng; icon cùng tông mốc */
+.sr-entry.sg-t90:not(.ready){background:linear-gradient(180deg,#fff,#e6defb 55%,#d3f1f8)}
+.sr-entry.sg-t100:not(.ready){background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.12)),linear-gradient(90deg,#fee2e2,#fef9c3,#dcfce7,#cffafe,#e0e7ff,#fae8ff)}
+.sg-t90 .sr-ic,.sg-t90 .sr-hico,.sg-t90 .sr-rowic,.sg-t90.sr-entry .sr-ic,.sg-t90.srp .sr-hico{background:linear-gradient(135deg,#aac6f4,#b7aaf0 55%,#c4b5fd)!important;box-shadow:0 0 0 2px #fff,0 0 0 3.5px #b4c0f5,0 4px 12px rgba(124,131,224,.4)!important}
+.sr-entry.sg-t90 em{border-color:#b4c0f5;color:#4a52bf}
 </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
@@ -12776,7 +12863,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             const PTS = [0, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100], NT = TIERS.length; let pos = 0;
             if (cur >= 100) pos = NT; else for (let i = 0; i < NT; i++) if (cur >= PTS[i] && cur < PTS[i + 1]) { pos = i + (cur - PTS[i]) / (PTS[i + 1] - PTS[i]); break; }
             const pct = Math.max(0.5, pos / NT * 100);
-            const GRAD = 'linear-gradient(90deg,' + ['#b5942f', '#f97316', '#10b981', '#f59e0b', '#6366f1', '#dc2626', '#c026d3', '#68778B', '#00A9C7', '#5C9E16', '#D62986', '#7B3828', '#d946ef'].map((c, i) => c + ' ' + (i * 100 / NT).toFixed(2) + '%').join(',') + ')';
+            const GRAD = 'linear-gradient(90deg,' + ['#b5942f', '#f97316', '#10b981', '#f59e0b', '#6366f1', '#dc2626', '#c026d3', '#68778B', '#00A9C7', '#5C9E16', '#D62986', '#8b7cf6', '#d946ef'].map((c, i) => c + ' ' + (i * 100 / NT).toFixed(2) + '%').join(',') + ')';
             const nodes = `<div class="sgb-node zero"><div class="sgb-dot"></div><b>${T('Bắt đầu', 'Start')}</b></div>` + TIERS.map(t => {
                 const state = got.has(t) ? 'got' : (t === next ? 'nxt' : '');
                 const badge = (t === 5 && claimed5) ? `<span class="sgb-done">${T('Đã nhận', 'Received')}</span>` : '';
@@ -13237,7 +13324,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 msg = T(`Chuỗi chưa đạt mốc 10 nên chưa có bảo hiểm: một điểm dưới 9 sẽ đưa chuỗi về 0. Từ chuỗi 10 bạn có ${TEN_MISS_LIMIT[10]} lần hụt được phép.`, `The streak has not reached 10, so there is no insurance yet: one score below 9 sends it to 0. From streak 10 you get ${TEN_MISS_LIMIT[10]} allowed misses.`);
             } else {
                 cls = left === 0 ? 'danger' : (left <= Math.ceil(lim / 4) ? 'warn' : '');
-                for (let i = 0; i < lim; i++) bars += `<i class="${i < left ? 'on' : 'used'}"></i>`;
+                for (let i = 0; i < lim; i++) bars += `<i class="${i < left ? 'on' : 'used'}" style="--i:${i};--n:${lim}"></i>`;
                 right = `${left}/${lim}`;
                 msg = left === 0
                     ? T('⚠ Hết bảo hiểm! Lần điểm dưới 9 tiếp theo sẽ đưa chuỗi về 0.', '⚠ Insurance used up! The next score below 9 sends the streak to 0.')
@@ -13402,8 +13489,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                   pal: ['#5C9E16', '#84CC16', '#A3E635', '#D9F99D', '#ffffff', '#3F6F0E', '#ECFCCB'] },
             80: { cls: 'fuchsia', vi: 'TỐI THƯỢNG!', en: 'SUPREME!', dur: 6600, waves: 8, burst: 180, flash: 'rgba(214,41,134,.6)', notes: [349, 440, 523, 698, 880, 1047, 1397, 1760, 2093, 2794],
                   pal: ['#D62986', '#FF6EB4', '#FFC4E2', '#F472B6', '#ffffff', '#9B1560', '#FFE0F0'] },
-            90: { cls: 'choco', vi: 'CHÍ TÔN!', en: 'SOVEREIGN!', dur: 6800, waves: 8, burst: 190, flash: 'rgba(243,199,165,.55)', notes: [392, 494, 587, 784, 988, 1175, 1568, 1976, 2349, 3136],
-                  pal: ['#4B241C', '#7B3828', '#F3C7A5', '#A8573A', '#ffffff', '#2E130E', '#FBE3CE'] },
+            90: { cls: 'pearl', vi: 'CHÍ TÔN!', en: 'SOVEREIGN!', dur: 6800, waves: 8, burst: 190, flash: 'rgba(196,181,253,.6)', notes: [392, 494, 587, 784, 988, 1175, 1568, 1976, 2349, 3136],
+                  pal: ['#c4b5fd', '#f9a8d4', '#fde68a', '#86efac', '#7dd3fc', '#ffffff', '#e9d5ff'] },
             100: { cls: 'divine', vi: 'HUYỀN THOẠI VĨNH CỬU!', en: 'ETERNAL LEGEND!', dur: 8000, waves: 10, burst: 200, flash: 'rgba(255,255,255,.85)', notes: [262, 330, 392, 523, 659, 784, 1047, 1319, 1568, 2093, 2637, 3136],
                   pal: ['#ef4444', '#f59e0b', '#facc15', '#22c55e', '#06b6d4', '#6366f1', '#d946ef'] }
         };
@@ -23007,6 +23094,22 @@ window.BK_BADGES=BK;
 })();
 </script>
 
+<script>
+/* Lệch nhịp cháy ngẫu nhiên cho từng ngọn lửa để bảng nhiều học sinh không nhấp nháy đồng loạt */
+(function(){
+  function tag(root){
+    if(!root||root.nodeType!==1)return;
+    var list=root.matches&&root.matches('.tf-flame')?[root]:[];
+    if(root.querySelectorAll)list=list.concat([].slice.call(root.querySelectorAll('.tf-flame')));
+    list.forEach(function(f){if(f.dataset.fd)return;f.dataset.fd='1';f.style.setProperty('--fd',(-Math.random()*1.4).toFixed(2)+'s');});
+  }
+  function start(){
+    tag(document.body);
+    new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(tag);});}).observe(document.body,{childList:true,subtree:true});
+  }
+  if(document.body)start();else document.addEventListener('DOMContentLoaded',start);
+})();
+</script>
 </body>
 </html>
 </html>
