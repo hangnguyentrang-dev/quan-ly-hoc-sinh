@@ -9312,6 +9312,34 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 sgEnforce();
                 if (!_undoRestore) { stampScoreTimes(); updateTenRecords(); try { srSync(); } catch (e) { console.warn('srSync skipped:', e); } sgSync(); }
             } catch (e) { console.warn('stampScoreTimes skipped:', e); }
+            // Cảnh báo bất thường: chuỗi của học sinh tăng từ 5 trở lên mà không có điểm mới, hoặc nhiều ô cùng mất điểm gốc
+            try {
+                const lpA = lastPersistedSnapshot;
+                if (lpA && !_undoRestore && !suppressUndoCapture && !window.__anomalyOk && window.__ehTag !== 'undo' && !window.__tenUndo) {
+                    const pS = lpA.scores || {}, cS = appData.scores || {}, bySid = {}, lostBase = [];
+                    const sgn = c => c ? (c.absent ? 'A' : String(c.score)) : '';
+                    const sidOf = k => String(k).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, '');
+                    Object.keys(cS).forEach(k => { const c = cS[k], q = pS[k]; if (!c || typeof c !== 'object') return; if (!q || sgn(q) !== sgn(c)) bySid[sidOf(k)] = (bySid[sidOf(k)] || 0) + 1; });
+                    Object.keys(pS).forEach(k => { const q = pS[k], c = cS[k]; if (q && q.giftStreakOrig && c && !c.giftStreakOrig && sgn(q) === sgn(c)) lostBase.push(sidOf(k)); });
+                    const jumps = [];
+                    (appData.students || []).forEach(st => { if (bySid[String(st.id)]) return; const bf = tenStreakInfo(st.id, pS).cur, af = tenStreakInfo(st.id).cur; if (af - bf >= 5) jumps.push({ st, d: af - bf }); });
+                    if (jumps.length || lostBase.length >= 2) {
+                        const names = new Set(jumps.map(j => getStudentDisplayName(j.st)));
+                        lostBase.forEach(sid => { const st = (appData.students || []).find(x => String(x.id) === sid); if (st) names.add(getStudentDisplayName(st)); });
+                        const enA = appData.language === 'en';
+                        const msgA = (enA ? 'Unusual change detected before saving.\n' : 'Phát hiện thay đổi bất thường trước khi lưu.\n')
+                            + (jumps.length ? (enA ? '- Streak rises by 5+ with no new score: ' : '- Chuỗi tăng từ 5 trở lên mà không có điểm mới: ') + jumps.map(j => getStudentDisplayName(j.st) + ' (+' + j.d + ')').join(', ') + '\n' : '')
+                            + (lostBase.length >= 2 ? (enA ? '- Cells losing their original score: ' : '- Số ô mất điểm gốc: ') + lostBase.length + '\n' : '')
+                            + (enA ? 'Students affected: ' : 'Học sinh bị ảnh hưởng: ') + Array.from(names).join(', ') + '\n\n' + (enA ? 'Save anyway?' : 'Vẫn lưu?');
+                        const pre = lpA;
+                        return showAppConfirm(msgA).then(ok => {
+                            if (!ok) { appData = deepCopy(pre); try { renderClassTabs(); renderCurrentView(); } catch (e3) {} return false; }
+                            window.__anomalyOk = true; window.__undoRestore = true; // dữ liệu đã tính xong ở trên: lưu tiếp, không tính lại
+                            try { return saveData(); } finally { window.__anomalyOk = false; }
+                        });
+                    }
+                }
+            } catch (e) { console.warn('anomaly check skipped:', e); }
             try { ehRecord(); } catch (e) { console.warn('ehRecord skipped:', e); }
             // Ghi lại trạng thái đã lưu gần nhất trước khi thay đổi, để có thể hoàn tác.
             // Lượt quay may mắn ghi thẳng lên Firebase và đã tự lưu bản chụp TRƯỚC lượt quay: lần lưu kế tiếp (ghi nhận lịch sử / thú cưng) gộp chung vào bước hoàn tác đó
@@ -12378,7 +12406,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 const cur = appData.scores[key]; if (!cur || typeof cur !== 'object') return;
                 const gk = !!cur.giftKeep; if (cur.giftKeep !== undefined) delete cur.giftKeep; // cờ một lần: ô vừa áp quà
                 const prev = prevScores[key];
-                const changed = !prev || sig(prev) !== sig(cur);
+                const noBase = !lastPersistedSnapshot; // chưa có ảnh chụp lần lưu trước (sau khôi phục / đổi giáo viên): không có gì để so sánh -> không ô nào bị coi là sửa tay
+                const changed = noBase ? false : (!prev || sig(prev) !== sig(cur));
                 if (changed) {
                     // Ô được khôi phục (Ctrl+Z / Ctrl+Y) mang theo ts cũ: giữ nguyên cờ miễn trừ của chính ô đó
                     // FIX: ô vừa áp quà (gk) KHÔNG BAO GIỜ là ô "khôi phục". Trước đây nếu ts của ô lệch ảnh chụp lần lưu trước (sau hoàn tác / đồng bộ),
@@ -12427,7 +12456,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     delete cur.keepTs; // cờ một lần: ô áp quà giữ ts gốc
                     // Nếu người dùng sửa điểm thủ công sau khi áp quà, bỏ mốc điểm gốc của quà;
                     // từ thời điểm này streak sẽ phản ánh đúng điểm mới do người dùng nhập.
-                    if (!gk) delete cur.giftStreakOrig;
+                    if (!gk && prev && sig(prev) !== sig(cur)) delete cur.giftStreakOrig;
                     // Nút "Không trừ streak": điểm dưới 10 nhập lúc nút đang BẬT được đánh dấu miễn trừ vĩnh viễn
                     const curV = parseFloat(cur.score);
                     if (gk && !cur.absent && !isNaN(curV) && curV < 10) cur.keep = true; /* quà áp vào ô dưới 10: luôn miễn trừ streak */
@@ -12474,12 +12503,22 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     }
                     if (!cur.ts) cur.ts = (prev && prev.ts) || Math.min(scoreKeyDateMs(key) || now, now);
                 }
+                // Sổ điểm gốc riêng (appData.sgBase): ghi điểm gốc của ô được quà nâng, nằm ngoài ô điểm; thiếu điểm gốc thì tự lấy lại từ sổ này
+                try {
+                    if (!appData.sgBase || typeof appData.sgBase !== 'object') appData.sgBase = {};
+                    const sb = appData.sgBase, goC = cur.giftStreakOrig && typeof cur.giftStreakOrig === 'object' && !isNaN(parseFloat(cur.giftStreakOrig.v)) ? cur.giftStreakOrig : null;
+                    if (goC) { const o = { v: parseFloat(goC.v), ts: goC.ts || cur.ts || null, keep: !!goC.keep }; const e0 = sb[key]; if (!e0 || e0.v !== o.v || e0.ts !== o.ts || !!e0.keep !== o.keep) sb[key] = o; }
+                    else if (changed && !noBase && prev && !gk) { if (sb[key]) delete sb[key]; } // chỉ khi ô thật sự bị sửa tay mới xóa khỏi sổ
+                    else if (sb[key] && !cur.sg && !cur.absent && parseFloat(cur.score) >= 10 && !cur.editOrig && !isNaN(parseFloat(sb[key].v)) && parseFloat(sb[key].v) < 10) {
+                        cur.giftStreakOrig = { v: parseFloat(sb[key].v), ts: sb[key].ts || cur.ts || null, keep: !!sb[key].keep }; // lấy lại điểm gốc bị mất
+                    }
+                } catch (e) { console.warn('sgBase skipped:', e); }
             });
             // Ô điểm bị XÓA hẳn: nếu đó là điểm dưới 9 đã làm đứt chuỗi thì giữ điểm cắt (không nối lại). Hoàn tác (Ctrl+Z) thì gỡ điểm cắt của ô bị bỏ.
             try {
                 const gone = Object.keys(prevScores).filter(k => !(appData.scores && Object.prototype.hasOwnProperty.call(appData.scores, k)));
                 if (undoing) gone.forEach(k => tenCutDrop(k));
-                else if (!noCut && gone.length && gone.length <= 20) gone.forEach(k => { const pb = tenBreakerOf(prevScores[k], k); if (pb) tenCutAdd(k, pb); });
+                else if (!noCut && gone.length && gone.length <= 20) gone.forEach(k => { try { if (appData.sgBase) delete appData.sgBase[k]; } catch (e2) {} const pb = tenBreakerOf(prevScores[k], k); if (pb) tenCutAdd(k, pb); });
             } catch (e) { console.warn('tenCuts skipped:', e); }
             if (shieldFx.length) setTimeout(() => shieldNotify(shieldFx), 250);
             // Pháo giấy: chỉ khi nhập tay vài ô (không bắn khi tải/nhập dữ liệu hàng loạt hoặc hoàn tác)
@@ -13109,7 +13148,16 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 // 2) Trạng thái sự kiện (chỉ sự kiện mới nhất mới hồi phục được; không còn hạn theo số buổi học)
                 Object.keys(s.ev).forEach(k => {
                     const e = s.ev[k]; if (!e) return;
-                    if (e.status === 'used') { e.orphan = !ids.has(e.id); return; }
+                    if (e.status === 'used') {
+                        e.orphan = !ids.has(e.id);
+                        // Lần đứt đã biến mất (vd. điểm bị sửa / mất điểm gốc): hoàn vé vào túi một lần, đánh dấu cần đối soát, ghi lịch sử
+                        if (e.orphan && !e.refunded && s.tk.length < SR_MAX) {
+                            e.refunded = true; e.status = 'expired'; e.why = 'refunded'; e.needsReview = true;
+                            s.tk.push({ id: 'tk_rf_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tier: 0, at: now });
+                            s.hist.push({ t: 'refund', ev: e.id, at: now, review: true });
+                        }
+                        return;
+                    }
                     if (e.status === 'expired' && !((e.why === 'time' || e.why === 'superseded') && last && last.id === e.id)) return; // sự kiện cũ hết hạn theo buổi học nay được mở lại nếu là lần đứt mới nhất
                     const bk = inf.breaks.find(b => b.id === e.id);
                     if (!bk) { e.status = 'void'; return; }
@@ -15575,6 +15623,25 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             alert(appData.language === 'en' ? 'Backup file created. Keep it somewhere safe.' : 'Đã tạo file sao lưu. Hãy lưu file ở nơi an toàn để có thể phục hồi khi cần.');
         };
 
+        // Sao lưu tự động trước khi khôi phục: giữ trong bộ nhớ (+ localStorage nếu đủ chỗ) và tự tải một file; quay lại bằng restorePreRestoreBackup()
+        window.__autoBackupBeforeRestore = function(data) {
+            const copy = deepCopy(data); window.__preRestoreBackup = copy;
+            try { localStorage.setItem('mxPreRestoreBackup:' + (currentTeacherId || 'default'), JSON.stringify(copy)); } catch (e) {}
+            try {
+                const blob = new Blob([JSON.stringify(copy, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a');
+                a.href = url; a.download = 'Truoc_Khi_Khoi_Phuc_' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19) + '.json';
+                document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+            } catch (e) { console.warn('Auto download skipped', e); }
+        };
+        window.restorePreRestoreBackup = async function() {
+            let d = window.__preRestoreBackup;
+            if (!d) { try { d = JSON.parse(localStorage.getItem('mxPreRestoreBackup:' + (currentTeacherId || 'default')) || 'null'); } catch (e) {} }
+            if (!d) { alert(appData.language === 'en' ? 'No pre-restore backup found.' : 'Không tìm thấy bản sao lưu trước khi khôi phục.'); return false; }
+            if (!await showAppConfirm(appData.language === 'en' ? 'Go back to the data from before the last restore?' : 'Quay lại dữ liệu trước lần khôi phục gần nhất?')) return false;
+            appData = deepCopy(d); lastPersistedSnapshot = deepCopy(d); undoHistory = [];
+            const ok = await saveData(); renderClassTabs(); renderCurrentView(); applyLanguageUI(); return ok;
+        };
+
         window.importData = function(event) {
             const file = event.target.files && event.target.files[0];
             if (!file) return;
@@ -15588,10 +15655,12 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                         if (!await showAppConfirm(msg)) { event.target.value = ''; return; }
                         const previous = deepCopy(appData);
                         if (!imported.deletedStudents) imported.deletedStudents = [];
+                        try { window.__autoBackupBeforeRestore && window.__autoBackupBeforeRestore(previous); } catch (er) { console.warn('Auto backup skipped', er); }
                         appData = imported;
+                        lastPersistedSnapshot = deepCopy(imported); // chụp ngay dữ liệu vừa khôi phục làm "lần lưu trước", tránh coi mọi ô là vừa sửa tay
                         saveData().then(ok => {
-                            if (ok) { undoHistory = []; renderClassTabs(); renderCurrentView(); applyLanguageUI(); alert(appData.language === 'en' ? 'Backup restored successfully.' : 'Đã phục hồi dữ liệu từ bản sao lưu thành công.'); }
-                            else { appData = previous; renderClassTabs(); renderCurrentView(); }
+                            if (ok) { undoHistory = []; lastPersistedSnapshot = deepCopy(appData); renderClassTabs(); renderCurrentView(); applyLanguageUI(); alert(appData.language === 'en' ? 'Backup restored successfully.' : 'Đã phục hồi dữ liệu từ bản sao lưu thành công.'); }
+                            else { appData = previous; lastPersistedSnapshot = deepCopy(previous); renderClassTabs(); renderCurrentView(); }
                         });
                     } else {
                         alert(appData.language === 'en' ? 'Invalid backup file. Required class, student and score data was not found.' : 'File sao lưu không hợp lệ: không tìm thấy dữ liệu lớp, học sinh và điểm.');
