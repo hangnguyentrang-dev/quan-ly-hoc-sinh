@@ -8929,6 +8929,9 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 if (val) {
                     window.__tdLoaded = true; // đã nhận dữ liệu thật từ máy chủ: cho phép ghi
                     window.__tdRev = Math.max(Number(window.__tdRev) || 0, Number(val._rev) || 0);
+                    if (!tdLoadedOnce) { // tab mới mở vừa đọc dữ liệu mới nhất: nhận luôn số phiên bản hiện có trên nút khóa (kể cả khi lần ghi trước chỉ kịp xin số mà chưa ghi xong)
+                        window.__tdRevReady = get(ref(db, `appDataMultiTeacher/revs/${tdId}`)).then(sn => { const m = sn.val(); if (m && Number(m.rev) > (Number(window.__tdRev) || 0)) window.__tdRev = Number(m.rev); }).catch(() => {});
+                    }
                     if (!tdLoadedOnce) {
                         tdLoadedOnce = true;
                         // Điểm khôi phục phía Firebase: mỗi ngày 1 bản (giữ 7 ngày) trước khi có bất kỳ thao tác ghi nào
@@ -9351,10 +9354,12 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         window.__tdRev = 0;
         function mxClaimRev() {
             const tid = currentTeacherId || LEGACY_TEACHER_ID, force = !!window.__forceClaim; window.__forceClaim = false;
-            const mine = Number(window.__tdRev) || 0; let conflict = false, newRev = 0, seen = 0;
+            let conflict = false, newRev = 0, seen = 0, mine = 0;
+            return Promise.resolve(window.__tdRevReady).catch(() => {}).then(() => {
+            mine = Number(window.__tdRev) || 0;
             return runTransaction(ref(db, `appDataMultiTeacher/revs/${tid}`), cur => {
                 conflict = false; const sv = cur && Number(cur.rev) || 0; seen = sv;
-                if (cur && sv !== mine && !force) { conflict = true; return; }
+                if (cur && sv > mine && !force) { conflict = true; return; }
                 newRev = Math.max(sv, mine) + 1;
                 return { rev: newRev, by: window.__tabId, at: Date.now() };
             }).then(res => {
@@ -9369,7 +9374,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     return { ok: false };
                 }
                 return { ok: true, rev: mine + 1 };
-            }).catch(err => { try { window.mxDiag('claim_error', { m: String(err && err.message || err).slice(0, 120) }); } catch (e) {} window.__tdRev = mine + 1; return { ok: true, rev: mine + 1 }; }); // lỗi mạng/quyền ở nút khóa: không chặn lưu (không tệ hơn trước)
+            }); }).catch(err => { try { window.mxDiag('claim_error', { m: String(err && err.message || err).slice(0, 120) }); } catch (e) {} window.__tdRev = mine + 1; return { ok: true, rev: mine + 1 }; }); // lỗi mạng/quyền ở nút khóa: không chặn lưu (không tệ hơn trước)
         }
         function saveData() {
             // Hoàn tác hệ thống = khôi phục NGUYÊN bản chụp cũ (điểm, chuỗi, kỷ lục, sổ túi quà, vé hồi chuỗi...): không tính lại chuỗi, không cộng/trừ, không ghi sự kiện mới
@@ -9396,7 +9401,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                     const sgn = c => c ? (c.absent ? 'A' : String(c.score)) : '';
                     const sidOf = k => String(k).replace(/_\d{4}-\d{1,2}-\d{1,2}$/, '');
                     Object.keys(cS).forEach(k => { const c = cS[k], q = pS[k]; if (!c || typeof c !== 'object') return; if (!q || sgn(q) !== sgn(c)) bySid[sidOf(k)] = (bySid[sidOf(k)] || 0) + 1; });
-                    Object.keys(pS).forEach(k => { const q = pS[k], c = cS[k]; if (q && q.giftStreakOrig && c && !c.giftStreakOrig && sgn(q) === sgn(c)) lostBase.push(sidOf(k)); });
+                    Object.keys(pS).forEach(k => { const q = pS[k], c = cS[k]; if (q && !c) bySid[sidOf(k)] = (bySid[sidOf(k)] || 0) + 1; if (q && q.giftStreakOrig && c && !c.giftStreakOrig && sgn(q) === sgn(c)) lostBase.push(sidOf(k)); });
                     const jumps = [];
                     (appData.students || []).forEach(st => { if (bySid[String(st.id)]) return; const bf = tenStreakInfo(st.id, pS).cur, af = tenStreakInfo(st.id).cur; if (af - bf >= 5) jumps.push({ st, d: af - bf }); });
                     if (jumps.length || lostBase.length >= 2) {
@@ -13230,12 +13235,18 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 // 2) Trạng thái sự kiện (chỉ sự kiện mới nhất mới hồi phục được; không còn hạn theo số buổi học)
                 Object.keys(s.ev).forEach(k => {
                     const e = s.ev[k]; if (!e) return;
+                    // Lần đứt từng biến mất (đã tự hoàn vé) nay xuất hiện lại (vd. điểm gốc được khôi phục): thu lại vé đã hoàn và đặt sự kiện về "đã dùng" để chuỗi nối lại đúng
+                    if (e.status === 'expired' && e.why === 'refunded' && e.rfTk && ids.has(e.id)) {
+                        const ti = s.tk.findIndex(t => t && t.id === e.rfTk);
+                        if (ti >= 0) { s.tk.splice(ti, 1); e.status = 'used'; e.refunded = false; e.orphan = false; delete e.why; delete e.needsReview; delete e.rfTk; s.hist.push({ t: 'unrefund', ev: e.id, at: now }); return; }
+                    }
                     if (e.status === 'used') {
                         e.orphan = !ids.has(e.id);
                         // Lần đứt đã biến mất (vd. điểm bị sửa / mất điểm gốc): hoàn vé vào túi một lần, đánh dấu cần đối soát, ghi lịch sử
                         if (e.orphan && !e.refunded && s.tk.length < SR_MAX) {
                             e.refunded = true; e.status = 'expired'; e.why = 'refunded'; e.needsReview = true;
-                            s.tk.push({ id: 'tk_rf_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tier: 0, at: now });
+                            e.rfTk = 'tk_rf_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+                            s.tk.push({ id: e.rfTk, tier: 0, at: now });
                             s.hist.push({ t: 'refund', ev: e.id, at: now, review: true });
                         }
                         return;
