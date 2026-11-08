@@ -8894,7 +8894,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
         }
 
         function initApp() {
-            ehBase = null; window.__tdLoaded = false; window.__tdCounts = null; window.__tdRev = 0; // chưa tải dữ liệu thật: chặn mọi lần ghi cho tới khi máy chủ trả dữ liệu
+            ehBase = null; window.__tdLoaded = false; window.__tdCounts = null; // chưa tải dữ liệu thật: chặn mọi lần ghi cho tới khi máy chủ trả dữ liệu
             if (unsubscribeTeacherData) { unsubscribeTeacherData(); unsubscribeTeacherData = null; }
             const dataRef = ref(db, `appDataMultiTeacher/teacherData/${currentTeacherId || LEGACY_TEACHER_ID}`);
             let tdLoadedOnce = false; // đã từng nhận dữ liệu thật từ máy chủ trong phiên này
@@ -8921,17 +8921,13 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                             const en = appData && appData.language === 'en';
                             const ok = await showAppConfirm(en ? 'The server data just became EMPTY, but this browser still holds your data. Write the data in this browser back to the server?\n\nOK = restore from this browser. Cancel = change nothing (do not close this tab; use Restore Data).' : 'Dữ liệu trên máy chủ vừa bỗng TRỐNG, nhưng trình duyệt này vẫn còn dữ liệu của bạn. Ghi lại dữ liệu đang có trong trình duyệt lên máy chủ?\n\nĐồng ý = khôi phục từ trình duyệt này. Hủy = không đổi gì (đừng đóng tab này, hãy dùng Phục hồi dữ liệu).');
                             window.__tdRescueBusy = false;
-                            if (ok) { window.__tdLoaded = true; window.__forceClaim = true; lastPersistedSnapshot = deepCopy(appData); try { window.mxDiag && window.mxDiag('rescue_ok', { s: appData.students.length }); } catch (e) {} saveData(); }
+                            if (ok) { window.__tdLoaded = true; lastPersistedSnapshot = deepCopy(appData); try { window.mxDiag && window.mxDiag('rescue_ok', { s: appData.students.length }); } catch (e) {} saveData(); }
                         }, 0);
                     }
                     return;
                 }
                 if (val) {
                     window.__tdLoaded = true; // đã nhận dữ liệu thật từ máy chủ: cho phép ghi
-                    window.__tdRev = Math.max(Number(window.__tdRev) || 0, Number(val._rev) || 0);
-                    if (!tdLoadedOnce) { // tab mới mở vừa đọc dữ liệu mới nhất: nhận luôn số phiên bản hiện có trên nút khóa (kể cả khi lần ghi trước chỉ kịp xin số mà chưa ghi xong)
-                        window.__tdRevReady = get(ref(db, `appDataMultiTeacher/revs/${tdId}`)).then(sn => { const m = sn.val(); if (m && Number(m.rev) > (Number(window.__tdRev) || 0)) window.__tdRev = Number(m.rev); }).catch(() => {});
-                    }
                     if (!tdLoadedOnce) {
                         tdLoadedOnce = true;
                         // Điểm khôi phục phía Firebase: mỗi ngày 1 bản (giữ 7 ngày) trước khi có bất kỳ thao tác ghi nào
@@ -9345,37 +9341,9 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             if (!d) { alert('Không có bản tự sao lưu ngày ' + day); return false; }
             if (!await showAppConfirm('Khôi phục dữ liệu từ bản tự sao lưu ngày ' + day + ' (' + (d.students || []).length + ' học sinh)? Dữ liệu hiện tại sẽ được cất dự phòng trước.')) return false;
             try { window.__autoBackupBeforeRestore && window.__autoBackupBeforeRestore(appData); } catch (e) {}
-            appData = d; lastPersistedSnapshot = deepCopy(d); window.__tdLoaded = true; window.__forceClaim = true;
+            appData = d; lastPersistedSnapshot = deepCopy(d); window.__tdLoaded = true;
             const ok = await saveData(); renderClassTabs(); renderCurrentView(); applyLanguageUI(); return ok;
         };
-        // Chống 2 thiết bị / 2 tab ghi đè nhau: mỗi lần lưu phải "xin" số phiên bản kế tiếp trên một nút nhỏ riêng (giao dịch nguyên tử).
-        // Nếu nơi khác đã lưu bản mới hơn mà tab này chưa nhận thì lần lưu bị chặn, không ghi đè bằng dữ liệu cũ.
-        window.__tabId = window.__tabId || ('tab_' + Math.random().toString(36).slice(2, 8));
-        window.__tdRev = 0;
-        function mxClaimRev() {
-            const tid = currentTeacherId || LEGACY_TEACHER_ID, force = !!window.__forceClaim; window.__forceClaim = false;
-            let conflict = false, newRev = 0, seen = 0, mine = 0;
-            return Promise.resolve(window.__tdRevReady).catch(() => {}).then(() => {
-            mine = Number(window.__tdRev) || 0;
-            return runTransaction(ref(db, `appDataMultiTeacher/revs/${tid}`), cur => {
-                conflict = false; const sv = cur && Number(cur.rev) || 0; seen = sv;
-                if (cur && sv > mine && !force) { conflict = true; return; }
-                newRev = Math.max(sv, mine) + 1;
-                return { rev: newRev, by: window.__tabId, at: Date.now() };
-            }).then(res => {
-                if (res && res.committed) { window.__tdRev = newRev; return { ok: true, rev: newRev }; }
-                if (conflict) {
-                    try { window.mxDiag('save_conflict', { mine, server: seen }); } catch (e) {}
-                    if (!window.__revConflictBusy) {
-                        window.__revConflictBusy = true;
-                        const en = appData && appData.language === 'en';
-                        showAppConfirm(en ? 'This data was just saved from another device or tab. This save was BLOCKED so it cannot overwrite the newer data.\n\nOK = reload to get the latest data (unsaved changes in this tab are lost). Cancel = keep this tab as is, nothing is saved.' : 'Dữ liệu này vừa được lưu từ một thiết bị hoặc tab khác. Lần lưu này đã bị CHẶN để không ghi đè lên dữ liệu mới hơn.\n\nĐồng ý = tải lại trang để lấy dữ liệu mới nhất (thay đổi chưa lưu ở tab này sẽ mất). Hủy = giữ nguyên tab này, không lưu gì.').then(ok => { window.__revConflictBusy = false; if (ok) location.reload(); });
-                    }
-                    return { ok: false };
-                }
-                return { ok: true, rev: mine + 1 };
-            }); }).catch(err => { try { window.mxDiag('claim_error', { m: String(err && err.message || err).slice(0, 120) }); } catch (e) {} window.__tdRev = mine + 1; return { ok: true, rev: mine + 1 }; }); // lỗi mạng/quyền ở nút khóa: không chặn lưu (không tệ hơn trước)
-        }
         function saveData() {
             // Hoàn tác hệ thống = khôi phục NGUYÊN bản chụp cũ (điểm, chuỗi, kỷ lục, sổ túi quà, vé hồi chuỗi...): không tính lại chuỗi, không cộng/trừ, không ghi sự kiện mới
             const _undoRestore = !!window.__undoRestore; window.__undoRestore = false;
@@ -9442,11 +9410,8 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             try { bkEnsureActiveCourseBadges(); bkEvaluateAll(); for(const st of (appData.students||[]))bkSaveStudentCourse(st,appData.courseManager?.activeCourseId); } catch (e) { console.warn('Badge evaluation skipped:',e); }
             try { lvRewardSync(); } catch (e) { console.warn('Level reward skipped:', e); }
             try { if (appData.studentPortal && appData.studentPortal.enabled) mxEnsureLoginCodes(); } catch (e) { console.warn('Login codes skipped:', e); }
-            return mxClaimRev().then(claim => {
-            if (!claim.ok) { suppressUndoCapture = false; return false; }
-            appData._rev = claim.rev;
             const saveSnapshot = deepCopy(appData);
-            try { window.mxDiag('save', { s: (appData.students || []).length, sc: Object.keys(appData.scores || {}).length, rev: claim.rev }); } catch (e) {}
+            try { window.mxDiag('save', { s: (appData.students || []).length, sc: Object.keys(appData.scores || {}).length }); } catch (e) {}
             return set(ref(db, `appDataMultiTeacher/teacherData/${currentTeacherId || LEGACY_TEACHER_ID}`), appData).then(() => { // Lưu đúng nhánh dữ liệu giáo viên chính
                 try { mxSchedulePublish(); } catch (e) {}
                 lastPersistedSnapshot = deepCopy(saveSnapshot);
@@ -9459,7 +9424,6 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                 suppressUndoCapture = false;
                 alert(appData.language === 'en' ? 'Save failed. Please check your connection and try again.' : 'Lưu dữ liệu thất bại. Vui lòng kiểm tra kết nối mạng và thử lại.');
                 return false;
-            });
             });
         }
 
@@ -15731,7 +15695,7 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
             if (!d) { try { d = JSON.parse(localStorage.getItem('mxPreRestoreBackup:' + (currentTeacherId || 'default')) || 'null'); } catch (e) {} }
             if (!d) { alert(appData.language === 'en' ? 'No pre-restore backup found.' : 'Không tìm thấy bản sao lưu trước khi khôi phục.'); return false; }
             if (!await showAppConfirm(appData.language === 'en' ? 'Go back to the data from before the last restore?' : 'Quay lại dữ liệu trước lần khôi phục gần nhất?')) return false;
-            appData = deepCopy(d); lastPersistedSnapshot = deepCopy(d); undoHistory = []; window.__forceClaim = true;
+            appData = deepCopy(d); lastPersistedSnapshot = deepCopy(d); undoHistory = [];
             const ok = await saveData(); renderClassTabs(); renderCurrentView(); applyLanguageUI(); return ok;
         };
 
@@ -15750,7 +15714,6 @@ html.mx-dark .pq-slot.f{background:#1e1b4b}
                         if (!imported.deletedStudents) imported.deletedStudents = [];
                         try { window.__autoBackupBeforeRestore && window.__autoBackupBeforeRestore(previous); } catch (er) { console.warn('Auto backup skipped', er); }
                         appData = imported;
-                        window.__forceClaim = true;
                         window.__tdLoaded = true; // người dùng đã xác nhận khôi phục: cho phép ghi dù đang bị khóa
                         lastPersistedSnapshot = deepCopy(imported); // chụp ngay dữ liệu vừa khôi phục làm "lần lưu trước", tránh coi mọi ô là vừa sửa tay
                         saveData().then(ok => {
