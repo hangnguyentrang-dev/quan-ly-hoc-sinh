@@ -271,8 +271,8 @@ del.fxd{color:#ff9a9d;opacity:.85;text-decoration-thickness:2px;padding:0 3px}
 .arv .hp{width:min(86%,260px);height:16px;border-radius:99px;background:rgba(0,0,0,.18);border:2px solid var(--line);overflow:hidden}.arv .hp i{display:block;height:100%;background:var(--c);transition:width .7s}
 .arv.atk{animation:arAtk .6s}.arv.hit svg{animation:arHit .6s .25s}.arv.a0{--d:70px}.arv.a1{--d:-70px}
 .abf{display:flex;gap:3px;min-height:26px;flex-wrap:wrap;justify-content:center;font-size:20px}.abf span{animation:afBn 1.6s infinite}
-.adm{position:absolute;top:8%;left:50%;font-size:clamp(24px,4vw,40px);font-weight:900;color:#ff4d4f;text-shadow:0 2px 0 #fff;animation:afRs 1.3s both;z-index:6}.adm.h{color:#22c55e}
-.afx{position:absolute;left:50%;top:22%;font-size:clamp(44px,8vw,72px);pointer-events:none;z-index:5;filter:drop-shadow(0 0 14px var(--c));animation-duration:1.5s;animation-fill-mode:both}
+.adm{position:absolute;top:8%;left:50%;font-size:clamp(24px,4vw,40px);font-weight:900;color:#ff4d4f;text-shadow:0 2px 0 #fff;animation:afRs 1.9s both;z-index:6}.adm.h{color:#22c55e}
+.afx{position:absolute;left:50%;top:22%;font-size:clamp(44px,8vw,72px);pointer-events:none;z-index:5;filter:drop-shadow(0 0 14px var(--c));animation-duration:2.1s;animation-fill-mode:both}
 .afx.sl{animation-name:afSl}.afx.zp{animation-name:afZp}.afx.dr{animation-name:afDr}.afx.rg{animation-name:afRg}.afx.rs{animation-name:afRs}.afx.sp{animation-name:afSp}.afx.gl{animation-name:afGl}.afx.bn{animation-name:afBn2}
 @keyframes arAtk{40%{transform:translateX(var(--d))}100%{transform:none}}@keyframes arHit{0%,100%{transform:none}20%{transform:translateX(-12px);filter:brightness(2) sepia(1) hue-rotate(-40deg)}60%{transform:translateX(12px)}}
 @keyframes afSl{0%{transform:translate(-120%,-30px) rotate(-70deg);opacity:0}40%{opacity:1}100%{transform:translate(20%,30px) rotate(40deg);opacity:0}}
@@ -289,9 +289,9 @@ del.fxd{color:#ff9a9d;opacity:.85;text-decoration-thickness:2px;padding:0 3px}
 .agf.mys{--c:#facc15;border-style:solid;background:color-mix(in srgb,#facc15 18%,var(--card));box-shadow:0 0 18px #facc1566}.pq{border:2px dashed #facc15;border-radius:50%;padding:0 3px;opacity:.8}.gbx{display:inline-block;font-size:44px;filter:drop-shadow(0 0 10px #facc15);animation:gbxb .9s infinite}
 @keyframes gbxb{0%,100%{transform:none}35%{transform:translateY(-14px) rotate(-9deg)}65%{transform:translateY(-14px) rotate(9deg)}}
 .rvl{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;pointer-events:none;z-index:95}
-.rvc{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;max-width:300px;padding:18px 28px;border-radius:22px;border:4px solid var(--c);background:color-mix(in srgb,var(--c) 24%,var(--card));box-shadow:0 0 44px var(--c);animation:rvIn 2.5s both}.rvc span{font-size:clamp(60px,12vw,110px);line-height:1}.rvc b{font-size:clamp(20px,3vw,30px)}.rvc small{color:var(--mut);font-weight:600}
-@keyframes rvIn{0%{transform:scale(.2) rotate(-14deg);opacity:0}14%{transform:scale(1.25) rotate(4deg);opacity:1}24%,80%{transform:scale(1);opacity:1}100%{transform:scale(.8) translateY(-40px);opacity:0}}
-.evd .afx{animation-delay:.7s}
+.rvc{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;max-width:300px;padding:18px 28px;border-radius:22px;border:4px solid var(--c);background:color-mix(in srgb,var(--c) 24%,var(--card));box-shadow:0 0 44px var(--c);animation:rvIn 2.8s both}.rvc span{font-size:clamp(60px,12vw,110px);line-height:1}.rvc b{font-size:clamp(20px,3vw,30px)}.rvc small{color:var(--mut);font-weight:600}
+@keyframes rvIn{0%{transform:scale(.2) rotate(-14deg);opacity:0}12%{transform:scale(1.25) rotate(4deg);opacity:1}20%,56%{transform:scale(1);opacity:1}88%{transform:translate(var(--tx,0px),var(--ty,-40px)) scale(.2) rotate(8deg);opacity:1}100%{transform:translate(var(--tx,0px),var(--ty,-40px)) scale(.08);opacity:0}}
+.evd .afx{animation-delay:2.2s}@keyframes rvLate{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}.evd .a7ct:has(.arv.on) .a7cs,.evd .arv.on .abf span{animation:rvLate .4s 2.4s both}
 .gqw{position:relative;margin-top:46px}.gqw.nogf{margin-top:0}
 .bgb{position:absolute;right:14px;top:-62px;z-index:4;font-size:clamp(64px,10vw,104px);line-height:1;pointer-events:none;filter:drop-shadow(0 6px 10px rgba(250,204,21,.65)) drop-shadow(0 0 18px #facc15);transform-origin:50% 100%;animation:bgbHop 1s infinite}
 @keyframes bgbHop{0%,100%{transform:translateY(0) rotate(0) scale(1,1)}12%{transform:translateY(0) scale(1.1,.88)}38%{transform:translateY(-20px) rotate(-10deg) scale(.96,1.06)}62%{transform:translateY(-20px) rotate(10deg) scale(.96,1.06)}86%{transform:translateY(0) scale(1.08,.9)}}
@@ -564,7 +564,7 @@ del.fxd{color:#ff9a9d;opacity:.85;text-decoration-thickness:2px;padding:0 3px}
 @keyframes arFd{from{opacity:0}to{opacity:1}}
 .arv.shr{animation:arShr .42s ease-in forwards!important}
 @keyframes arShr{to{transform:translateY(-130px) scale(.1);opacity:0}}
-.a7bk{padding-top:20px}
+.a7bk{padding-top:20px}.a7s{transition:opacity .3s}.a7s.off{opacity:.1;filter:grayscale(1);pointer-events:none}.a7s.off *{animation:none!important}
 .a7m.pin2{animation:a7In .55s cubic-bezier(.2,1.4,.4,1) both}
 @keyframes a7In{from{transform:translateY(110px) scale(3);opacity:0}to{transform:none;opacity:.85}}
 .a7m .a7ar{position:absolute;top:-21px;left:50%;font-style:normal;font-size:20px;line-height:1;color:#ef4444;text-shadow:0 1px 0 #fff,0 0 6px rgba(239,68,68,.55);animation:a7Ar .8s ease-in-out infinite;z-index:2}
@@ -2383,7 +2383,7 @@ function a7Cards(i){const e=G.st[i],id=G.cls[i],c=clsDef(id),cc=e.cc||0,s=G.s,ou
 function a7s(i,av){if(!G.sd){const cd=a7Cards(i);return `<div class="a7s s${i}" style="--c:${GC[i]}"><div class="a7ct">${i?av(i)+cd:cd+av(i)}</div></div>`}const T=G.sd[i],f=G.fi[i],sw=(G.swc||[])[i],nx0=nxt7(i,f),nx=nx0===f?-1:nx0,sl=G.tsel&&!G.end&&i===1-G.tsel.t,hm=G.hitm,
  bk=T.map((m,k)=>{if(k===f)return'';const pq=!m.dead&&m.st.q&&m.st.q.length?m.st.q:null,pk=sl&&!m.dead,hp=m.dead?0:Math.max(0,m.hp);
   return `<div class="a7m${m.dead?' dead':''}${k===nx?' nxt':''}${sw&&sw.from===k?' pin2':''}${pk?' pk':''}${hm&&hm.t===i&&hm.k===k?' hit':''}" title="${esc(m.nm)} · ${hp}/${G.s.hp} HP${pq?' · Quà chờ: '+esc(pq.map(g=>GF[g][0]).join(', ')):''}"${pk?` data-gg="tg" data-t="${i}" data-k="${k}"`:''}>${(G.evf||[]).filter(x=>x.t===i&&x.m===k).map(x=>`<b class="adm ${x.k}">${x.s}</b>`).join('')}${k===nx?'<em class="a7ar">▼</em>':''}${pq?`<u class="a7g">🎁${pq.length>1?`<sup>${pq.length}</sup>`:''}</u>`:''}<div class="a7a">${m.dead?'<span>💀</span>':''}${clsAv(m.cls)}</div><div class="a7nm">${esc(m.nm)}</div><div class="a7h"><i style="width:${hp/G.s.hp*100}%"></i></div></div>`}).join(''),cd=a7Cards(i);
- return `<div class="a7s s${i}" style="--c:${GC[i]}"><div class="a7bk">${bk}</div><div class="a7ct">${i?av(i)+cd:cd+av(i)}</div></div>`}
+ return `<div class="a7s s${i}${G.tsel&&!G.end&&i===G.tsel.t?' off':''}" style="--c:${GC[i]}"><div class="a7bk">${bk}</div><div class="a7ct">${i?av(i)+cd:cd+av(i)}</div></div>`}
 const RAR=[['Thường','#9aa3af',40],['Hiếm','#3a8bff',30],['Sử thi','#a855f7',18],['Huyền thoại','#facc15',9],['Thần thoại','#ef4444',3]];
 const GR=[1,0,1,0,3,2,0,0,1,3,2,1,1,2,2,1,0,2,0,0,2,3,2,1,2,3,1,4];
 const aR=i=>{const c=G.s.gf&&G.s.gf[i];return c&&c.r!=null?c.r:GR[i]};
@@ -2426,7 +2426,7 @@ function gArenaA(ok){
  const t=G.turn,a=G.st[t];G.ev={f:[],atk:-1,hit:-1,fx:-1,fxt:t};
  if(ok&&G.gf>=0){aQueue(t,G.gf);if(a.en){a.en=0;aQueue(t,aGift())}
   const n=(G.ev.rv||[]).length;
-  if(n){G.lock=1;gDraw();gT(()=>gArenaP(ok),2700+450*(n-1));return}}
+  if(n){const fx=G.ev.fx>=0;G.lock=1;gDraw();gT(()=>gArenaP(ok),(fx?4400:3000)+450*(n-1));return}}
  gArenaP(ok)}
 function gArenaP(ok){
  if(!ok||!G.sd){G.tk=null;return gArenaB(ok)}
@@ -2452,16 +2452,17 @@ function gArenaB(ok){
  clsPost(t,a,b,cx,tn)}else{{const cl=clsDef(G.cls[t]);if(cl&&cl.k==='c'&&(a.cc||0)>=clsVal(G.s,cl.id,'need'))G.log.unshift(`🛡 ${AN(t)} trả lời sai nhưng nội tại đã nạp đầy vẫn được giữ`);else{if(a.cc>0)G.log.unshift(`💔 ${AN(t)} trả lời sai, chuỗi nội tại về 0`);a.cc=0}}G.log.unshift(`✖ ${AN(t)} trả lời sai: không có quà, không gây sát thương`)}
  if(a.bomb){a.bomb=0;aHurt(t,5);G.log.unshift(`💣 Bom nổ! ${AN(t)} mất 5 HP`)}
  a.nodmg=0;a.chain=0;if(a.seal>0)a.seal--;(G.sd?G.sd[t].map(m=>m.st):[a]).forEach(x=>{if(x.ar>0)x.ar--});
- G.log=G.log.slice(0,8);G.lock=1;const fin=()=>gT(()=>{G.lock=0;if(aChk())return;const go=()=>{G.lock=0;if(G.sd)rot7(t);G.turn=o;aStart();if(G.end)return;G.q=gQ();G.gf=aBox();gDraw()};if(G.sd){const n=nxt7(t,G.fi[t]),el=document.querySelector('#gm .a7s.s'+t+' .arv');if(!(G.rep&&G.rep[t])&&n>=0&&n!==G.fi[t]&&el){el.classList.add('shr');G.lock=1;gT(go,430);return}}go()},ok?2400:900);if(G.tacP){G.tacP.fin=fin;gDraw();return}gDraw();fin()}
+ G.log=G.log.slice(0,8);G.lock=1;const ms=ok?2400:(G.ev&&G.ev.f&&G.ev.f.length?2300:900),fin=()=>gT(()=>{G.lock=0;if(aChk())return;const go=()=>{G.lock=0;if(G.sd)rot7(t);G.turn=o;aStart();if(G.end)return;G.q=gQ();G.gf=aBox();gDraw()};if(G.sd){const n=nxt7(t,G.fi[t]),el=document.querySelector('#gm .a7s.s'+t+' .arv');if(!(G.rep&&G.rep[t])&&n>=0&&n!==G.fi[t]&&el){el.classList.add('shr');G.lock=1;gT(go,430);return}}go()},ms);if(G.tacP){G.tacP.fin=fin;gDraw();return}gDraw();fin()}
 GV.arena=function(){const ev=G.ev||{f:[]};G.ev=null;const tp=G.tsel&&!G.end?G.tsel:null;G.evf=ev.f;G.hitm=ev.hit>=0&&G.sd&&ev.hm!=null&&ev.hm!==G.fi[ev.hit]?{t:ev.hit,k:ev.hm}:null;
  const SW=G.sw||[null,null];G.sw=null;G.swc=SW;
  const tot=G.qs.length,qn=((G.qi-1)%tot)+1;
  const av=i=>{const e=G.st[i],g=ev.fx>=0&&ev.fxt===i?GF[ev.fx]:null;return `<div class="arv a${i}${G.turn===i&&!G.end?' on':''}${SW[i]?' pin':''}${ev.atk===i?' atk':''}${ev.hit===i&&(ev.hm==null||ev.hm===G.fi[i])?' hit':''}${tp&&i===1-tp.t?' pk':''}" style="--c:${GC[i]}"${tp&&i===1-tp.t?` data-gg="tg" data-t="${i}" data-k="${G.fi[i]}"`:''}>${ev.f.filter(x=>x.t===i&&x.m==null).map(x=>`<b class="adm ${x.k}">${x.s}</b>`).join('')}${g?`<span class="afx ${g[4]}" style="--c:${g[5]}">${g[3]}</span>`:''}<div class="abf">${(e.q||[]).map(gi=>`<span class="pq" title="Chờ kích hoạt ở lượt sau: ${GF[gi][0]}">${GF[gi][3]}</span>`).join('')}${AST.filter(x=>e[x[0]]>0).map(x=>`<span>${x[1]}</span>`).join('')}</div>${clsAv(G.cls[i])}<div class="hp"><i style="width:${Math.max(0,G.sc[i])/G.s.hp*100}%"></i></div><div class="anm">${esc(G.nm[i])}</div><small class="ahp">${Math.max(0,G.sc[i])}/${G.s.hp} HP</small><small class="acl" tabindex="0">${clsBadge(i)}<span class="acltip">${clsTip(i)}</span></small></div>`};
- const rv=(ev.rv||[]).map((gi,n)=>{const g=GF[gi],r=RAR[aR(gi)];return `<div class="rvc" style="--c:${r[1]};animation-delay:${n*.45}s"><span>${g[3]}</span><b>${g[0]}</b><em class="rar">${r[0]}</em><small>${esc(g[2])}</small></div>`}).join('');
+ const rv=(ev.rv||[]).map((gi,n)=>{const g=GF[gi],r=RAR[aR(gi)];return `<div class="rvc" data-rt="${G.turn}" style="--c:${r[1]};animation-delay:${n*.45}s"><span>${g[3]}</span><b>${g[0]}</b><em class="rar">${r[0]}</em><small>${esc(g[2])}</small></div>`}).join('');
  return `<div class="arn${G.sd?' a7':''}${rv?' evd':''}">${a7s(0,av)}<b>VS</b>${a7s(1,av)}</div>`+(rv?`<div class="rvl">${rv}</div>`:'')+(G.tz?`<div class="acd">${cdBar('acdq','⏱',G.tl,tp?tp.max:G.tz.q,tp?'Chọn mục tiêu':'Thời gian')}<button class="b g acdp" data-gg="tp" title="Tạm dừng / tiếp tục">${G.tpause?'▶':'⏸'}</button></div>`:'')+`<div class="gqw${G.gf>=0&&!rv&&!tp?'':' nogf'}">${G.gf>=0&&!rv&&!tp?'<span class="bgb" aria-hidden="true">🎁</span>':''}${gQH(gTurn()+gNum('Câu '+qn+'/'+tot).replace('class="gnum"','class="gnum qn"')+gNum('Đúng = '+Math.max(1,Math.round(+G.q.p||1))+' điểm'),G.q.q)}</div>`+(tp?tgBanner(tp):gOpts())+`${G.tacP?tacHTML():''}<div class="alog">${G.log.slice(0,4).map(x=>`<p>${esc(x)}</p>`).join('')}</div>`};
+function gFly(){document.querySelectorAll('#gm .rvc[data-rt]').forEach(c=>{const a=document.querySelector('#gm .arv.a'+c.dataset.rt+' svg')||document.querySelector('#gm .arv.a'+c.dataset.rt);if(!a)return;const r=c.getBoundingClientRect(),q=a.getBoundingClientRect();c.style.setProperty('--tx',Math.round(q.left+q.width/2-(r.left+r.width/2))+'px');c.style.setProperty('--ty',Math.round(q.top+q.height/2-(r.top+r.height/2))+'px')})}
 function gDraw(){if(!G)return;G.fr=G.nq;G.nq=0;let h=gHead();
  if(G.end){const r=(G.sd?G.tn:G.nm).map((n,i)=>[n,G.sd?G.sd[i].filter(m=>!m.dead).length:G.sc[i],i]).sort((a,b)=>b[1]-a[1]);h+=`<div class="gres"><div class="gtr">🏆</div><h2>${esc(G.end.title)}</h2><p>${esc(G.end.msg)}</p>${r.map((x,j)=>`<div class="grk" style="--c:${GC[x[2]]}"><span>${j+1}</span>${esc(x[0])}<b>${x[1]}</b></div>`).join('')}<div class="gl"><button class="b p" data-gg="re">↺ Chơi lại</button><button class="b g" data-gg="x">Đóng</button></div></div>`}
- else{G.pn='';const bd=GV[G.k]();h+=`<div class="gplay"><div class="gmain">${bd}</div>${G.pn}</div>`}$('#gm').innerHTML=h;gFx();gSnap()}
+ else{G.pn='';const bd=GV[G.k]();h+=`<div class="gplay"><div class="gmain">${bd}</div>${G.pn}</div>`}$('#gm').innerHTML=h;gFx();gFly();gSnap()}
 function gArm(){const s=G.s,w=(G.k==='whack'?s.t:s.t*1.3)*1000;gT(()=>{gClr();G.lock=1;arcFreeze();const c=document.querySelector(`#gar [data-i="${G.q.a}"]`);if(c)c.classList.add('ok');gBn(false,true);gT(()=>{G.lock=0;aNext(false,0)},1100)},w);if(G.k==='whack')gI(()=>{const a=$('#gar');if(a&&!G.lock)a.innerHTML=gWhack()},1400)}
 const arcFreeze=()=>document.querySelectorAll('#gar [data-i]').forEach(e=>e.style.animationPlayState='paused');
 function gArc(i){const b=document.querySelector(`#gar [data-i="${i}"]`);if(!b||G.wr.includes(i)||G.lock)return;
