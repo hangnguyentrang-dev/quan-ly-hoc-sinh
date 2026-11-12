@@ -1141,11 +1141,13 @@ function closeModal(){$('#modal').hidden=true;M=null}
 function lessonStatus(x){
  const r=getResume(x);
  if(r)return `<div class="st mid">⏸ Đang làm dở · ${resumeText(r.p)}</div>`;
+ const gm=x.g&&x.g!=='tug'?getGame(x):null;
+ if(gm)return `<div class="st mid">⏸ Đang chơi dở · ${esc(gm.txt)}</div>`;
  if(x.done)return `<div class="st done">✓ Hoàn thành${x.best?` · ${fmt(x.best.sc)}/${x.best.tot} điểm`:''}</div>`;
  return `<div class="st new">Chưa làm</div>`;
 }
 function playBtns(l){
- if(l.g&&l.g!=='tug')return `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${l.g==='arena'?modeSeg2(l):''}<button class="b g" data-act="gset">⚙ Cài đặt trò chơi</button><button class="b p" data-act="play">▶ Chơi</button></div>`;
+ if(l.g&&l.g!=='tug')return `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${l.g==='arena'?modeSeg2(l):''}<button class="b g" data-act="gset">⚙ Cài đặt trò chơi</button>${(g=>g?`<button class="b g" data-act="playnew">↺ Chơi lại từ đầu</button><button class="b p" data-act="play">▶ Chơi tiếp · ${esc(g.txt)}</button>`:`<button class="b p" data-act="play">▶ Chơi</button>`)(getGame(l))}</div>`;
  const r=getResume(l);
  return r?`<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="b g" data-act="playnew">↺ Làm lại từ đầu</button><button class="b p" data-act="play">▶ Tiếp tục · ${resumeText(r.p)}</button></div>`:`<button class="b p" data-act="play">▶ Trình chiếu</button>`;
 }
@@ -1229,7 +1231,7 @@ document.addEventListener('click',e=>{
  else if(a==='imgbulk')$('#imgm').click();
  else if(a==='gset')gSetModal(l);
  else if(a==='play')(l.g&&l.g!=='tug'?gPlay(l):play(l));
- else if(a==='playnew'){clearResume(l.id);play(l,true)}
+ else if(a==='playnew'){if(l.g&&l.g!=='tug'){clearGame(l.id);gPlay(l,true)}else{clearResume(l.id);play(l,true)}}
 });
 document.addEventListener('input',e=>{
  const t=e.target,l=curL();if(!l||!t.dataset.f)return;
@@ -1534,7 +1536,7 @@ const findL=id=>{for(const c of D.classes){const l=c.lessons.find(x=>x.id===id);
 const sigOf=l=>{const t=JSON.stringify(l.tm?[l.type,l.dir,l.questions,l.passages,l.tm]:[l.type,l.dir,l.questions,l.passages]);let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return String(h)};
 const rsAll=()=>{try{return JSON.parse(localStorage.getItem('quizresume')||'{}')||{}}catch(e){return {}}};
 function getResume(l){const r=rsAll()[l.id];return r&&r.sig===sigOf(l)&&r.p&&!r.p.done?r:null}
-function clearResume(id){try{const m=rsAll();if(m[id]){delete m[id];localStorage.setItem('quizresume',JSON.stringify(m))}}catch(e){}}
+function clearResume(id){clearGame(id);try{const m=rsAll();if(m[id]){delete m[id];localStorage.setItem('quizresume',JSON.stringify(m))}}catch(e){}}
 function saveResume(){
  if(!P||!P.lid||P.rv||P.done)return;
  try{const m=rsAll();m[P.lid]={sig:P.sig,at:Date.now(),p:P};localStorage.setItem('quizresume',JSON.stringify(m))}catch(e){}
@@ -2156,6 +2158,34 @@ const gS=l=>{const s=Object.assign({n:2,names:[]},l.gs||{});GAMES[l.g].p.forEach
 const gT=(f,ms)=>{GTM.push(setTimeout(f,ms))},gI=(f,ms)=>{GTM.push(setInterval(f,ms))};
 const gClr=()=>{GTM.forEach(x=>{clearTimeout(x);clearInterval(x)});GTM=[]};
 const gNx=()=>{do{G.turn=(G.turn+1)%G.s.n}while(G.out[G.turn]&&G.out.some(x=>!x))};
+/* ---------- Ghi nhớ trò chơi đang chơi dở (chơi tiếp / chơi lại) ---------- */
+let GSN=null,GST=0;
+const gSig=l=>{const t=JSON.stringify([l.type,l.dir,l.questions,l.g,l.gs,l.tz]);let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return String(h)};
+const gAll=()=>{try{return JSON.parse(localStorage.getItem('quizgame')||'{}')||{}}catch(e){return {}}};
+function getGame(l){const r=gAll()[l.id];return r&&r.sig===gSig(l)&&r.g?r:null}
+function clearGame(id){if(GSN&&GSN.id===id)GSN=null;try{const m=gAll();if(m[id]){delete m[id];localStorage.setItem('quizgame',JSON.stringify(m))}}catch(e){}}
+function gTxt(){const k=G.k,s=G.s;
+ if(k==='arena')return G.sd?`còn ${G.sd[0].filter(m=>!m.dead).length} vs ${G.sd[1].filter(m=>!m.dead).length} nhân vật`:`HP ${Math.max(0,G.sc[0])} - ${Math.max(0,G.sc[1])}`;
+ if(k==='grid')return `chiếm ${G.cells.filter(v=>v>=0).length}/25 ô`;
+ if(k==='mil')return `bậc ${Math.max(...G.rung)}/${s.m}`;
+ if(k==='boss')return `máu boss ${G.hp.map(v=>Math.max(0,v)).join(' / ')}`;
+ return `${k==='bomb'?'bom':'câu'} ${Math.min(G.round,s.m)}/${s.m}`}
+function gSnap(){if(!G||!G.l||G.end||G.lock||G.boom||G.tacP||G.k==='tug'||(G.k==='arena'&&!G.cls&&!G.sd))return;
+ const o=Object.assign({},G);['l','tacP','ev','evf','hitm','sw','swc'].forEach(k=>delete o[k]);
+ try{GSN={id:G.l.id,j:JSON.stringify(o),txt:gTxt()};clearTimeout(GST);GST=setTimeout(gPersist,800)}catch(e){}}
+function gPersist(){if(!G||!G.l||G.end||!GSN||GSN.id!==G.l.id)return;
+ try{const g=JSON.parse(GSN.j);if(G.k==='bomb'&&!G.boom&&!G.lock&&G.left>0)g.left=G.left;
+  const m=gAll();m[G.l.id]={sig:gSig(G.l),at:Date.now(),txt:GSN.txt,g};localStorage.setItem('quizgame',JSON.stringify(m))}catch(e){}}
+window.addEventListener('pagehide',gPersist);document.addEventListener('visibilitychange',()=>{if(document.hidden)gPersist()});
+function gBombTick(){const s=G.s;gI(()=>{if(G.lock||G.boom||G.end)return;G.left-=.2;document.querySelectorAll('#gm .gfzi').forEach(f=>f.style.width=Math.max(0,G.left/s.t*100)+'%');if(G.left<=0){G.boom=1;G.sc[G.turn]-=10;gDraw();gT(()=>{if(G.round>=s.m)return gEnd('Hết bom!','Đội càng ít bị nổ càng cao điểm');G.round++;gNx();G.q=gQ();G.left=s.t;G.boom=0;gDraw()},1800)}},200)}
+function gResume(l){const r=getGame(l);if(!r)return false;gClr();
+ G=r.g;G.l=l;G.lock=0;G.pick=null;G.boom=0;G.tpause=0;G.tacP=null;G.ev=null;G.evf=[];G.hitm=null;G.sw=null;G.swc=null;G.nq=1;
+ if(G.sd)G.st=[0,1].map(i=>G.sd[i][G.fi[i]].st);
+ $('#gm').hidden=false;const k=G.k;
+ if(k==='arena'&&G.tz)gI(arTick,200);
+ if(k==='bomb')gBombTick();
+ gDraw();if(['fall','whack','balloon'].includes(k))gArm();return true}
+
 const gShow=h=>{$('#modal').innerHTML=h;$('#modal').hidden=false;M={cb:()=>{}}};
 function gChoose(){gShow(`<div class="mb"><h3>Bạn muốn thêm gì?</h3><div class="types" style="grid-template-columns:1fr 1fr"><label class="ty" data-ga="lesson"><span><i>${tyIco('essay')}</i><b>Bài học</b><em>Các dạng bài như bình thường</em></span></label><label class="ty" data-ga="games"><span><i>${tyIco('g_boss')}</i><b>Trò chơi</b><em>Chơi theo đội</em></span></label></div><div class="mr"><button class="b g" data-gm="x">Huỷ</button></div></div>`)}
 function gList(){gShow(`<div class="mb wide"><h3>🎮 Tạo trò chơi</h3><p>Chọn một trò chơi</p><div class="types">${Object.entries(GAMES).map(([k,g])=>`<label class="ty" data-ga="pick" data-k="${k}"><span><i>${tyIco('g_'+k)}</i><b>${g.n}</b><em>${g.d}</em></span></label>`).join('')}</div><div class="mr"><button class="b g" data-gm="choose" style="margin-right:auto">← Trở lại</button><button class="b g" data-gm="x">Huỷ</button></div></div>`)}
@@ -2172,18 +2202,18 @@ function gQs(l){const t=T(l),out=[],qa=l.questions;
   v.forEach((x,i)=>{const ds=[...new Set(shuf(v.filter((y,j)=>j!==i&&norm(y.a)!==norm(x.a)).map(y=>y.a)))].slice(0,3);if(ds.length){const o=shuf([x.a,...ds]);out.push({q:x.q,o,a:o.indexOf(x.a),p:x.p})}})}
  return out}
 function gQ(){G.nq=1;G.wr=[];if(G.tz)G.tl=G.tz.q;const b=G.qs[G.qi++%G.qs.length];if(b.fix)return b;const ix=shuf(b.o.map((_,i)=>i));return{q:b.q,o:ix.map(i=>b.o[i]),a:ix.indexOf(b.a),p:b.p}}
-function gPlay(l){const qs=gQs(l);if(qs.length<2)return toast('Cần ít nhất 2 câu hỏi hợp lệ (có đủ đề và đáp án đúng) để chơi');gClr();const s=gS(l);if(l.g==='arena')s.n=2;
+function gPlay(l,fresh){if(!fresh&&gResume(l))return;clearGame(l.id);const qs=gQs(l);if(qs.length<2)return toast('Cần ít nhất 2 câu hỏi hợp lệ (có đủ đề và đáp án đúng) để chơi');gClr();const s=gS(l);if(l.g==='arena')s.n=2;
  G={l,k:l.g,s,tz:l.g==='arena'?(c=>c&&c.q?c:null)(tzCfg(l,T(l))):null,tl:0,qs:shuf(qs),qi:0,sc:Array(s.n).fill(0),nm:Array.from({length:s.n},(_,i)=>(s.names[i]||'')||'Đội '+(i+1)),turn:0,out:Array(s.n).fill(0),round:1,lock:0,pick:null,hid:null,poll:null,end:null};
  const k=G.k;G.q=gQ();if(k==='arena'){G.sc=Array(2).fill(s.hp);G.st=[{},{}];G.log=[];G.ev=null;G.last=G.sc.slice();G.gf=aBox();if(G.tz)gI(arTick,200)}
  if(k==='grid'){G.cells=Array(25).fill(-1);G.sel=null}
- if(k==='bomb'){G.left=s.t;G.boom=0;gI(()=>{if(G.lock||G.boom||G.end)return;G.left-=.2;document.querySelectorAll('#gm .gfzi').forEach(f=>f.style.width=Math.max(0,G.left/s.t*100)+'%');if(G.left<=0){G.boom=1;G.sc[G.turn]-=10;gDraw();gT(()=>{if(G.round>=s.m)return gEnd('Hết bom!','Đội càng ít bị nổ càng cao điểm');G.round++;gNx();G.q=gQ();G.left=s.t;G.boom=0;gDraw()},1800)}},200)}
+ if(k==='bomb'){G.left=s.t;G.boom=0;gBombTick()}
  if(k==='mil'){G.rung=Array(s.n).fill(0);G.pz=[100,200,300,500,1000,2000,4000,8000,16000,32000,64000,125000,250000,500000,1000000].slice(15-s.m);G.ll=Array.from({length:s.n},()=>({}))}
  if(k==='boss'){G.hp=Array(s.n).fill(s.m);G.hr=Array(s.n).fill(s.t)}
  $('#gm').hidden=false;if(k==='arena'){G.cls=null;$('#gm').innerHTML='';if(s.mode==='7v7'){a7Setup(l,s,r=>{a7Init(r,s);gDraw()},gClose);return}clsPick(s.cls,gClose,r=>{G.cls=r;gDraw()});return}gDraw();if(['fall','whack','balloon'].includes(k))gArm()}
 function arPaint(){const w=document.getElementById('acdq');if(!w||!G.tz)return;const f=w.querySelector('.cdb i'),b=w.querySelector('b');if(f)f.style.width=Math.max(0,G.tl/(G.tsel?G.tsel.max:G.tz.q))*100+'%';if(b)b.textContent=cdFmt(G.tl);w.classList.remove('warn','low');const c=cdCls(G.tl,G.tsel?G.tsel.max:G.tz.q).trim();if(c)w.classList.add(c)}
 function arTick(){if(!G||G.k!=='arena'||!G.tz||G.end||G.lock||G.tpause||!(G.sd||G.cls))return;G.tl=Math.max(0,G.tl-.2);arPaint();if(G.tl<=0){if(G.tsel)tgAuto();else gRes(-1,gArenaA)}}
-function gClose(){gClr();G=null;$('#gm').hidden=true;render()}
-function gEnd(title,msg){G.end={title,msg};gClr();G.l.done=true;save();gDraw()}
+function gClose(){gPersist();gClr();G=null;GSN=null;$('#gm').hidden=true;render()}
+function gEnd(title,msg){G.end={title,msg};gClr();G.l.done=true;clearGame(G.l.id);save();gDraw()}
 function gRes(i,cb){G.lock=1;G.pick=i;gDraw();gBn(i>=0&&i===G.q.a,i<0);gT(()=>{G.lock=0;G.pick=null;cb(i>=0&&i===G.q.a)},1100)}
 const GE=['🦊','🐼','🐯','🐸','🦁'];
 function gHead(){const mx=Math.max(...G.sc),uni=mx>0&&G.sc.filter(v=>v===mx).length===1;
@@ -2431,7 +2461,7 @@ GV.arena=function(){const ev=G.ev||{f:[]};G.ev=null;const tp=G.tsel&&!G.end?G.ts
  return `<div class="arn${G.sd?' a7':''}${rv?' evd':''}">${a7s(0,av)}<b>VS</b>${a7s(1,av)}</div>`+(rv?`<div class="rvl">${rv}</div>`:'')+(G.tz?`<div class="acd">${cdBar('acdq','⏱',G.tl,tp?tp.max:G.tz.q,tp?'Chọn mục tiêu':'Thời gian')}<button class="b g acdp" data-gg="tp" title="Tạm dừng / tiếp tục">${G.tpause?'▶':'⏸'}</button></div>`:'')+`<div class="gqw${G.gf>=0&&!rv&&!tp?'':' nogf'}">${G.gf>=0&&!rv&&!tp?'<span class="bgb" aria-hidden="true">🎁</span>':''}${gQH(gTurn()+gNum('Câu '+qn+'/'+tot).replace('class="gnum"','class="gnum qn"')+gNum('Đúng = '+Math.max(1,Math.round(+G.q.p||1))+' điểm'),G.q.q)}</div>`+(tp?tgBanner(tp):gOpts())+`${G.tacP?tacHTML():''}<div class="alog">${G.log.slice(0,4).map(x=>`<p>${esc(x)}</p>`).join('')}</div>`};
 function gDraw(){if(!G)return;G.fr=G.nq;G.nq=0;let h=gHead();
  if(G.end){const r=(G.sd?G.tn:G.nm).map((n,i)=>[n,G.sd?G.sd[i].filter(m=>!m.dead).length:G.sc[i],i]).sort((a,b)=>b[1]-a[1]);h+=`<div class="gres"><div class="gtr">🏆</div><h2>${esc(G.end.title)}</h2><p>${esc(G.end.msg)}</p>${r.map((x,j)=>`<div class="grk" style="--c:${GC[x[2]]}"><span>${j+1}</span>${esc(x[0])}<b>${x[1]}</b></div>`).join('')}<div class="gl"><button class="b p" data-gg="re">↺ Chơi lại</button><button class="b g" data-gg="x">Đóng</button></div></div>`}
- else{G.pn='';const bd=GV[G.k]();h+=`<div class="gplay"><div class="gmain">${bd}</div>${G.pn}</div>`}$('#gm').innerHTML=h;gFx()}
+ else{G.pn='';const bd=GV[G.k]();h+=`<div class="gplay"><div class="gmain">${bd}</div>${G.pn}</div>`}$('#gm').innerHTML=h;gFx();gSnap()}
 function gArm(){const s=G.s,w=(G.k==='whack'?s.t:s.t*1.3)*1000;gT(()=>{gClr();G.lock=1;arcFreeze();const c=document.querySelector(`#gar [data-i="${G.q.a}"]`);if(c)c.classList.add('ok');gBn(false,true);gT(()=>{G.lock=0;aNext(false,0)},1100)},w);if(G.k==='whack')gI(()=>{const a=$('#gar');if(a&&!G.lock)a.innerHTML=gWhack()},1400)}
 const arcFreeze=()=>document.querySelectorAll('#gar [data-i]').forEach(e=>e.style.animationPlayState='paused');
 function gArc(i){const b=document.querySelector(`#gar [data-i="${i}"]`);if(!b||G.wr.includes(i)||G.lock)return;
@@ -2457,7 +2487,7 @@ function gLL(x){if(G.lock||G.end)return;const l=G.ll[G.turn];if(l[x])return;l[x]
  gDraw()}
 function gClick(i){if(G.lock||G.end||G.tsel||(G.tpause&&G.k==='arena'))return;const k=G.k;if(k==='fall'||k==='whack'||k==='balloon')gArc(i);else gRes(i,{grid:gGridA,bomb:gBombA,mil:gMilA,boss:gBossA,arena:gArenaA}[k])}
 $('#gm').addEventListener('click',e=>{const b=e.target.closest('[data-gg]');if(!b||!G)return;const a=b.dataset.gg,i=+b.dataset.i;
- if(a==='x')gClose();else if(a==='tac')tacDo(b.dataset.v);else if(a==='tg')tgPick(+b.dataset.t,+b.dataset.k);else if(a==='tp'){G.tpause=!G.tpause;b.textContent=G.tpause?'▶':'⏸'}else if(a==='re')gPlay(G.l);else if(a==='a')gClick(i);else if(a==='ll')gLL(b.dataset.k);
+ if(a==='x')gClose();else if(a==='tac')tacDo(b.dataset.v);else if(a==='tg')tgPick(+b.dataset.t,+b.dataset.k);else if(a==='tp'){G.tpause=!G.tpause;b.textContent=G.tpause?'▶':'⏸'}else if(a==='re')gPlay(G.l,true);else if(a==='a')gClick(i);else if(a==='ll')gLL(b.dataset.k);
  else if(a==='cell'&&!G.lock&&G.sel==null&&G.cells[i]<0){G.sel=i;G.q=gQ();gDraw()}});
 document.addEventListener('keydown',e=>{if(G&&e.key==='Escape')gClose()});
 </script>
